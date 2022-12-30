@@ -539,4 +539,16 @@ public class Functions implements PKCS11Constants {
     return hardwareFeatureTypeName;
   }
 
+  public static String getUserTypeName(long userType) {
+    if (userType == PKCS11Constants.CKU_SO) {
+      return "CKU_SO";
+    } else if (userType == PKCS11Constants.CKU_USER) {
+      return "CKU_USER";
+    } else if (userType == PKCS11Constants.CKU_CONTEXT_SPECIFIC) {
+      return "CKU_CONTEXT_SPECIFIC";
+    } else {
+      return "VENDOR_" + userType;
+    }
+  }
+
 }
