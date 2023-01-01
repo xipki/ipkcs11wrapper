@@ -22,7 +22,6 @@ import iaik.pkcs.pkcs11.Token;
 import iaik.pkcs.pkcs11.TokenException;
 import iaik.pkcs.pkcs11.objects.AttributeVector;
 import iaik.pkcs.pkcs11.parameters.InitializationVectorParameters;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -41,12 +40,12 @@ public class TripleDESPadEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected Mechanism getKeyGenMech(Token token) throws TokenException {
-    return getSupportedMechanism(token, PKCS11Constants.CKM_DES3_KEY_GEN);
+    return getSupportedMechanism(token, CKM_DES3_KEY_GEN);
   }
 
   @Override
   protected Mechanism getEncryptionMech(Token token) throws TokenException {
-    Mechanism mech = getSupportedMechanism(token, PKCS11Constants.CKM_DES3_CBC_PAD);
+    Mechanism mech = getSupportedMechanism(token, CKM_DES3_CBC_PAD);
     InitializationVectorParameters encryptIVParameters = new InitializationVectorParameters(iv);
     mech.setParameters(encryptIVParameters);
     return mech;

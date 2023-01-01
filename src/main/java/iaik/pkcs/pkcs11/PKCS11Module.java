@@ -42,7 +42,6 @@
 
 package iaik.pkcs.pkcs11;
 
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
 import sun.security.pkcs11.wrapper.PKCS11;
@@ -54,6 +53,9 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_LIBRARY_CANT_CREATE_OS_THREADS;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_OS_LOCKING_OK;
 
 /**
  * <B>Caution:
@@ -250,10 +252,10 @@ public class PKCS11Module {
       }
 
       if (initArgs.isLibraryCantCreateOsThreads()) {
-        wrapperInitArgs.flags |= PKCS11Constants.CKF_LIBRARY_CANT_CREATE_OS_THREADS;
+        wrapperInitArgs.flags |= CKF_LIBRARY_CANT_CREATE_OS_THREADS;
       }
       if (initArgs.isOsLockingOk()) {
-        wrapperInitArgs.flags |= PKCS11Constants.CKF_OS_LOCKING_OK;
+        wrapperInitArgs.flags |= CKF_OS_LOCKING_OK;
       }
       wrapperInitArgs.pReserved = initArgs.getReserved();
     }
@@ -329,7 +331,7 @@ public class PKCS11Module {
    * WaitingBehavior.DONT_BLOCK.
    * If there is no event present and the method is called with
    * WaitingBehavior.DONT_BLOCK this method throws an exception with the error
-   * code PKCS11Constants.CKR_NO_EVENT (0x00000008).
+   * code CKR_NO_EVENT (0x00000008).
    *
    * @param dontBlock
    *          Can be WaitingBehavior.BLOCK or WaitingBehavior.DONT_BLOCK.
@@ -342,7 +344,7 @@ public class PKCS11Module {
    *
   public Slot waitForSlotEvent(boolean dontBlock, PKCS11Object reserved)
     throws TokenException {
-    long flags = (dontBlock) ? PKCS11Constants.CKF_DONT_BLOCK : 0L;
+    long flags = (dontBlock) ? CKF_DONT_BLOCK : 0L;
     long slotID = pkcs11Module_.C_WaitForSlotEvent(flags, reserved);
 
     return new Slot(this, slotID);

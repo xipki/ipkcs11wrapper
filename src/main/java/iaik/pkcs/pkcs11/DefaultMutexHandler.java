@@ -190,7 +190,7 @@ public class DefaultMutexHandler implements MutexHandler {
    * particular mutex object continue to block.
    * If this method is called with a mutex object which is not locked, then
    * the method call throws an exception with the error code
-   * PKCS11Constants.CKR_mutex_NOT_LOCKED.
+   * CKR_MUTEX_NOT_LOCKED.
    * If this method is called with a mutex object which is locked by some
    * thread other than the calling thread, the behavior of this method call is
    * undefined.

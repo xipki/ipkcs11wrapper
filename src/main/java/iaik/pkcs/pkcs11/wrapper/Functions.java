@@ -46,6 +46,8 @@ import iaik.pkcs.pkcs11.Mechanism;
 
 import java.util.*;
 
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+
 /**
  * This class contains only static methods. It is the place for all functions
  * that are used by several classes in this package.
@@ -54,7 +56,7 @@ import java.util.*;
  * @author Martin Schlaeffer
  * @author Lijun Liao
  */
-public class Functions implements PKCS11Constants {
+public class Functions {
 
   private static class CodeNameMap {
 

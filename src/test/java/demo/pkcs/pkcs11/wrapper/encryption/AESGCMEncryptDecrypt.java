@@ -22,7 +22,6 @@ import iaik.pkcs.pkcs11.Token;
 import iaik.pkcs.pkcs11.TokenException;
 import iaik.pkcs.pkcs11.objects.AttributeVector;
 import iaik.pkcs.pkcs11.parameters.GCMParameters;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import org.junit.Test;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
@@ -61,12 +60,12 @@ public class AESGCMEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected Mechanism getKeyGenMech(Token token) throws TokenException {
-    return getSupportedMechanism(token, PKCS11Constants.CKM_AES_KEY_GEN);
+    return getSupportedMechanism(token, CKM_AES_KEY_GEN);
   }
 
   @Override
   protected Mechanism getEncryptionMech(Token token) throws TokenException {
-    Mechanism mech = getSupportedMechanism(token, PKCS11Constants.CKM_AES_GCM);
+    Mechanism mech = getSupportedMechanism(token, CKM_AES_GCM);
     GCMParameters params = new GCMParameters(16, iv, aad);
     mech.setParameters(params);
     return mech;

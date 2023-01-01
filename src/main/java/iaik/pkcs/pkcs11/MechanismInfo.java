@@ -42,8 +42,9 @@
 
 package iaik.pkcs.pkcs11;
 
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.CK_MECHANISM_INFO;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Objects of this class provide information about a certain mechanism that a
@@ -141,7 +142,7 @@ public class MechanismInfo {
    * @return True, if this mechanism is performed in hardware.
    */
   public boolean isHw() {
-    return hasFlag(PKCS11Constants.CKF_HW);
+    return hasFlag(CKF_HW);
   }
 
   /**
@@ -150,7 +151,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for encryption.
    */
   public boolean isEncrypt() {
-    return hasFlag(PKCS11Constants.CKF_ENCRYPT);
+    return hasFlag(CKF_ENCRYPT);
   }
 
   /**
@@ -159,7 +160,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for decryption.
    */
   public boolean isDecrypt() {
-    return hasFlag(PKCS11Constants.CKF_DECRYPT);
+    return hasFlag(CKF_DECRYPT);
   }
 
   /**
@@ -168,7 +169,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for digesting.
    */
   public boolean isDigest() {
-    return hasFlag(PKCS11Constants.CKF_DIGEST);
+    return hasFlag(CKF_DIGEST);
   }
 
   /**
@@ -177,7 +178,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for signing.
    */
   public boolean isSign() {
-    return hasFlag(PKCS11Constants.CKF_SIGN);
+    return hasFlag(CKF_SIGN);
   }
 
   /**
@@ -187,7 +188,7 @@ public class MechanismInfo {
    *         recovery.
    */
   public boolean isSignRecover() {
-    return hasFlag(PKCS11Constants.CKF_SIGN_RECOVER);
+    return hasFlag(CKF_SIGN_RECOVER);
   }
 
   /**
@@ -196,7 +197,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for verification.
    */
   public boolean isVerify() {
-    return hasFlag(PKCS11Constants.CKF_VERIFY);
+    return hasFlag(CKF_VERIFY);
   }
 
   /**
@@ -206,7 +207,7 @@ public class MechanismInfo {
    *         recovery.
    */
   public boolean isVerifyRecover() {
-    return hasFlag(PKCS11Constants.CKF_VERIFY_RECOVER);
+    return hasFlag(CKF_VERIFY_RECOVER);
   }
 
   /**
@@ -215,7 +216,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for secret key generation.
    */
   public boolean isGenerate() {
-    return hasFlag(PKCS11Constants.CKF_GENERATE);
+    return hasFlag(CKF_GENERATE);
   }
 
   /**
@@ -224,7 +225,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for key-pair generation.
    */
   public boolean isGenerateKeyPair() {
-    return hasFlag(PKCS11Constants.CKF_GENERATE_KEY_PAIR);
+    return hasFlag(CKF_GENERATE_KEY_PAIR);
   }
 
   /**
@@ -233,7 +234,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for key wrapping.
    */
   public boolean isWrap() {
-    return hasFlag(PKCS11Constants.CKF_WRAP);
+    return hasFlag(CKF_WRAP);
   }
 
   /**
@@ -242,7 +243,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for key unwrapping.
    */
   public boolean isUnwrap() {
-    return hasFlag(PKCS11Constants.CKF_UNWRAP);
+    return hasFlag(CKF_UNWRAP);
   }
 
   /**
@@ -251,7 +252,7 @@ public class MechanismInfo {
    * @return True, if this mechanism can be used for key derivation.
    */
   public boolean isDerive() {
-    return hasFlag(PKCS11Constants.CKF_DERIVE);
+    return hasFlag(CKF_DERIVE);
   }
 
   /**
@@ -261,7 +262,7 @@ public class MechanismInfo {
    *         over Fp.
    */
   public boolean isEcFp() {
-    return hasFlag(PKCS11Constants.CKF_EC_F_P);
+    return hasFlag(CKF_EC_F_P);
   }
 
   /**
@@ -271,7 +272,7 @@ public class MechanismInfo {
    *         over F2m.
    */
   public boolean isEcF2m() {
-    return hasFlag(PKCS11Constants.CKF_EC_F_2M);
+    return hasFlag(CKF_EC_F_2M);
   }
 
   /**
@@ -282,7 +283,7 @@ public class MechanismInfo {
    *         the choice ecParameters.
    */
   public boolean isEcEcParameters() {
-    return hasFlag(PKCS11Constants.CKF_EC_ECPARAMETERS);
+    return hasFlag(CKF_EC_ECPARAMETERS);
   }
 
   /**
@@ -293,7 +294,7 @@ public class MechanismInfo {
    *         the choice namedCurve.
    */
   public boolean isEcNamedCurve() {
-    return hasFlag(PKCS11Constants.CKF_EC_OID);
+    return hasFlag(CKF_EC_OID);
   }
 
   /**
@@ -304,7 +305,7 @@ public class MechanismInfo {
    *         uncompressed.
    */
   public boolean isEcUncompress() {
-    return hasFlag(PKCS11Constants.CKF_EC_UNCOMPRESS);
+    return hasFlag(CKF_EC_UNCOMPRESS);
   }
 
   /**
@@ -315,7 +316,7 @@ public class MechanismInfo {
    *         compressed.
    */
   public boolean isEcCompress() {
-    return hasFlag(PKCS11Constants.CKF_EC_COMPRESS);
+    return hasFlag(CKF_EC_COMPRESS);
   }
 
   /**
@@ -325,7 +326,7 @@ public class MechanismInfo {
    * @return False for this version.
    */
   public boolean isExtension() {
-    return hasFlag(PKCS11Constants.CKF_EXTENSION);
+    return hasFlag(CKF_EXTENSION);
   }
 
   private boolean hasFlag(long mask) {
@@ -360,7 +361,7 @@ public class MechanismInfo {
    *          True, if this mechanism is performed in hardware.
    */
   public void setHw(boolean hw) {
-    setFlagBit(PKCS11Constants.CKF_HW, hw);
+    setFlagBit(CKF_HW, hw);
   }
 
   /**
@@ -370,7 +371,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for encryption.
    */
   public void setEncrypt(boolean encrypt) {
-    setFlagBit(PKCS11Constants.CKF_ENCRYPT, encrypt);
+    setFlagBit(CKF_ENCRYPT, encrypt);
   }
 
   /**
@@ -380,7 +381,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for decryption.
    */
   public void setDecrypt(boolean decrypt) {
-    setFlagBit(PKCS11Constants.CKF_DECRYPT, decrypt);
+    setFlagBit(CKF_DECRYPT, decrypt);
   }
 
   /**
@@ -390,7 +391,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for digesting.
    */
   public void setDigest(boolean digest) {
-    setFlagBit(PKCS11Constants.CKF_DIGEST, digest);
+    setFlagBit(CKF_DIGEST, digest);
   }
 
   /**
@@ -400,7 +401,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for signing.
    */
   public void setSign(boolean sign) {
-    setFlagBit(PKCS11Constants.CKF_SIGN, sign);
+    setFlagBit(CKF_SIGN, sign);
   }
 
   /**
@@ -411,7 +412,7 @@ public class MechanismInfo {
    *          recovery.
    */
   public void setSignRecover(boolean signRecover) {
-    setFlagBit(PKCS11Constants.CKF_SIGN_RECOVER, signRecover);
+    setFlagBit(CKF_SIGN_RECOVER, signRecover);
   }
 
   /**
@@ -421,7 +422,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for verification.
    */
   public void setVerify(boolean verify) {
-    setFlagBit(PKCS11Constants.CKF_VERIFY, verify);
+    setFlagBit(CKF_VERIFY, verify);
   }
 
   /**
@@ -432,7 +433,7 @@ public class MechanismInfo {
    *          recovery.
    */
   public void setVerifyRecover(boolean verifyRecover) {
-    setFlagBit(PKCS11Constants.CKF_VERIFY_RECOVER, verifyRecover);
+    setFlagBit(CKF_VERIFY_RECOVER, verifyRecover);
   }
 
   /**
@@ -442,7 +443,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for secret key generation.
    */
   public void setGenerate(boolean generate) {
-    setFlagBit(PKCS11Constants.CKF_GENERATE, generate);
+    setFlagBit(CKF_GENERATE, generate);
   }
 
   /**
@@ -452,7 +453,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for key-pair generation.
    */
   public void setGenerateKeyPair(boolean generateKeyPair) {
-    setFlagBit(PKCS11Constants.CKF_GENERATE_KEY_PAIR, generateKeyPair);
+    setFlagBit(CKF_GENERATE_KEY_PAIR, generateKeyPair);
   }
 
   /**
@@ -462,7 +463,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for key wrapping.
    */
   public void setWrap(boolean wrap) {
-    setFlagBit(PKCS11Constants.CKF_WRAP, wrap);
+    setFlagBit(CKF_WRAP, wrap);
   }
 
   /**
@@ -472,7 +473,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for key unwrapping.
    */
   public void setUnwrap(boolean unwrap) {
-    setFlagBit(PKCS11Constants.CKF_UNWRAP, unwrap);
+    setFlagBit(CKF_UNWRAP, unwrap);
   }
 
   /**
@@ -482,7 +483,7 @@ public class MechanismInfo {
    *          True, if this mechanism can be used for key derivation.
    */
   public void setDerive(boolean derive) {
-    setFlagBit(PKCS11Constants.CKF_DERIVE, derive);
+    setFlagBit(CKF_DERIVE, derive);
   }
 
   /**
@@ -493,7 +494,7 @@ public class MechanismInfo {
    *          over Fp.
    */
   public void setEcFp(boolean ecFp) {
-    setFlagBit(PKCS11Constants.CKF_EC_F_P, ecFp);
+    setFlagBit(CKF_EC_F_P, ecFp);
   }
 
   /**
@@ -504,7 +505,7 @@ public class MechanismInfo {
    *          over F2m.
    */
   public void setEcF2m(boolean ecF2m) {
-    setFlagBit(PKCS11Constants.CKF_EC_F_2M, ecF2m);
+    setFlagBit(CKF_EC_F_2M, ecF2m);
   }
 
   /**
@@ -516,7 +517,7 @@ public class MechanismInfo {
    *          the choice ecParameters.
    */
   public void setEcEcParameters(boolean ecEcParameters) {
-    setFlagBit(PKCS11Constants.CKF_EC_ECPARAMETERS, ecEcParameters);
+    setFlagBit(CKF_EC_ECPARAMETERS, ecEcParameters);
   }
 
   /**
@@ -528,7 +529,7 @@ public class MechanismInfo {
    *          the choice namedCurve.
    */
   public void setEcNamedCurve(boolean ecNamedCurve) {
-    setFlagBit(PKCS11Constants.CKF_EC_OID, ecNamedCurve);
+    setFlagBit(CKF_EC_OID, ecNamedCurve);
   }
 
   /**
@@ -540,7 +541,7 @@ public class MechanismInfo {
    *          uncompressed.
    */
   public void setEcUncompress(boolean ecUncompress) {
-    setFlagBit(PKCS11Constants.CKF_EC_UNCOMPRESS, ecUncompress);
+    setFlagBit(CKF_EC_UNCOMPRESS, ecUncompress);
   }
 
   /**
@@ -551,7 +552,7 @@ public class MechanismInfo {
    *          compressed.
    */
   public void setEcCompress(boolean ecCompress) {
-    setFlagBit(PKCS11Constants.CKF_EC_COMPRESS, ecCompress);
+    setFlagBit(CKF_EC_COMPRESS, ecCompress);
   }
 
   /**
@@ -562,7 +563,7 @@ public class MechanismInfo {
    *          False for this version.
    */
   public void setExtension(boolean extension) {
-    setFlagBit(PKCS11Constants.CKF_EXTENSION, extension);
+    setFlagBit(CKF_EXTENSION, extension);
   }
 
   /**

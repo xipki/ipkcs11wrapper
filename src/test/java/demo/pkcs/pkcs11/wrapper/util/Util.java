@@ -43,7 +43,6 @@
 package demo.pkcs.pkcs11.wrapper.util;
 
 import iaik.pkcs.pkcs11.*;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -56,6 +55,9 @@ import javax.naming.ldap.Rdn;
 import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.math.BigInteger;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKR_USER_ALREADY_LOGGED_IN;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKU_USER;
 
 /**
  * This class contains only static methods. It is the place for all functions
@@ -156,12 +158,12 @@ public class Util {
         System.out.print("Please enter the user-PIN at the PIN-pad of your reader.");
         System.out.flush();
         // the token prompts the PIN by other means; e.g. PIN-pad
-        session.login(PKCS11Constants.CKU_USER, null);
+        session.login(CKU_USER, null);
       } else {
         try {
-          session.login(PKCS11Constants.CKU_USER, pin);
+          session.login(CKU_USER, pin);
         } catch (PKCS11Exception ex) {
-          if (ex.getErrorCode() != PKCS11Constants.CKR_USER_ALREADY_LOGGED_IN) {
+          if (ex.getErrorCode() != CKR_USER_ALREADY_LOGGED_IN) {
             throw ex;
           }
         }

@@ -43,8 +43,10 @@
 package iaik.pkcs.pkcs11;
 
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.CK_SESSION_INFO;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_RW_SESSION;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_SERIAL_SESSION;
 
 /**
  * An object of this class provides information about a session. The information
@@ -119,7 +121,7 @@ public class SessionInfo {
    *         read-only session.
    */
   public boolean isRwSession() {
-    return (flags & PKCS11Constants.CKF_RW_SESSION) != 0L;
+    return (flags & CKF_RW_SESSION) != 0L;
   }
 
   /**
@@ -131,7 +133,7 @@ public class SessionInfo {
    *         standard.
    */
   public boolean isSerialSession() {
-    return (flags & PKCS11Constants.CKF_SERIAL_SESSION) != 0L;
+    return (flags & CKF_SERIAL_SESSION) != 0L;
   }
 
   /**

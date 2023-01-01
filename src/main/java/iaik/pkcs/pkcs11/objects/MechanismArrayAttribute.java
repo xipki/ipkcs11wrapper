@@ -58,8 +58,7 @@ public class MechanismArrayAttribute extends Attribute {
    * Constructor taking the PKCS#11 type of the attribute.
    *
    * @param type
-   *          The PKCS#11 type of this attribute; e.g.
-   *          PKCS11Constants.CKA_VALUE.
+   *          The PKCS#11 type of this attribute; e.g. CKA_VALUE.
    */
   public MechanismArrayAttribute(long type) {
     super(type);

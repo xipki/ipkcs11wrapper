@@ -47,8 +47,7 @@ public class OtherAttribute extends Attribute {
   /**
    * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param type The PKCS#11 type of this attribute; e.g.
-   *             PKCS11Constants.CKA_PRIVATE.
+   * @param type The PKCS#11 type of this attribute; e.g. CKA_PRIVATE.
    */
   protected OtherAttribute(long type) {
     super(type);

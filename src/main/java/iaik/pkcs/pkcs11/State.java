@@ -62,11 +62,11 @@ public class State {
    * Constructor that simply takes the status code as defined in PKCS#11.
    *
    * @param code
-   *          One of: PKCS11Constants.CKS_RO_PUBLIC_SESSION,
-   *                  PKCS11Constants.CKS_RO_USER_FUNCTIONS,
-   *                  PKCS11Constants.CKS_RW_PUBLIC_SESSION,
-   *                  PKCS11Constants.CKS_RW_USER_FUNCTIONS or
-   *                  PKCS11Constants.CKS_RW_SO_FUNCTIONS.
+   *          One of: CKS_RO_PUBLIC_SESSION,
+   *                  CKS_RO_USER_FUNCTIONS,
+   *                  CKS_RW_PUBLIC_SESSION,
+   *                  CKS_RW_USER_FUNCTIONS or
+   *                  CKS_RW_SO_FUNCTIONS.
    */
   protected State(long code) {
     this.code = code;

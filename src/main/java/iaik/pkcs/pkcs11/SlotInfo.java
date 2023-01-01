@@ -43,8 +43,9 @@
 package iaik.pkcs.pkcs11;
 
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Objects of this call provide information about a slot. A slot can be a
@@ -144,7 +145,7 @@ public class SlotInfo {
    *         otherwise.
    */
   public boolean isTokenPresent() {
-    return (flags & PKCS11Constants.CKF_TOKEN_PRESENT) != 0L;
+    return (flags & CKF_TOKEN_PRESENT) != 0L;
   }
 
   /**
@@ -154,7 +155,7 @@ public class SlotInfo {
    * @return True, if the tokens are removable. False, otherwise.
    */
   public boolean isRemovableDevice() {
-    return (flags & PKCS11Constants.CKF_REMOVABLE_DEVICE) != 0L;
+    return (flags & CKF_REMOVABLE_DEVICE) != 0L;
   }
 
   /**
@@ -164,7 +165,7 @@ public class SlotInfo {
    * @return True, if it is a hardware slot. False, otherwise.
    */
   public boolean isHwSlot() {
-    return (flags & PKCS11Constants.CKF_HW_SLOT) != 0L;
+    return (flags & CKF_HW_SLOT) != 0L;
   }
 
   /**

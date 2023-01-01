@@ -44,7 +44,6 @@ package iaik.pkcs.pkcs11;
 
 import iaik.pkcs.pkcs11.objects.*;
 import iaik.pkcs.pkcs11.parameters.*;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
 import sun.security.pkcs11.wrapper.CK_MECHANISM;
@@ -56,6 +55,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Session objects are used to perform cryptographic operations on a token. The
@@ -336,8 +337,8 @@ public class Session {
    * to one session all other open sessions of this token get user rights.
    *
    * @param userType
-   *          PKCS11Constants.CKU_SO for the security officer or
-   *          PKCS11Constants.CKU_USER to login the user.
+   *          CKU_SO for the security officer or
+   *          CKU_USER to login the user.
    * @param pin
    *          The PIN. The security officer-PIN or the user-PIN depending on
    *          the userType parameter.
@@ -434,7 +435,7 @@ public class Session {
    *
    * @param objectToUpdateHandle
    *          The attributes of this object get updated.
-   * @param templateObject
+   * @param template
    *          This method gets all present attributes of this template object
    *          and set this attributes at the objectToUpdate.
    * @exception TokenException
@@ -473,7 +474,7 @@ public class Session {
    * template object and searches for all objects on the token that match with
    * these attributes.
    *
-   * @param templateObject
+   * @param template
    *          The object that serves as a template for searching. If this
    *          object is null, the find operation will find all objects that
    *          this session can see. Notice, that only a user session will see
@@ -1458,7 +1459,7 @@ public class Session {
 
   private CK_MECHANISM toCkMechanism(Mechanism mechanism) {
     long code = mechanism.getMechanismCode();
-    if ((code & PKCS11Constants.CKM_VENDOR_DEFINED) != 0) {
+    if ((code & CKM_VENDOR_DEFINED) != 0) {
       if (vendorCode != null) {
         code = vendorCode.ckmGenericToVendor(code);
       }
@@ -1763,7 +1764,7 @@ public class Session {
       postProcessGetAttribute(attribute);
     } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
       long ec = ex.getErrorCode();
-      if (ec == PKCS11Constants.CKR_ATTRIBUTE_TYPE_INVALID) {
+      if (ec == CKR_ATTRIBUTE_TYPE_INVALID) {
         // this means, that some requested attributes are missing, but
         // we can ignore this and proceed; e.g. a v2.01 module won't
         // have the object ID attribute
@@ -1773,7 +1774,7 @@ public class Session {
         if (!ignoreParsableException) {
           throw new PKCS11Exception(ex);
         }
-      } else if (ec == PKCS11Constants.CKR_ATTRIBUTE_SENSITIVE) {
+      } else if (ec == CKR_ATTRIBUTE_SENSITIVE) {
         // this means, that some requested attributes are missing, but
         // we can ignore this and proceed; e.g. a v2.01 module won't
         // have the object ID attribute
@@ -1784,8 +1785,8 @@ public class Session {
         if (!ignoreParsableException) {
           throw new PKCS11Exception(ex);
         }
-      } else if (ec == PKCS11Constants.CKR_ARGUMENTS_BAD || ec == PKCS11Constants.CKR_FUNCTION_FAILED
-          || ec == PKCS11Constants.CKR_FUNCTION_REJECTED) {
+      } else if (ec == CKR_ARGUMENTS_BAD || ec == CKR_FUNCTION_FAILED
+          || ec == CKR_FUNCTION_REJECTED) {
         attribute.getCkAttribute().pValue = null;
         attribute.setStateKnown(true);
         attribute.setPresent(false);
@@ -1804,9 +1805,9 @@ public class Session {
     CK_ATTRIBUTE[] ret = attributeVector.toCkAttributes();
     if (vendorCode != null) {
       for (CK_ATTRIBUTE ckAttr : ret) {
-        if (ckAttr.type == PKCS11Constants.CKA_KEY_TYPE && ckAttr.pValue != null) {
+        if (ckAttr.type == CKA_KEY_TYPE && ckAttr.pValue != null) {
           long value = (long) ckAttr.pValue;
-          if ((value & PKCS11Constants.CKK_VENDOR_DEFINED) != 0L) {
+          if ((value & CKK_VENDOR_DEFINED) != 0L) {
             long vendorValue = vendorCode.ckkGenericToVendor(value);
             if (vendorValue != value) {
               ckAttr.pValue = vendorValue;
@@ -1820,9 +1821,9 @@ public class Session {
 
   private void postProcessGetAttribute(Attribute attr) {
     CK_ATTRIBUTE ckAttr = attr.getCkAttribute();
-    if (ckAttr.type == PKCS11Constants.CKA_KEY_TYPE && ckAttr.pValue != null) {
+    if (ckAttr.type == CKA_KEY_TYPE && ckAttr.pValue != null) {
       long value = (long) ckAttr.pValue;
-      if ((value & PKCS11Constants.CKK_VENDOR_DEFINED) != 0L) {
+      if ((value & CKK_VENDOR_DEFINED) != 0L) {
         long genericValue = vendorCode.ckkVendorToGeneric(value);
         if (value != genericValue) {
           ckAttr.pValue = value;

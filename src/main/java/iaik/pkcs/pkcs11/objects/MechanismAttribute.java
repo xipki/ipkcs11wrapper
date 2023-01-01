@@ -43,7 +43,8 @@
 package iaik.pkcs.pkcs11.objects;
 
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CK_UNAVAILABLE_INFORMATION;
 
 /**
  * Objects of this class represent a mechanism attribute of a PKCS#11 object
@@ -58,8 +59,7 @@ public class MechanismAttribute extends LongAttribute {
    * Constructor taking the PKCS#11 type of the attribute.
    *
    * @param type
-   *          The PKCS#11 type of this attribute; e.g.
-   *          PKCS11Constants.CKA_VALUE_LEN.
+   *          The PKCS#11 type of this attribute; e.g. CKA_VALUE_LEN.
    */
   public MechanismAttribute(long type) {
     super(type);
@@ -98,7 +98,7 @@ public class MechanismAttribute extends LongAttribute {
       return "<NULL_PTR>";
     }
 
-    return (((Long) ckAttribute.pValue) != PKCS11Constants.CK_UNAVAILABLE_INFORMATION)
+    return (((Long) ckAttribute.pValue) != CK_UNAVAILABLE_INFORMATION)
         ? Functions.ckmCodeToName((long) ckAttribute.pValue) : "<Information unavailable>";
   }
 

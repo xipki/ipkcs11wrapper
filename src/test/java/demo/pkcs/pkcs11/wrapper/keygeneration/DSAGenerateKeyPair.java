@@ -23,7 +23,6 @@ import iaik.pkcs.pkcs11.*;
 import iaik.pkcs.pkcs11.objects.AttributeVector;
 import iaik.pkcs.pkcs11.objects.KeyPair;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import org.junit.Test;
 
 import java.util.List;
@@ -57,13 +56,13 @@ public class DSAGenerateKeyPair extends TestBase {
     List<Long> supportedMechanisms = token.getMechanismList2();
 
     MechanismInfo signatureMechanismInfo;
-    if (supportedMechanisms.contains(PKCS11Constants.CKM_DSA)) {
-      signatureMechanismInfo = token.getMechanismInfo(PKCS11Constants.CKM_DSA);
+    if (supportedMechanisms.contains(CKM_DSA)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_DSA);
     } else {
       signatureMechanismInfo = null;
     }
 
-    final long mechCode = PKCS11Constants.CKM_DSA_KEY_PAIR_GEN;
+    final long mechCode = CKM_DSA_KEY_PAIR_GEN;
     if (!Util.supports(token, mechCode)) {
       System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
       return;

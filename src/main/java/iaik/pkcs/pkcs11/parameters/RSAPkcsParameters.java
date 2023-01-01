@@ -43,11 +43,12 @@
 package iaik.pkcs.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * This abstract class encapsulates parameters for the RSA PKCS mechanisms
@@ -73,15 +74,15 @@ abstract public class RSAPkcsParameters implements Parameters {
 
   static {
     Map<Long, Long> map = new HashMap<>();
-    map.put(PKCS11Constants.CKG_MGF1_SHA1, PKCS11Constants.CKM_SHA_1);
-    map.put(PKCS11Constants.CKG_MGF1_SHA224, PKCS11Constants.CKM_SHA224);
-    map.put(PKCS11Constants.CKG_MGF1_SHA256, PKCS11Constants.CKM_SHA256);
-    map.put(PKCS11Constants.CKG_MGF1_SHA384, PKCS11Constants.CKM_SHA384);
-    map.put(PKCS11Constants.CKG_MGF1_SHA512, PKCS11Constants.CKM_SHA512);
-    map.put(PKCS11Constants.CKG_MGF1_SHA3_224, PKCS11Constants.CKM_SHA3_224);
-    map.put(PKCS11Constants.CKG_MGF1_SHA3_256, PKCS11Constants.CKM_SHA3_256);
-    map.put(PKCS11Constants.CKG_MGF1_SHA3_384, PKCS11Constants.CKM_SHA3_384);
-    map.put(PKCS11Constants.CKG_MGF1_SHA3_512, PKCS11Constants.CKM_SHA3_512);
+    map.put(CKG_MGF1_SHA1, CKM_SHA_1);
+    map.put(CKG_MGF1_SHA224, CKM_SHA224);
+    map.put(CKG_MGF1_SHA256, CKM_SHA256);
+    map.put(CKG_MGF1_SHA384, CKM_SHA384);
+    map.put(CKG_MGF1_SHA512, CKM_SHA512);
+    map.put(CKG_MGF1_SHA3_224, CKM_SHA3_224);
+    map.put(CKG_MGF1_SHA3_256, CKM_SHA3_256);
+    map.put(CKG_MGF1_SHA3_384, CKM_SHA3_384);
+    map.put(CKG_MGF1_SHA3_512, CKM_SHA3_512);
     mgf2HashAlgMap = Collections.unmodifiableMap(map);
   }
 

@@ -99,7 +99,7 @@ public class DeriveKeyDemo extends TestBase {
     byte[] data = new byte[24];
 
     DesCbcEncryptDataParameters param = new DesCbcEncryptDataParameters(iv, data);
-    Mechanism mechanism = getSupportedMechanism(token, PKCS11Constants.CKM_DES3_CBC_ENCRYPT_DATA);
+    Mechanism mechanism = getSupportedMechanism(token, CKM_DES3_CBC_ENCRYPT_DATA);
     mechanism.setParameters(param);
 
     System.out.println("Derivation Mechanism: ");

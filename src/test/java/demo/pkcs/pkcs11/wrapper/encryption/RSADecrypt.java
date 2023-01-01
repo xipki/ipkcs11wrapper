@@ -23,11 +23,12 @@ import iaik.pkcs.pkcs11.Session;
 import iaik.pkcs.pkcs11.Token;
 import iaik.pkcs.pkcs11.TokenException;
 import iaik.pkcs.pkcs11.objects.KeyPair;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_RSA_PKCS;
 
 /**
  * This demo shows how to use a PKCS#11 token to decrypt a session key
@@ -51,7 +52,7 @@ public class RSADecrypt extends TestBase {
 
   private void main0(Token token, Session session) throws TokenException {
     // check, if this token can do RSA decryption
-    Mechanism encMech = getSupportedMechanism(token, PKCS11Constants.CKM_RSA_PKCS);
+    Mechanism encMech = getSupportedMechanism(token, CKM_RSA_PKCS);
     if (!token.getMechanismInfo(encMech.getMechanismCode()).isDecrypt()) {
       LOG.info("This token does not support RSA decryption according to PKCS!");
       throw new TokenException("RSA decryption not supported!");

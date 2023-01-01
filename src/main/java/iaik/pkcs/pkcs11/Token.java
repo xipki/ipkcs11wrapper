@@ -42,7 +42,6 @@
 
 package iaik.pkcs.pkcs11;
 
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import sun.security.pkcs11.wrapper.CK_MECHANISM_INFO;
 import sun.security.pkcs11.wrapper.CK_NOTIFY;
@@ -51,13 +50,15 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+
 /**
  * Objects of this class represent PKCS#11 tokens. The application can get
  * information on the token, manage sessions and initialize the token. Notice
  * that objects of this class can become valid at any time. This is, the
  * user can remove the token at any time and any subsequent calls to the
  * corresponding object will fail with an exception (e.g. an exception
- * with the error code PKCS11Constants.CKR_DEVICE_REMOVED).
+ * with the error code CKR_DEVICE_REMOVED).
  * First, the application may want to find out what cryptographic algorithms
  * the token supports. Implementations of such algorithms on a token are called
  * mechanisms in the context of PKCS#11. The code for this may look something
@@ -236,7 +237,7 @@ public class Token {
     if (vendorCode != null) {
       for (int i = 0; i < mechanisms.length; i++) {
         long code = mechanisms[i];
-        if ((code & PKCS11Constants.CKM_VENDOR_DEFINED) != 0 && vendorCode != null) {
+        if ((code & CKM_VENDOR_DEFINED) != 0 && vendorCode != null) {
           mechanisms[i] = vendorCode.ckmVendorToGeneric(code);
         }
       }
@@ -257,7 +258,7 @@ public class Token {
    *              supported by this token.
    */
   public MechanismInfo getMechanismInfo(long mechanism) throws TokenException {
-    if ((mechanism & PKCS11Constants.CKM_VENDOR_DEFINED) != 0) {
+    if ((mechanism & CKM_VENDOR_DEFINED) != 0) {
       VendorCode vendorCode = slot.getModule().getVendorCode();
       if (vendorCode != null) {
         mechanism = vendorCode.ckmGenericToVendor(mechanism);
@@ -321,14 +322,14 @@ public class Token {
    *              If the session could not be opened.
    */
   public Session openSession(boolean rwSession, Object application, Notify notify) throws TokenException {
-    long flags = PKCS11Constants.CKF_SERIAL_SESSION;
-    flags |= rwSession ? PKCS11Constants.CKF_RW_SESSION : 0L;
+    long flags = CKF_SERIAL_SESSION;
+    flags |= rwSession ? CKF_RW_SESSION : 0L;
     // we need it for the Notify already here
     final Session newSession = new Session(this, -1);
     CK_NOTIFY ckNotify = null;
     if (notify != null) {
       ckNotify = (hSession, event, pApplication) -> {
-        boolean surrender = (event & PKCS11Constants.CKN_SURRENDER) != 0L;
+        boolean surrender = (event & CKN_SURRENDER) != 0L;
         try {
           notify.notify(newSession, surrender, pApplication);
         } catch (PKCS11Exception ex) {

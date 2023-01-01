@@ -42,7 +42,6 @@
 
 package iaik.pkcs.pkcs11;
 
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 
 /**
@@ -55,18 +54,12 @@ import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 public interface Notify {
 
   /**
-   * This is the code to return in a PKCS11Exception to signal surrender
-   * to the library.
-   */
-  long CANCEL = PKCS11Constants.CKR_CANCEL;
-
-  /**
    * The module calls this method in certain events. 'Surrender' is the only
    * event defined by now. If the application wants to return an error code,
    * it can do this using PKCS11Exceptions. Throwing no exception means a
    * return value of CKR_OK, and throwing a PKCS11Exception means a return
    * value of the error code of the exception; e.g.<code><br>
-   * throw new PKCS11Exception(PKCS11Constants.CKR_CANCEL);<br>
+   * throw new PKCS11Exception(CKR_CANCEL);<br>
    * </code><br>
    * causes a return value of CKR_CANCEL.
    *

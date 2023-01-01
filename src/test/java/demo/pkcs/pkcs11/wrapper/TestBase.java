@@ -48,7 +48,6 @@ import iaik.pkcs.pkcs11.*;
 import iaik.pkcs.pkcs11.objects.AttributeVector;
 import iaik.pkcs.pkcs11.objects.KeyPair;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -223,7 +222,7 @@ public class TestBase {
 
   protected KeyPair generateRSAKeypair(Token token, Session session, int keysize, boolean inToken)
       throws TokenException {
-    Mechanism keyPairGenMechanism = getSupportedMechanism(token, PKCS11Constants.CKM_RSA_PKCS_KEY_PAIR_GEN);
+    Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_RSA_PKCS_KEY_PAIR_GEN);
     AttributeVector publicKeyTemplate = new AttributeVector()
         .attr(CKA_CLASS, CKO_PUBLIC_KEY).attr(CKA_KEY_TYPE, CKK_RSA);
     AttributeVector privateKeyTemplate = new AttributeVector()
@@ -282,7 +281,7 @@ public class TestBase {
 
   protected KeyPair generateDSAKeypair(Token token, Session session, boolean inToken)
       throws TokenException {
-    Mechanism keyPairGenMechanism = getSupportedMechanism(token, PKCS11Constants.CKM_DSA_KEY_PAIR_GEN);
+    Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_DSA_KEY_PAIR_GEN);
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 

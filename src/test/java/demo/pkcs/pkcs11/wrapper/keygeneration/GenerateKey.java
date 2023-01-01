@@ -23,7 +23,6 @@ import iaik.pkcs.pkcs11.Session;
 import iaik.pkcs.pkcs11.Token;
 import iaik.pkcs.pkcs11.TokenException;
 import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import org.junit.Test;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
@@ -47,7 +46,7 @@ public class GenerateKey extends TestBase {
   }
 
   private void main0(Token token, Session session) throws TokenException {
-    Mechanism mech = getSupportedMechanism(token, PKCS11Constants.CKM_GENERIC_SECRET_KEY_GEN);
+    Mechanism mech = getSupportedMechanism(token, CKM_GENERIC_SECRET_KEY_GEN);
     LOG.info("##################################################");
     LOG.info("Generating generic secret key");
 
