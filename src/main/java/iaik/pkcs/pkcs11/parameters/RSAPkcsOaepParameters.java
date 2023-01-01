@@ -42,12 +42,13 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Mechanism;
 import iaik.pkcs.pkcs11.Util;
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 import sun.security.pkcs11.wrapper.CK_RSA_PKCS_OAEP_PARAMS;
 
 import java.util.Arrays;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKZ_DATA_SPECIFIED;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKZ_SALT_SPECIFIED;
 
 /**
  * This class encapsulates parameters for the Mechanism.RSA_PKCS_OAEP.

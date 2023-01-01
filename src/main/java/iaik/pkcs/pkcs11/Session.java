@@ -46,14 +46,16 @@ import iaik.pkcs.pkcs11.objects.*;
 import iaik.pkcs.pkcs11.parameters.*;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
-import sun.security.pkcs11.wrapper.*;
+import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
+import sun.security.pkcs11.wrapper.CK_MECHANISM;
+import sun.security.pkcs11.wrapper.CK_RSA_PKCS_PSS_PARAMS;
+import sun.security.pkcs11.wrapper.PKCS11;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigInteger;
 
 /**
  * Session objects are used to perform cryptographic operations on a token. The
@@ -1593,6 +1595,20 @@ public class Session {
     int idx = 0;
     for (char[] chars : charsArray) {
       ret[idx++] = chars == null ? null : new String(chars);
+    }
+    return ret;
+  }
+
+  public BigInteger getByteArrayAttributeBigIntValue(long objectHandle, long attributeType) throws PKCS11Exception {
+    byte[] value = getByteArrayAttributeValue(objectHandle, attributeType);
+    return value == null ? null : new BigInteger(1, value);
+  }
+
+  public BigInteger[] getByteArrayAttributeBigIntValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+    byte[][] values = getByteArrayAttributeValues(objectHandle, attributeTypes);
+    BigInteger[] ret = new BigInteger[attributeTypes.length];
+    for (int i = 0; i < values.length; i++) {
+      ret[i] = new BigInteger(1, values[i]);
     }
     return ret;
   }

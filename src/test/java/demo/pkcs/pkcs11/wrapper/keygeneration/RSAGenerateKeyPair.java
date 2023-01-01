@@ -103,7 +103,7 @@ public class RSAGenerateKeyPair extends TestBase {
 
     final long mechCode = CKM_RSA_PKCS_KEY_PAIR_GEN;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.mechanismCodeToString(mechCode));
+      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
       return;
     }
 

@@ -53,7 +53,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.security.KeyStore;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
@@ -271,10 +270,6 @@ public class UploadPrivateKey extends TestBase {
     }
 
     LOG.info("##################################################");
-  }
-
-  private static byte[] unsignedBigIntergerToByteArray(BigInteger bigInteger) {
-    return iaik.pkcs.pkcs11.Util.unsignedBigIntergerToByteArray(bigInteger);
   }
 
 }

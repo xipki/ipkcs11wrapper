@@ -66,7 +66,7 @@ public class TripleDESPadEncryptDecryptSpeed extends TestBase {
   private class MyEncryptExecutor extends EncryptExecutor {
 
     public MyEncryptExecutor(Token token, char[] pin) throws TokenException {
-      super(Functions.mechanismCodeToString(encryptMechanism) + " Encrypt Speed",
+      super(Functions.ckmCodeToName(encryptMechanism) + " Encrypt Speed",
           getKeyGenMech(token), token, pin,
           getEncryptionMech(token), inputLen);
     }
@@ -81,7 +81,7 @@ public class TripleDESPadEncryptDecryptSpeed extends TestBase {
   private class MyDecryptExecutor extends DecryptExecutor {
 
     public MyDecryptExecutor(Token token, char[] pin) throws TokenException {
-      super(Functions.mechanismCodeToString(encryptMechanism) + " Decrypt Speed",
+      super(Functions.ckmCodeToName(encryptMechanism) + " Decrypt Speed",
           getKeyGenMech(token), token, pin,
           getEncryptionMech(token), inputLen);
     }
@@ -126,12 +126,12 @@ public class TripleDESPadEncryptDecryptSpeed extends TestBase {
   public void main() throws TokenException {
     Token token = getNonNullToken();
     if (!Util.supports(token, keyGenMechanism)) {
-      System.out.println(Functions.mechanismCodeToString(keyGenMechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(keyGenMechanism) + " is not supported, skip test");
       return;
     }
 
     if (!Util.supports(token, encryptMechanism)) {
-      System.out.println(Functions.mechanismCodeToString(encryptMechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(encryptMechanism) + " is not supported, skip test");
       return;
     }
 

@@ -108,7 +108,7 @@ public class MechanismAttribute extends LongAttribute {
     }
 
     return (((Long) ckAttribute.pValue) != PKCS11Constants.CK_UNAVAILABLE_INFORMATION)
-        ? Functions.mechanismCodeToString(((Long) ckAttribute.pValue))
+        ? Functions.ckaCodeToName((long) ckAttribute.pValue)
         : "<Information unavailable>";
   }
 

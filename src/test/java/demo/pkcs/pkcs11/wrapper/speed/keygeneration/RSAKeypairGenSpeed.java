@@ -38,7 +38,7 @@ public class RSAKeypairGenSpeed extends TestBase {
   private class MyExecutor extends KeypairGenExecutor {
 
     public MyExecutor(Token token, char[] pin, boolean inToken) throws TokenException {
-      super(Functions.mechanismCodeToString(mechanism) + " (2048, inToken: " + inToken + ") Speed",
+      super(Functions.ckmCodeToName(mechanism) + " (2048, inToken: " + inToken + ") Speed",
           mechanism, token, pin, inToken);
     }
 
@@ -60,7 +60,7 @@ public class RSAKeypairGenSpeed extends TestBase {
   public void main() throws TokenException {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
-      System.out.println(Functions.mechanismCodeToString(mechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");
       return;
     }
 

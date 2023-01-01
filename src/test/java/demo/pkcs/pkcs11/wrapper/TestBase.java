@@ -44,9 +44,9 @@ package demo.pkcs.pkcs11.wrapper;
 
 import demo.pkcs.pkcs11.wrapper.util.KeyUtil;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Mechanism;
 import iaik.pkcs.pkcs11.*;
-import iaik.pkcs.pkcs11.objects.*;
+import iaik.pkcs.pkcs11.objects.AttributeVector;
+import iaik.pkcs.pkcs11.objects.KeyPair;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
@@ -363,7 +363,7 @@ public class TestBase {
         return KeyUtil.createECPublicKey(ecParams, encodedPoint);
       }
     } else {
-      throw new InvalidKeySpecException("unknown publicKey type " + Functions.getKeyTypeName(keyType));
+      throw new InvalidKeySpecException("unknown publicKey type " + Functions.ckkCodeToName(keyType));
     }
   } // method generatePublicKey
 

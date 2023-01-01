@@ -27,7 +27,8 @@ import org.junit.Test;
 
 import java.security.MessageDigest;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_DSA;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_DSA;
 
 /**
  * Signs some raw data on the token using CKM_RSA_PKCS.
@@ -53,7 +54,7 @@ public class DSASignRawData extends SignatureTestBase {
 
     final long mechCode = CKM_DSA;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.mechanismCodeToString(mechCode));
+      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism

@@ -155,7 +155,7 @@ public class Mechanism {
    * @return The name of this mechanism.
    */
   public String getName() {
-    return Functions.mechanismCodeToString(pkcs11MechanismCode);
+    return Functions.ckmCodeToName(pkcs11MechanismCode);
   }
 
   /**
@@ -166,7 +166,7 @@ public class Mechanism {
   @Override
   public String toString() {
     return Util.concatObjectsCap(128,
-      "    Mechanism: ", Functions.mechanismCodeToString(pkcs11MechanismCode),
+      "    Mechanism: ", getName(),
       "\n    Parameters:\n", parameters);
   }
 

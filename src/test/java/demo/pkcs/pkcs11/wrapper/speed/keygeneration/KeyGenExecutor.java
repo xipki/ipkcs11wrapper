@@ -101,7 +101,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
 
   private static String describe(long mechnism, int keyLen, boolean inToken) {
     StringBuilder sb = new StringBuilder(100)
-      .append(Functions.mechanismCodeToString(mechnism)).append(" (");
+      .append(Functions.ckmCodeToName(mechnism)).append(" (");
     if (keyLen > 0) {
       sb.append(keyLen * 8).append(" bits, ");
     }

@@ -29,7 +29,8 @@ import org.xipki.util.Hex;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_RSA;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_RSA_PKCS;
 
 /**
  * Signs some raw data on the token using CKM_RSA_PKCS.
@@ -54,7 +55,7 @@ public class RSAPKCSSignRawData extends SignatureTestBase {
     LOG.info("generate signature key pair");
     final long mechCode = CKM_RSA_PKCS;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.mechanismCodeToString(mechCode));
+      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism

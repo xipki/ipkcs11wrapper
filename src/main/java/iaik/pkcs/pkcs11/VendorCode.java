@@ -10,7 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_VENDOR_SM2;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_VENDOR_SM4;
 
 class VendorCode {
 
@@ -204,7 +205,7 @@ class VendorCode {
         }
         ckkGenericToVendorMap.put(genericCode, vendorCode);
       } else if (name.startsWith("CKM_VENDOR_")) {
-        long genericCode = Functions.mechanismStringToCode(name);
+        long genericCode = Functions.ckmNameToCode(name);
         if (genericCode == -1) {
           throw new IllegalArgumentException("unknown name in vendorcode block: " + name);
         }

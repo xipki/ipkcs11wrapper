@@ -76,7 +76,7 @@ public class PKCS11Exception extends TokenException {
    */
   public PKCS11Exception(long errorCode) {
     this.errorCode = errorCode;
-    this.errorDescription = Functions.errorCodeToString(errorCode);
+    this.errorDescription = Functions.ckrCodeToName(errorCode);
   }
 
   public PKCS11Exception(sun.security.pkcs11.wrapper.PKCS11Exception ex) {

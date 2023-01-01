@@ -42,7 +42,7 @@ public class RSAPSSSignSpeed extends TestBase {
   private class MySignExecutor extends SignExecutor {
 
     public MySignExecutor(Token token, char[] pin) throws TokenException {
-      super(Functions.mechanismCodeToString(signMechanism) + " (2048) Sign Speed",
+      super(Functions.ckmCodeToName(signMechanism) + " (2048) Sign Speed",
           Mechanism.get(keypairGenMechanism), token, pin, signMechanism2, 32);
     }
 
@@ -61,7 +61,7 @@ public class RSAPSSSignSpeed extends TestBase {
   private class MyVerifyExecutor extends VerifyExecutor {
 
     public MyVerifyExecutor(Token token, char[] pin) throws TokenException {
-      super(Functions.mechanismCodeToString(signMechanism) + " (2048) Verify Speed",
+      super(Functions.ckmCodeToName(signMechanism) + " (2048) Verify Speed",
           Mechanism.get(keypairGenMechanism), token, pin, signMechanism2, 32);
     }
 
@@ -91,7 +91,6 @@ public class RSAPSSSignSpeed extends TestBase {
     return newPublicKey(CKK_RSA).attr(CKA_MODULUS_BITS, 2048);
   }
 
-
   public RSAPSSSignSpeed() {
     signMechanism2 = Mechanism.get(CKM_RSA_PKCS_PSS);
     RSAPkcsPssParameters parameters = new RSAPkcsPssParameters(CKM_SHA256, CKG_MGF1_SHA256, 32);
@@ -102,12 +101,12 @@ public class RSAPSSSignSpeed extends TestBase {
   public void main() throws TokenException {
     Token token = getNonNullToken();
     if (!Util.supports(token, keypairGenMechanism)) {
-      System.out.println(Functions.mechanismCodeToString(keypairGenMechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(keypairGenMechanism) + " is not supported, skip test");
       return;
     }
 
     if (!Util.supports(token, signMechanism)) {
-      System.out.println(Functions.mechanismCodeToString(signMechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(signMechanism) + " is not supported, skip test");
       return;
     }
 

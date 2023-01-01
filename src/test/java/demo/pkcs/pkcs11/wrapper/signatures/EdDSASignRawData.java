@@ -25,7 +25,8 @@ import iaik.pkcs.pkcs11.objects.KeyPair;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_EC_EDWARDS;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_EDDSA;
 
 /**
  * Signs some raw data on the token using CKM_RSA_PKCS.
@@ -51,7 +52,7 @@ public class EdDSASignRawData extends SignatureTestBase {
 
     final long mechCode = CKM_EDDSA;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.mechanismCodeToString(mechCode));
+      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism

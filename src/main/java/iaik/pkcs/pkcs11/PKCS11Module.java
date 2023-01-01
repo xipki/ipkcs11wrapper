@@ -44,7 +44,8 @@ package iaik.pkcs.pkcs11;
 
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
-import sun.security.pkcs11.wrapper.*;
+import sun.security.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
+import sun.security.pkcs11.wrapper.PKCS11;
 
 import java.io.File;
 import java.io.FileNotFoundException;

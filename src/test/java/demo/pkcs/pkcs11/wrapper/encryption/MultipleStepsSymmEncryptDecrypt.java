@@ -29,7 +29,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKA_TOKEN;
 
 /**
  * This demo program uses a PKCS#11 module to encrypt a given file and test if

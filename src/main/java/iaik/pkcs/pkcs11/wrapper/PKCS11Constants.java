@@ -432,7 +432,6 @@ public interface PKCS11Constants {
 
   long CKA_PRIME_BITS                           = 0x00000133L;
   long CKA_SUBPRIME_BITS                        = 0x00000134L;
-  long CKA_SUB_PRIME_BITS                       = CKA_SUBPRIME_BITS;
 
   long CKA_VALUE_BITS                           = 0x00000160L;
   long CKA_VALUE_LEN                            = 0x00000161L;
@@ -447,11 +446,6 @@ public interface PKCS11Constants {
 
   long CKA_DESTROYABLE                          = 0x00000172L;
 
-  /**
-   * Use CKA_EC_PARAMS instead.
-   */
-  @Deprecated
-  long CKA_ECDSA_PARAMS                         = 0x00000180L;
   long CKA_EC_PARAMS                            = 0x00000180L;
 
   long CKA_EC_POINT                             = 0x00000181L;

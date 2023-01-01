@@ -67,7 +67,7 @@ public class ECGenerateKeyPair extends TestBase {
 
     final long mechCode = CKM_EC_KEY_PAIR_GEN;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.mechanismCodeToString(mechCode));
+      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
       return;
     }
 

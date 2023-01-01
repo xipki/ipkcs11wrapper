@@ -42,7 +42,7 @@ public class AESCTRPadEncryptDecryptSpeed extends TestBase {
   private class MyEncryptExecutor extends EncryptExecutor {
 
     public MyEncryptExecutor(Token token, char[] pin) throws TokenException {
-      super(Functions.mechanismCodeToString(encryptMechanism) + " (" + keyLen + ") Encrypt Speed",
+      super(Functions.ckmCodeToName(encryptMechanism) + " (" + keyLen + ") Encrypt Speed",
           getKeyGenMech(token), token, pin,
           getEncryptionMech(token), inputLen);
     }
@@ -57,7 +57,7 @@ public class AESCTRPadEncryptDecryptSpeed extends TestBase {
   private class MyDecryptExecutor extends DecryptExecutor {
 
     public MyDecryptExecutor(Token token, char[] pin) throws TokenException {
-      super(Functions.mechanismCodeToString(encryptMechanism) + " (" + keyLen + ") Decrypt Speed",
+      super(Functions.ckmCodeToName(encryptMechanism) + " (" + keyLen + ") Decrypt Speed",
           getKeyGenMech(token), token, pin,
           getEncryptionMech(token), inputLen);
     }
@@ -104,12 +104,12 @@ public class AESCTRPadEncryptDecryptSpeed extends TestBase {
   public void main() throws TokenException {
     Token token = getNonNullToken();
     if (!Util.supports(token, keyGenMechanism)) {
-      System.out.println(Functions.mechanismCodeToString(keyGenMechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(keyGenMechanism) + " is not supported, skip test");
       return;
     }
 
     if (!Util.supports(token, encryptMechanism)) {
-      System.out.println(Functions.mechanismCodeToString(encryptMechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(encryptMechanism) + " is not supported, skip test");
       return;
     }
 

@@ -47,7 +47,9 @@ import iaik.pkcs.pkcs11.wrapper.Functions;
 import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Objects;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -70,7 +72,6 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
  */
 public abstract class Attribute {
 
-  protected static Hashtable<Long, String> attributeNames;
   protected static Hashtable<Long, Class<?>> attributeClasses;
 
   /**
@@ -120,7 +121,7 @@ public abstract class Attribute {
   public static Attribute getInstance(long type, Object value) {
     Class<?> clazz = getAttributeClass(type);
     if (clazz == null) {
-      throw new IllegalArgumentException("unknown attribute type " + getAttributeName(type));
+      throw new IllegalArgumentException(Functions.ckaCodeToName(type));
     }
 
     if (clazz == BooleanAttribute.class) {
@@ -169,114 +170,16 @@ public abstract class Attribute {
   }
 
   /**
-   * Get the name of the given attribute type.
-   *
-   * @param type
-   *          The attribute type.
-   * @return The name of the attribute type, or null if there is no such type.
-   */
-  public static synchronized String getAttributeName(long type) {
-    if (attributeNames == null) {
-      attributeNames = new Hashtable<>(85);
-      attributeNames.put(CKA_CLASS, "Class");
-      attributeNames.put(CKA_TOKEN, "Token");
-      attributeNames.put(CKA_PRIVATE, "Private");
-      attributeNames.put(CKA_LABEL, "Label");
-      attributeNames.put(CKA_APPLICATION, "Application");
-      attributeNames.put(CKA_VALUE, "Value");
-      attributeNames.put(CKA_OBJECT_ID, "PKCS11Object ID");
-      attributeNames.put(CKA_CERTIFICATE_TYPE, "Certificate Type");
-      attributeNames.put(CKA_ISSUER, "Issuer");
-      attributeNames.put(CKA_SERIAL_NUMBER, "Serial Number");
-      attributeNames.put(CKA_URL, "URL");
-      attributeNames.put(CKA_HASH_OF_SUBJECT_PUBLIC_KEY, "Hash Of Subject Public Key");
-      attributeNames.put(CKA_HASH_OF_ISSUER_PUBLIC_KEY, "Hash Of Issuer Public Key");
-      attributeNames.put(CKA_JAVA_MIDP_SECURITY_DOMAIN, "Java MIDP Security Domain");
-      attributeNames.put(CKA_AC_ISSUER, "AC Issuer");
-      attributeNames.put(CKA_OWNER, "Owner");
-      attributeNames.put(CKA_ATTR_TYPES, "Attribute Types");
-      attributeNames.put(CKA_TRUSTED, "Trusted");
-      attributeNames.put(CKA_KEY_TYPE, "Key Type");
-      attributeNames.put(CKA_SUBJECT, "Subject");
-      attributeNames.put(CKA_ID, "ID");
-      attributeNames.put(CKA_CHECK_VALUE, "Check Value");
-      attributeNames.put(CKA_CERTIFICATE_CATEGORY, "Certificate Category");
-      attributeNames.put(CKA_SENSITIVE, "Sensitive");
-      attributeNames.put(CKA_ENCRYPT, "Encrypt");
-      attributeNames.put(CKA_DECRYPT, "Decrypt");
-      attributeNames.put(CKA_WRAP, "Wrap");
-      attributeNames.put(CKA_UNWRAP, "Unwrap");
-      attributeNames.put(CKA_WRAP_TEMPLATE, "Wrap Template");
-      attributeNames.put(CKA_UNWRAP_TEMPLATE, "Unwrap Template");
-      attributeNames.put(CKA_SIGN, "Sign");
-      attributeNames.put(CKA_SIGN_RECOVER, "Sign Recover");
-      attributeNames.put(CKA_VERIFY, "Verify");
-      attributeNames.put(CKA_VERIFY_RECOVER, "Verify Recover");
-      attributeNames.put(CKA_DERIVE, "Derive");
-      attributeNames.put(CKA_START_DATE, "Start Date");
-      attributeNames.put(CKA_END_DATE, "End Date");
-      attributeNames.put(CKA_MODULUS, "Modulus");
-      attributeNames.put(CKA_MODULUS_BITS, "Modulus Bits");
-      attributeNames.put(CKA_PUBLIC_EXPONENT, "Public Exponent");
-      attributeNames.put(CKA_PRIVATE_EXPONENT, "Private Exponent");
-      attributeNames.put(CKA_PRIME_1, "Prime 1");
-      attributeNames.put(CKA_PRIME_2, "Prime 2");
-      attributeNames.put(CKA_EXPONENT_1, "Exponent 1");
-      attributeNames.put(CKA_EXPONENT_2, "Exponent 2");
-      attributeNames.put(CKA_COEFFICIENT, "Coefficient");
-      attributeNames.put(CKA_PRIME, "Prime");
-      attributeNames.put(CKA_SUBPRIME, "Subprime");
-      attributeNames.put(CKA_BASE, "Base");
-      attributeNames.put(CKA_PRIME_BITS, "Prime Pits");
-      attributeNames.put(CKA_SUB_PRIME_BITS, "Subprime Bits");
-      attributeNames.put(CKA_VALUE_BITS, "Value Bits");
-      attributeNames.put(CKA_VALUE_LEN, "Value Length");
-      attributeNames.put(CKA_EXTRACTABLE, "Extractable");
-      attributeNames.put(CKA_LOCAL, "Local");
-      attributeNames.put(CKA_NEVER_EXTRACTABLE, "Never Extractable");
-      attributeNames.put(CKA_WRAP_WITH_TRUSTED, "Wrap With Trusted");
-      attributeNames.put(CKA_ALWAYS_SENSITIVE, "Always Sensitive");
-      attributeNames.put(CKA_ALWAYS_AUTHENTICATE, "Always Authenticate");
-      attributeNames.put(CKA_KEY_GEN_MECHANISM, "Key Generation Mechanism");
-      attributeNames.put(CKA_ALLOWED_MECHANISMS, "Allowed Mechanisms");
-      attributeNames.put(CKA_MODIFIABLE, "Modifiable");
-      attributeNames.put(CKA_EC_PARAMS, "EC Parameters");
-      attributeNames.put(CKA_EC_POINT, "EC Point");
-      attributeNames.put(CKA_HW_FEATURE_TYPE, "Hardware Feature Type");
-      attributeNames.put(CKA_RESET_ON_INIT, "Reset on Initialization");
-      attributeNames.put(CKA_HAS_RESET, "Has been reset");
-      attributeNames.put(CKA_VENDOR_DEFINED, "Vendor Defined");
-    }
-
-    String name;
-
-    if ((type & CKA_VENDOR_DEFINED) != 0L) {
-      name = "VENDOR_DEFINED [0x" + Long.toHexString(type) + "]";
-    } else {
-      name = attributeNames.get(type);
-      if (name == null) {
-        name = "[0x" + Long.toHexString(type) + "]";
-      }
-    }
-
-    return name;
-  }
-
-  /**
    * Get the class of the given attribute type.
    * Current existing Attribute classes are:
    *           AttributeArray
    *           BooleanAttribute
    *           ByteArrayAttribute
-   *           CertificateTypeAttribute
    *           CharArrayAttribute
    *           DateAttribute
-   *           HardwareFeatureTypeAttribute
-   *           KeyTypeAttribute
    *           LongAttribute
    *           MechanismAttribute
    *           MechanismArrayAttribute
-   *           ObjectClassAttribute
    * @param type
    *          The attribute type.
    * @return The class of the attribute type, or null if there is no such type.
@@ -289,14 +192,20 @@ public abstract class Attribute {
           CKA_DECRYPT, CKA_WRAP, CKA_UNWRAP, CKA_SIGN, CKA_SIGN_RECOVER, CKA_VERIFY,
           CKA_VERIFY_RECOVER, CKA_DERIVE, CKA_EXTRACTABLE, CKA_LOCAL, CKA_NEVER_EXTRACTABLE,
           CKA_WRAP_WITH_TRUSTED, CKA_ALWAYS_SENSITIVE, CKA_ALWAYS_AUTHENTICATE, CKA_MODIFIABLE,
-          CKA_RESET_ON_INIT, CKA_HAS_RESET};
+          CKA_RESET_ON_INIT, CKA_HAS_RESET, CKA_COPYABLE, CKA_DESTROYABLE, CKA_COLOR,
+          CKA_OTP_USER_FRIENDLY_MODE};
       for (long code : codes) {
         attributeClasses.put(code, BooleanAttribute.class);
       }
 
       codes = new long[] {
-          CKA_CLASS, CKA_CERTIFICATE_TYPE, CKA_JAVA_MIDP_SECURITY_DOMAIN, CKA_KEY_TYPE, CKA_CERTIFICATE_TYPE,
-          CKA_PRIME_BITS, CKA_SUB_PRIME_BITS, CKA_VALUE_BITS, CKA_VALUE_LEN, CKA_HW_FEATURE_TYPE, CKA_MODULUS_BITS};
+          CKA_CLASS, CKA_CERTIFICATE_CATEGORY, CKA_CERTIFICATE_TYPE, CKA_JAVA_MIDP_SECURITY_DOMAIN, CKA_KEY_TYPE,
+          CKA_PRIME_BITS, CKA_SUBPRIME_BITS, CKA_VALUE_BITS, CKA_VALUE_LEN, CKA_HW_FEATURE_TYPE, CKA_MODULUS_BITS,
+          CKA_NAME_HASH_ALGORITHM, CKA_PROFILE_ID,
+          CKA_PIXEL_X, CKA_PIXEL_Y, CKA_RESOLUTION, CKA_CHAR_ROWS, CKA_CHAR_COLUMNS, CKA_BITS_PER_PIXEL,
+          CKA_MECHANISM_TYPE, CKA_OTP_FORMAT, CKA_OTP_LENGTH, CKA_OTP_CHALLENGE_REQUIREMENT,
+          CKA_OTP_TIME_INTERVAL, CKA_OTP_TIME_REQUIREMENT, CKA_OTP_COUNTER_REQUIREMENT, CKA_OTP_PIN_REQUIREMENT
+      };
       for (long code : codes) {
         attributeClasses.put(code, LongAttribute.class);
       }
@@ -306,16 +215,23 @@ public abstract class Attribute {
           CKA_OWNER, CKA_ATTR_TYPES, CKA_SUBJECT, CKA_ID, CKA_CHECK_VALUE, CKA_MODULUS,
           CKA_PUBLIC_EXPONENT, CKA_PRIVATE_EXPONENT, CKA_PRIME_1, CKA_PRIME_2,
           CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT, CKA_PRIME, CKA_SUBPRIME,
-          CKA_BASE, CKA_EC_PARAMS, CKA_EC_POINT};
+          CKA_BASE, CKA_EC_PARAMS, CKA_EC_POINT, CKA_PUBLIC_KEY_INFO,
+          CKA_OTP_COUNTER, CKA_OTP_SERVICE_LOGO,
+          CKA_REQUIRED_CMS_ATTRIBUTES, CKA_DEFAULT_CMS_ATTRIBUTES, CKA_SUPPORTED_CMS_ATTRIBUTES,
+          CKA_GOSTR3410_PARAMS, CKA_GOSTR3411_PARAMS, CKA_GOST28147_PARAMS};
       for (long code : codes) {
         attributeClasses.put(code, ByteArrayAttribute.class);
       }
 
-      codes = new long[] {CKA_URL, CKA_LABEL, CKA_APPLICATION};
+      codes = new long[] {CKA_URL, CKA_LABEL, CKA_APPLICATION, CKA_UNIQUE_ID,
+          CKA_CHAR_SETS, CKA_ENCODING_METHODS, CKA_MIME_TYPES, CKA_OTP_TIME, CKA_OTP_USER_IDENTIFIER,
+          CKA_OTP_SERVICE_IDENTIFIER, CKA_OTP_SERVICE_LOGO_TYPE
+      };
       for (long code : codes) {
         attributeClasses.put(code, CharArrayAttribute.class);
       }
 
+      attributeClasses.put(CKA_DERIVE_TEMPLATE, AttributeArray.class); //CK_ATTRIBUTE_PTR
       attributeClasses.put(CKA_WRAP_TEMPLATE, AttributeArray.class); //CK_ATTRIBUTE_PTR
       attributeClasses.put(CKA_UNWRAP_TEMPLATE, AttributeArray.class); //CK_ATTRIBUTE_PTR
       attributeClasses.put(CKA_START_DATE, DateAttribute.class); //CK_DATE
@@ -330,7 +246,6 @@ public abstract class Attribute {
   public void setStateKnown(boolean stateKnown) {
     this.stateKnown = stateKnown;
   }
-
 
   /**
    * Set, if this attribute is really present in the associated object.
@@ -425,13 +340,13 @@ public abstract class Attribute {
     if (ckAttribute == null || ckAttribute.pValue == null) return "<NULL_PTR>";
 
     if (ckAttribute.type == CKA_CLASS) {
-      return Functions.getObjectClassName((long) ckAttribute.pValue);
+      return Functions.ckoCodeToName((long) ckAttribute.pValue);
     } else if (ckAttribute.type == CKA_KEY_TYPE) {
-      return Functions.getKeyTypeName((long) ckAttribute.pValue);
+      return Functions.ckkCodeToName((long) ckAttribute.pValue);
     } else if (ckAttribute.type == CKA_CERTIFICATE_TYPE) {
-      return Functions.getCertificateTypeName((long) ckAttribute.pValue);
+      return Functions.ckcCodeToName((long) ckAttribute.pValue);
     } else if (ckAttribute.type == CKA_HW_FEATURE_TYPE) {
-      return Functions.getHardwareFeatureTypeName((long) ckAttribute.pValue);
+      return Functions.ckhCodeToName((long) ckAttribute.pValue);
     } else {
       return ckAttribute.pValue.toString();
     }
@@ -464,7 +379,7 @@ public abstract class Attribute {
     StringBuilder sb = new StringBuilder(32).append(indent);
 
     if (withName) {
-      sb.append(getAttributeName(ckAttribute.type)).append(": ");
+      sb.append(Functions.ckaCodeToName(ckAttribute.type)).append(": ");
     }
 
     if (!stateKnown) {

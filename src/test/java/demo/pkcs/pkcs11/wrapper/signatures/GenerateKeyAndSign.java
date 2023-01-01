@@ -26,7 +26,7 @@ import iaik.pkcs.pkcs11.objects.KeyPair;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_RSA_PKCS;
 
 /**
  * This demo program generates a 1024 bit RSA key-pair on the token and signs

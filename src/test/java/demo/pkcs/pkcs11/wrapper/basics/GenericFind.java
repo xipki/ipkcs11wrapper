@@ -46,7 +46,9 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import iaik.pkcs.pkcs11.Session;
 import iaik.pkcs.pkcs11.Token;
 import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.*;
+import iaik.pkcs.pkcs11.objects.Attribute;
+import iaik.pkcs.pkcs11.objects.AttributeVector;
+import iaik.pkcs.pkcs11.objects.ByteArrayAttribute;
 import org.junit.Test;
 
 import java.util.*;

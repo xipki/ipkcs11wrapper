@@ -26,7 +26,8 @@ import iaik.pkcs.pkcs11.wrapper.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_DES3;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_DES3_KEY_GEN;
 
 /**
  * TripleDES speed test.
@@ -54,7 +55,7 @@ public class DES3KeyGenSpeed extends TestBase {
   public void main() throws TokenException {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
-      System.out.println(Functions.mechanismCodeToString(mechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");
       return;
     }
 

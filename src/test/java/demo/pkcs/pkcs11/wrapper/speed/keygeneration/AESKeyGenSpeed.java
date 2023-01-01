@@ -56,7 +56,7 @@ public abstract class AESKeyGenSpeed extends TestBase {
   public void main() throws TokenException {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
-      System.out.println(Functions.mechanismCodeToString(mechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");
       return;
     }
 

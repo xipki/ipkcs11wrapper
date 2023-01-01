@@ -38,7 +38,7 @@ public class EdDSAKeypairGenSpeed extends TestBase {
   private class MyExecutor extends KeypairGenExecutor {
 
     public MyExecutor(Token token, char[] pin, boolean inToken) throws TokenException {
-      super(Functions.mechanismCodeToString(mechanism) + " (Ed25519, inToken: " + inToken + ") Speed",
+      super(Functions.ckmCodeToName(mechanism) + " (Ed25519, inToken: " + inToken + ") Speed",
           mechanism, token, pin, inToken);
     }
 
@@ -63,7 +63,7 @@ public class EdDSAKeypairGenSpeed extends TestBase {
   public void main() throws TokenException {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
-      System.out.println(Functions.mechanismCodeToString(mechanism) + " is not supported, skip test");
+      System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");
       return;
     }
 

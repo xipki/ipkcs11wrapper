@@ -68,7 +68,7 @@ public class EdDSAGenerateKeyPair extends TestBase {
 
     final long mechCode = PKCS11Constants.CKM_EC_EDWARDS_KEY_PAIR_GEN;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.mechanismCodeToString(mechCode));
+      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
       return;
     }
 

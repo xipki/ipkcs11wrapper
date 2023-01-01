@@ -19,9 +19,9 @@ package demo.pkcs.pkcs11.wrapper.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Mechanism;
 import iaik.pkcs.pkcs11.*;
-import iaik.pkcs.pkcs11.objects.*;
+import iaik.pkcs.pkcs11.objects.AttributeVector;
+import iaik.pkcs.pkcs11.objects.KeyPair;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import org.junit.Test;
@@ -68,7 +68,7 @@ public class DSAGenerateKeyPair extends TestBase {
 
     final long mechCode = PKCS11Constants.CKM_DSA_KEY_PAIR_GEN;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.mechanismCodeToString(mechCode));
+      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
       return;
     }
 

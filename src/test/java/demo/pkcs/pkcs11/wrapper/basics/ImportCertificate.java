@@ -48,7 +48,7 @@ import iaik.pkcs.pkcs11.Session;
 import iaik.pkcs.pkcs11.Token;
 import iaik.pkcs.pkcs11.TokenException;
 import iaik.pkcs.pkcs11.TokenInfo;
-import iaik.pkcs.pkcs11.objects.*;
+import iaik.pkcs.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
 import javax.crypto.interfaces.DHPublicKey;
