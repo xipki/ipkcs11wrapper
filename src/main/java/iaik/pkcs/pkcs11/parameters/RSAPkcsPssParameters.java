@@ -171,33 +171,4 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
     return super.toString() + "\n  Salt Length (octets, dec): " + saltLength;
   }
 
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if other is an instance of this class and all member
-   *         variables of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof RSAPkcsPssParameters)) return false;
-
-    RSAPkcsPssParameters other = (RSAPkcsPssParameters) otherObject;
-    return super.equals(other) && (this.saltLength == other.saltLength);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public int hashCode() {
-    return super.hashCode() ^ ((int) saltLength);
-  }
-
 }

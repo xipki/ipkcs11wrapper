@@ -19,8 +19,6 @@ package iaik.pkcs.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.Util;
 
-import java.util.Arrays;
-
 /**
  * This class encapsulates parameters byte arrays.
  *
@@ -61,20 +59,6 @@ public class OpaqueParameters implements Parameters {
   @Override
   public String toString() {
     return "  Bytes (hex): " + Util.toHex(bytes);
-  }
-
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof OpaqueParameters)) return false;
-
-    OpaqueParameters other = (OpaqueParameters) otherObject;
-    return Arrays.equals(bytes, other.bytes);
-  }
-
-  @Override
-  public int hashCode() {
-    return Arrays.hashCode(bytes);
   }
 
 }

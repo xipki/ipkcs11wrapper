@@ -45,8 +45,6 @@ package iaik.pkcs.pkcs11.parameters;
 import iaik.pkcs.pkcs11.Util;
 import sun.security.pkcs11.wrapper.CK_PBE_PARAMS;
 
-import java.util.Arrays;
-
 /**
  * This class encapsulates parameters for the Mechanism.PBA_* and
  * Mechanism.PBA_SHA1_WITH_SHA1_HMAC mechanisms.
@@ -206,36 +204,6 @@ public class PBEParameters implements Parameters {
         "\n  Password: " + ((password != null) ? new String(password) : null) +
         "\n  Salt: " + ((salt != null) ? new String(salt) : null) +
         "\n  Iterations (dec): " + iterations;
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if other is an instance of this class and all member
-   *         variables of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof PBEParameters)) return false;
-
-    PBEParameters other = (PBEParameters) otherObject;
-    return Arrays.equals(iv, other.iv)      && Arrays.equals(password, other.password)
-         && Arrays.equals(salt, other.salt) && (iterations == other.iterations);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public int hashCode() {
-    return Arrays.hashCode(iv) ^ Arrays.hashCode(password) ^ Arrays.hashCode(salt) ^ ((int) iterations);
   }
 
 }

@@ -45,8 +45,6 @@ package iaik.pkcs.pkcs11.parameters;
 import iaik.pkcs.pkcs11.Util;
 import sun.security.pkcs11.wrapper.CK_AES_CTR_PARAMS;
 
-import java.util.Arrays;
-
 /**
  * This class represents the necessary parameters required by
  * the CKM_AES_CTR mechanism as defined in CK_AES_CTR_PARAMS structure.
@@ -93,35 +91,6 @@ public class AesCtrParameters implements Parameters {
   @Override
   public String toString() {
     return "  cb: " + Util.toHex(cb);
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if other is an instance of this class and all member
-   *         variables of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof AesCtrParameters)) return false;
-
-    AesCtrParameters other = (AesCtrParameters) otherObject;
-    return Arrays.equals(cb, other.cb);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public int hashCode() {
-    return Arrays.hashCode(cb);
   }
 
   @Override

@@ -21,7 +21,6 @@ import iaik.pkcs.pkcs11.Util;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 
 /**
 * CK_CCM_PARAMS
@@ -56,11 +55,6 @@ public class GCMParameters implements Parameters {
 
   public String toString() {
     return "\n  iv: " + Functions.toHexString(iv) + "\n  aad: " + Functions.toHexString(aad) + "\n  tagLen: " + tagLen;
-  }
-
-  @Override
-  public int hashCode() {
-    return Arrays.hashCode(iv) ^ Arrays.hashCode(aad) ^ tagLen;
   }
 
   @Override

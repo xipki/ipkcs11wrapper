@@ -45,8 +45,6 @@ package iaik.pkcs.pkcs11.parameters;
 import iaik.pkcs.pkcs11.Util;
 import sun.security.pkcs11.wrapper.CK_ECDH1_DERIVE_PARAMS;
 
-import java.util.Arrays;
-
 /**
  * This abstract class encapsulates parameters for the DH mechanisms
  * Mechanism.ECDH1_DERIVE and Mechanism.ECDH1_COFACTOR_DERIVE.
@@ -117,35 +115,6 @@ public class EcDH1KeyDerivationParameters extends DHKeyDerivationParameters {
   @Override
   public String toString() {
     return super.toString() + "\n  Shared Data: " + Util.toHex(sharedData);
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if other is an instance of this class and all member
-   *         variables of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof EcDH1KeyDerivationParameters)) return false;
-
-    EcDH1KeyDerivationParameters other = (EcDH1KeyDerivationParameters) otherObject;
-    return super.equals(other) && Arrays.equals(sharedData, other.sharedData);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public int hashCode() {
-    return super.hashCode() ^ Arrays.hashCode(sharedData);
   }
 
 }

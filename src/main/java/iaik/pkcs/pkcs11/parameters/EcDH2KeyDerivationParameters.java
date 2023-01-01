@@ -45,8 +45,6 @@ package iaik.pkcs.pkcs11.parameters;
 import iaik.pkcs.pkcs11.Util;
 import sun.security.pkcs11.wrapper.CK_ECDH2_DERIVE_PARAMS;
 
-import java.util.Arrays;
-
 /**
  * This abstract class encapsulates parameters for the DH mechanism
  * CKM_ECMQV_DERIVE.
@@ -212,38 +210,6 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
     return super.toString() +
         "\n  Shared Data: " + Util.toHex(sharedData) + "\n  Private Data Length (dec): " + privateDataLength +
         "\n  Private Data: " + privateDataHandle + "\n  Public Data 2: " + Util.toHex(publicData2);
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if other is an instance of this class and all member
-   *         variables of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof EcDH2KeyDerivationParameters)) return false;
-
-    EcDH2KeyDerivationParameters other = (EcDH2KeyDerivationParameters) otherObject;
-    return super.equals(other)
-        && Arrays.equals(sharedData, other.sharedData) && (privateDataLength == other.privateDataLength)
-        && (privateDataHandle == other.privateDataHandle) && Arrays.equals(publicData2, other.publicData2);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public int hashCode() {
-    return super.hashCode() ^ Arrays.hashCode(sharedData)
-        ^ ((int) privateDataLength) ^ Long.hashCode(privateDataHandle) ^ Arrays.hashCode(publicData2);
   }
 
 }

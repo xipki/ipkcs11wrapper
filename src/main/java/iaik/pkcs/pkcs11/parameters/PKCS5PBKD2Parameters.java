@@ -45,8 +45,6 @@ package iaik.pkcs.pkcs11.parameters;
 import iaik.pkcs.pkcs11.Util;
 import sun.security.pkcs11.wrapper.CK_PKCS5_PBKD2_PARAMS;
 
-import java.util.Arrays;
-
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKP_PKCS5_PBKD2_HMAC_SHA1;
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKZ_SALT_SPECIFIED;
 
@@ -262,38 +260,6 @@ public class PKCS5PBKD2Parameters implements Parameters {
         "\n  Pseudo-Random Function: " +
             ((pseudoRandomFunction == CKP_PKCS5_PBKD2_HMAC_SHA1) ? "HMAC SHA-1" : "<unknown>") +
         "\n  Pseudo-Random Function Data (hex): " + Util.toHex(pseudoRandomFunctionData);
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if other is an instance of this class and all member
-   *         variables of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof PKCS5PBKD2Parameters)) return false;
-
-    PKCS5PBKD2Parameters other = (PKCS5PBKD2Parameters) otherObject;
-    return (saltSource == other.saltSource) && Arrays.equals(saltSourceData, other.saltSourceData)
-        && (iterations == other.iterations) && (pseudoRandomFunction == other.pseudoRandomFunction)
-        && Arrays.equals(pseudoRandomFunctionData, other.pseudoRandomFunctionData);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public int hashCode() {
-    return ((int) saltSource) ^ Arrays.hashCode(saltSourceData) ^ ((int) iterations)
-            ^ ((int) pseudoRandomFunction) ^ Arrays.hashCode(pseudoRandomFunctionData);
   }
 
 }

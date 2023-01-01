@@ -44,8 +44,6 @@ package iaik.pkcs.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.Util;
 
-import java.util.Arrays;
-
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
@@ -140,49 +138,13 @@ abstract public class DHKeyDerivationParameters implements Parameters {
    */
   @Override
   public String toString() {
-    String kdfStr;
-    if (kdf == CKD_NULL) {
-      kdfStr = "NULL";
-    } else if (kdf == CKD_SHA1_KDF) {
-      kdfStr = "SHA1_KDF";
-    } else if (kdf == CKD_SHA1_KDF_ASN1) {
-      kdfStr = "SHA1_KDF_ASN1";
-    } else if (kdf == CKD_SHA1_KDF_CONCATENATE) {
-      kdfStr = "SHA1_KDF_CONCATENATE";
-    } else {
-      kdfStr = "<unknown>";
-    }
+    String kdfStr = (kdf == CKD_NULL) ? "NULL"
+        : (kdf == CKD_SHA1_KDF) ? "SHA1_KDF"
+        : (kdf == CKD_SHA1_KDF_ASN1) ? "SHA1_KDF_ASN1"
+        : (kdf == CKD_SHA1_KDF_CONCATENATE) ? "SHA1_KDF_CONCATENATE"
+        : "<unknown>";
 
     return "  Key Derivation Function: " + kdfStr + "\n  Public Data: " + Util.toHex(publicData);
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if other is an instance of this class and all member
-   *         variables of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof DHKeyDerivationParameters)) return false;
-
-    DHKeyDerivationParameters other = (DHKeyDerivationParameters) otherObject;
-    return (kdf == other.kdf) && Arrays.equals(publicData, other.publicData);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public int hashCode() {
-    return ((int) kdf) ^ Arrays.hashCode(publicData);
   }
 
 }

@@ -167,33 +167,4 @@ abstract public class RSAPkcsParameters implements Parameters {
     return "  Hash Algorithm: " + hashMech + "\n  Mask Generation Function: " + mgfMech;
   }
 
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if other is an instance of this class and all member
-   *         variables of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof RSAPkcsParameters)) return false;
-
-    RSAPkcsParameters other = (RSAPkcsParameters) otherObject;
-    return hashAlg == other.hashAlg && (mgf == other.mgf);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public int hashCode() {
-    return ((int) hashAlg) ^ ((int) mgf);
-  }
-
 }
