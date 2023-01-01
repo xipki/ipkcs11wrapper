@@ -9,7 +9,7 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 public class AttributeVector {
 
-  private List<Attribute> attributes;
+  private final List<Attribute> attributes;
 
   public AttributeVector() {
     this.attributes = new LinkedList<>();
@@ -381,6 +381,37 @@ public class AttributeVector {
       }
     }
     return null;
+  }
+
+  public Boolean getAttributeBooleanValue(long type) {
+    Attribute attr = getAttribute(type);
+    return attr == null ? null : ((BooleanAttribute) attr).getBooleanValue();
+  }
+
+  public Long getAttributeLongValue(long type) {
+    Attribute attr = getAttribute(type);
+    return attr == null ? null : ((LongAttribute) attr).getLongValue();
+  }
+
+  public Integer getAttributeIntValue(long type) {
+    Long value = getAttributeLongValue(type);
+    return value == null ? null : value.intValue();
+  }
+
+
+  public char[] getAttributeCharArrayValue(long type) {
+    Attribute attr = getAttribute(type);
+    return attr == null ? null : ((CharArrayAttribute) attr).getCharArrayValue();
+  }
+
+  public String getAttributeStringValue(long type) {
+    Attribute attr = getAttribute(type);
+    return attr == null ? null : ((CharArrayAttribute) attr).getStringValue();
+  }
+
+  public byte[] getAttributeByteArrayValue(long type) {
+    Attribute attr = getAttribute(type);
+    return attr == null ? null : ((ByteArrayAttribute) attr).getByteArrayValue();
   }
 
   @Override

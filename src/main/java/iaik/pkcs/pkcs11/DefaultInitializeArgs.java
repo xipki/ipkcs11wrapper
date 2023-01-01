@@ -131,10 +131,10 @@ public class DefaultInitializeArgs implements InitializeArgs {
   }
 
   /**
-   * Check, if the library can use the native operation system threading model
+   * Check, if the library can use the native operating system threading model
    * for locking.
    *
-   * @return True, if the library can use the native operation system
+   * @return True, if the library can use the native operating system
    *         threading model for locking. False, otherwise.
    */
   @Override
@@ -176,11 +176,11 @@ public class DefaultInitializeArgs implements InitializeArgs {
   }
 
   /**
-   * set, if the library can use the native operation system threading model
+   * set, if the library can use the native operating system threading model
    * for locking.
    *
    * @param osLockingOk
-   *          True, if the library can use the native operation system
+   *          True, if the library can use the native operating system
    *          threading model for locking. False, otherwise.
    */
   public void setOsLockingOk(boolean osLockingOk) {
@@ -204,11 +204,10 @@ public class DefaultInitializeArgs implements InitializeArgs {
    */
   @Override
   public String toString() {
-    return Util.concatObjects(
-      "Mutex Handler: ", ((mutexHandler != null) ? "present" : "not present"),
-      "\nLibrary can't create OS-Threads: ", libraryCantCreateOsThreads,
-      "\nOS-Locking OK: ", osLockingOk,
-      "\nThe reserved parameter is: ", ((reserved != null) ? reserved : "null"));
+    return  "Mutex Handler: " + (mutexHandler != null ? "present" : "not present") +
+      "\nLibrary can't create OS-Threads: " + libraryCantCreateOsThreads +
+      "\nOS-Locking OK: " + osLockingOk +
+      "\nThe reserved parameter is: " + (reserved != null ? reserved : "null");
   }
 
 }

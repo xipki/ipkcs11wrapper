@@ -308,7 +308,7 @@ public class Session {
    * @param operationState
    *          The previously saved state as returned by getOperationState().
    * @param encryptionKeyHandle
-   *          An encryption or decryption key, if a encryption or decryption
+   *          An encryption or decryption key, if an encryption or decryption
    *          operation was saved which should be continued, but the keys
    *          could not be saved.
    * @param authenticationKeyHandle

@@ -92,7 +92,7 @@ public class AesCtrParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return Util.concat("  cb: ", Util.toHex(cb));
+    return "  cb: " + Util.toHex(cb);
   }
 
   /**

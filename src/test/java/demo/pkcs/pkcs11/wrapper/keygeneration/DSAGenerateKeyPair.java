@@ -42,7 +42,7 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 public class DSAGenerateKeyPair extends TestBase {
 
   @Test
-  public void main() throws TokenException, NoSuchAlgorithmException, InvalidKeySpecException {
+  public void main() throws TokenException {
     Token token = getNonNullToken();
     Session session = openReadWriteSession(token);
     try {
@@ -130,8 +130,7 @@ public class DSAGenerateKeyPair extends TestBase {
       LOG.info("__________________________________________________");
 
       LOG.info("##################################################");
-      long exportablePublicKey = generatedPublicKey;
-      byte[] value = session.getByteArrayAttributeValue(exportablePublicKey, CKA_VALUE);
+      byte[] value = session.getByteArrayAttributeValue(generatedPublicKey, CKA_VALUE);
 
       LOG.info("Public Key (Value): {}", Functions.toHexString(value));
 

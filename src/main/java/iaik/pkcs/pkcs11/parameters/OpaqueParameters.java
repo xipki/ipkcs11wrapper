@@ -60,7 +60,7 @@ public class OpaqueParameters implements Parameters {
 
   @Override
   public String toString() {
-    return Util.concat("  Bytes (hex): ", Util.toHex(bytes));
+    return "  Bytes (hex): " + Util.toHex(bytes);
   }
 
   @Override

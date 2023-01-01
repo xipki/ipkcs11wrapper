@@ -120,7 +120,7 @@ public class TokenException extends Exception {
   @Override
   public String toString() {
     return (encapsulatedException == null) ? super.toString()
-        : Util.concatObjects(super.toString(), ", Encapsulated Exception: ", encapsulatedException);
+        : super.toString() + ", Encapsulated Exception: " + encapsulatedException;
   }
 
 }

@@ -60,23 +60,23 @@ public class SessionInfo {
    * The identifier of the slot in which the token resides this session is
    * bound to.
    */
-  protected long slotID;
+  protected final long slotID;
 
   /**
    * The current session state.
    */
-  protected State state;
+  protected final State state;
 
   /**
    * A token specific error-code. The meaning of this value is not defined in
    * PKCS#11.
    */
-  protected long deviceError;
+  protected final long deviceError;
 
   /**
    * The flags.
    */
-  protected long flags;
+  protected final long flags;
 
   /**
    * Constructor taking a CK_SESSION_INFO object that provides the
@@ -141,12 +141,11 @@ public class SessionInfo {
    */
   @Override
   public String toString() {
-    return Util.concatObjectsCap(100,
-        "State: ", state,
-        "\nDevice Error: 0x", Long.toHexString(deviceError),
-        "\nFlags: 0x", Functions.toFullHex(flags),
-        "\nRead/Write Session: ", isRwSession(),
-        "\nSerial Session: ", isSerialSession());
+    return "State: " + state +
+        "\nDevice Error: 0x" + Long.toHexString(deviceError) +
+        "\nFlags: 0x" + Functions.toFullHex(flags) +
+        (isRwSession() ? "\nRead/write" : "\nRead-only") +
+        (isSerialSession() ? "\nSerial session" : "\nParallel session");
   }
 
   /**

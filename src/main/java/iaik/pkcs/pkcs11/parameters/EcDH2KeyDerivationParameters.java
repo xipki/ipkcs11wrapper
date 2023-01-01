@@ -49,7 +49,7 @@ import java.util.Arrays;
 
 /**
  * This abstract class encapsulates parameters for the DH mechanism
- * Mechanism.ECMQV_DERIVE.
+ * CKM_ECMQV_DERIVE.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
@@ -209,11 +209,9 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
   @Override
   public String toString() {
     String upperStr = super.toString();
-    return Util.concatObjectsCap(upperStr.length() + 100, upperStr,
-        "\n  Shared Data: ", Util.toHex(sharedData),
-        "\n  Private Data Length (dec): ", privateDataLength,
-        "\n  Private Data: ", privateDataHandle,
-        "\n  Public Data 2: ", Util.toHex(publicData2));
+    return super.toString() +
+        "\n  Shared Data: " + Util.toHex(sharedData) + "\n  Private Data Length (dec): " + privateDataLength +
+        "\n  Private Data: " + privateDataHandle + "\n  Public Data 2: " + Util.toHex(publicData2);
   }
 
   /**

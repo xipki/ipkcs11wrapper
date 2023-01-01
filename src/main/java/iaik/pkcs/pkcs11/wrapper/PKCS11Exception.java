@@ -46,7 +46,7 @@ import iaik.pkcs.pkcs11.TokenException;
 
 /**
  * This is the superclass of all checked exceptions used by this package. An
- * exception of this class indicates that a function call to the underlying
+ * Exception of this class indicates that a function call to the underlying
  * PKCS#11 module returned a value not equal to CKR_OK. The application can get
  * the returned value by calling getErrorCode(). A return value not equal to
  * CKR_OK is the only reason for such an exception to be thrown.

@@ -81,7 +81,7 @@ public class State {
   /**
    * The status code of this state as defined in PKCS#11.
    */
-  protected long code;
+  protected final long code;
 
   /**
    * Constructor that simply takes the status code as defined in PKCS#11.

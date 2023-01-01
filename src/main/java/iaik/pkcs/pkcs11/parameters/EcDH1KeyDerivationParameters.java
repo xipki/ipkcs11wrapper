@@ -116,7 +116,7 @@ public class EcDH1KeyDerivationParameters extends DHKeyDerivationParameters {
    */
   @Override
   public String toString() {
-    return Util.concat(super.toString(), "\n  Shared Data: ", Util.toHex(sharedData));
+    return super.toString() + "\n  Shared Data: " + Util.toHex(sharedData);
   }
 
   /**

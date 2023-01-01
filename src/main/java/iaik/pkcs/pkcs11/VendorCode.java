@@ -10,9 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_VENDOR_SM2;
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_VENDOR_SM4;
-
 class VendorCode {
 
   private static class ConfBlock {
@@ -20,7 +17,7 @@ class VendorCode {
     List<String> manufacturerIDs;
     List<String> descriptions;
     List<String> versions;
-    Map<String, String> nameToCodeMap = new HashMap<>();
+    final Map<String, String> nameToCodeMap = new HashMap<>();
 
     void validate() throws IOException {
       if (isEmpty(modulePaths) && isEmpty(manufacturerIDs) && isEmpty(descriptions)) {
@@ -195,12 +192,8 @@ class VendorCode {
       long vendorCode = hex ? Long.parseLong(valueStr, 16) : Long.parseLong(valueStr);
 
       if (name.startsWith("CKK_VENDOR_")) {
-        long genericCode;
-        if (name.equals("CKK_VENDOR_SM2")) {
-          genericCode = CKK_VENDOR_SM2;
-        } else if (name.equals("CKK_VENDOR_SM4")) {
-          genericCode = CKK_VENDOR_SM4;
-        } else {
+        long genericCode = Functions.ckkNameToCode(name);
+        if (genericCode == -1) {
           throw new IllegalArgumentException("unknown name in vendorcode block: " + name);
         }
         ckkGenericToVendorMap.put(genericCode, vendorCode);

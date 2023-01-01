@@ -18,6 +18,7 @@
 package demo.pkcs.pkcs11.wrapper;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -121,7 +122,7 @@ public class CanonicalizeCode {
       reader.close();
     }
 
-    byte[] oldBytes = read(new FileInputStream(file));
+    byte[] oldBytes = read(Files.newInputStream(file.toPath()));
     byte[] newBytes = writer.toByteArray();
 
     if (!Arrays.equals(oldBytes, newBytes)) {
@@ -183,7 +184,7 @@ public class CanonicalizeCode {
   } // method removeTrailingSpaces
 
   private static byte[] detectNewline(File file) throws IOException {
-    InputStream is = new FileInputStream(file);
+    InputStream is = Files.newInputStream(file.toPath());
     byte[] bytes = new byte[200];
     int size;
     try {

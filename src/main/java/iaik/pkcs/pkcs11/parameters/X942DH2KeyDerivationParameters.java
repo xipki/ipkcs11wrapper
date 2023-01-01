@@ -86,7 +86,7 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    * @param sharedData
    *          The data shared between the two parties.
    * @param publicData
-   *          The other partie's public key value.
+   *          The other party's public key value.
    * @param privateDataLength
    *          The length in bytes of the second EC private key.
    * @param privateDataHandle
@@ -208,11 +208,11 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    */
   @Override
   public String toString() {
-    return Util.concatObjects(super.toString(),
-        "\n  Other Info: ", Util.toHex(otherInfo),
-        "\n  Private Data Length (dec): ", privateDataLength,
-        "\n  Private Data Handle: ", privateDataHandle,
-        "\n  Public Data 2: ", Util.toHex(publicData2));
+    return super.toString() +
+        "\n  Other Info: "+ Util.toHex(otherInfo) +
+        "\n  Private Data Length (dec): " + privateDataLength +
+        "\n  Private Data Handle: " + privateDataHandle +
+        "\n  Public Data 2: " + Util.toHex(publicData2);
   }
 
   /**

@@ -55,10 +55,7 @@ public class GCMParameters implements Parameters {
   }
 
   public String toString() {
-    return Util.concatObjectsCap(100,
-        "\n  iv: ", Functions.toHexString(iv),
-        "\n  aad: ", Functions.toHexString(aad),
-        "\n  tagLen: ", tagLen);
+    return "\n  iv: " + Functions.toHexString(iv) + "\n  aad: " + Functions.toHexString(aad) + "\n  tagLen: " + tagLen;
   }
 
   @Override

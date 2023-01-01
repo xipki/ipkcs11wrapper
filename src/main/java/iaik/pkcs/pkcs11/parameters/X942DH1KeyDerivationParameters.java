@@ -122,7 +122,7 @@ public class X942DH1KeyDerivationParameters extends DHKeyDerivationParameters {
    */
   @Override
   public String toString() {
-    return Util.concat(super.toString(), "\n  Other Info: ", Util.toHex(otherInfo));
+    return super.toString() + "\n  Other Info: " + Util.toHex(otherInfo);
   }
 
   /**

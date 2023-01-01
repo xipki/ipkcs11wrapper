@@ -113,9 +113,7 @@ public class GenericFind extends TestBase {
     List<Long> privateSignatureKeys = new LinkedList<>();
 
     // sort out all signature keys that are private keys
-    for (Long signatureKey : signatureKeys) {
-      privateSignatureKeys.add(signatureKey);
-    }
+    privateSignatureKeys.addAll(signatureKeys);
 
     // for each private signature key try to find a public key certificate with
     // the same ID

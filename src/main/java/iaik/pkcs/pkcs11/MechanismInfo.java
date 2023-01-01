@@ -120,7 +120,7 @@ public class MechanismInfo {
   /**
    * Get the minimum key length supported by this mechanism.
    *
-   * @return The minimum key length supported by this mechanism..
+   * @return The minimum key length supported by this mechanism.
    */
   public long getMinKeySize() {
     return minKeySize;
@@ -417,11 +417,11 @@ public class MechanismInfo {
   /**
    * Set if this mechanism can be used for verification.
    *
-   * @param verfy
+   * @param verify
    *          True, if this mechanism can be used for verification.
    */
-  public void setVerify(boolean verfy) {
-    setFlagBit(PKCS11Constants.CKF_VERIFY, verfy);
+  public void setVerify(boolean verify) {
+    setFlagBit(PKCS11Constants.CKF_VERIFY, verify);
   }
 
   /**
@@ -599,29 +599,30 @@ public class MechanismInfo {
    */
   @Override
   public String toString() {
-    return Util.concatObjectsCap(1024,
-      "  Minimum Key-Size: ", minKeySize,
-      "\n  Maximum Key-Size: ", maxKeySize,
-      "\n  Hardware: ", isHw(),
-      "\n  Encrypt: ", isEncrypt(),
-      "\n  Decrypt: ", isDecrypt(),
-      "\n  Digest: ", isDigest(),
-      "\n  Sign: ", isSign(),
-      "\n  Sign Recover: ", isSignRecover(),
-      "\n  Verify: ", isVerify(),
-      "\n  Verify Recover: ", isVerifyRecover(),
-      "\n  Generate: ", isGenerate(),
-      "\n  Generate Key-Pair: ", isGenerateKeyPair(),
-      "\n  Wrap: ", isWrap(),
-      "\n  Unwrap: ", isUnwrap(),
-      "\n  Derive: ", isDerive(),
-      "\n  EC F(p): ", isEcFp(),
-      "\n  EC F(2^m): ", isEcF2m(),
-      "\n  EC Parameters: ", isEcEcParameters(),
-      "\n  EC Named Curve: ", isEcNamedCurve(),
-      "\n  EC Uncompress: ", isEcUncompress(),
-      "\n  EC Compress: ", isEcCompress(),
-      "\n  Extension: ", isExtension());
+    StringBuilder sb = new StringBuilder(200)
+        .append("  Minimum Key-Size: ").append(minKeySize).append("\n  Maximum Key-Size: ").append(maxKeySize);
+
+    TokenInfo.addFlag(sb, "  hardware", isHw());
+    TokenInfo.addFlag(sb, "  encrypt", isEncrypt());
+    TokenInfo.addFlag(sb, "  decrypt", isDecrypt());
+    TokenInfo.addFlag(sb, "  digest", isDigest());
+    TokenInfo.addFlag(sb, "  sign", isSign());
+    TokenInfo.addFlag(sb, "  sign recover", isSignRecover());
+    TokenInfo.addFlag(sb, "  verify", isVerify());
+    TokenInfo.addFlag(sb, "  verify recover", isVerifyRecover());
+    TokenInfo.addFlag(sb, "  generate", isGenerate());
+    TokenInfo.addFlag(sb, "  generate key-pair", isGenerateKeyPair());
+    TokenInfo.addFlag(sb, "  wrap", isWrap());
+    TokenInfo.addFlag(sb, "  unwrap", isUnwrap());
+    TokenInfo.addFlag(sb, "  derive", isDerive());
+    TokenInfo.addFlag(sb, "  EC F(p)", isEcFp());
+    TokenInfo.addFlag(sb, "  EC F(2^m)", isEcF2m());
+    TokenInfo.addFlag(sb, "  EC parameters", isEcEcParameters());
+    TokenInfo.addFlag(sb, "  EC named curve", isEcNamedCurve());
+    TokenInfo.addFlag(sb, "  EC uncompress", isEcUncompress());
+    TokenInfo.addFlag(sb, "  EC compress", isEcCompress());
+    TokenInfo.addFlag(sb, "  extension", isExtension());
+    return sb.toString();
   }
 
   /**

@@ -170,7 +170,7 @@ public class Slot {
    * @return The object for accessing the token. Or null, if none is present
    *         in this slot.
    * @exception TokenException
-   *              If determining if a token is present fails.
+   *              If determining whether a token is present fails.
    */
   public Token getToken() throws TokenException {
     return getSlotInfo().isTokenPresent() ? new Token(this) : null;
@@ -194,7 +194,7 @@ public class Slot {
    */
   @Override
   public String toString() {
-    return Util.concatObjects("Slot ID: 0x", Long.toHexString(slotID), "\nModule: ", module);
+    return "Slot ID: 0x" + Long.toHexString(slotID) + "\nModule: " + module;
   }
 
 }

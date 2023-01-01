@@ -110,7 +110,7 @@ public class DHPkcsDeriveParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return Util.concat("  Public Value (hex): ", Util.toHex(publicValue));
+    return "  Public Value (hex): " + Util.toHex(publicValue);
   }
 
   /**

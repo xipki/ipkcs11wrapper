@@ -42,8 +42,6 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
-
 /**
  * This class encapsulates parameters for Mechanisms.CONCATENATE_BASE_AND_KEY.
  *
@@ -105,7 +103,7 @@ public class ObjectHandleParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return Util.concatObjects("  The PKCS11Object: ", objectHandle);
+    return "  The PKCS11Object: " + objectHandle;
   }
 
   /**

@@ -235,7 +235,7 @@ public class Util {
   public static byte[] dsaSigPlainToX962(byte[] signature) {
     Args.notNull(signature, "signature");
     if (signature.length % 2 != 0) {
-      throw new IllegalArgumentException("signature.lenth must be even, but is odd");
+      throw new IllegalArgumentException("signature.length must be even, but is odd");
     }
     byte[] ba = new byte[signature.length / 2];
     ASN1EncodableVector sigder = new ASN1EncodableVector();

@@ -57,11 +57,8 @@ public class CCMParameters implements Parameters {
 
   @Override
   public String toString() {
-    return Util.concatObjectsCap(100,
-        "\n  ulDataLen: ", dataLen,
-        "\n  iv: ", Functions.toHexString(iv),
-        "\n  aad: ", Functions.toHexString(aad),
-        "\n  tagLen: ", tagLen);
+    return "\n  ulDataLen: " + dataLen + "\n  iv: " + Functions.toHexString(iv) +
+        "\n  aad: " + Functions.toHexString(aad) + "\n  tagLen: " + tagLen;
   }
 
   @Override

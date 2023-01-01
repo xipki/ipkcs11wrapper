@@ -43,7 +43,7 @@
 package iaik.pkcs.pkcs11.parameters;
 
 /**
- * Every parameters class implements this interface through which the module.
+ * Every Parameters-class implements this interface through which the module.
  *
  * @author Karl Scheibelhofer
  * @version 1.0

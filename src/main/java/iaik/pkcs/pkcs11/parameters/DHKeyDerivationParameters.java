@@ -153,7 +153,7 @@ abstract public class DHKeyDerivationParameters implements Parameters {
       kdfStr = "<unknown>";
     }
 
-    return Util.concat("  Key Derivation Function: ", kdfStr, "\n  Public Data: ", Util.toHex(publicData));
+    return "  Key Derivation Function: " + kdfStr + "\n  Public Data: " + Util.toHex(publicData);
   }
 
   /**

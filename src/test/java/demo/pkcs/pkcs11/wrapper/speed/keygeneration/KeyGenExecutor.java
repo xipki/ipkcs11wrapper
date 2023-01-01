@@ -95,7 +95,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
   protected abstract AttributeVector getMinimalKeyTemplate();
 
   @Override
-  protected Runnable getTestor() throws Exception {
+  protected Runnable getTestor() {
     return new MyRunnable();
   }
 

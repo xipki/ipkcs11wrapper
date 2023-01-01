@@ -87,24 +87,6 @@ public class Version {
   }
 
   /**
-   * Create a (deep) clone of this object.
-   *
-   * @return A clone of this object.
-   */
-  public java.lang.Object clone() {
-    Version clone;
-
-    try {
-      clone = (Version) super.clone();
-    } catch (CloneNotSupportedException ex) {
-      // this must not happen, because this class is cloneable
-      throw new TokenRuntimeException("An unexpected clone exception occurred.", ex);
-    }
-
-    return clone;
-  }
-
-  /**
    * Get the major version number.
    *
    * @return The major version number.

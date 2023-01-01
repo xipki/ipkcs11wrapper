@@ -61,7 +61,7 @@ public class Mechanism {
    * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
    * likewise).
    */
-  protected long pkcs11MechanismCode;
+  protected final long pkcs11MechanismCode;
 
   /**
    * The parameters of the mechanism. Not all mechanisms use these parameters.
@@ -165,9 +165,7 @@ public class Mechanism {
    */
   @Override
   public String toString() {
-    return Util.concatObjectsCap(128,
-      "    Mechanism: ", getName(),
-      "\n    Parameters:\n", parameters);
+    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
   }
 
 }

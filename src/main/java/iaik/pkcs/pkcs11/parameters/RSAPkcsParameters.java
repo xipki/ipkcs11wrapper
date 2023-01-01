@@ -42,7 +42,6 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 
@@ -165,8 +164,7 @@ abstract public class RSAPkcsParameters implements Parameters {
   public String toString() {
     String hashMech = Functions.ckmCodeToName(hashAlg);
     String mgfMech = Functions.getMGFName(mgf);
-    return Util.concat("  Hash Algorithm: ", hashMech,
-        "\n  Mask Generation Function: ", mgfMech);
+    return "  Hash Algorithm: " + hashMech + "\n  Mask Generation Function: " + mgfMech;
   }
 
   /**

@@ -168,8 +168,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
    */
   @Override
   public String toString() {
-    return Util.concat(super.toString(),
-        "\n  Salt Length (octets, dec): ", Long.toString(saltLength));
+    return super.toString() + "\n  Salt Length (octets, dec): " + saltLength;
   }
 
   /**

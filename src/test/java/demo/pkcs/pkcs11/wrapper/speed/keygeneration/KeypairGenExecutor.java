@@ -102,7 +102,7 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
   protected abstract AttributeVector getMinimalPublicKeyTemplate();
 
   @Override
-  protected Runnable getTestor() throws Exception {
+  protected Runnable getTestor() {
     return new MyRunnable();
   }
 

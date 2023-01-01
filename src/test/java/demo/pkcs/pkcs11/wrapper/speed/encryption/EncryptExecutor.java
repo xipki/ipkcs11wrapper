@@ -111,7 +111,7 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
   }
 
   @Override
-  protected Runnable getTestor() throws Exception {
+  protected Runnable getTestor() {
     return new MyRunnable();
   }
 

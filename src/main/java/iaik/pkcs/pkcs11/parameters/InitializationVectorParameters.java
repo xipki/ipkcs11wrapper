@@ -110,7 +110,7 @@ public class InitializationVectorParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return Util.concat("  Initialization Vector (hex): ", Util.toHex(iv));
+    return "  Initialization Vector (hex): " + Util.toHex(iv);
   }
 
   /**

@@ -80,7 +80,7 @@ public interface MutexHandler {
    * If this method is called with a mutex object which is locked by some
    * thread other than the calling thread, the calling thread blocks and waits
    * for that mutex to be unlocked.
-   * If this method is called with a a mutex object which is locked by the
+   * If this method is called with a mutex object which is locked by the
    + calling thread, the behavior of this method call is undefined.
    *
    * @param mutex

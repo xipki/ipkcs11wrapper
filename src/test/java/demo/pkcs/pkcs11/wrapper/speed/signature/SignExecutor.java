@@ -114,7 +114,7 @@ public abstract class SignExecutor extends Pkcs11Executor {
   protected abstract AttributeVector getMinimalPublicKeyTemplate();
 
   @Override
-  protected Runnable getTestor() throws Exception {
+  protected Runnable getTestor() {
     return new MyRunnable();
   }
 

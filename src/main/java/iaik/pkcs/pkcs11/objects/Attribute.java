@@ -47,6 +47,7 @@ import iaik.pkcs.pkcs11.wrapper.Functions;
 import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Objects;
@@ -65,7 +66,7 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
  * fashion ensures that this library can work also with drivers that are
  * not fully compliant.
  * Moreover, certain attributes can be sensitive; i.e. their values cannot
- * be read, e.g. the private exponent of a RSA private key.
+ * be read, e.g. the private exponent of an RSA private key.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
@@ -130,11 +131,16 @@ public abstract class Attribute {
       return attr;
     } else if (clazz == ByteArrayAttribute.class) {
       ByteArrayAttribute attr = new ByteArrayAttribute(type);
+      byte[] baValue;
       if (value instanceof BigInteger) {
-        attr.setByteArrayValue(Util.unsignedBigIntergerToByteArray((BigInteger) value));
+        baValue = ((BigInteger) value).toByteArray();
+        if (baValue[0] == 0) {
+          baValue = Arrays.copyOfRange(baValue, 1, baValue.length);
+        }
       } else {
-        attr.setByteArrayValue((byte[]) value);
+        baValue = (byte[]) value;
       }
+      attr.setByteArrayValue(baValue);
       return attr;
     } else if (clazz == CharArrayAttribute.class) {
       CharArrayAttribute attr = new CharArrayAttribute(type);

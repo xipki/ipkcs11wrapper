@@ -46,7 +46,9 @@ import iaik.pkcs.pkcs11.wrapper.Functions;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Objects of this class provide information about a token. Serial number,
@@ -188,8 +190,16 @@ public class TokenInfo {
     freePrivateMemory = ckTokenInfo.ulFreePrivateMemory;
     hardwareVersion = new Version(ckTokenInfo.hardwareVersion);
     firmwareVersion = new Version(ckTokenInfo.firmwareVersion);
-    time = Util.parseTime(ckTokenInfo.utcTime);
     flags = ckTokenInfo.flags;
+
+    Date time = null;
+    try {
+      SimpleDateFormat utc = new SimpleDateFormat("yyyyMMddhhmmss");
+      utc.setTimeZone(TimeZone.getTimeZone("UTC"));
+      time = utc.parse(new String(ckTokenInfo.utcTime, 0, ckTokenInfo.utcTime.length - 2));
+    } catch (Exception ex) {
+    }
+    this.time = time;
   }
 
   /**
@@ -368,9 +378,9 @@ public class TokenInfo {
   }
 
   /**
-   * Check, if the token is write protected.
+   * Check, whether the token is write-protected.
    *
-   * @return True, if the token is write protected. False, otherwise.
+   * @return True, if the token is write-protected. False, otherwise.
    */
   public boolean isWriteProtected() {
     return hasFlag(PKCS11Constants.CKF_WRITE_PROTECTED);
@@ -466,7 +476,7 @@ public class TokenInfo {
    * Check, if the user-PIN has been entered incorrectly at least once since
    * the last successful authentication.
    *
-   * @return True, if the the user-PIN has been entered incorrectly at least
+   * @return True, if the user-PIN has been entered incorrectly at least
    *         one since the last successful authentication. False, otherwise.
    */
   public boolean isUserPinCountLow() {
@@ -508,7 +518,7 @@ public class TokenInfo {
    * Check, if the security officer-PIN has been entered incorrectly at least
    * once since the last successful authentication.
    *
-   * @return True, if the the security officer-PIN has been entered
+   * @return True, if the security officer-PIN has been entered
    *         incorrectly at least one since the last successful
    *         authentication. False, otherwise.
    */
@@ -559,42 +569,51 @@ public class TokenInfo {
    */
   @Override
   public String toString() {
-    return Util.concatObjectsCap(1000,
-      "\nManufacturer ID: ", manufacturerID,
-      "\nModel: ", model,
-      "\nSerial Number: ", serialNumber,
-      "\nFlags: 0x", Functions.toFullHex(flags),
-      "\nRandom Number Generator: ", isRNG(),
-      "\nWrite protected: ", isWriteProtected(),
-      "\nLogin required: ", isLoginRequired(),
-      "\nUser PIN initialized: ", isUserPinInitialized(),
-      "\nRestore Key not needed: ", isRestoreKeyNotNeeded(),
-      "\nClock on Token: ", isClockOnToken(),
-      "\nProtected Authentication Path: ", isProtectedAuthenticationPath(),
-      "\nDual Crypto Operations: ", isDualCryptoOperations(),
-      "\nToken initialized: ", isTokenInitialized(),
-      "\nSecondary Authentication: ", isSecondaryAuthentication(),
-      "\nUser PIN-Count low: ", isUserPinCountLow(),
-      "\nUser PIN final Try: ", isUserPinFinalTry(),
-      "\nUser PIN locked: ", isUserPinLocked(),
-      "\nUser PIN to be changed: ", isUserPinToBeChanged(),
-      "\nSecurity Officer PIN-Count low: ", isSoPinCountLow(),
-      "\nSecurity Officer PIN final Try: ", isSoPinFinalTry(),
-      "\nSecurity Officer PIN locked: ", isSoPinLocked(),
-      "\nSecurity Officer PIN to be changed: ", isSoPinToBeChanged(),
-      "\nMaximum Session Count: ", maxCountToString(maxSessionCount),
-      "\nSession Count: ", countToString(sessionCount),
-      "\nMaximum Read/Write Session Count: ", maxCountToString(maxRwSessionCount),
-      "\nRead/Write Session Count: ", countToString(rwSessionCount),
-      "\nMaximum PIN Length: ", maxPinLen,
-      "\nMinimum PIN Length: ", minPinLen,
-      "\nTotal Public Memory: ", countToString(totalPrivateMemory),
-      "\nFree Public Memory: ", countToString(freePublicMemory),
-      "\nTotal Private Memory: ", countToString(totalPrivateMemory),
-      "\nFree Private Memory: ", countToString(freePublicMemory),
-      "\nHardware Version: ", hardwareVersion,
-      "\nFirmware Version: ", firmwareVersion,
-      "\nTime: ", time);
+    StringBuilder sb = new StringBuilder(1000)
+        .append("\nManufacturer ID: ").append(manufacturerID)
+        .append("\nModel: ").append(model)
+        .append("\nSerial Number: ").append(serialNumber)
+        .append("\nMaximum Session Count: ").append(maxCountToString(maxSessionCount))
+        .append("\nSession Count: ").append(countToString(sessionCount))
+        .append("\nMaximum Read/Write Session Count: ").append(maxCountToString(maxRwSessionCount))
+        .append("\nRead/Write Session Count: ").append(countToString(rwSessionCount))
+        .append("\nMaximum PIN Length: ").append(maxPinLen)
+        .append("\nMinimum PIN Length: ").append(minPinLen)
+        .append("\nTotal Public Memory: ").append(countToString(totalPrivateMemory))
+        .append("\nFree Public Memory: ").append(countToString(freePublicMemory))
+        .append("\nTotal Private Memory: ").append(countToString(totalPrivateMemory))
+        .append("\nFree Private Memory: ").append(countToString(freePublicMemory))
+        .append("\nHardware Version: ").append(hardwareVersion)
+        .append("\nFirmware Version: ").append(firmwareVersion)
+        .append("\nTime: ").append(time)
+        .append("\nFlags: 0x").append(Functions.toFullHex(flags));
+
+    addFlag(sb, "random number generator", isRNG());
+    addFlag(sb, "write protected", isWriteProtected());
+    addFlag(sb, "login required", isLoginRequired());
+    addFlag(sb, "user PIN initialized", isUserPinInitialized());
+    addFlag(sb, "restore key not needed", isRestoreKeyNotNeeded());
+    addFlag(sb, "clock on token", isClockOnToken());
+    addFlag(sb, "protected authentication path", isProtectedAuthenticationPath());
+    addFlag(sb, "dual crypto operations", isDualCryptoOperations());
+    addFlag(sb, "token initialized", isTokenInitialized());
+    addFlag(sb, "secondary authentication", isSecondaryAuthentication());
+    addFlag(sb, "user PIN-count low", isUserPinCountLow());
+    addFlag(sb, "user PIN final try", isUserPinFinalTry());
+    addFlag(sb, "user PIN locked", isUserPinLocked());
+    addFlag(sb, "User PIN to be changed", isUserPinToBeChanged());
+    addFlag(sb, "Security Officer PIN-count low", isSoPinCountLow());
+    addFlag(sb, "Security Officer PIN final try", isSoPinFinalTry());
+    addFlag(sb, "Security Officer PIN locked", isSoPinLocked());
+    addFlag(sb, "Security Officer PIN to be changed", isSoPinToBeChanged());
+
+    return sb.toString();
+  }
+
+  static void addFlag(StringBuilder sb, String text, boolean flag) {
+    if (flag) {
+      sb.append("\n    ").append(text);
+    }
   }
 
   private static String maxCountToString(long count) {

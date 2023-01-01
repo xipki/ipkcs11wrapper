@@ -170,9 +170,7 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
     }
 
     String upperStr = super.toString();
-    return Util.concatObjectsCap(upperStr.length() + 100, upperStr,
-        "\n  Source: ", sourceStr,
-        "\n  Source Data (hex): ", Util.toHex(sourceData));
+    return upperStr + "\n  Source: " + sourceStr + "\n  Source Data (hex): " + Util.toHex(sourceData);
   }
 
   /**

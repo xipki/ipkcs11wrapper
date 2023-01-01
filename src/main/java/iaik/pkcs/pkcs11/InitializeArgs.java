@@ -73,10 +73,10 @@ public interface InitializeArgs {
   boolean isLibraryCantCreateOsThreads();
 
   /**
-   * Check, if the library can use the native operation system threading model
+   * Check, if the library can use the native operating system threading model
    * for locking.
    *
-   * @return True, if the library can use the native operation system
+   * @return True, if the library can use the native operating system
    *         threading model for locking. False, otherwise.
    */
   boolean isOsLockingOk();

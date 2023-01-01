@@ -149,7 +149,7 @@ public class PKCS11Module {
       prop = System.getProperty(propName.toUpperCase(Locale.ROOT));
     }
 
-    writeOnlyAttributeReadable = (prop == null) ? false : Boolean.parseBoolean(prop);
+    writeOnlyAttributeReadable = prop != null && Boolean.parseBoolean(prop);
   }
 
   public boolean isWriteOnlyAttributeReadable() {
@@ -209,7 +209,7 @@ public class PKCS11Module {
   /**
    * Gets information about the module; i.e. the PKCS#11 module behind.
    *
-   * @return A object holding information about the module.
+   * @return An object holding information about the module.
    * @exception TokenException
    *              If getting the information fails.
    */
@@ -235,8 +235,7 @@ public class PKCS11Module {
   public void initialize(InitializeArgs initArgs) throws TokenException {
     CK_C_INITIALIZE_ARGS wrapperInitArgs = null;
     if (initArgs != null) {
-      InitializeArgs castedInitArgs = initArgs;
-      final MutexHandler mutexHandler = castedInitArgs.getMutexHandler();
+      final MutexHandler mutexHandler = initArgs.getMutexHandler();
       wrapperInitArgs = new CK_C_INITIALIZE_ARGS();
       if (mutexHandler != null) {
         wrapperInitArgs.CreateMutex = mutexHandler::createMutex;
@@ -250,13 +249,13 @@ public class PKCS11Module {
         wrapperInitArgs.UnlockMutex = null;
       }
 
-      if (castedInitArgs.isLibraryCantCreateOsThreads()) {
+      if (initArgs.isLibraryCantCreateOsThreads()) {
         wrapperInitArgs.flags |= PKCS11Constants.CKF_LIBRARY_CANT_CREATE_OS_THREADS;
       }
-      if (castedInitArgs.isOsLockingOk()) {
+      if (initArgs.isOsLockingOk()) {
         wrapperInitArgs.flags |= PKCS11Constants.CKF_OS_LOCKING_OK;
       }
-      wrapperInitArgs.pReserved = castedInitArgs.getReserved();
+      wrapperInitArgs.pReserved = initArgs.getReserved();
     }
     // pReserved of CK_C_INITIALIZE_ARGS not used yet, just set to standard
     // conform UTF8
@@ -303,7 +302,7 @@ public class PKCS11Module {
    * @param tokenPresent
    *          Can be SlotRequirement.ALL_SLOTS or
    *          SlotRequirement.TOKEN_PRESENT.
-   * @return An array of Slot objects. May be an empty array but not null.
+   * @return An array of Slot objects, may be an empty array but not null.
    * @exception TokenException
    *              If error occurred.
    */

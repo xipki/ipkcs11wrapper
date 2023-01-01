@@ -174,15 +174,16 @@ public class SlotInfo {
    */
   @Override
   public String toString() {
-    return Util.concatObjectsCap(200,
-        "Slot Description: ", slotDescription,
-        "\nManufacturer ID: ", manufacturerID,
-        "\nHardware Version: ", hardwareVersion,
-        "\nFirmware Version: ", firmwareVersion,
-        "\nFlags: 0X", Functions.toFullHex(flags),
-        "\nToken present: ", isTokenPresent(),
-        "\nRemovable Device: ", isRemovableDevice(),
-        "\nHardware Slot: ", isHwSlot());
+    StringBuilder sb = new StringBuilder(200)
+        .append("Slot Description: ").append(slotDescription)
+        .append("\nManufacturer ID: ").append(manufacturerID)
+        .append("\nHardware Version: ").append(hardwareVersion)
+        .append("\nFirmware Version: ").append(firmwareVersion)
+        .append("\nFlags: 0X").append(Functions.toFullHex(flags));
+    TokenInfo.addFlag(sb, "token present", isTokenPresent());
+    TokenInfo.addFlag(sb, "removable device", isRemovableDevice());
+    TokenInfo.addFlag(sb, "hardware slot", isHwSlot());
+    return sb.toString();
   }
 
   /**
@@ -200,10 +201,8 @@ public class SlotInfo {
     else if (!(otherObject instanceof SlotInfo)) return false;
 
     SlotInfo other = (SlotInfo) otherObject;
-    return slotDescription.equals(other.slotDescription)
-        && manufacturerID.equals(other.manufacturerID)
-        && hardwareVersion.equals(other.hardwareVersion)
-        && firmwareVersion.equals(other.firmwareVersion)
+    return slotDescription.equals(other.slotDescription) && manufacturerID.equals(other.manufacturerID)
+        && hardwareVersion.equals(other.hardwareVersion) && firmwareVersion.equals(other.firmwareVersion)
         && (flags == other.flags);
   }
 

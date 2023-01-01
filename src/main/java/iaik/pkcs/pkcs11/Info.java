@@ -130,10 +130,8 @@ public class Info {
    */
   @Override
   public String toString() {
-    return Util.concatObjects("Cryptoki Version: ", cryptokiVersion,
-        "\nManufacturerID: ", manufacturerID,
-        "\nLibrary Description: ", libraryDescription,
-        "\nLibrary Version: ", libraryVersion);
+    return "Cryptoki Version: " + cryptokiVersion + "\nManufacturerID: " + manufacturerID +
+        "\nLibrary Description: " + libraryDescription + "\nLibrary Version: " + libraryVersion;
   }
 
   /**

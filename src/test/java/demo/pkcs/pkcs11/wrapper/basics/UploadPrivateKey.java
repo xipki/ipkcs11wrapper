@@ -142,7 +142,7 @@ public class UploadPrivateKey extends TestBase {
     byte[] certificateFingerprint = sha1.digest(encodedCert);
     boolean[] keyUsage = userCertificate.getKeyUsage();
 
-    LOG.info("got user certifiate");
+    LOG.info("got user certificate");
     LOG.info("##################################################");
     LOG.info("creating private key object on the card... ");
 

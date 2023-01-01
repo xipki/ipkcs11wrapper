@@ -42,7 +42,7 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 public class EdDSAGenerateKeyPair extends TestBase {
 
   @Test
-  public void main() throws TokenException, NoSuchAlgorithmException, InvalidKeySpecException {
+  public void main() throws TokenException {
     Token token = getNonNullToken();
     Session session = openReadWriteSession(token);
     try {
@@ -126,9 +126,8 @@ public class EdDSAGenerateKeyPair extends TestBase {
       LOG.info("__________________________________________________");
 
       LOG.info("##################################################");
-      long exportablePublicKey = generatedPublicKey;
-      byte[] encodedPoint = session.getByteArrayAttributeValue(exportablePublicKey, CKA_EC_POINT);
-      byte[] curveOid = session.getByteArrayAttributeValue(exportablePublicKey, CKA_EC_PARAMS);
+      byte[] encodedPoint = session.getByteArrayAttributeValue(generatedPublicKey, CKA_EC_POINT);
+      byte[] curveOid = session.getByteArrayAttributeValue(generatedPublicKey, CKA_EC_PARAMS);
 
       LOG.info("Public Key (Point): {}", Functions.toHexString(encodedPoint));
       LOG.info("Public Key (Curve OID): {}", Functions.toHexString(curveOid));

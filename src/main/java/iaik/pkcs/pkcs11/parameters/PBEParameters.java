@@ -202,10 +202,10 @@ public class PBEParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return Util.concatObjects("  IV: ", ((iv != null) ? new String(iv) : null),
-        "\n  Password: ", ((password != null) ? new String(password) : null),
-        "\n  Salt: ", ((salt != null) ? new String(salt) : null),
-        "\n  Iterations (dec): ", iterations);
+    return "  IV: " + ((iv != null) ? new String(iv) : null) +
+        "\n  Password: " + ((password != null) ? new String(password) : null) +
+        "\n  Salt: " + ((salt != null) ? new String(salt) : null) +
+        "\n  Iterations (dec): " + iterations;
   }
 
   /**

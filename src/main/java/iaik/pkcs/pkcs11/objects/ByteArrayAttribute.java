@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11.objects;
 
-import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 import java.math.BigInteger;
 
@@ -99,7 +99,7 @@ public class ByteArrayAttribute extends Attribute {
   @Override
   protected String getValueString() {
     return ((ckAttribute != null) && (ckAttribute.pValue != null))
-      ? Util.toHex((byte[]) ckAttribute.pValue) : "<NULL_PTR>";
+      ? Functions.toHexString((byte[]) ckAttribute.pValue) : "<NULL_PTR>";
   }
 
   @Override

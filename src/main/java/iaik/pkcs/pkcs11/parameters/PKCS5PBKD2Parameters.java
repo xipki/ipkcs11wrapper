@@ -256,13 +256,12 @@ public class PKCS5PBKD2Parameters implements Parameters {
    */
   @Override
   public String toString() {
-    return Util.concat(
-        "  Salt Source: ", ((saltSource == CKZ_SALT_SPECIFIED) ? "Salt Specified" : "<unknown>"),
-        "\n  Salt Source Data (hex): ", Util.toHex(saltSourceData),
-        "\n  Iterations (dec): ", Long.toString(iterations),
-        "\n  Pseudo-Random Function: ",
-          ((pseudoRandomFunction == CKP_PKCS5_PBKD2_HMAC_SHA1) ? "HMAC SHA-1" : "<unknown>"),
-        "\n  Pseudo-Random Function Data (hex): ", Util.toHex(pseudoRandomFunctionData));
+    return "  Salt Source: " + ((saltSource == CKZ_SALT_SPECIFIED) ? "Salt Specified" : "<unknown>") +
+        "\n  Salt Source Data (hex): " + Util.toHex(saltSourceData) +
+        "\n  Iterations (dec): " + iterations +
+        "\n  Pseudo-Random Function: " +
+            ((pseudoRandomFunction == CKP_PKCS5_PBKD2_HMAC_SHA1) ? "HMAC SHA-1" : "<unknown>") +
+        "\n  Pseudo-Random Function Data (hex): " + Util.toHex(pseudoRandomFunctionData);
   }
 
   /**

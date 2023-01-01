@@ -56,7 +56,6 @@ public class LongAttribute extends Attribute {
    * AttributeArrayAttribute.getValueString().
    */
   LongAttribute() {
-    super();
   }
 
   /**

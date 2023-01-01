@@ -109,9 +109,9 @@ public class TestBase {
 
   private static String speedDuration;
 
-  private static SecureRandom random = new SecureRandom();
+  private static final SecureRandom random = new SecureRandom();
 
-  protected Logger LOG = LoggerFactory.getLogger(getClass());
+  protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
   static {
     Properties props = new Properties();

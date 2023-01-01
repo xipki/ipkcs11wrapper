@@ -63,7 +63,7 @@ import java.util.Random;
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
- * This demo program generates a 2048 bit RSA key-pair on the token.
+ * This demo program generates a 2048-bit RSA key-pair on the token.
  *
  * @author Lijun Liao
  */

@@ -42,11 +42,12 @@
 
 package iaik.pkcs.pkcs11.objects;
 
-import iaik.pkcs.pkcs11.Util;
 import sun.security.pkcs11.wrapper.CK_DATE;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Objects of this class represent a date attribute of a PKCS#11 object
@@ -76,7 +77,21 @@ public class DateAttribute extends Attribute {
    *          The date value to set. May be null.
    */
   public void setDateValue(Date value) {
-    ckAttribute.pValue = Util.convertToCkDate(value);
+    if (value == null) {
+      ckAttribute.pValue = null;
+    } else {
+      //poor memory/performance behavior, consider alternatives
+      Calendar calendar = new GregorianCalendar();
+      calendar.setTime(value);
+      int year = calendar.get(Calendar.YEAR);
+      // month counting starts with zero
+      int month = calendar.get(Calendar.MONTH) + 1;
+      int day = calendar.get(Calendar.DAY_OF_MONTH);
+      ckAttribute.pValue = new CK_DATE(
+          Integer.toString(year).toCharArray(),
+          (month < 10 ? "0" + month: Integer.toString(month)).toCharArray(),
+          (day < 10 ? "0" + day: Integer.toString(day)).toCharArray());
+    }
     present = true;
   }
 
@@ -86,7 +101,19 @@ public class DateAttribute extends Attribute {
    * @return The date value of this attribute or null.
    */
   public Date getDateValue() {
-    return Util.convertToDate((CK_DATE) ckAttribute.pValue);
+    if (ckAttribute.pValue == null) {
+      return null;
+    }
+
+    CK_DATE ckDate = (CK_DATE) ckAttribute.pValue;
+    int year = Integer.parseInt(new String(ckDate.year));
+    int month = Integer.parseInt(new String(ckDate.month));
+    int day = Integer.parseInt(new String(ckDate.day));
+    // poor performance, consider alternatives
+    Calendar calendar = new GregorianCalendar();
+    // calendar starts months with 0
+    calendar.set(year, Calendar.JANUARY + (month - 1), day);
+    return calendar.getTime();
   }
 
   @Override
