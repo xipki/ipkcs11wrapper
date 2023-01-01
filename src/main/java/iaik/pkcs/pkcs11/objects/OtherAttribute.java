@@ -44,6 +44,16 @@ package iaik.pkcs.pkcs11.objects;
 
 public class OtherAttribute extends Attribute {
 
+  /**
+   * Constructor taking the PKCS#11 type of the attribute.
+   *
+   * @param type The PKCS#11 type of this attribute; e.g.
+   *             PKCS11Constants.CKA_PRIVATE.
+   */
+  protected OtherAttribute(long type) {
+    super(type);
+  }
+
   public void setValue(Object value) {
     /* since we do not know this kind of attribute, we just give up */
     throw new UnsupportedOperationException("message");

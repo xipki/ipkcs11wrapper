@@ -62,7 +62,7 @@ public class ByteArrayAttribute extends Attribute {
    *          The PKCS#11 type of this attribute; e.g.
    *          PKCS11Constants.CKA_VALUE.
    */
-  public ByteArrayAttribute(Long type) {
+  public ByteArrayAttribute(long type) {
     super(type);
   }
 

@@ -26,10 +26,7 @@ import iaik.pkcs.pkcs11.wrapper.Functions;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import org.junit.Test;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
@@ -57,11 +54,11 @@ public class DSAGenerateKeyPair extends TestBase {
     LOG.info("Generating new DSA key-pair... ");
 
     // first check out what attributes of the keys we may set
-    HashSet<Mechanism> supportedMechanisms = new HashSet<>(Arrays.asList(token.getMechanismList()));
+    List<Long> supportedMechanisms = token.getMechanismList2();
 
     MechanismInfo signatureMechanismInfo;
-    if (supportedMechanisms.contains(Mechanism.get(PKCS11Constants.CKM_DSA))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(PKCS11Constants.CKM_DSA));
+    if (supportedMechanisms.contains(PKCS11Constants.CKM_DSA)) {
+      signatureMechanismInfo = token.getMechanismInfo(PKCS11Constants.CKM_DSA);
     } else {
       signatureMechanismInfo = null;
     }

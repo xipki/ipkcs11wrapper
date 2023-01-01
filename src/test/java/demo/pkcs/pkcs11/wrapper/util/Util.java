@@ -224,8 +224,8 @@ public class Util {
   }
 
   public static boolean supports(Token token, long mechCode) throws TokenException {
-    for (Mechanism mech : token.getMechanismList()) {
-      if (mech.getMechanismCode() == mechCode) {
+    for (long mech : token.getMechanismList()) {
+      if (mech == mechCode) {
         return true;
       }
     }

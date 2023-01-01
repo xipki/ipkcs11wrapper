@@ -44,34 +44,32 @@ class VendorCode {
         }
       }
 
-      if (!isEmpty(versions)) {
-        int iVersion = ((0xFF & libraryVersion.major) << 8) + (0xFF & libraryVersion.minor);
-        boolean match = false;
-        for (String t : versions) {
-          int idx = t.indexOf("-");
+      if (isEmpty(versions)) {
+        return true;
+      }
 
-          int from;
-          int to;
-          if (idx == -1) {
-            from = toIntVersion(t);
-            to = from;
-          } else {
-            from = toIntVersion(t.substring(0, idx));
-            to = toIntVersion(t.substring(idx + 1));
-          }
+      int iVersion = ((0xFF & libraryVersion.major) << 8) + (0xFF & libraryVersion.minor);
+      boolean match = false;
+      for (String t : versions) {
+        int idx = t.indexOf("-");
 
-          if (iVersion >= from && iVersion <= to) {
-            match = true;
-            break;
-          }
+        int from;
+        int to;
+        if (idx == -1) {
+          from = toIntVersion(t);
+          to = from;
+        } else {
+          from = toIntVersion(t.substring(0, idx));
+          to = toIntVersion(t.substring(idx + 1));
         }
 
-        if (!match) {
-          return false;
+        if (iVersion >= from && iVersion <= to) {
+          match = true;
+          break;
         }
       }
 
-      return true;
+      return match;
     }
 
     private static int toIntVersion(String version) {

@@ -71,15 +71,13 @@ import java.math.BigInteger;
  *     // check, if the token has own means to authenticate the user; e.g. a
  *     // PIN-pad on the reader
  *     if (tokenInfo.isProtectedAuthenticationPath()) {
- *       System.out.println(
- *               "Please enter the user PIN at the PIN-pad of your reader.");
+ *       System.out.println("Please enter the user PIN at the PIN-pad of your reader.");
  *       // the token prompts the PIN by other means; e.g. PIN-pad
  *       session.login(Session.UserType.USER, null);
  *     } else {
  *       System.out.print("Enter user-PIN and press [return key]: ");
  *       System.out.flush();
- *       BufferedReader input = new BufferedReader(
- *               new InputStreamReader(System.in));
+ *       BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
  *       String userPINString = input.readLine();
  *       session.login(Session.UserType.USER, userPINString.toCharArray());
  *     }

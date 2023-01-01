@@ -25,10 +25,7 @@ import iaik.pkcs.pkcs11.objects.KeyPair;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 import org.junit.Test;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
@@ -56,11 +53,11 @@ public class ECGenerateKeyPair extends TestBase {
     LOG.info("Generating new EC (curve secp256r1) key-pair... ");
 
     // first check out what attributes of the keys we may set
-    HashSet<Mechanism> supportedMechanisms = new HashSet<>(Arrays.asList(token.getMechanismList()));
+    List<Long> supportedMechanisms = token.getMechanismList2();
 
     MechanismInfo signatureMechanismInfo;
-    if (supportedMechanisms.contains(Mechanism.get(CKM_ECDSA))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_ECDSA));
+    if (supportedMechanisms.contains(CKM_ECDSA)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_ECDSA);
     } else {
       signatureMechanismInfo = null;
     }

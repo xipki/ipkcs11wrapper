@@ -58,7 +58,7 @@ public class BooleanAttribute extends Attribute {
    *          The PKCS#11 type of this attribute; e.g.
    *          PKCS11Constants.CKA_PRIVATE.
    */
-  public BooleanAttribute(Long type) {
+  public BooleanAttribute(long type) {
     super(type);
   }
 

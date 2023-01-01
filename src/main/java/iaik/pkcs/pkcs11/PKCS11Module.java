@@ -149,7 +149,7 @@ public class PKCS11Module {
       prop = System.getProperty(propName.toUpperCase(Locale.ROOT));
     }
 
-    writeOnlyAttributeReadable = prop != null && Boolean.parseBoolean(prop);
+    writeOnlyAttributeReadable = Boolean.parseBoolean(prop);
   }
 
   public boolean isWriteOnlyAttributeReadable() {

@@ -44,7 +44,6 @@ package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Mechanism;
 import iaik.pkcs.pkcs11.MechanismInfo;
 import iaik.pkcs.pkcs11.Session;
 import iaik.pkcs.pkcs11.Token;
@@ -147,15 +146,16 @@ public class UploadPrivateKey extends TestBase {
     LOG.info("creating private key object on the card... ");
 
     // check out what attributes of the keys we may set using the mechanism info
+    List<Long> supportedMechs = token.getMechanismList2();
     MechanismInfo signatureMechanismInfo;
-    if (Util.supports(token, CKM_RSA_PKCS)) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_RSA_PKCS));
-    } else if (Util.supports(token, CKM_RSA_X_509)) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_RSA_X_509));
-    } else if (Util.supports(token, CKM_RSA_9796)) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_RSA_9796));
-    } else if (Util.supports(token, CKM_RSA_PKCS_OAEP)) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_RSA_PKCS_OAEP));
+    if (supportedMechs.contains(CKM_RSA_PKCS)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS);
+    } else if (supportedMechs.contains(CKM_RSA_X_509)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_X_509);
+    } else if (supportedMechs.contains(CKM_RSA_9796)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_9796);
+    } else if (supportedMechs.contains(CKM_RSA_PKCS_OAEP)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS_OAEP);
     } else {
       signatureMechanismInfo = null;
     }

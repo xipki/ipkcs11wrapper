@@ -43,12 +43,13 @@
 package iaik.pkcs.pkcs11;
 
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Objects of this class provide information about a token. Serial number,
@@ -59,20 +60,6 @@ import java.util.TimeZone;
  * @version 1.0
  */
 public class TokenInfo {
-
-  /**
-   * This is the value which can be used for ulMaxSessionCount and
-   * ulMaxRwSessionCount to express an infinite number.
-   */
-  public static final long EFFECTIVELY_INFINITE = PKCS11Constants.CK_EFFECTIVELY_INFINITE;
-
-  /**
-   * This is the value which can be used for ulMaxSessionCount,
-   * ulSessionCount, ulMaxRwSessionCount, ulRwSessionCount,
-   * ulTotalPublicMemory, ulFreePublicMemory, ulTotalPrivateMemory, and
-   * ulFreePrivateMemory to signal that the information is unavailable.
-   */
-  public static final long UNAVAILABLE_INFORMATION = PKCS11Constants.CK_UNAVAILABLE_INFORMATION;
 
   /**
    * The label of this token.
@@ -374,7 +361,7 @@ public class TokenInfo {
    *         otherwise.
    */
   public boolean isRNG() {
-    return hasFlag(PKCS11Constants.CKF_RNG);
+    return hasFlag(CKF_RNG);
   }
 
   /**
@@ -383,7 +370,7 @@ public class TokenInfo {
    * @return True, if the token is write-protected. False, otherwise.
    */
   public boolean isWriteProtected() {
-    return hasFlag(PKCS11Constants.CKF_WRITE_PROTECTED);
+    return hasFlag(CKF_WRITE_PROTECTED);
 
   }
 
@@ -395,7 +382,7 @@ public class TokenInfo {
    *         operations can be performed. False, otherwise.
    */
   public boolean isLoginRequired() {
-    return hasFlag(PKCS11Constants.CKF_LOGIN_REQUIRED);
+    return hasFlag(CKF_LOGIN_REQUIRED);
   }
 
   /**
@@ -404,7 +391,7 @@ public class TokenInfo {
    * @return True, if the user-PIN is already initialized. False, otherwise.
    */
   public boolean isUserPinInitialized() {
-    return hasFlag(PKCS11Constants.CKF_USER_PIN_INITIALIZED);
+    return hasFlag(CKF_USER_PIN_INITIALIZED);
   }
 
   /**
@@ -417,7 +404,7 @@ public class TokenInfo {
    *         state of the session. False, otherwise.
    */
   public boolean isRestoreKeyNotNeeded() {
-    return hasFlag(PKCS11Constants.CKF_RESTORE_KEY_NOT_NEEDED);
+    return hasFlag(CKF_RESTORE_KEY_NOT_NEEDED);
   }
 
   /**
@@ -426,7 +413,7 @@ public class TokenInfo {
    * @return True, if the token has its own clock. False, otherwise.
    */
   public boolean isClockOnToken() {
-    return hasFlag(PKCS11Constants.CKF_CLOCK_ON_TOKEN);
+    return hasFlag(CKF_CLOCK_ON_TOKEN);
   }
 
   /**
@@ -439,7 +426,7 @@ public class TokenInfo {
    *         otherwise.
    */
   public boolean isProtectedAuthenticationPath() {
-    return hasFlag(PKCS11Constants.CKF_PROTECTED_AUTHENTICATION_PATH);
+    return hasFlag(CKF_PROTECTED_AUTHENTICATION_PATH);
   }
 
   /**
@@ -449,7 +436,7 @@ public class TokenInfo {
    *         otherwise.
    */
   public boolean isDualCryptoOperations() {
-    return hasFlag(PKCS11Constants.CKF_DUAL_CRYPTO_OPERATIONS);
+    return hasFlag(CKF_DUAL_CRYPTO_OPERATIONS);
   }
 
   /**
@@ -458,7 +445,7 @@ public class TokenInfo {
    * @return True, if the token is already initialized. False, otherwise.
    */
   public boolean isTokenInitialized() {
-    return hasFlag(PKCS11Constants.CKF_TOKEN_INITIALIZED);
+    return hasFlag(CKF_TOKEN_INITIALIZED);
   }
 
   /**
@@ -469,7 +456,7 @@ public class TokenInfo {
    *         otherwise.
    */
   public boolean isSecondaryAuthentication() {
-    return hasFlag(PKCS11Constants.CKF_SECONDARY_AUTHENTICATION);
+    return hasFlag(CKF_SECONDARY_AUTHENTICATION);
   }
 
   /**
@@ -480,7 +467,7 @@ public class TokenInfo {
    *         one since the last successful authentication. False, otherwise.
    */
   public boolean isUserPinCountLow() {
-    return hasFlag(PKCS11Constants.CKF_USER_PIN_COUNT_LOW);
+    return hasFlag(CKF_USER_PIN_COUNT_LOW);
   }
 
   /**
@@ -491,7 +478,7 @@ public class TokenInfo {
    *         before the user-PIN gets locked. False, otherwise.
    */
   public boolean isUserPinFinalTry() {
-    return hasFlag(PKCS11Constants.CKF_USER_PIN_FINAL_TRY);
+    return hasFlag(CKF_USER_PIN_FINAL_TRY);
   }
 
   /**
@@ -500,7 +487,7 @@ public class TokenInfo {
    * @return True, if the user-PIN is locked. False, otherwise.
    */
   public boolean isUserPinLocked() {
-    return hasFlag(PKCS11Constants.CKF_USER_PIN_LOCKED);
+    return hasFlag(CKF_USER_PIN_LOCKED);
   }
 
   /**
@@ -511,7 +498,7 @@ public class TokenInfo {
    *         initialization or manufacturing. False, otherwise.
    */
   public boolean isUserPinToBeChanged() {
-    return hasFlag(PKCS11Constants.CKF_USER_PIN_TO_BE_CHANGED);
+    return hasFlag(CKF_USER_PIN_TO_BE_CHANGED);
   }
 
   /**
@@ -523,7 +510,7 @@ public class TokenInfo {
    *         authentication. False, otherwise.
    */
   public boolean isSoPinCountLow() {
-    return hasFlag(PKCS11Constants.CKF_SO_PIN_COUNT_LOW);
+    return hasFlag(CKF_SO_PIN_COUNT_LOW);
   }
 
   /**
@@ -535,7 +522,7 @@ public class TokenInfo {
    *         otherwise.
    */
   public boolean isSoPinFinalTry() {
-    return hasFlag(PKCS11Constants.CKF_SO_PIN_FINAL_TRY);
+    return hasFlag(CKF_SO_PIN_FINAL_TRY);
   }
 
   /**
@@ -544,7 +531,7 @@ public class TokenInfo {
    * @return True, if the security officer-PIN is locked. False, otherwise.
    */
   public boolean isSoPinLocked() {
-    return hasFlag(PKCS11Constants.CKF_SO_PIN_LOCKED);
+    return hasFlag(CKF_SO_PIN_LOCKED);
   }
 
   /**
@@ -555,7 +542,7 @@ public class TokenInfo {
    *         by token initialization or manufacturing. False, otherwise.
    */
   public boolean isSoPinToBeChanged() {
-    return hasFlag(PKCS11Constants.CKF_SO_PIN_TO_BE_CHANGED);
+    return hasFlag(CKF_SO_PIN_TO_BE_CHANGED);
   }
 
   private boolean hasFlag(long mask) {
@@ -617,15 +604,15 @@ public class TokenInfo {
   }
 
   private static String maxCountToString(long count) {
-    if (count == UNAVAILABLE_INFORMATION) {
+    if (count == CK_UNAVAILABLE_INFORMATION) {
       return "<Information unavailable>";
     } else {
-      return (count == EFFECTIVELY_INFINITE) ? "<effectively infinite>" : Long.toString(count);
+      return (count == CK_EFFECTIVELY_INFINITE) ? "<effectively infinite>" : Long.toString(count);
     }
   }
 
   private static String countToString(long count) {
-    return (count == UNAVAILABLE_INFORMATION) ? "<Information unavailable>" : Long.toString(count);
+    return (count == CK_UNAVAILABLE_INFORMATION) ? "<Information unavailable>" : Long.toString(count);
   }
 
   /**
@@ -651,8 +638,7 @@ public class TokenInfo {
         && (sessionCount == other.sessionCount)
         && (maxRwSessionCount == other.maxRwSessionCount)
         && (rwSessionCount == other.rwSessionCount)
-        && (maxPinLen == other.maxPinLen)
-        && (minPinLen == other.minPinLen)
+        && (maxPinLen == other.maxPinLen) && (minPinLen == other.minPinLen)
         && (totalPublicMemory == other.totalPublicMemory)
         && (freePublicMemory == other.freePublicMemory)
         && (totalPrivateMemory == other.totalPrivateMemory)

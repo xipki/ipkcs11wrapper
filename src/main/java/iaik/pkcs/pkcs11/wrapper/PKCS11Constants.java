@@ -96,12 +96,6 @@ package iaik.pkcs.pkcs11.wrapper;
  */
 public interface PKCS11Constants {
 
-  boolean TRUE = true;
-
-  boolean FALSE = false;
-
-  Object NULL_PTR = null;
-
   long CK_TRUE                              = 0x1L;
   long CK_FALSE                             = 0x0L;
 

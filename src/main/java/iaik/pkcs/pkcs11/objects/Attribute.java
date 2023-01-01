@@ -97,14 +97,6 @@ public abstract class Attribute {
   protected CK_ATTRIBUTE ckAttribute;
 
   /**
-   * Empty constructor.
-   * Attention! If you use this constructor, you must set ckAttribute to
-   * ensure that the class invariant is not violated.
-   */
-  protected Attribute() { /* left empty intentionally */
-  }
-
-  /**
    * Constructor taking the PKCS#11 type of the attribute.
    *
    * @param type

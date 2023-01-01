@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11.objects;
 
-import iaik.pkcs.pkcs11.Mechanism;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * Objects of this class represent a mechanism array attribute of a PKCS#11
@@ -61,7 +61,7 @@ public class MechanismArrayAttribute extends Attribute {
    *          The PKCS#11 type of this attribute; e.g.
    *          PKCS11Constants.CKA_VALUE.
    */
-  public MechanismArrayAttribute(Long type) {
+  public MechanismArrayAttribute(long type) {
     super(type);
   }
 
@@ -73,15 +73,8 @@ public class MechanismArrayAttribute extends Attribute {
    * @param value
    *          The MechanismArrayAttribute value to set. May be null.
    */
-  public void setMechanismAttributeArrayValue(Mechanism[] value) {
-    long[] values = null;
-    if (value != null) {
-      values = new long[value.length];
-      for (int i = 0; i < value.length; i++) {
-        values[i] = value[i].getMechanismCode();
-      }
-    }
-    ckAttribute.pValue = values;
+  public void setMechanismAttributeArrayValue(long[] value) {
+    ckAttribute.pValue = value.clone();
     present = true;
   }
 
@@ -91,18 +84,8 @@ public class MechanismArrayAttribute extends Attribute {
    *
    * @return The mechanism attribute array value of this attribute or null.
    */
-  public Mechanism[] getMechanismAttributeArrayValue() {
-    Mechanism[] mechanisms = null;
-    if (ckAttribute.pValue != null) {
-      long[] values = (long[]) ckAttribute.pValue;
-      if (values.length > 0) {
-        mechanisms = new Mechanism[values.length];
-        for (int i = 0; i < values.length; i++) {
-          mechanisms[i] = new Mechanism(values[i]);
-        }
-      }
-    }
-    return mechanisms;
+  public long[] getMechanismAttributeArrayValue() {
+    return ckAttribute.pValue == null ? null : ((long[]) ckAttribute.pValue).clone();
   }
 
   /**
@@ -112,11 +95,11 @@ public class MechanismArrayAttribute extends Attribute {
    */
   @Override
   protected String getValueString() {
-    StringBuilder sb = new StringBuilder(1024);
-    Mechanism[] allowedMechanisms = getMechanismAttributeArrayValue();
+    long[] allowedMechanisms = getMechanismAttributeArrayValue();
     if (allowedMechanisms != null && allowedMechanisms.length > 0) {
-      for (Mechanism allowedMechanism : allowedMechanisms) {
-        sb.append("\n      ").append(allowedMechanism.getName());
+      StringBuilder sb = new StringBuilder(200);
+      for (long mech : allowedMechanisms) {
+        sb.append("\n      ").append(Functions.ckmCodeToName(mech));
       }
       return sb.toString();
     } else {
@@ -126,7 +109,7 @@ public class MechanismArrayAttribute extends Attribute {
 
   @Override
   public void setValue(Object value) {
-    setMechanismAttributeArrayValue((Mechanism[]) value);
+    setMechanismAttributeArrayValue((long[]) value);
   }
 
 }

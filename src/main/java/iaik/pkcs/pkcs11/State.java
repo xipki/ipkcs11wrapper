@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11;
 
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Objects of this class show the state of a session. This state is only a
@@ -52,31 +52,6 @@ import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
  * @version 1.0
  */
 public class State {
-
-  /**
-   * Constant for a read-only public session.
-   */
-  public static final State RO_PUBLIC_SESSION = new State(PKCS11Constants.CKS_RO_PUBLIC_SESSION);
-
-  /**
-   * Constant for a read-only user session.
-   */
-  public static final State RO_USER_FUNCTIONS = new State(PKCS11Constants.CKS_RO_USER_FUNCTIONS);
-
-  /**
-   * Constant for a read-write public session.
-   */
-  public static final State RW_PUBLIC_SESSION = new State(PKCS11Constants.CKS_RW_PUBLIC_SESSION);
-
-  /**
-   * Constant for a read-write user session.
-   */
-  public static final State RW_USER_FUNCTIONS = new State(PKCS11Constants.CKS_RW_USER_FUNCTIONS);
-
-  /**
-   * Constant for a read-write security officer session.
-   */
-  public static final State RW_SO_FUNCTIONS = new State(PKCS11Constants.CKS_RW_SO_FUNCTIONS);
 
   /**
    * The status code of this state as defined in PKCS#11.
@@ -95,6 +70,10 @@ public class State {
    */
   protected State(long code) {
     this.code = code;
+  }
+
+  public long getCode() {
+    return code;
   }
 
   /**
@@ -132,19 +111,12 @@ public class State {
    */
   @Override
   public String toString() {
-    if (code == PKCS11Constants.CKS_RO_PUBLIC_SESSION) {
-      return "Read-Only Public Session";
-    } else if (code == PKCS11Constants.CKS_RO_USER_FUNCTIONS) {
-      return "Read-Only User Session";
-    } else if (code == PKCS11Constants.CKS_RW_PUBLIC_SESSION) {
-      return "Read/Write Public Session";
-    } else if (code == PKCS11Constants.CKS_RW_USER_FUNCTIONS) {
-      return "Read/Write User Functions";
-    } else if (code == PKCS11Constants.CKS_RW_SO_FUNCTIONS) {
-      return "Read/Write Security Officer Functions";
-    } else {
-      return "ERROR: unknown session state with code: " + code;
-    }
+    return (code == CKS_RO_PUBLIC_SESSION) ? "Read-Only Public Session"
+        : (code == CKS_RO_USER_FUNCTIONS) ? "Read-Only User Session"
+        : (code == CKS_RW_PUBLIC_SESSION) ? "Read/Write Public Session"
+        : (code == CKS_RW_USER_FUNCTIONS) ? "Read/Write User Functions"
+        : (code == CKS_RW_SO_FUNCTIONS) ? "Read/Write Security Officer Functions"
+        : "ERROR: unknown session state with code: " + code;
   }
 
 }

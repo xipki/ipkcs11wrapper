@@ -42,7 +42,6 @@
 
 package iaik.pkcs.pkcs11.objects;
 
-import iaik.pkcs.pkcs11.Mechanism;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 
@@ -54,13 +53,6 @@ import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
  * @version 1.0
  */
 public class MechanismAttribute extends LongAttribute {
-
-  /**
-   * Default constructor - only for internal use in
-   * AttributeArrayAttribute.getValueString().
-   */
-  MechanismAttribute() {
-  }
 
   /**
    * Constructor taking the PKCS#11 type of the attribute.
@@ -81,8 +73,8 @@ public class MechanismAttribute extends LongAttribute {
    * @param mechanism
    *          The mechanism value to set. May be <code>null</code>.
    */
-  public void setMechanism(Mechanism mechanism) {
-    ckAttribute.pValue = (mechanism != null) ? mechanism.getMechanismCode() : null;
+  public void setMechanism(Long mechanism) {
+    ckAttribute.pValue = mechanism;
     present = true;
   }
 
@@ -91,9 +83,8 @@ public class MechanismAttribute extends LongAttribute {
    *
    * @return The long value of this attribute or null.
    */
-  public Mechanism getMechanism() {
-    return ((ckAttribute != null) && (ckAttribute.pValue != null))
-        ? new Mechanism((Long) ckAttribute.pValue) : null;
+  public Long getMechanism() {
+    return ((ckAttribute != null) && (ckAttribute.pValue != null)) ? (Long) ckAttribute.pValue : null;
   }
 
   /**
@@ -108,7 +99,12 @@ public class MechanismAttribute extends LongAttribute {
     }
 
     return (((Long) ckAttribute.pValue) != PKCS11Constants.CK_UNAVAILABLE_INFORMATION)
-        ? Functions.ckaCodeToName((long) ckAttribute.pValue) : "<Information unavailable>";
+        ? Functions.ckmCodeToName((long) ckAttribute.pValue) : "<Information unavailable>";
+  }
+
+  @Override
+  public void setValue(Object value) {
+    setLongValue((Long) value);
   }
 
 }

@@ -111,10 +111,6 @@ public class Functions implements PKCS11Constants {
       return name != null ? name : "Unknown " + type + " with code: 0x" + toFullHex(code);
     }
 
-    String getDescription(long code) {
-      return String.format("%#010x", code) + " (" + codeToString(code) + ")";
-    }
-
     long stringToCode(String name) {
       Long code = nameCodeMap.get(name);
       return (code != null) ? code : -1;
@@ -134,17 +130,11 @@ public class Functions implements PKCS11Constants {
     private static final int[] HINTS = new int[LINTS.length];
 
     static {
-      for (int i = 0; i < DIGITS.length; i++) {
-        LINTS[DIGITS[i]] = i;
-      }
+      for (int i = 0; i < DIGITS.length; i++) LINTS[DIGITS[i]] = i;
 
-      for (int i = 10; i < UPPER_DIGITS.length; i++) {
-        LINTS[UPPER_DIGITS[i]] = i;
-      }
+      for (int i = 10; i < UPPER_DIGITS.length; i++) LINTS[UPPER_DIGITS[i]] = i;
 
-      for (int i = 0; i < LINTS.length; i++) {
-        HINTS[i] = LINTS[i] << 4;
-      }
+      for (int i = 0; i < LINTS.length; i++) HINTS[i] = LINTS[i] << 4;
     }
 
     public static String encode(byte[] bytes) {

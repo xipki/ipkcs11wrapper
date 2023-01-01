@@ -52,7 +52,7 @@ public class RSADecrypt extends TestBase {
   private void main0(Token token, Session session) throws TokenException {
     // check, if this token can do RSA decryption
     Mechanism encMech = getSupportedMechanism(token, PKCS11Constants.CKM_RSA_PKCS);
-    if (!token.getMechanismInfo(encMech).isDecrypt()) {
+    if (!token.getMechanismInfo(encMech.getMechanismCode()).isDecrypt()) {
       LOG.info("This token does not support RSA decryption according to PKCS!");
       throw new TokenException("RSA decryption not supported!");
     }

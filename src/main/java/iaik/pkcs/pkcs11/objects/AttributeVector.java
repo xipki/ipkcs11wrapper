@@ -398,7 +398,6 @@ public class AttributeVector {
     return value == null ? null : value.intValue();
   }
 
-
   public char[] getAttributeCharArrayValue(long type) {
     Attribute attr = getAttribute(type);
     return attr == null ? null : ((CharArrayAttribute) attr).getCharArrayValue();

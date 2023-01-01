@@ -48,6 +48,8 @@ import sun.security.pkcs11.wrapper.CK_MECHANISM_INFO;
 import sun.security.pkcs11.wrapper.CK_NOTIFY;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Objects of this class represent PKCS#11 tokens. The application can get
@@ -203,6 +205,15 @@ public class Token {
     }
   }
 
+  public List<Long> getMechanismList2() throws TokenException {
+    long[] values = getMechanismList();
+    List<Long> list = new ArrayList<>(values.length);
+    for (long value : values) {
+      list.add(value);
+    }
+    return list;
+  }
+
   /**
    * Get the list of mechanisms that this token supports. An application can
    * use this method to determine, if this token supports the required
@@ -213,22 +224,22 @@ public class Token {
    * @exception TokenException
    *              If reading the list of supported mechanisms fails.
    */
-  public Mechanism[] getMechanismList() throws TokenException {
-    VendorCode vendorCode = slot.getModule().getVendorCode();
-    long[] mechanismIdList;
+  public long[] getMechanismList() throws TokenException {
+    long[] mechanisms;
     try {
-      mechanismIdList = slot.getModule().getPKCS11Module().C_GetMechanismList(slot.getSlotID());
+      mechanisms = slot.getModule().getPKCS11Module().C_GetMechanismList(slot.getSlotID());
     } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
       throw new PKCS11Exception(ex);
     }
 
-    Mechanism[] mechanisms = new Mechanism[mechanismIdList.length];
-    for (int i = 0; i < mechanisms.length; i++) {
-      long code = mechanismIdList[i];
-      if ((code & PKCS11Constants.CKM_VENDOR_DEFINED) != 0 && vendorCode != null) {
-        code = vendorCode.ckmVendorToGeneric(code);
+    VendorCode vendorCode = slot.getModule().getVendorCode();
+    if (vendorCode != null) {
+      for (int i = 0; i < mechanisms.length; i++) {
+        long code = mechanisms[i];
+        if ((code & PKCS11Constants.CKM_VENDOR_DEFINED) != 0 && vendorCode != null) {
+          mechanisms[i] = vendorCode.ckmVendorToGeneric(code);
+        }
       }
-      mechanisms[i] = new Mechanism(code);
     }
 
     return mechanisms;
@@ -245,18 +256,17 @@ public class Token {
    *              If reading the information fails, or if the mechanism is not
    *              supported by this token.
    */
-  public MechanismInfo getMechanismInfo(Mechanism mechanism) throws TokenException {
-    long mechanismCode = mechanism.getMechanismCode();
-    if ((mechanismCode & PKCS11Constants.CKM_VENDOR_DEFINED) != 0) {
+  public MechanismInfo getMechanismInfo(long mechanism) throws TokenException {
+    if ((mechanism & PKCS11Constants.CKM_VENDOR_DEFINED) != 0) {
       VendorCode vendorCode = slot.getModule().getVendorCode();
       if (vendorCode != null) {
-        mechanismCode = vendorCode.ckmGenericToVendor(mechanismCode);
+        mechanism = vendorCode.ckmGenericToVendor(mechanism);
       }
     }
 
     try {
       CK_MECHANISM_INFO ckMechanismInfo =
-          slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanismCode);
+          slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism);
       return new MechanismInfo(ckMechanismInfo);
     } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
       throw new PKCS11Exception(ex);

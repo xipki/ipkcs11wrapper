@@ -56,8 +56,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
@@ -86,17 +85,17 @@ public class RSAGenerateKeyPair extends TestBase {
     LOG.info("Generating new 2048 bit RSA key-pair... ");
 
     // first check out what attributes of the keys we may set
-    HashSet<Mechanism> supportedMechanisms = new HashSet<>(Arrays.asList(token.getMechanismList()));
+    List<Long> supportedMechanisms = token.getMechanismList2();
 
     MechanismInfo signatureMechanismInfo;
-    if (supportedMechanisms.contains(Mechanism.get(CKM_RSA_PKCS))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_RSA_PKCS));
-    } else if (supportedMechanisms.contains(Mechanism.get(CKM_RSA_X_509))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_RSA_X_509));
-    } else if (supportedMechanisms.contains(Mechanism.get(CKM_RSA_9796))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_RSA_9796));
-    } else if (supportedMechanisms.contains(Mechanism.get(CKM_RSA_PKCS_OAEP))) {
-      signatureMechanismInfo = token.getMechanismInfo(Mechanism.get(CKM_RSA_PKCS_OAEP));
+    if (supportedMechanisms.contains(CKM_RSA_PKCS)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS);
+    } else if (supportedMechanisms.contains(CKM_RSA_X_509)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_X_509);
+    } else if (supportedMechanisms.contains(CKM_RSA_9796)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_9796);
+    } else if (supportedMechanisms.contains(CKM_RSA_PKCS_OAEP)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS_OAEP);
     } else {
       signatureMechanismInfo = null;
     }

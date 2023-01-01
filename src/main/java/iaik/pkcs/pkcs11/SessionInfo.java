@@ -144,8 +144,8 @@ public class SessionInfo {
     return "State: " + state +
         "\nDevice Error: 0x" + Long.toHexString(deviceError) +
         "\nFlags: 0x" + Functions.toFullHex(flags) +
-        (isRwSession() ? "\nRead/write" : "\nRead-only") +
-        (isSerialSession() ? "\nSerial session" : "\nParallel session");
+        (isRwSession() ?     "\n    Read/write    " : "\nRead-only") +
+        (isSerialSession() ? "\n    Serial session" : "\nParallel session");
   }
 
   /**

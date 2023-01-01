@@ -44,6 +44,7 @@ package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import iaik.pkcs.pkcs11.*;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 import org.junit.Test;
 
 /**
@@ -89,10 +90,10 @@ public class GetInfo extends TestBase {
       LOG.info("{}", tokenInfo);
 
       LOG.info("supported Mechanisms:");
-      Mechanism[] supportedMechanisms = tokens[i].getMechanismList();
-      for (Mechanism supportedMechanism : supportedMechanisms) {
+      long[] supportedMechanisms = tokens[i].getMechanismList();
+      for (long supportedMechanism : supportedMechanisms) {
         LOG.info("--------------------------------------------------");
-        LOG.info("Mechanism Name: {}", supportedMechanism.getName());
+        LOG.info("Mechanism Name: {}", Functions.ckmCodeToName(supportedMechanism));
         MechanismInfo mechanismInfo = tokens[i].getMechanismInfo(supportedMechanism);
         LOG.info("{}", mechanismInfo);
         LOG.info("--------------------------------------------------");

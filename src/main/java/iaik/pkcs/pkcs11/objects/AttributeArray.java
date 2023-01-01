@@ -107,7 +107,7 @@ public class AttributeArray extends Attribute {
       Class<?> implementation = Attribute.getAttributeClass(type);
       Attribute attribute;
       if (implementation == null) {
-        attribute = new OtherAttribute();
+        attribute = new OtherAttribute(type);
         attribute.setType(type);
         attribute.setCkAttribute(ck_attribute);
       } else {

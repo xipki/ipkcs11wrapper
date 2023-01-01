@@ -52,20 +52,13 @@ package iaik.pkcs.pkcs11.objects;
 public class LongAttribute extends Attribute {
 
   /**
-   * Default constructor - only for internal use in
-   * AttributeArrayAttribute.getValueString().
-   */
-  LongAttribute() {
-  }
-
-  /**
    * Constructor taking the PKCS#11 type of the attribute.
    *
    * @param type
    *          The PKCS#11 type of this attribute; e.g.
    *          PKCS11Constants.CKA_VALUE_LEN.
    */
-  public LongAttribute(Long type) {
+  public LongAttribute(long type) {
     super(type);
   }
 
