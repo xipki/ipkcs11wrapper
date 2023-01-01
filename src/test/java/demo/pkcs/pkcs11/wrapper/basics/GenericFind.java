@@ -115,8 +115,7 @@ public class GenericFind extends TestBase {
     // sort out all signature keys that are private keys
     privateSignatureKeys.addAll(signatureKeys);
 
-    // for each private signature key try to find a public key certificate with
-    // the same ID
+    // for each private signature key try to find a public key certificate with the same ID
     Map<Long, Long> privateKeyToCertificateTable = new HashMap<>(privateSignatureKeys.size() * 5 / 4);
     for (long privateSignatureKeyHandle : privateSignatureKeys) {
       byte[] id = session.getByteArrayAttributeValue(privateSignatureKeyHandle, CKA_ID);
@@ -127,8 +126,8 @@ public class GenericFind extends TestBase {
       long[] foundCertificateObjects;
       if ((foundCertificateObjects = session.findObjects(1)).length > 0) {
         privateKeyToCertificateTable.put(privateSignatureKeyHandle, foundCertificateObjects[0]);
-        LOG.info("The certificate for this private signature key {}", privateSignatureKeyHandle);
-        LOG.info("is\n--------------------------------------------------\n{}", foundCertificateObjects[0]);
+        LOG.info("The certificate for this private signature key {} is {}",
+            privateSignatureKeyHandle, foundCertificateObjects[0]);
       } else {
         LOG.info("There is no certificate for this private signature key {}", privateSignatureKeyHandle);
       }

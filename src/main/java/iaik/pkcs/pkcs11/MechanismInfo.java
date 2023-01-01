@@ -42,6 +42,7 @@
 
 package iaik.pkcs.pkcs11;
 
+import iaik.pkcs.pkcs11.wrapper.Functions;
 import sun.security.pkcs11.wrapper.CK_MECHANISM_INFO;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
@@ -601,7 +602,8 @@ public class MechanismInfo {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(200)
-        .append("  Minimum Key-Size: ").append(minKeySize).append("\n  Maximum Key-Size: ").append(maxKeySize);
+        .append("  Minimum Key-Size: ").append(minKeySize).append("\n  Maximum Key-Size: ").append(maxKeySize)
+        .append("\n  Flags: 0x").append(Functions.toFullHex(flags));
 
     TokenInfo.addFlag(sb, "  hardware", isHw());
     TokenInfo.addFlag(sb, "  encrypt", isEncrypt());
