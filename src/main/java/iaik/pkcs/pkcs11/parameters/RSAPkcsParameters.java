@@ -162,9 +162,8 @@ abstract public class RSAPkcsParameters implements Parameters {
    */
   @Override
   public String toString() {
-    String hashMech = Functions.ckmCodeToName(hashAlg);
-    String mgfMech = Functions.getMGFName(mgf);
-    return "  Hash Algorithm: " + hashMech + "\n  Mask Generation Function: " + mgfMech;
+    return "  Hash Algorithm: " + Functions.ckmCodeToName(hashAlg)
+        + "\n  Mask Generation Function: " + Functions.ckgCodeToName(mgf);
   }
 
 }

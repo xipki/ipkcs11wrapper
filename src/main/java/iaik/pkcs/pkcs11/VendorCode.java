@@ -107,8 +107,11 @@ class VendorCode {
           break;
         }
 
+        // For better performance, this line should be in the if-block. But we put
+        // it here explicitly to make sure that all vendorcode blocks ar configured correctly.
+        VendorCode vendorCode = new VendorCode(block.nameToCodeMap);
         if (block.matches(modulePath, manufacturerID, libraryDescription, libraryVersion)) {
-          return new VendorCode(block.nameToCodeMap);
+          return vendorCode;
         }
       }
     }

@@ -176,25 +176,17 @@ public class Functions implements PKCS11Constants {
   }
 
   private static final CodeNameMap ckaCodeNameMap;
-
   private static final CodeNameMap ckcCodeNameMap;
-
+  private static final CodeNameMap ckdCodeNameMap;
+  private static final CodeNameMap ckgCodeNameMap;
   private static final CodeNameMap ckhCodeNameMap;
-
   private static final CodeNameMap ckkCodeNameMap;
-
   private static final CodeNameMap ckmCodeNameMap;
-
   private static final CodeNameMap ckoCodeNameMap;
-
   private static final CodeNameMap ckrCodeNameMap;
-
   private static final CodeNameMap ckuCodeNameMap;
 
   private static final Map<Long, String> hashMechCodeToHashNames;
-
-  // MGFs (CKG_*)
-  private static final Map<Long, String> mgfNames = new HashMap<>();
 
   static {
     hashMechCodeToHashNames = new HashMap<>();
@@ -210,24 +202,16 @@ public class Functions implements PKCS11Constants {
     hashMechCodeToHashNames.put(CKM_SHA3_384,   "SHA3-384");
     hashMechCodeToHashNames.put(CKM_SHA3_512,   "SHA3-512");
 
-    mgfNames.put(CKG_MGF1_SHA1,     "CKG_MGF1_SHA1");
-    mgfNames.put(CKG_MGF1_SHA256,   "CKG_MGF1_SHA256");
-    mgfNames.put(CKG_MGF1_SHA384,   "CKG_MGF1_SHA384");
-    mgfNames.put(CKG_MGF1_SHA512,   "CKG_MGF1_SHA512");
-    mgfNames.put(CKG_MGF1_SHA224,   "CKG_MGF1_SHA224");
-    mgfNames.put(CKG_MGF1_SHA3_224, "CKG_MGF1_SHA3-224");
-    mgfNames.put(CKG_MGF1_SHA3_256, "CKG_MGF1_SHA3-256");
-    mgfNames.put(CKG_MGF1_SHA3_384, "CKG_MGF1_SHA3-384");
-    mgfNames.put(CKG_MGF1_SHA3_512, "CKG_MGF1_SHA3-512");
-
     String prefix = "/iaik/pkcs/pkcs11/wrapper/";
     ckaCodeNameMap = new CodeNameMap("attribute", prefix + "cka.properties");
     ckcCodeNameMap = new CodeNameMap("certificate type", prefix + "ckc.properties");
+    ckdCodeNameMap = new CodeNameMap("key derivation function", prefix + "ckd.properties");
+    ckgCodeNameMap = new CodeNameMap("mask generation function", prefix + "ckg.properties");
     ckhCodeNameMap = new CodeNameMap("hardware feature", prefix + "ckh.properties");
     ckkCodeNameMap = new CodeNameMap("key type", prefix + "ckk.properties");
-    ckmCodeNameMap = new CodeNameMap("mechanism", prefix + "ckm.properties");
+    ckmCodeNameMap = new CodeNameMap("mechanism type", prefix + "ckm.properties");
     ckoCodeNameMap = new CodeNameMap("object class", prefix + "cko.properties");
-    ckrCodeNameMap = new CodeNameMap("return code", prefix + "ckr.properties");
+    ckrCodeNameMap = new CodeNameMap("return value", prefix + "ckr.properties");
     ckuCodeNameMap = new CodeNameMap("user", prefix + "cku.properties");
   }
 
@@ -273,6 +257,50 @@ public class Functions implements PKCS11Constants {
    */
   public static long ckcNameToCode(String name) {
     return ckcCodeNameMap.stringToCode(name);
+  }
+
+  /**
+   * Converts the long value code of a key derivation function (CKD) to a name.
+   *
+   * @param code
+   *          The code of the key derivation function to be converted to a string.
+   * @return The string representation of the key derivation function.
+   */
+  public static String ckdCodeToName(long code) {
+    return ckdCodeNameMap.codeToString(code);
+  }
+
+  /**
+   * Converts the key derivation function (CKD) name to code value.
+   *
+   * @param name
+   *          The name of the key derivation function to be converted to a code.
+   * @return The code representation of the key derivation function.
+   */
+  public static long ckdNameToCode(String name) {
+    return ckdCodeNameMap.stringToCode(name);
+  }
+
+  /**
+   * Converts the long value code of a mask generation function (CKO) to a name.
+   *
+   * @param code
+   *          The code of the mask generation function to be converted to a string.
+   * @return The string representation of the mask generation function.
+   */
+  public static String ckgCodeToName(long code) {
+    return ckgCodeNameMap.codeToString(code);
+  }
+
+  /**
+   * Converts the mask generation function (CKG) name to code value.
+   *
+   * @param name
+   *          The name of the mask generation function to be converted to a code.
+   * @return The code representation of the mask generation function.
+   */
+  public static long ckgNameToCode(String name) {
+    return ckgCodeNameMap.stringToCode(name);
   }
 
   /**
@@ -405,10 +433,6 @@ public class Functions implements PKCS11Constants {
    */
   public static long ckuNameToCode(String name) {
     return ckuCodeNameMap.stringToCode(name);
-  }
-
-  public static String getMGFName(long id) {
-    return mgfNames.get(id);
   }
 
   /**
