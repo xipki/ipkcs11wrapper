@@ -59,7 +59,7 @@ public class AttributeArray extends Attribute {
    * The attributes of this attribute array in their object class
    * representation. Needed for printing and comparing this attribute array.
    */
-  protected AttributeVector template;
+  private AttributeVector template;
 
   /**
    * Constructor taking the PKCS#11 type of the attribute.

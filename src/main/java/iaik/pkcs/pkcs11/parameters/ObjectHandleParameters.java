@@ -53,7 +53,7 @@ public class ObjectHandleParameters implements Parameters {
   /**
    * The PKCS#11 object.
    */
-  protected long objectHandle;
+  private long objectHandle;
 
   /**
    * Create a new ObjectHandleParameters object using the given object.

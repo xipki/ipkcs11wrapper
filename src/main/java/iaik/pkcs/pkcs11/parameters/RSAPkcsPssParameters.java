@@ -72,7 +72,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
   /**
    * The length of the salt value in octets.
    */
-  protected long saltLength;
+  private long saltLength;
 
   static {
     Class<?> clazz = CK_RSA_PKCS_PSS_PARAMS.class;

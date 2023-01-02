@@ -60,28 +60,28 @@ public class PKCS5PBKD2Parameters implements Parameters {
   /**
    * The source of the salt value.
    */
-  protected long saltSource;
+  private long saltSource;
 
   /**
    * The data used as the input for the salt source.
    */
-  protected byte[] saltSourceData;
+  private byte[] saltSourceData;
 
   /**
    * The number of iterations to perform when generating each block of random
    * data.
    */
-  protected long iterations;
+  private long iterations;
 
   /**
    * The pseudo-random function (PRF) to used to generate the key.
    */
-  protected long pseudoRandomFunction;
+  private long pseudoRandomFunction;
 
   /**
    * The data used as the input for PRF in addition to the salt value.
    */
-  protected byte[] pseudoRandomFunctionData;
+  private byte[] pseudoRandomFunctionData;
 
   /**
    * Create a new PBEDeriveParameters object with the given attributes.
@@ -194,7 +194,8 @@ public class PKCS5PBKD2Parameters implements Parameters {
    */
   public void setSaltSource(long saltSource) {
     if (saltSource != CKZ_SALT_SPECIFIED) {
-      throw new IllegalArgumentException("Illegal value for argument 'saltSource': " + Long.toHexString(saltSource));
+      throw new IllegalArgumentException("Illegal value for argument 'saltSource': "
+          + Functions.ckzCodeToName(saltSource));
     }
     this.saltSource = saltSource;
   }

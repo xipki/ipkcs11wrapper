@@ -57,22 +57,22 @@ public class PBEParameters implements Parameters {
   /**
    * The 8-byte initialization vector (IV), if an IV is required.
    */
-  protected char[] iv;
+  private char[] iv;
 
   /**
    * The password to be used in the PBE key generation.
    */
-  protected char[] password;
+  private char[] password;
 
   /**
    * The salt to be used in the PBE key generation.
    */
-  protected char[] salt;
+  private char[] salt;
 
   /**
    * The number of iterations required for the generation.
    */
-  protected long iterations;
+  private long iterations;
 
   /**
    * Create a new PBEDeriveParameters object with the given attributes.

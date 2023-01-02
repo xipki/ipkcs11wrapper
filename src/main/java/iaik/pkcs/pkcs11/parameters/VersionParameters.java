@@ -73,8 +73,8 @@ public class VersionParameters extends Version implements Parameters {
    *          The minor version number.
    */
   public VersionParameters(byte major, byte minor) {
-    this.major = major;
-    this.minor = minor;
+    setMajor(major);
+    setMinor(minor);
   }
 
   /**
@@ -83,7 +83,7 @@ public class VersionParameters extends Version implements Parameters {
    * @return This object as a CK_VERSION object.
    */
   public CK_VERSION getPKCS11ParamsObject() {
-    return new CK_VERSION(major, minor);
+    return new CK_VERSION(getMajor(), getMinor());
   }
 
   /**
@@ -95,28 +95,8 @@ public class VersionParameters extends Version implements Parameters {
    *
    */
   public void setPKCS11ParamsObject(CK_VERSION input) {
-    this.major = input.major;
-    this.minor = input.minor;
-  }
-
-  /**
-   * Set the major version number.
-   *
-   * @param major
-   *          The major version number.
-   */
-  public void setMajor(byte major) {
-    this.major = major;
-  }
-
-  /**
-   * Set the minor version number.
-   *
-   * @param minor
-   *          The minor version number.
-   */
-  public void setMinor(byte minor) {
-    this.minor = minor;
+    setMajor(input.major);
+    setMinor(input.minor);
   }
 
 }

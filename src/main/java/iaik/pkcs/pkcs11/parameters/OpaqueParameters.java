@@ -26,7 +26,7 @@ import iaik.pkcs.pkcs11.Util;
  */
 public class OpaqueParameters implements Parameters {
 
-  protected byte[] bytes;
+  private byte[] bytes;
 
   public OpaqueParameters(byte[] bytes) {
     this.bytes = bytes;

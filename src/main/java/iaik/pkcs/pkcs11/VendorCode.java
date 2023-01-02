@@ -48,7 +48,7 @@ class VendorCode {
         return true;
       }
 
-      int iVersion = ((0xFF & libraryVersion.major) << 8) + (0xFF & libraryVersion.minor);
+      int iVersion = ((0xFF & libraryVersion.getMajor()) << 8) + (0xFF & libraryVersion.getMinor());
       boolean match = false;
       for (String t : versions) {
         int idx = t.indexOf("-");

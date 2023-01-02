@@ -61,12 +61,12 @@ public class Mechanism {
    * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
    * likewise).
    */
-  protected final long pkcs11MechanismCode;
+  private final long pkcs11MechanismCode;
 
   /**
    * The parameters of the mechanism. Not all mechanisms use these parameters.
    */
-  protected Parameters parameters;
+  private Parameters parameters;
 
   /**
    * Constructor taking just the mechanism code as defined in PKCS11Constants.

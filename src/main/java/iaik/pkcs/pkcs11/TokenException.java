@@ -57,7 +57,7 @@ public class TokenException extends Exception {
    * An encapsulated (inner) exception. Possibly, an exception from a lower
    * layer that can be propagated to a higher layer only in wrapped form.
    */
-  protected Exception encapsulatedException;
+  private Exception encapsulatedException;
 
   /**
    * The default constructor.

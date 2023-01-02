@@ -57,7 +57,7 @@ public class EcDH1KeyDerivationParameters extends DHKeyDerivationParameters {
   /**
    * The data shared between the two parties.
    */
-  protected byte[] sharedData;
+  private byte[] sharedData;
 
   /**
    * Create a new EcDH1KeyDerivationParameters object with the given

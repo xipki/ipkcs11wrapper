@@ -62,23 +62,23 @@ public class SessionInfo {
    * The identifier of the slot in which the token resides this session is
    * bound to.
    */
-  protected final long slotID;
+  private final long slotID;
 
   /**
    * The current session state.
    */
-  protected final State state;
+  private final State state;
 
   /**
    * A token specific error-code. The meaning of this value is not defined in
    * PKCS#11.
    */
-  protected final long deviceError;
+  private final long deviceError;
 
   /**
    * The flags.
    */
-  protected final long flags;
+  private final long flags;
 
   /**
    * Constructor taking a CK_SESSION_INFO object that provides the

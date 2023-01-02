@@ -59,17 +59,17 @@ public class MechanismInfo {
   /**
    * The minimum key length supported by this algorithm.
    */
-  protected long minKeySize;
+  private long minKeySize;
 
   /**
    * The maximum key length supported by this algorithm.
    */
-  protected long maxKeySize;
+  private long maxKeySize;
 
   /**
    * Contains all feature flags of this mechanism info.
    */
-  protected long flags;
+  private long flags;
 
   /**
    * Default constructor. All member variables get the default value for their

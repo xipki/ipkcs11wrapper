@@ -55,7 +55,7 @@ public class MacGeneralParameters implements Parameters {
   /**
    * The length of the MAC produced, in bytes.
    */
-  protected long macLength;
+  private long macLength;
 
   /**
    * Create a new MacGeneralParameters object with the given MAC length.

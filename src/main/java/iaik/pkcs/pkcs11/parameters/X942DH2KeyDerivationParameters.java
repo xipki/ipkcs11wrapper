@@ -57,22 +57,22 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
   /**
    * The data shared between the two parties.
    */
-  protected byte[] otherInfo;
+  private byte[] otherInfo;
 
   /**
    * The length in bytes of the second EC private key.
    */
-  protected long privateDataLength;
+  private long privateDataLength;
 
   /**
    * The key for the second EC private key value.
    */
-  protected long privateDataHandle;
+  private long privateDataHandle;
 
   /**
    * The other party's second EC public key value.
    */
-  protected byte[] publicData2;
+  private byte[] publicData2;
 
   /**
    * Create a new X942DH1KeyDerivationParameters object with the given

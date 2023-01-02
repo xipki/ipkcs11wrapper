@@ -57,12 +57,12 @@ public class Version {
   /**
    * The major version number.
    */
-  protected byte major;
+  private byte major;
 
   /**
    * The minor version number.
    */
-  protected byte minor;
+  private byte minor;
 
   /**
    * Constructor for internal use only.
@@ -84,6 +84,27 @@ public class Version {
     }
     this.major = ckVersion.major;
     this.minor = ckVersion.minor;
+  }
+
+
+  /**
+   * Set the major version number.
+   *
+   * @param major
+   *          The major version number.
+   */
+  public void setMajor(byte major) {
+    this.major = major;
+  }
+
+  /**
+   * Set the minor version number.
+   *
+   * @param minor
+   *          The minor version number.
+   */
+  public void setMinor(byte minor) {
+    this.minor = minor;
   }
 
   /**
