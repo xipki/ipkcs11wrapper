@@ -358,7 +358,7 @@ public class PKCS11Module {
    * @return The string representation of object
    */
   public String toString() {
-    return (pkcs11Module != null) ? pkcs11Module.toString() : null;
+    return (pkcs11Module != null) ? pkcs11Module.toString() : "null";
   }
 
   /**

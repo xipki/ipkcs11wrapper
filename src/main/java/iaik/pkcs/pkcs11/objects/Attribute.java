@@ -47,10 +47,7 @@ import iaik.pkcs.pkcs11.wrapper.Functions;
 import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
 
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Objects;
+import java.util.*;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -113,7 +110,7 @@ public abstract class Attribute {
   public static Attribute getInstance(long type, Object value) {
     Class<?> clazz = getAttributeClass(type);
     if (clazz == null) {
-      throw new IllegalArgumentException(Functions.ckaCodeToName(type));
+      throw new IllegalArgumentException("Unknown attribute type " + Functions.ckaCodeToName(type));
     }
 
     if (clazz == BooleanAttribute.class) {
@@ -185,45 +182,49 @@ public abstract class Attribute {
     if (attributeClasses == null) {
       attributeClasses = new Hashtable<>(85);
 
-      long[] codes = new long[] {CKA_TOKEN, CKA_PRIVATE, CKA_TRUSTED, CKA_SENSITIVE, CKA_ENCRYPT,
-          CKA_DECRYPT, CKA_WRAP, CKA_UNWRAP, CKA_SIGN, CKA_SIGN_RECOVER, CKA_VERIFY,
-          CKA_VERIFY_RECOVER, CKA_DERIVE, CKA_EXTRACTABLE, CKA_LOCAL, CKA_NEVER_EXTRACTABLE,
-          CKA_WRAP_WITH_TRUSTED, CKA_ALWAYS_SENSITIVE, CKA_ALWAYS_AUTHENTICATE, CKA_MODIFIABLE,
-          CKA_RESET_ON_INIT, CKA_HAS_RESET, CKA_COPYABLE, CKA_DESTROYABLE, CKA_COLOR,
-          CKA_OTP_USER_FRIENDLY_MODE};
+      long[] codes = new long[] {
+          CKA_ALWAYS_AUTHENTICATE, CKA_ALWAYS_SENSITIVE,       CKA_COLOR,        CKA_COPYABLE,
+          CKA_DECRYPT,             CKA_DERIVE,                 CKA_DESTROYABLE,  CKA_ENCRYPT,
+          CKA_EXTRACTABLE,         CKA_HAS_RESET,              CKA_LOCAL,        CKA_MODIFIABLE,
+          CKA_NEVER_EXTRACTABLE,   CKA_OTP_USER_FRIENDLY_MODE, CKA_PRIVATE,      CKA_RESET_ON_INIT,
+          CKA_SENSITIVE,           CKA_SIGN,                   CKA_SIGN_RECOVER, CKA_TOKEN,
+          CKA_TRUSTED,             CKA_UNWRAP,                 CKA_VERIFY,       CKA_VERIFY_RECOVER,
+          CKA_WRAP,                CKA_WRAP_WITH_TRUSTED};
       for (long code : codes) {
         attributeClasses.put(code, BooleanAttribute.class);
       }
 
       codes = new long[] {
-          CKA_CLASS, CKA_CERTIFICATE_CATEGORY, CKA_CERTIFICATE_TYPE, CKA_JAVA_MIDP_SECURITY_DOMAIN, CKA_KEY_TYPE,
-          CKA_PRIME_BITS, CKA_SUBPRIME_BITS, CKA_VALUE_BITS, CKA_VALUE_LEN, CKA_HW_FEATURE_TYPE, CKA_MODULUS_BITS,
-          CKA_NAME_HASH_ALGORITHM, CKA_PROFILE_ID,
-          CKA_PIXEL_X, CKA_PIXEL_Y, CKA_RESOLUTION, CKA_CHAR_ROWS, CKA_CHAR_COLUMNS, CKA_BITS_PER_PIXEL,
-          CKA_MECHANISM_TYPE, CKA_OTP_FORMAT, CKA_OTP_LENGTH, CKA_OTP_CHALLENGE_REQUIREMENT,
-          CKA_OTP_TIME_INTERVAL, CKA_OTP_TIME_REQUIREMENT, CKA_OTP_COUNTER_REQUIREMENT, CKA_OTP_PIN_REQUIREMENT
-      };
+          CKA_BITS_PER_PIXEL, CKA_CERTIFICATE_CATEGORY, CKA_CERTIFICATE_TYPE,  CKA_CHAR_COLUMNS,
+          CKA_CHAR_ROWS,      CKA_CLASS,                CKA_HW_FEATURE_TYPE,   CKA_JAVA_MIDP_SECURITY_DOMAIN,
+          CKA_KEY_TYPE,       CKA_MECHANISM_TYPE,       CKA_MODULUS_BITS,      CKA_NAME_HASH_ALGORITHM,
+          CKA_OTP_CHALLENGE_REQUIREMENT,    CKA_OTP_COUNTER_REQUIREMENT,       CKA_OTP_FORMAT,
+          CKA_OTP_LENGTH,     CKA_OTP_PIN_REQUIREMENT,  CKA_OTP_TIME_INTERVAL, CKA_OTP_TIME_REQUIREMENT,
+          CKA_PIXEL_X,        CKA_PIXEL_Y,              CKA_PRIME_BITS,        CKA_PROFILE_ID,
+          CKA_RESOLUTION,     CKA_SUBPRIME_BITS,        CKA_VALUE_BITS,        CKA_VALUE_LEN};
       for (long code : codes) {
         attributeClasses.put(code, LongAttribute.class);
       }
 
-      codes = new long[] {CKA_VALUE, CKA_OBJECT_ID, CKA_ISSUER, CKA_SERIAL_NUMBER,
-          CKA_HASH_OF_ISSUER_PUBLIC_KEY, CKA_HASH_OF_SUBJECT_PUBLIC_KEY, CKA_AC_ISSUER,
-          CKA_OWNER, CKA_ATTR_TYPES, CKA_SUBJECT, CKA_ID, CKA_CHECK_VALUE, CKA_MODULUS,
-          CKA_PUBLIC_EXPONENT, CKA_PRIVATE_EXPONENT, CKA_PRIME_1, CKA_PRIME_2,
-          CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT, CKA_PRIME, CKA_SUBPRIME,
-          CKA_BASE, CKA_EC_PARAMS, CKA_EC_POINT, CKA_PUBLIC_KEY_INFO,
-          CKA_OTP_COUNTER, CKA_OTP_SERVICE_LOGO,
-          CKA_REQUIRED_CMS_ATTRIBUTES, CKA_DEFAULT_CMS_ATTRIBUTES, CKA_SUPPORTED_CMS_ATTRIBUTES,
-          CKA_GOSTR3410_PARAMS, CKA_GOSTR3411_PARAMS, CKA_GOST28147_PARAMS};
+      codes = new long[] {
+          CKA_AC_ISSUER,        CKA_ATTR_TYPES,             CKA_BASE,             CKA_CHECK_VALUE,
+          CKA_COEFFICIENT,      CKA_DEFAULT_CMS_ATTRIBUTES, CKA_EC_PARAMS,        CKA_EC_POINT,
+          CKA_EXPONENT_1,       CKA_EXPONENT_2,             CKA_GOST28147_PARAMS, CKA_GOSTR3410_PARAMS,
+          CKA_GOSTR3411_PARAMS,    CKA_HASH_OF_ISSUER_PUBLIC_KEY,    CKA_HASH_OF_SUBJECT_PUBLIC_KEY,
+          CKA_ID, CKA_ISSUER,   CKA_MODULUS,                CKA_OBJECT_ID,        CKA_OTP_COUNTER,
+          CKA_OTP_SERVICE_LOGO, CKA_OWNER,                  CKA_PRIME,            CKA_PRIME_1,
+          CKA_PRIME_2,          CKA_PRIVATE_EXPONENT,       CKA_PUBLIC_EXPONENT,  CKA_PUBLIC_KEY_INFO,
+          CKA_REQUIRED_CMS_ATTRIBUTES,  CKA_SERIAL_NUMBER,  CKA_SUBJECT,          CKA_SUBPRIME,
+          CKA_SUPPORTED_CMS_ATTRIBUTES, CKA_VALUE};
       for (long code : codes) {
         attributeClasses.put(code, ByteArrayAttribute.class);
       }
 
-      codes = new long[] {CKA_URL, CKA_LABEL, CKA_APPLICATION, CKA_UNIQUE_ID,
-          CKA_CHAR_SETS, CKA_ENCODING_METHODS, CKA_MIME_TYPES, CKA_OTP_TIME, CKA_OTP_USER_IDENTIFIER,
-          CKA_OTP_SERVICE_IDENTIFIER, CKA_OTP_SERVICE_LOGO_TYPE
-      };
+      codes = new long[] {
+          CKA_APPLICATION,           CKA_CHAR_SETS,  CKA_ENCODING_METHODS,
+          CKA_LABEL,                 CKA_MIME_TYPES, CKA_OTP_SERVICE_IDENTIFIER,
+          CKA_OTP_SERVICE_LOGO_TYPE, CKA_OTP_TIME,   CKA_OTP_USER_IDENTIFIER,
+          CKA_UNIQUE_ID,             CKA_URL};
       for (long code : codes) {
         attributeClasses.put(code, CharArrayAttribute.class);
       }
@@ -334,19 +335,12 @@ public abstract class Attribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    if (ckAttribute == null || ckAttribute.pValue == null) return "<NULL_PTR>";
-
-    if (ckAttribute.type == CKA_CLASS) {
-      return Functions.ckoCodeToName((long) ckAttribute.pValue);
-    } else if (ckAttribute.type == CKA_KEY_TYPE) {
-      return Functions.ckkCodeToName((long) ckAttribute.pValue);
-    } else if (ckAttribute.type == CKA_CERTIFICATE_TYPE) {
-      return Functions.ckcCodeToName((long) ckAttribute.pValue);
-    } else if (ckAttribute.type == CKA_HW_FEATURE_TYPE) {
-      return Functions.ckhCodeToName((long) ckAttribute.pValue);
-    } else {
-      return ckAttribute.pValue.toString();
-    }
+    return (ckAttribute == null || ckAttribute.pValue == null) ? "<NULL_PTR>"
+        : (ckAttribute.type == CKA_CLASS)    ? Functions.ckoCodeToName((long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_KEY_TYPE) ? Functions.ckkCodeToName((long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_CERTIFICATE_TYPE) ? Functions.ckcCodeToName((long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_HW_FEATURE_TYPE)  ? Functions.ckhCodeToName((long) ckAttribute.pValue)
+        : ckAttribute.pValue.toString();
   }
 
   /**
@@ -379,19 +373,10 @@ public abstract class Attribute {
       sb.append(Functions.ckaCodeToName(ckAttribute.type)).append(": ");
     }
 
-    if (!stateKnown) {
-      sb.append("<Value is not present or sensitive>");
-    } else if (present) {
-      if (sensitive) {
-        sb.append("<Value is sensitive>" );
-      } else {
-        sb.append(getValueString());
-      }
-    } else {
-      sb.append("<Attribute not present>");
-    }
-
-    return sb.toString();
+    String valueString = (!stateKnown) ? "<Value is not present or sensitive>"
+        : present ? (sensitive ? "<Value is sensitive>" : getValueString())
+        : "<Attribute not present>";
+    return sb.append(valueString).toString();
   }
 
   /**

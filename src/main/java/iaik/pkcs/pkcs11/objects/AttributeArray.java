@@ -67,7 +67,7 @@ public class AttributeArray extends Attribute {
    * @param type
    *          The PKCS#11 type of this attribute; e.g. CKA_VALUE.
    */
-  public AttributeArray(Long type) {
+  public AttributeArray(long type) {
     super(type);
   }
 
@@ -107,7 +107,6 @@ public class AttributeArray extends Attribute {
       Attribute attribute;
       if (implementation == null) {
         attribute = new OtherAttribute(type);
-        attribute.setType(type);
         attribute.setCkAttribute(ck_attribute);
       } else {
         try {

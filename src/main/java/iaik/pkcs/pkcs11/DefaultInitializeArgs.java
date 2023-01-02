@@ -207,7 +207,7 @@ public class DefaultInitializeArgs implements InitializeArgs {
     return  "Mutex Handler: " + (mutexHandler != null ? "present" : "not present") +
       "\nLibrary can't create OS-Threads: " + libraryCantCreateOsThreads +
       "\nOS-Locking OK: " + osLockingOk +
-      "\nThe reserved parameter is: " + (reserved != null ? reserved : "null");
+      "\nReserved parameter: " + reserved;
   }
 
 }

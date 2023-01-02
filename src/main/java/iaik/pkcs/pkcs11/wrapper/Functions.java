@@ -65,7 +65,7 @@ public class Functions {
     private final Map<Long, String> codeNameMap;
     private final Map<String, Long> nameCodeMap;
 
-    CodeNameMap(String prefix, String type, String resourcePath) {
+    CodeNameMap(String prefix, String resourcePath, String type) {
       this.type = type;
       codeNameMap = new HashMap<>();
       nameCodeMap = new HashMap<>();
@@ -220,19 +220,19 @@ public class Functions {
     hashMechCodeToHashNames.put(CKM_SHA3_512,   "SHA3-512");
 
     String prefix = "/iaik/pkcs/pkcs11/wrapper/";
-    ckaCodeNameMap = new CodeNameMap("CKA", "attribute", prefix + "cka.properties");
-    ckcCodeNameMap = new CodeNameMap("CKC", "certificate type", prefix + "ckc.properties");
-    ckdCodeNameMap = new CodeNameMap("CKD", "key derivation function", prefix + "ckd.properties");
-    ckfCodeNameMap = new CodeNameMap("CKF", "bit flag", prefix + "ckf.properties");
-    ckgCodeNameMap = new CodeNameMap("CKG", "mask generation function", prefix + "ckg.properties");
-    ckhCodeNameMap = new CodeNameMap("CKH", "hardware feature", prefix + "ckh.properties");
-    ckkCodeNameMap = new CodeNameMap("CKK", "key type", prefix + "ckk.properties");
-    ckmCodeNameMap = new CodeNameMap("CKM", "mechanism type", prefix + "ckm.properties");
-    ckoCodeNameMap = new CodeNameMap("CKO", "object class", prefix + "cko.properties");
-    ckpCodeNameMap = new CodeNameMap("CKP", "pseudo-random function", prefix + "ckp.properties");
-    ckrCodeNameMap = new CodeNameMap("CKR", "return value", prefix + "ckr.properties");
-    ckuCodeNameMap = new CodeNameMap("CKU", "user", prefix + "cku.properties");
-    ckzCodeNameMap = new CodeNameMap("CKZ", "salt/encoding parameter source", prefix + "ckz.properties");
+    ckaCodeNameMap = new CodeNameMap("CKA", prefix + "cka.properties", "attribute");
+    ckcCodeNameMap = new CodeNameMap("CKC", prefix + "ckc.properties", "certificate type");
+    ckdCodeNameMap = new CodeNameMap("CKD", prefix + "ckd.properties", "key derivation function");
+    ckfCodeNameMap = new CodeNameMap("CKF", prefix + "ckf.properties", "bit flag");
+    ckgCodeNameMap = new CodeNameMap("CKG", prefix + "ckg.properties", "mask generation function");
+    ckhCodeNameMap = new CodeNameMap("CKH", prefix + "ckh.properties", "hardware feature");
+    ckkCodeNameMap = new CodeNameMap("CKK", prefix + "ckk.properties", "key type");
+    ckmCodeNameMap = new CodeNameMap("CKM", prefix + "ckm.properties", "mechanism type");
+    ckoCodeNameMap = new CodeNameMap("CKO", prefix + "cko.properties", "object class");
+    ckpCodeNameMap = new CodeNameMap("CKP", prefix + "ckp.properties", "pseudo-random function");
+    ckrCodeNameMap = new CodeNameMap("CKR", prefix + "ckr.properties", "return value");
+    ckuCodeNameMap = new CodeNameMap("CKU", prefix + "cku.properties", "user");
+    ckzCodeNameMap = new CodeNameMap("CKZ", prefix + "ckz.properties", "salt/encoding parameter source");
   }
 
   /**
