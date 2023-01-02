@@ -112,14 +112,8 @@ public class EdDSAGenerateKeyPair extends TestBase {
 
     try {
       LOG.info("Success");
-      LOG.info("The public key is");
-      LOG.info("__________________________________________________");
-      LOG.info("{}", generatedPublicKey);
-      LOG.info("__________________________________________________");
-      LOG.info("The private key is");
-      LOG.info("__________________________________________________");
-      LOG.info("{}", generatedPrivateKey);
-      LOG.info("__________________________________________________");
+      LOG.info("The public key is {}", generatedPublicKey);
+      LOG.info("The private key is {}", generatedPrivateKey);
 
       LOG.info("##################################################");
       byte[] encodedPoint = session.getByteArrayAttributeValue(generatedPublicKey, CKA_EC_POINT);
@@ -142,10 +136,7 @@ public class EdDSAGenerateKeyPair extends TestBase {
       if (foundPublicKeys.length != 1) {
         LOG.error("Error: Cannot find the public key under the given ID!");
       } else {
-        LOG.info("Found public key!");
-        LOG.info("__________________________________________________");
-        LOG.info("{}", foundPublicKeys[0]);
-        LOG.info("__________________________________________________");
+        LOG.info("Found public key {}", foundPublicKeys[0]);
       }
 
       LOG.info("##################################################");

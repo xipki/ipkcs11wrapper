@@ -49,6 +49,7 @@ import iaik.pkcs.pkcs11.TokenException;
 import iaik.pkcs.pkcs11.objects.Attribute;
 import iaik.pkcs.pkcs11.objects.AttributeVector;
 import iaik.pkcs.pkcs11.objects.ByteArrayAttribute;
+import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import org.junit.Test;
 
 import java.util.*;
@@ -81,7 +82,7 @@ public class GenericFind extends TestBase {
         .attr(CKA_CLASS, CKO_PRIVATE_KEY)
         .attr(CKA_SIGN, true);
 
-    // this find operation will find all objects that posess a CKA_SIGN
+    // this find operation will find all objects that possess a CKA_SIGN
     // attribute with value true
     session.findObjectsInit(signatureKeyTemplate);
 
@@ -91,16 +92,15 @@ public class GenericFind extends TestBase {
     List<Long> signatureKeys;
     if (foundSignatureKeyObjects.length > 0) {
       signatureKeys = new Vector<>();
-      LOG.info("__________________________________________________\n{}", foundSignatureKeyObjects[0]);
+      LOG.info("handle={}, label={}", foundSignatureKeyObjects[0], getLabel(session, foundSignatureKeyObjects[0]));
       signatureKeys.add(foundSignatureKeyObjects[0]);
+
       while ((foundSignatureKeyObjects = session.findObjects(1)).length > 0
           && (0 == limit || counter < limit)) {
-        LOG.info("__________________________________________________\n{}", foundSignatureKeyObjects[0]);
+        LOG.info("handle={}, label={}", foundSignatureKeyObjects[0], getLabel(session, foundSignatureKeyObjects[0]));
         signatureKeys.add(foundSignatureKeyObjects[0]);
         counter++;
       }
-
-      LOG.info("__________________________________________________");
     } else {
       String msg = "There is no object with a CKA_SIGN attribute set to true.";
       LOG.info(msg);
@@ -126,17 +126,20 @@ public class GenericFind extends TestBase {
       long[] foundCertificateObjects;
       if ((foundCertificateObjects = session.findObjects(1)).length > 0) {
         privateKeyToCertificateTable.put(privateSignatureKeyHandle, foundCertificateObjects[0]);
-        LOG.info("The certificate for this private signature key {} is {}",
-            privateSignatureKeyHandle, foundCertificateObjects[0]);
+        LOG.info("The certificate for this private signature key {} is (handle={}, label={})",
+            privateSignatureKeyHandle, foundCertificateObjects[0], getLabel(session, foundCertificateObjects[0]));
       } else {
         LOG.info("There is no certificate for this private signature key {}", privateSignatureKeyHandle);
       }
-      LOG.info("__________________________________________________");
 
       session.findObjectsFinal();
     }
 
     LOG.info("found {} objects on this token", counter);
+  }
+
+  private static String getLabel(Session session, long hObject) throws PKCS11Exception {
+    return session.getCharAttributeStringValue(hObject, CKA_LABEL);
   }
 
 }

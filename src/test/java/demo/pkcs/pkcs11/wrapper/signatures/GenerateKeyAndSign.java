@@ -59,14 +59,8 @@ public class GenerateKeyAndSign extends TestBase {
     // no we may work with the keys...
 
     LOG.info("Success");
-    LOG.info("The public key is");
-    LOG.info("__________________________________________________");
-    LOG.info("{}", generatedRSAPublicKey);
-    LOG.info("__________________________________________________");
-    LOG.info("The private key is");
-    LOG.info("__________________________________________________");
-    LOG.info("{}", generatedRSAPrivateKey);
-    LOG.info("__________________________________________________");
+    LOG.info("The  public key is {}", generatedRSAPublicKey);
+    LOG.info("The private key is {}", generatedRSAPrivateKey);
 
     LOG.info("##################################################");
     LOG.info("Signing Data... ");
