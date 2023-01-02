@@ -557,7 +557,7 @@ public class TokenInfo {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(1000)
-        .append("\nManufacturer ID: ").append(manufacturerID)
+        .append("Manufacturer ID: ").append(manufacturerID)
         .append("\nModel: ").append(model)
         .append("\nSerial Number: ").append(serialNumber)
         .append("\nMaximum Session Count: ").append(maxCountToString(maxSessionCount))

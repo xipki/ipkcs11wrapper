@@ -65,7 +65,7 @@ public class Functions {
     private final Map<Long, String> codeNameMap;
     private final Map<String, Long> nameCodeMap;
 
-    CodeNameMap(String type, String resourcePath) {
+    CodeNameMap(String prefix, String type, String resourcePath) {
       this.type = type;
       codeNameMap = new HashMap<>();
       nameCodeMap = new HashMap<>();
@@ -87,11 +87,23 @@ public class Functions {
             code = Long.parseLong(propName);
           }
 
-          String mainName = tokens.nextToken();
-          codeNameMap.put(code, mainName);
+          if (codeNameMap.containsKey(code)) {
+            throw new IllegalArgumentException("duplicated definition of " + prefix + ": " + toFullHex(code));
+          }
 
+          boolean first = true;
           while (tokens.hasMoreTokens()) {
-            nameCodeMap.put(tokens.nextToken(), code);
+            String name = tokens.nextToken();
+            if (!name.startsWith(prefix)) {
+              throw new IllegalArgumentException(name + " does not start with " + prefix);
+            }
+
+            if (first) {
+              codeNameMap.put(code, name);
+              first = false;
+            } else {
+              nameCodeMap.put(name, code);
+            }
           }
         }
 
@@ -185,8 +197,10 @@ public class Functions {
   private static final CodeNameMap ckkCodeNameMap;
   private static final CodeNameMap ckmCodeNameMap;
   private static final CodeNameMap ckoCodeNameMap;
+  private static final CodeNameMap ckpCodeNameMap;
   private static final CodeNameMap ckrCodeNameMap;
   private static final CodeNameMap ckuCodeNameMap;
+  private static final CodeNameMap ckzCodeNameMap;
 
   private static final Map<Long, String> hashMechCodeToHashNames;
 
@@ -205,16 +219,18 @@ public class Functions {
     hashMechCodeToHashNames.put(CKM_SHA3_512,   "SHA3-512");
 
     String prefix = "/iaik/pkcs/pkcs11/wrapper/";
-    ckaCodeNameMap = new CodeNameMap("attribute", prefix + "cka.properties");
-    ckcCodeNameMap = new CodeNameMap("certificate type", prefix + "ckc.properties");
-    ckdCodeNameMap = new CodeNameMap("key derivation function", prefix + "ckd.properties");
-    ckgCodeNameMap = new CodeNameMap("mask generation function", prefix + "ckg.properties");
-    ckhCodeNameMap = new CodeNameMap("hardware feature", prefix + "ckh.properties");
-    ckkCodeNameMap = new CodeNameMap("key type", prefix + "ckk.properties");
-    ckmCodeNameMap = new CodeNameMap("mechanism type", prefix + "ckm.properties");
-    ckoCodeNameMap = new CodeNameMap("object class", prefix + "cko.properties");
-    ckrCodeNameMap = new CodeNameMap("return value", prefix + "ckr.properties");
-    ckuCodeNameMap = new CodeNameMap("user", prefix + "cku.properties");
+    ckaCodeNameMap = new CodeNameMap("CKA", "attribute", prefix + "cka.properties");
+    ckcCodeNameMap = new CodeNameMap("CKC", "certificate type", prefix + "ckc.properties");
+    ckdCodeNameMap = new CodeNameMap("CKD", "key derivation function", prefix + "ckd.properties");
+    ckgCodeNameMap = new CodeNameMap("CKG", "mask generation function", prefix + "ckg.properties");
+    ckhCodeNameMap = new CodeNameMap("CKH", "hardware feature", prefix + "ckh.properties");
+    ckkCodeNameMap = new CodeNameMap("CKK", "key type", prefix + "ckk.properties");
+    ckmCodeNameMap = new CodeNameMap("CKM", "mechanism type", prefix + "ckm.properties");
+    ckoCodeNameMap = new CodeNameMap("CKO", "object class", prefix + "cko.properties");
+    ckpCodeNameMap = new CodeNameMap("CKP", "pseudo-random function", prefix + "ckp.properties");
+    ckrCodeNameMap = new CodeNameMap("CKR", "return value", prefix + "ckr.properties");
+    ckuCodeNameMap = new CodeNameMap("CKU", "user", prefix + "cku.properties");
+    ckzCodeNameMap = new CodeNameMap("CKZ", "salt/encoding parameter source", prefix + "ckz.properties");
   }
 
   /**
@@ -394,6 +410,28 @@ public class Functions {
   }
 
   /**
+   * Converts the long value code of a pseudo-random function (CKP) to a name.
+   *
+   * @param code
+   *          The code of the pseudo-random function to be converted to a string.
+   * @return The string representation of the pseudo-random function.
+   */
+  public static String ckpCodeToName(long code) {
+    return ckpCodeNameMap.codeToString(code);
+  }
+
+  /**
+   * Converts the pseudo-random function (CKP) name to code value.
+   *
+   * @param name
+   *          The name of the pseudo-random function to be converted to a code.
+   * @return The code representation of the pseudo-random function.
+   */
+  public static long ckpNameToCode(String name) {
+    return ckpCodeNameMap.stringToCode(name);
+  }
+
+  /**
    * Converts the long value code of a return code (CKR) to a name.
    *
    * @param code
@@ -435,6 +473,28 @@ public class Functions {
    */
   public static long ckuNameToCode(String name) {
     return ckuCodeNameMap.stringToCode(name);
+  }
+
+  /**
+   * Converts the long value code of a salt/encoding parameter source (CKZ) to a name.
+   *
+   * @param code
+   *          The code of the salt/encoding parameter source to be converted to a string.
+   * @return The string representation of the salt/encoding parameter source.
+   */
+  public static String ckzCodeToName(long code) {
+    return ckzCodeNameMap.codeToString(code);
+  }
+
+  /**
+   * Converts the salt/encoding parameter source (CKZ) name to code value.
+   *
+   * @param name
+   *          The name of the salt/encoding parameter source to be converted to a code.
+   * @return The code representation of the salt/encoding parameter source.
+   */
+  public static long ckzNameToCode(String name) {
+    return ckzCodeNameMap.stringToCode(name);
   }
 
   /**

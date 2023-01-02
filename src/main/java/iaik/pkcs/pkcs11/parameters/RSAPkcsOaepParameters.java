@@ -43,6 +43,7 @@
 package iaik.pkcs.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 import sun.security.pkcs11.wrapper.CK_RSA_PKCS_OAEP_PARAMS;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKZ_DATA_SPECIFIED;
@@ -158,17 +159,8 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
    */
   @Override
   public String toString() {
-    String sourceStr;
-    if (source == 0) {
-      sourceStr = "Empty";
-    } else if (source == CKZ_DATA_SPECIFIED) {
-      sourceStr = "Data Specified";
-    } else {
-      sourceStr = "<unknown>";
-    }
-
-    String upperStr = super.toString();
-    return upperStr + "\n  Source: " + sourceStr + "\n  Source Data (hex): " + Util.toHex(sourceData);
+    return super.toString() + "\n  Source: " + Functions.ckzCodeToName(source)
+        + "\n  Source Data (hex): " + Util.toHex(sourceData);
   }
 
 }

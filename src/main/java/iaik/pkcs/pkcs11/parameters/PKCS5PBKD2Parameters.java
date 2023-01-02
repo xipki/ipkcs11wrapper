@@ -43,6 +43,7 @@
 package iaik.pkcs.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 import sun.security.pkcs11.wrapper.CK_PKCS5_PBKD2_PARAMS;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKP_PKCS5_PBKD2_HMAC_SHA1;
@@ -104,11 +105,12 @@ public class PKCS5PBKD2Parameters implements Parameters {
   public PKCS5PBKD2Parameters(long saltSource, byte[] saltSourceData,
       long iterations, long pseudoRandomFunction, byte[] pseudoRandomFunctionData) {
     if (saltSource != CKZ_SALT_SPECIFIED) {
-      throw new IllegalArgumentException("Illegal value for argument 'saltSource': " + Long.toHexString(saltSource));
+      throw new IllegalArgumentException(
+          "Illegal value for argument 'saltSource': " + Functions.ckzCodeToName(saltSource));
     }
     if (pseudoRandomFunction != CKP_PKCS5_PBKD2_HMAC_SHA1) {
       throw new IllegalArgumentException("Illegal value for argument 'pseudoRandomFunction': "
-          + Long.toHexString(pseudoRandomFunction));
+          + Functions.ckpCodeToName(pseudoRandomFunction));
     }
     this.saltSource = saltSource;
     this.saltSourceData = Util.requireNonNull("saltSourceData", saltSourceData);
@@ -230,7 +232,7 @@ public class PKCS5PBKD2Parameters implements Parameters {
   public void setPseudoRandomFunction(long pseudoRandomFunction) {
     if (pseudoRandomFunction != CKP_PKCS5_PBKD2_HMAC_SHA1) {
       throw new IllegalArgumentException(
-        "Illegal value for argument 'pseudoRandomFunction': " + Long.toHexString(pseudoRandomFunction));
+        "Illegal value for argument 'pseudoRandomFunction': " + Functions.ckpCodeToName(pseudoRandomFunction));
     }
     this.pseudoRandomFunction = pseudoRandomFunction;
   }
@@ -254,11 +256,10 @@ public class PKCS5PBKD2Parameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  Salt Source: " + ((saltSource == CKZ_SALT_SPECIFIED) ? "Salt Specified" : "<unknown>") +
+    return "  Salt Source: " + Functions.ckzCodeToName(saltSource) +
         "\n  Salt Source Data (hex): " + Util.toHex(saltSourceData) +
         "\n  Iterations (dec): " + iterations +
-        "\n  Pseudo-Random Function: " +
-            ((pseudoRandomFunction == CKP_PKCS5_PBKD2_HMAC_SHA1) ? "HMAC SHA-1" : "<unknown>") +
+        "\n  Pseudo-Random Function: " + Functions.ckpCodeToName(pseudoRandomFunction) +
         "\n  Pseudo-Random Function Data (hex): " + Util.toHex(pseudoRandomFunctionData);
   }
 
