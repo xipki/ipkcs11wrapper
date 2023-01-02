@@ -111,7 +111,7 @@ abstract public class DHKeyDerivationParameters implements Parameters {
   public void setKeyDerivationFunction(long kdf) {
     if ((kdf != CKD_NULL) && (kdf != CKD_SHA1_KDF)
         && (kdf != CKD_SHA1_KDF_ASN1) && (kdf != CKD_SHA1_KDF_CONCATENATE)) {
-      throw new IllegalArgumentException("Illegal value for argument 'kdf': " + Long.toHexString(kdf));
+      throw new IllegalArgumentException("Illegal value for argument 'kdf': " + Functions.ckdCodeToName(kdf));
     }
     this.kdf = kdf;
   }
