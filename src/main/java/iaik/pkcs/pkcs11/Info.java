@@ -149,7 +149,7 @@ public class Info {
     else if (!(otherObject instanceof Info)) return false;
 
     Info other = (Info) otherObject;
-    return cryptokiVersion.equals(other.cryptokiVersion) && manufacturerID.equals(other.manufacturerID)
+    return    cryptokiVersion.equals(other.cryptokiVersion)    && manufacturerID.equals(other.manufacturerID)
         && libraryDescription.equals(other.libraryDescription) && libraryVersion.equals(other.libraryVersion);
   }
 
@@ -162,7 +162,7 @@ public class Info {
   @Override
   public int hashCode() {
     return cryptokiVersion.hashCode() ^ manufacturerID.hashCode()
-      ^ libraryDescription.hashCode() ^ libraryVersion.hashCode();
+        ^ libraryDescription.hashCode() ^ libraryVersion.hashCode();
   }
 
 }

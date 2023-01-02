@@ -143,8 +143,7 @@ public class SessionInfo {
    */
   @Override
   public String toString() {
-    return "State: " + state +
-        "\nDevice Error: 0x" + Long.toHexString(deviceError) +
+    return "State: " + state + "\nDevice Error: 0x" + Long.toHexString(deviceError) +
         "\nFlags: 0x" + Functions.toFullHex(flags) +
         (isRwSession() ?     "\n    Read/write    " : "\nRead-only") +
         (isSerialSession() ? "\n    Serial session" : "\nParallel session");

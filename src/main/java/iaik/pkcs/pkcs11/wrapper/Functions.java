@@ -192,6 +192,7 @@ public class Functions {
   private static final CodeNameMap ckaCodeNameMap;
   private static final CodeNameMap ckcCodeNameMap;
   private static final CodeNameMap ckdCodeNameMap;
+  private static final CodeNameMap ckfCodeNameMap;
   private static final CodeNameMap ckgCodeNameMap;
   private static final CodeNameMap ckhCodeNameMap;
   private static final CodeNameMap ckkCodeNameMap;
@@ -222,6 +223,7 @@ public class Functions {
     ckaCodeNameMap = new CodeNameMap("CKA", "attribute", prefix + "cka.properties");
     ckcCodeNameMap = new CodeNameMap("CKC", "certificate type", prefix + "ckc.properties");
     ckdCodeNameMap = new CodeNameMap("CKD", "key derivation function", prefix + "ckd.properties");
+    ckfCodeNameMap = new CodeNameMap("CKF", "bit flag", prefix + "ckf.properties");
     ckgCodeNameMap = new CodeNameMap("CKG", "mask generation function", prefix + "ckg.properties");
     ckhCodeNameMap = new CodeNameMap("CKH", "hardware feature", prefix + "ckh.properties");
     ckkCodeNameMap = new CodeNameMap("CKK", "key type", prefix + "ckk.properties");
@@ -297,6 +299,28 @@ public class Functions {
    */
   public static long ckdNameToCode(String name) {
     return ckdCodeNameMap.stringToCode(name);
+  }
+
+  /**
+   * Converts the long value code of a bit flag (CKF) to a name.
+   *
+   * @param code
+   *          The code of the bit flag to be converted to a string.
+   * @return The string representation of the bit flag.
+   */
+  public static String ckfCodeToName(long code) {
+    return ckfCodeNameMap.codeToString(code);
+  }
+
+  /**
+   * Converts the bit flag (CKF) name to code value.
+   *
+   * @param name
+   *          The name of the bit flag to be converted to a code.
+   * @return The code representation of the bit flag.
+   */
+  public static long ckfNameToCode(String name) {
+    return ckfCodeNameMap.stringToCode(name);
   }
 
   /**

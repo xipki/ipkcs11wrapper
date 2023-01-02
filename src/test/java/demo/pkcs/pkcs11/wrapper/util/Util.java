@@ -56,8 +56,7 @@ import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKR_USER_ALREADY_LOGGED_IN;
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKU_USER;
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * This class contains only static methods. It is the place for all functions
@@ -109,7 +108,7 @@ public class Util {
         return null;
       } else {
         Token token = slots[slotIndex].getToken();
-        if (!token.getTokenInfo().isTokenInitialized()) {
+        if (!token.getTokenInfo().hasFlagBit(CKF_TOKEN_INITIALIZED)) {
           throw new IllegalArgumentException("token is not initialized");
         } else {
           return token;
@@ -118,7 +117,7 @@ public class Util {
     } else {
       // return the first initialized token
       for (Slot slot : slots) {
-        if (slot.getToken().getTokenInfo().isTokenInitialized()) {
+        if (slot.getToken().getTokenInfo().hasFlagBit(CKF_TOKEN_INITIALIZED)) {
           return slot.getToken();
         }
       }
@@ -153,8 +152,8 @@ public class Util {
     Session session = token.openSession(rwSession);
 
     TokenInfo tokenInfo = token.getTokenInfo();
-    if (tokenInfo.isLoginRequired()) {
-      if (tokenInfo.isProtectedAuthenticationPath()) {
+    if (tokenInfo.hasFlagBit(CKF_LOGIN_REQUIRED)) {
+      if (tokenInfo.hasFlagBit(CKF_PROTECTED_AUTHENTICATION_PATH)) {
         System.out.print("Please enter the user-PIN at the PIN-pad of your reader.");
         System.out.flush();
         // the token prompts the PIN by other means; e.g. PIN-pad

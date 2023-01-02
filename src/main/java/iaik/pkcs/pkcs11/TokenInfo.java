@@ -340,7 +340,6 @@ public class TokenInfo {
    * was created and not the time the application called this method.
    *
    * @return The current time on the token's clock.
-   * @see #isClockOnToken()
    */
   public Date getTime() {
     return time;
@@ -354,199 +353,8 @@ public class TokenInfo {
     return flags;
   }
 
-  /**
-   * Check, if the token has a random number generator.
-   *
-   * @return True, if the token has a random number generator. False,
-   *         otherwise.
-   */
-  public boolean isRNG() {
-    return hasFlag(CKF_RNG);
-  }
-
-  /**
-   * Check, whether the token is write-protected.
-   *
-   * @return True, if the token is write-protected. False, otherwise.
-   */
-  public boolean isWriteProtected() {
-    return hasFlag(CKF_WRITE_PROTECTED);
-
-  }
-
-  /**
-   * Check, if the token requires the user to log in before certain operations
-   * can be performed.
-   *
-   * @return True, if the token requires the user to log in before certain
-   *         operations can be performed. False, otherwise.
-   */
-  public boolean isLoginRequired() {
-    return hasFlag(CKF_LOGIN_REQUIRED);
-  }
-
-  /**
-   * Check, if the user-PIN is already initialized.
-   *
-   * @return True, if the user-PIN is already initialized. False, otherwise.
-   */
-  public boolean isUserPinInitialized() {
-    return hasFlag(CKF_USER_PIN_INITIALIZED);
-  }
-
-  /**
-   * Check, if a successful save of a session's cryptographic operations
-   * state always contains all keys needed to restore the state of the
-   * session.
-   *
-   * @return True, if a successful save of a session's cryptographic
-   *         operations state always contains all keys needed to restore the
-   *         state of the session. False, otherwise.
-   */
-  public boolean isRestoreKeyNotNeeded() {
-    return hasFlag(CKF_RESTORE_KEY_NOT_NEEDED);
-  }
-
-  /**
-   * Check, if the token has an own clock.
-   *
-   * @return True, if the token has its own clock. False, otherwise.
-   */
-  public boolean isClockOnToken() {
-    return hasFlag(CKF_CLOCK_ON_TOKEN);
-  }
-
-  /**
-   * Check, if the token has a protected authentication path. This means that
-   * a user may log in without providing a PIN to the login method, because
-   * the token has other means to authenticate the user; e.g. a PIN-pad on the
-   * reader or some biometric authentication.
-   *
-   * @return True, if the token has a protected authentication path. False,
-   *         otherwise.
-   */
-  public boolean isProtectedAuthenticationPath() {
-    return hasFlag(CKF_PROTECTED_AUTHENTICATION_PATH);
-  }
-
-  /**
-   * Check, if the token supports dual crypto operations.
-   *
-   * @return True, if the token supports dual crypto operations. False,
-   *         otherwise.
-   */
-  public boolean isDualCryptoOperations() {
-    return hasFlag(CKF_DUAL_CRYPTO_OPERATIONS);
-  }
-
-  /**
-   * Check, if the token is already initialized.
-   *
-   * @return True, if the token is already initialized. False, otherwise.
-   */
-  public boolean isTokenInitialized() {
-    return hasFlag(CKF_TOKEN_INITIALIZED);
-  }
-
-  /**
-   * Check, if the token supports secondary authentication for private key
-   * objects.
-   *
-   * @return True, if the token supports secondary authentication. False,
-   *         otherwise.
-   */
-  public boolean isSecondaryAuthentication() {
-    return hasFlag(CKF_SECONDARY_AUTHENTICATION);
-  }
-
-  /**
-   * Check, if the user-PIN has been entered incorrectly at least once since
-   * the last successful authentication.
-   *
-   * @return True, if the user-PIN has been entered incorrectly at least
-   *         one since the last successful authentication. False, otherwise.
-   */
-  public boolean isUserPinCountLow() {
-    return hasFlag(CKF_USER_PIN_COUNT_LOW);
-  }
-
-  /**
-   * Check, if the user has just one try left to supply the correct PIN before
-   * the user-PIN gets locked.
-   *
-   * @return True, if the user has just one try left to supply the correct PIN
-   *         before the user-PIN gets locked. False, otherwise.
-   */
-  public boolean isUserPinFinalTry() {
-    return hasFlag(CKF_USER_PIN_FINAL_TRY);
-  }
-
-  /**
-   * Check, if the user-PIN is locked.
-   *
-   * @return True, if the user-PIN is locked. False, otherwise.
-   */
-  public boolean isUserPinLocked() {
-    return hasFlag(CKF_USER_PIN_LOCKED);
-  }
-
-  /**
-   * Check, if the user PIN value is the default value set by token
-   * initialization or manufacturing.
-   *
-   * @return True, if the user PIN value is the default value set by token
-   *         initialization or manufacturing. False, otherwise.
-   */
-  public boolean isUserPinToBeChanged() {
-    return hasFlag(CKF_USER_PIN_TO_BE_CHANGED);
-  }
-
-  /**
-   * Check, if the security officer-PIN has been entered incorrectly at least
-   * once since the last successful authentication.
-   *
-   * @return True, if the security officer-PIN has been entered
-   *         incorrectly at least one since the last successful
-   *         authentication. False, otherwise.
-   */
-  public boolean isSoPinCountLow() {
-    return hasFlag(CKF_SO_PIN_COUNT_LOW);
-  }
-
-  /**
-   * Check, if the security officer has just one try left to supply the
-   * correct PIN before the security officer-PIN gets locked.
-   *
-   * @return True, if the security officer has just one try left to supply the
-   *         correct PIN before the security officer-PIN gets locked. False,
-   *         otherwise.
-   */
-  public boolean isSoPinFinalTry() {
-    return hasFlag(CKF_SO_PIN_FINAL_TRY);
-  }
-
-  /**
-   * Check, if the security officer-PIN is locked.
-   *
-   * @return True, if the security officer-PIN is locked. False, otherwise.
-   */
-  public boolean isSoPinLocked() {
-    return hasFlag(CKF_SO_PIN_LOCKED);
-  }
-
-  /**
-   * Check, if the security officer PIN value is the default value set by
-   * token initialization or manufacturing.
-   *
-   * @return True, if the security officer PIN value is the default value set
-   *         by token initialization or manufacturing. False, otherwise.
-   */
-  public boolean isSoPinToBeChanged() {
-    return hasFlag(CKF_SO_PIN_TO_BE_CHANGED);
-  }
-
-  private boolean hasFlag(long mask) {
-    return (flags & mask) != 0L;
+  public boolean hasFlagBit(long flagMask) {
+    return (flags & flagMask) != 0L;
   }
 
   /**
@@ -575,32 +383,16 @@ public class TokenInfo {
         .append("\nTime: ").append(time)
         .append("\nFlags: 0x").append(Functions.toFullHex(flags));
 
-    addFlag(sb, "random number generator", isRNG());
-    addFlag(sb, "write protected", isWriteProtected());
-    addFlag(sb, "login required", isLoginRequired());
-    addFlag(sb, "user PIN initialized", isUserPinInitialized());
-    addFlag(sb, "restore key not needed", isRestoreKeyNotNeeded());
-    addFlag(sb, "clock on token", isClockOnToken());
-    addFlag(sb, "protected authentication path", isProtectedAuthenticationPath());
-    addFlag(sb, "dual crypto operations", isDualCryptoOperations());
-    addFlag(sb, "token initialized", isTokenInitialized());
-    addFlag(sb, "secondary authentication", isSecondaryAuthentication());
-    addFlag(sb, "user PIN-count low", isUserPinCountLow());
-    addFlag(sb, "user PIN final try", isUserPinFinalTry());
-    addFlag(sb, "user PIN locked", isUserPinLocked());
-    addFlag(sb, "User PIN to be changed", isUserPinToBeChanged());
-    addFlag(sb, "Security Officer PIN-count low", isSoPinCountLow());
-    addFlag(sb, "Security Officer PIN final try", isSoPinFinalTry());
-    addFlag(sb, "Security Officer PIN locked", isSoPinLocked());
-    addFlag(sb, "Security Officer PIN to be changed", isSoPinToBeChanged());
+    Util.toStringFlags(sb, "", flags,
+        CKF_RNG,                    CKF_WRITE_PROTECTED,        CKF_LOGIN_REQUIRED,
+        CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN,         CKF_PROTECTED_AUTHENTICATION_PATH,
+        CKF_DUAL_CRYPTO_OPERATIONS, CKF_TOKEN_INITIALIZED,      CKF_SECONDARY_AUTHENTICATION,
+        CKF_USER_PIN_INITIALIZED,   CKF_USER_PIN_COUNT_LOW,     CKF_USER_PIN_FINAL_TRY,
+        CKF_USER_PIN_LOCKED,        CKF_USER_PIN_TO_BE_CHANGED,
+        CKF_SO_PIN_COUNT_LOW,       CKF_SO_PIN_FINAL_TRY,
+        CKF_SO_PIN_LOCKED,          CKF_SO_PIN_TO_BE_CHANGED);
 
     return sb.toString();
-  }
-
-  static void addFlag(StringBuilder sb, String text, boolean flag) {
-    if (flag) {
-      sb.append("\n    ").append(text);
-    }
   }
 
   private static String maxCountToString(long count) {
@@ -631,21 +423,14 @@ public class TokenInfo {
 
     TokenInfo other = (TokenInfo) otherObject;
     return label.equals(other.label)
-        && manufacturerID.equals(other.manufacturerID)
-        && model.equals(other.model)
-        && serialNumber.equals(other.serialNumber)
-        && (maxSessionCount == other.maxSessionCount)
-        && (sessionCount == other.sessionCount)
-        && (maxRwSessionCount == other.maxRwSessionCount)
-        && (rwSessionCount == other.rwSessionCount)
-        && (maxPinLen == other.maxPinLen) && (minPinLen == other.minPinLen)
-        && (totalPublicMemory == other.totalPublicMemory)
-        && (freePublicMemory == other.freePublicMemory)
-        && (totalPrivateMemory == other.totalPrivateMemory)
-        && (freePrivateMemory == other.freePrivateMemory)
-        && hardwareVersion.equals(other.hardwareVersion)
-        && firmwareVersion.equals(other.firmwareVersion)
-        && time.equals(other.time)
+        && manufacturerID.equals(other.manufacturerID)      && model.equals(other.model)
+        && serialNumber.equals(other.serialNumber)          && time.equals(other.time)
+        && hardwareVersion.equals(other.hardwareVersion)    && firmwareVersion.equals(other.firmwareVersion)
+        && (maxSessionCount    == other.maxSessionCount)    && (sessionCount      == other.sessionCount)
+        && (maxRwSessionCount  == other.maxRwSessionCount)  && (rwSessionCount    == other.rwSessionCount)
+        && (totalPublicMemory  == other.totalPublicMemory)  && (freePublicMemory  == other.freePublicMemory)
+        && (totalPrivateMemory == other.totalPrivateMemory) && (freePrivateMemory == other.freePrivateMemory)
+        && (maxPinLen          == other.maxPinLen)          && (minPinLen         == other.minPinLen)
         && (flags == other.flags);
   }
 

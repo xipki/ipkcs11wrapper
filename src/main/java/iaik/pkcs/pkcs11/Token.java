@@ -164,8 +164,7 @@ public class Token {
     if (this == otherObject) return true;
     else if (!(otherObject instanceof Token)) return false;
 
-    Token other = (Token) otherObject;
-    return this.slot.equals(other.slot);
+    return this.slot.equals(((Token) otherObject).slot);
   }
 
   /**
@@ -266,9 +265,8 @@ public class Token {
     }
 
     try {
-      CK_MECHANISM_INFO ckMechanismInfo =
-          slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism);
-      return new MechanismInfo(ckMechanismInfo);
+      CK_MECHANISM_INFO info = slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism);
+      return new MechanismInfo(info);
     } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
       throw new PKCS11Exception(ex);
     }

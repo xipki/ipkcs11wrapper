@@ -181,9 +181,7 @@ public class SlotInfo {
         .append("\nHardware Version: ").append(hardwareVersion)
         .append("\nFirmware Version: ").append(firmwareVersion)
         .append("\nFlags: 0X").append(Functions.toFullHex(flags));
-    TokenInfo.addFlag(sb, "token present", isTokenPresent());
-    TokenInfo.addFlag(sb, "removable device", isRemovableDevice());
-    TokenInfo.addFlag(sb, "hardware slot", isHwSlot());
+    Util.toStringFlags(sb, "", flags, CKF_TOKEN_PRESENT, CKF_REMOVABLE_DEVICE, CKF_HW);
     return sb.toString();
   }
 

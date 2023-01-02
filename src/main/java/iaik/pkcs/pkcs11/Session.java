@@ -1372,8 +1372,7 @@ public class Session {
    *              If unwrapping the key or creating a new key object failed.
    */
   public long unwrapKey(Mechanism mechanism, long unwrappingKeyHandle,
-                        byte[] wrappedKey, AttributeVector keyTemplate)
-      throws TokenException {
+                        byte[] wrappedKey, AttributeVector keyTemplate) throws TokenException {
     Util.requireNonNull("wrappedKey", wrappedKey);
 
     try {
@@ -1514,14 +1513,9 @@ public class Session {
     } else if (params instanceof X942DH2KeyDerivationParameters) {
 //      return new CK_MECHANISM(code, ((X942DH2KeyDerivationParameters) params).getPKCS11ParamsObject());
     } else {
-      Constructor<?> constructor;
-      if (params instanceof CCMParameters) {
-        constructor = constructor_CK_MECHANISM_CCM;
-      } else if (params instanceof GCMParameters) {
-        constructor = constructor_CK_MECHANISM_GCM;
-      } else {
-        constructor = null;
-      }
+      Constructor<?> constructor = (params instanceof CCMParameters) ? constructor_CK_MECHANISM_CCM
+          : (params instanceof GCMParameters) ? constructor_CK_MECHANISM_GCM
+          : null;
 
       if (constructor == null) {
         throw new IllegalArgumentException("could not find constructor");

@@ -102,11 +102,10 @@ public class Mechanism {
   @Override
   public boolean equals(Object otherObject) {
     if (this == otherObject) return true;
-    else  if (!(otherObject instanceof Mechanism)) return false;
+    else if (!(otherObject instanceof Mechanism)) return false;
 
     Mechanism other = (Mechanism) otherObject;
-    return (pkcs11MechanismCode == other.pkcs11MechanismCode)
-        && Objects.equals(parameters, other.parameters);
+    return (pkcs11MechanismCode == other.pkcs11MechanismCode) && Objects.equals(parameters, other.parameters);
   }
 
   /**

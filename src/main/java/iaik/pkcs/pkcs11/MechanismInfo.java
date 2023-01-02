@@ -137,201 +137,18 @@ public class MechanismInfo {
     return maxKeySize;
   }
 
-  /**
-   * Check, if this mechanism is performed in hardware.
-   *
-   * @return True, if this mechanism is performed in hardware.
-   */
-  public boolean isHw() {
-    return hasFlag(CKF_HW);
+  public boolean hasFlagBit(long flagMask) {
+    return (flags & flagMask) != 0L;
   }
 
   /**
-   * Check, if this mechanism can be used for encryption.
+   * Set the given feature flag.
    *
-   * @return True, if this mechanism can be used for encryption.
+   * @param flagMask
+   *          The mask of the flag bit(s).
    */
-  public boolean isEncrypt() {
-    return hasFlag(CKF_ENCRYPT);
-  }
-
-  /**
-   * Check, if this mechanism can be used for decryption.
-   *
-   * @return True, if this mechanism can be used for decryption.
-   */
-  public boolean isDecrypt() {
-    return hasFlag(CKF_DECRYPT);
-  }
-
-  /**
-   * Check, if this mechanism can be used for digesting.
-   *
-   * @return True, if this mechanism can be used for digesting.
-   */
-  public boolean isDigest() {
-    return hasFlag(CKF_DIGEST);
-  }
-
-  /**
-   * Check, if this mechanism can be used for signing.
-   *
-   * @return True, if this mechanism can be used for signing.
-   */
-  public boolean isSign() {
-    return hasFlag(CKF_SIGN);
-  }
-
-  /**
-   * Check, if this mechanism can be used for signing with data recovery.
-   *
-   * @return True, if this mechanism can be used for signing with data
-   *         recovery.
-   */
-  public boolean isSignRecover() {
-    return hasFlag(CKF_SIGN_RECOVER);
-  }
-
-  /**
-   * Check, if this mechanism can be used for verification.
-   *
-   * @return True, if this mechanism can be used for verification.
-   */
-  public boolean isVerify() {
-    return hasFlag(CKF_VERIFY);
-  }
-
-  /**
-   * Check, if this mechanism can be used for verification with data recovery.
-   *
-   * @return True, if this mechanism can be used for verification with data
-   *         recovery.
-   */
-  public boolean isVerifyRecover() {
-    return hasFlag(CKF_VERIFY_RECOVER);
-  }
-
-  /**
-   * Check, if this mechanism can be used for secret key generation.
-   *
-   * @return True, if this mechanism can be used for secret key generation.
-   */
-  public boolean isGenerate() {
-    return hasFlag(CKF_GENERATE);
-  }
-
-  /**
-   * Check, if this mechanism can be used for key-pair generation.
-   *
-   * @return True, if this mechanism can be used for key-pair generation.
-   */
-  public boolean isGenerateKeyPair() {
-    return hasFlag(CKF_GENERATE_KEY_PAIR);
-  }
-
-  /**
-   * Check, if this mechanism can be used for key wrapping.
-   *
-   * @return True, if this mechanism can be used for key wrapping.
-   */
-  public boolean isWrap() {
-    return hasFlag(CKF_WRAP);
-  }
-
-  /**
-   * Check, if this mechanism can be used for key unwrapping.
-   *
-   * @return True, if this mechanism can be used for key unwrapping.
-   */
-  public boolean isUnwrap() {
-    return hasFlag(CKF_UNWRAP);
-  }
-
-  /**
-   * Check, if this mechanism can be used for key derivation.
-   *
-   * @return True, if this mechanism can be used for key derivation.
-   */
-  public boolean isDerive() {
-    return hasFlag(CKF_DERIVE);
-  }
-
-  /**
-   * Check, if this mechanism can be used with EC domain parameters over Fp.
-   *
-   * @return True, if this mechanism can be used with EC domain parameters
-   *         over Fp.
-   */
-  public boolean isEcFp() {
-    return hasFlag(CKF_EC_F_P);
-  }
-
-  /**
-   * Check, if this mechanism can be used with EC domain parameters over F2m.
-   *
-   * @return True, if this mechanism can be used with EC domain parameters
-   *         over F2m.
-   */
-  public boolean isEcF2m() {
-    return hasFlag(CKF_EC_F_2M);
-  }
-
-  /**
-   * Check, if this mechanism can be used with EC domain parameters of the
-   * choice ecParameters.
-   *
-   * @return True, if this mechanism can be used with EC domain parameters of
-   *         the choice ecParameters.
-   */
-  public boolean isEcEcParameters() {
-    return hasFlag(CKF_EC_ECPARAMETERS);
-  }
-
-  /**
-   * Check, if this mechanism can be used with EC domain parameters of the
-   * choice namedCurve.
-   *
-   * @return True, if this mechanism can be used with EC domain parameters of
-   *         the choice namedCurve.
-   */
-  public boolean isEcNamedCurve() {
-    return hasFlag(CKF_EC_OID);
-  }
-
-  /**
-   * Check, if this mechanism can be used with elliptic curve point
-   * uncompressed.
-   *
-   * @return True, if this mechanism can be used with elliptic curve point
-   *         uncompressed.
-   */
-  public boolean isEcUncompress() {
-    return hasFlag(CKF_EC_UNCOMPRESS);
-  }
-
-  /**
-   * Check, if this mechanism can be used with elliptic curve point
-   * compressed.
-   *
-   * @return True, if this mechanism can be used with elliptic curve point
-   *         compressed.
-   */
-  public boolean isEcCompress() {
-    return hasFlag(CKF_EC_COMPRESS);
-  }
-
-  /**
-   * Check, if there is an extension to the flags; false, if no extensions.
-   * Must be false for this version of PKCS#11.
-   *
-   * @return False for this version.
-   */
-  public boolean isExtension() {
-    return hasFlag(CKF_EXTENSION);
-  }
-
-  private boolean hasFlag(long mask) {
-    return (flags & mask) != 0L;
+  private void setFlagBit(long flagMask) {
+    flags |= flagMask;
   }
 
   /**
@@ -353,218 +170,6 @@ public class MechanismInfo {
    */
   public void setMaxKeySize(long maxKeySize) {
     this.maxKeySize = maxKeySize;
-  }
-
-  /**
-   * Set, if this mechanism is performed in hardware.
-   *
-   * @param hw
-   *          True, if this mechanism is performed in hardware.
-   */
-  public void setHw(boolean hw) {
-    setFlagBit(CKF_HW, hw);
-  }
-
-  /**
-   * Set if this mechanism can be used for encryption.
-   *
-   * @param encrypt
-   *          True, if this mechanism can be used for encryption.
-   */
-  public void setEncrypt(boolean encrypt) {
-    setFlagBit(CKF_ENCRYPT, encrypt);
-  }
-
-  /**
-   * Set if this mechanism can be used for decryption.
-   *
-   * @param decrypt
-   *          True, if this mechanism can be used for decryption.
-   */
-  public void setDecrypt(boolean decrypt) {
-    setFlagBit(CKF_DECRYPT, decrypt);
-  }
-
-  /**
-   * Set if this mechanism can be used for digesting.
-   *
-   * @param digest
-   *          True, if this mechanism can be used for digesting.
-   */
-  public void setDigest(boolean digest) {
-    setFlagBit(CKF_DIGEST, digest);
-  }
-
-  /**
-   * Set if this mechanism can be used for signing.
-   *
-   * @param sign
-   *          True, if this mechanism can be used for signing.
-   */
-  public void setSign(boolean sign) {
-    setFlagBit(CKF_SIGN, sign);
-  }
-
-  /**
-   * Set if this mechanism can be used for signing with data recovery.
-   *
-   * @param signRecover
-   *          True, if this mechanism can be used for signing with data
-   *          recovery.
-   */
-  public void setSignRecover(boolean signRecover) {
-    setFlagBit(CKF_SIGN_RECOVER, signRecover);
-  }
-
-  /**
-   * Set if this mechanism can be used for verification.
-   *
-   * @param verify
-   *          True, if this mechanism can be used for verification.
-   */
-  public void setVerify(boolean verify) {
-    setFlagBit(CKF_VERIFY, verify);
-  }
-
-  /**
-   * Set if this mechanism can be used for verification with data recovery.
-   *
-   * @param verifyRecover
-   *          True, if this mechanism can be used for verification with data
-   *          recovery.
-   */
-  public void setVerifyRecover(boolean verifyRecover) {
-    setFlagBit(CKF_VERIFY_RECOVER, verifyRecover);
-  }
-
-  /**
-   * Set if this mechanism can be used for secret key generation.
-   *
-   * @param generate
-   *          True, if this mechanism can be used for secret key generation.
-   */
-  public void setGenerate(boolean generate) {
-    setFlagBit(CKF_GENERATE, generate);
-  }
-
-  /**
-   * Set if this mechanism can be used for key-pair generation.
-   *
-   * @param generateKeyPair
-   *          True, if this mechanism can be used for key-pair generation.
-   */
-  public void setGenerateKeyPair(boolean generateKeyPair) {
-    setFlagBit(CKF_GENERATE_KEY_PAIR, generateKeyPair);
-  }
-
-  /**
-   * Set if this mechanism can be used for key wrapping.
-   *
-   * @param wrap
-   *          True, if this mechanism can be used for key wrapping.
-   */
-  public void setWrap(boolean wrap) {
-    setFlagBit(CKF_WRAP, wrap);
-  }
-
-  /**
-   * Set if this mechanism can be used for key unwrapping.
-   *
-   * @param unwrap
-   *          True, if this mechanism can be used for key unwrapping.
-   */
-  public void setUnwrap(boolean unwrap) {
-    setFlagBit(CKF_UNWRAP, unwrap);
-  }
-
-  /**
-   * Set if this mechanism can be used for key derivation.
-   *
-   * @param derive
-   *          True, if this mechanism can be used for key derivation.
-   */
-  public void setDerive(boolean derive) {
-    setFlagBit(CKF_DERIVE, derive);
-  }
-
-  /**
-   * Set if this mechanism can be used with EC domain parameters over Fp.
-   *
-   * @param ecFp
-   *          True, if this mechanism can be used with EC domain parameters
-   *          over Fp.
-   */
-  public void setEcFp(boolean ecFp) {
-    setFlagBit(CKF_EC_F_P, ecFp);
-  }
-
-  /**
-   * Set if this mechanism can be used with EC domain parameters over F2m.
-   *
-   * @param ecF2m
-   *          True, if this mechanism can be used with EC domain parameters
-   *          over F2m.
-   */
-  public void setEcF2m(boolean ecF2m) {
-    setFlagBit(CKF_EC_F_2M, ecF2m);
-  }
-
-  /**
-   * Set if this mechanism can be used with EC domain parameters of the
-   * choice ecParameters.
-   *
-   * @param ecEcParameters
-   *          True, if this mechanism can be used with EC domain parameters of
-   *          the choice ecParameters.
-   */
-  public void setEcEcParameters(boolean ecEcParameters) {
-    setFlagBit(CKF_EC_ECPARAMETERS, ecEcParameters);
-  }
-
-  /**
-   * Set if this mechanism can be used with EC domain parameters of the
-   * choice namedCurve.
-   *
-   * @param ecNamedCurve
-   *          True, if this mechanism can be used with EC domain parameters of
-   *          the choice namedCurve.
-   */
-  public void setEcNamedCurve(boolean ecNamedCurve) {
-    setFlagBit(CKF_EC_OID, ecNamedCurve);
-  }
-
-  /**
-   * Set if this mechanism can be used with elliptic curve point
-   * uncompressed.
-   *
-   * @param ecUncompress
-   *          True, if this mechanism can be used with elliptic curve point
-   *          uncompressed.
-   */
-  public void setEcUncompress(boolean ecUncompress) {
-    setFlagBit(CKF_EC_UNCOMPRESS, ecUncompress);
-  }
-
-  /**
-   * Set if this mechanism can be used with elliptic curve point compressed.
-   *
-   * @param ecCompress
-   *          True, if this mechanism can be used with elliptic curve point
-   *          compressed.
-   */
-  public void setEcCompress(boolean ecCompress) {
-    setFlagBit(CKF_EC_COMPRESS, ecCompress);
-  }
-
-  /**
-   * Set if there is an extension to the flags; false, if no extensions.
-   * Must be false for this version.
-   *
-   * @param extension
-   *          False for this version.
-   */
-  public void setExtension(boolean extension) {
-    setFlagBit(CKF_EXTENSION, extension);
   }
 
   /**
@@ -605,43 +210,23 @@ public class MechanismInfo {
         .append("  Minimum Key-Size: ").append(minKeySize).append("\n  Maximum Key-Size: ").append(maxKeySize)
         .append("\n  Flags: 0x").append(Functions.toFullHex(flags));
 
-    TokenInfo.addFlag(sb, "  hardware", isHw());
-    TokenInfo.addFlag(sb, "  encrypt", isEncrypt());
-    TokenInfo.addFlag(sb, "  decrypt", isDecrypt());
-    TokenInfo.addFlag(sb, "  digest", isDigest());
-    TokenInfo.addFlag(sb, "  sign", isSign());
-    TokenInfo.addFlag(sb, "  sign recover", isSignRecover());
-    TokenInfo.addFlag(sb, "  verify", isVerify());
-    TokenInfo.addFlag(sb, "  verify recover", isVerifyRecover());
-    TokenInfo.addFlag(sb, "  generate", isGenerate());
-    TokenInfo.addFlag(sb, "  generate key-pair", isGenerateKeyPair());
-    TokenInfo.addFlag(sb, "  wrap", isWrap());
-    TokenInfo.addFlag(sb, "  unwrap", isUnwrap());
-    TokenInfo.addFlag(sb, "  derive", isDerive());
-    TokenInfo.addFlag(sb, "  EC F(p)", isEcFp());
-    TokenInfo.addFlag(sb, "  EC F(2^m)", isEcF2m());
-    TokenInfo.addFlag(sb, "  EC parameters", isEcEcParameters());
-    TokenInfo.addFlag(sb, "  EC named curve", isEcNamedCurve());
-    TokenInfo.addFlag(sb, "  EC uncompress", isEcUncompress());
-    TokenInfo.addFlag(sb, "  EC compress", isEcCompress());
-    TokenInfo.addFlag(sb, "  extension", isExtension());
+    Util.toStringFlags(sb, "  ", flags, CKF_HW,
+        CKF_ENCRYPT,      CKF_DECRYPT,     CKF_DIGEST,         CKF_SIGN,
+        CKF_SIGN_RECOVER, CKF_VERIFY,      CKF_VERIFY_RECOVER, CKF_GENERATE_KEY_PAIR,
+        CKF_GENERATE,     CKF_WRAP,        CKF_UNWRAP,         CKF_DERIVE,
+        CKF_EXTENSION,    CKF_EC_F_P,      CKF_EC_F_2M,        CKF_EC_ECPARAMETERS,
+        CKF_EC_OID,       CKF_EC_COMPRESS, CKF_EC_UNCOMPRESS);
     return sb.toString();
   }
 
   /**
-   * Set the given feature flag(s) to the given value.
+   * Clear the given feature flag.
    *
    * @param flagMask
    *          The mask of the flag bit(s).
-   * @param value
-   *          True to set the flag(s), false to clear the flag(s).
    */
-  private void setFlagBit(long flagMask, boolean value) {
-    if (value) {
-      flags |= flagMask;
-    } else {
-      flags &= ~flagMask;
-    }
+  private void clearFlagBit(long flagMask) {
+    flags &= ~flagMask;
   }
 
 }

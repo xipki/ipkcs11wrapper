@@ -87,17 +87,19 @@ public class EdDSAGenerateKeyPair extends TestBase {
     // set the attributes in a way netscape does, this should work with most
     // tokens
     if (signatureMechanismInfo != null) {
-      publicKeyTemplate.attr(CKA_VERIFY, signatureMechanismInfo.isVerify())
-          .attr(CKA_VERIFY_RECOVER, signatureMechanismInfo.isVerifyRecover())
-          .attr(CKA_ENCRYPT, signatureMechanismInfo.isEncrypt())
-          .attr(CKA_DERIVE, signatureMechanismInfo.isDerive())
-          .attr(CKA_WRAP, signatureMechanismInfo.isWrap());
+      publicKeyTemplate
+          .attr(CKA_VERIFY, signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
+          .attr(CKA_VERIFY_RECOVER, signatureMechanismInfo.hasFlagBit(CKF_VERIFY_RECOVER))
+          .attr(CKA_ENCRYPT, signatureMechanismInfo.hasFlagBit(CKF_ENCRYPT))
+          .attr(CKA_DERIVE, signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+          .attr(CKA_WRAP, signatureMechanismInfo.hasFlagBit(CKF_WRAP));
 
-      privateKeyTemplate.attr(CKA_SIGN, signatureMechanismInfo.isSign())
-          .attr(CKA_SIGN_RECOVER, signatureMechanismInfo.isSignRecover())
-          .attr(CKA_DECRYPT, signatureMechanismInfo.isDecrypt())
-          .attr(CKA_DERIVE, signatureMechanismInfo.isDerive())
-          .attr(CKA_UNWRAP, signatureMechanismInfo.isUnwrap());
+      privateKeyTemplate
+          .attr(CKA_SIGN, signatureMechanismInfo.hasFlagBit(CKF_SIGN))
+          .attr(CKA_SIGN_RECOVER, signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
+          .attr(CKA_DECRYPT, signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
+          .attr(CKA_DERIVE, signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+          .attr(CKA_UNWRAP, signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
     } else {
       // if we have no information we assume these attributes
       privateKeyTemplate.attr(CKA_SIGN, true).attr(CKA_DECRYPT, true);

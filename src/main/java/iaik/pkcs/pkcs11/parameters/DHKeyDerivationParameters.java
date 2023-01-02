@@ -43,6 +43,7 @@
 package iaik.pkcs.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -77,13 +78,8 @@ abstract public class DHKeyDerivationParameters implements Parameters {
    *          The other party's public key value.
    */
   protected DHKeyDerivationParameters(long kdf, byte[] publicData) {
-    if ((kdf != CKD_NULL) && (kdf != CKD_SHA1_KDF)
-        && (kdf != CKD_SHA1_KDF_ASN1) && (kdf != CKD_SHA1_KDF_CONCATENATE)) {
-      throw new IllegalArgumentException("Illegal value for argument 'kdf': " + Long.toHexString(kdf));
-    }
-
-    this.publicData = Util.requireNonNull("publicData", publicData);
-    this.kdf = kdf;
+    setPublicData(publicData);
+    setKeyDerivationFunction(kdf);
   }
 
   /**
@@ -138,13 +134,7 @@ abstract public class DHKeyDerivationParameters implements Parameters {
    */
   @Override
   public String toString() {
-    String kdfStr = (kdf == CKD_NULL) ? "NULL"
-        : (kdf == CKD_SHA1_KDF) ? "SHA1_KDF"
-        : (kdf == CKD_SHA1_KDF_ASN1) ? "SHA1_KDF_ASN1"
-        : (kdf == CKD_SHA1_KDF_CONCATENATE) ? "SHA1_KDF_CONCATENATE"
-        : "<unknown>";
-
-    return "  Key Derivation Function: " + kdfStr + "\n  Public Data: " + Util.toHex(publicData);
+    return "  Key Derivation Function: " + Functions.ckdCodeToName(kdf) + "\n  Public Data: " + Util.toHex(publicData);
   }
 
 }

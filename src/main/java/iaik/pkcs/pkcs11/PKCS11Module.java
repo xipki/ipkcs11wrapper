@@ -239,17 +239,10 @@ public class PKCS11Module {
     if (initArgs != null) {
       final MutexHandler mutexHandler = initArgs.getMutexHandler();
       wrapperInitArgs = new CK_C_INITIALIZE_ARGS();
-      if (mutexHandler != null) {
-        wrapperInitArgs.CreateMutex = mutexHandler::createMutex;
-        wrapperInitArgs.DestroyMutex = mutexHandler::destroyMutex;
-        wrapperInitArgs.LockMutex = mutexHandler::lockMutex;
-        wrapperInitArgs.UnlockMutex = mutexHandler::unlockMutex;
-      } else {
-        wrapperInitArgs.CreateMutex = null;
-        wrapperInitArgs.DestroyMutex = null;
-        wrapperInitArgs.LockMutex = null;
-        wrapperInitArgs.UnlockMutex = null;
-      }
+      wrapperInitArgs.CreateMutex  = mutexHandler == null ? null : mutexHandler::createMutex;
+      wrapperInitArgs.DestroyMutex = mutexHandler == null ? null : mutexHandler::destroyMutex;
+      wrapperInitArgs.LockMutex    = mutexHandler == null ? null : mutexHandler::lockMutex;
+      wrapperInitArgs.UnlockMutex  = mutexHandler == null ? null : mutexHandler::unlockMutex;
 
       if (initArgs.isLibraryCantCreateOsThreads()) {
         wrapperInitArgs.flags |= CKF_LIBRARY_CANT_CREATE_OS_THREADS;
@@ -259,8 +252,7 @@ public class PKCS11Module {
       }
       wrapperInitArgs.pReserved = initArgs.getReserved();
     }
-    // pReserved of CK_C_INITIALIZE_ARGS not used yet, just set to standard
-    // conform UTF8
+    // pReserved of CK_C_INITIALIZE_ARGS not used yet, just set to standard conform UTF8
 
     final String functionList = "C_GetFunctionList";
     final boolean omitInitialize = false;
@@ -414,8 +406,7 @@ public class PKCS11Module {
     if (this == otherObject) return true;
     else if (!(otherObject instanceof PKCS11Module)) return false;
 
-    PKCS11Module other = (PKCS11Module) otherObject;
-    return Objects.equals(pkcs11Module, other.pkcs11Module);
+    return Objects.equals(pkcs11Module, ((PKCS11Module) otherObject).pkcs11Module);
   }
 
   /**

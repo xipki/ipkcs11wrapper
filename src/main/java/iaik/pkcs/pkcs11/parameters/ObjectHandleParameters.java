@@ -103,7 +103,7 @@ public class ObjectHandleParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  The PKCS11Object: " + objectHandle;
+    return "  PKCS11Object: " + objectHandle;
   }
 
 }

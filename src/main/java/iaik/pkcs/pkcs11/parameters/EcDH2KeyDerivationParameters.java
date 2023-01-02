@@ -92,8 +92,7 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
    * @param publicData2
    *          The other party's second EC public key value.
    */
-  public EcDH2KeyDerivationParameters(
-      long kdf, byte[] sharedData, byte[] publicData,
+  public EcDH2KeyDerivationParameters(long kdf, byte[] sharedData, byte[] publicData,
       long privateDataLength, long privateDataHandle, byte[] publicData2) {
     super(kdf, publicData);
     this.sharedData = sharedData;
@@ -206,7 +205,6 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
    */
   @Override
   public String toString() {
-    String upperStr = super.toString();
     return super.toString() +
         "\n  Shared Data: " + Util.toHex(sharedData) + "\n  Private Data Length (dec): " + privateDataLength +
         "\n  Private Data: " + privateDataHandle + "\n  Public Data 2: " + Util.toHex(publicData2);

@@ -186,15 +186,16 @@ public class UploadPrivateKey extends TestBase {
       if (signatureMechanismInfo != null) {
         p11RsaPrivateKey
             .attr(CKA_DECRYPT,
-                (keyUsage[dataEncipherment] || keyUsage[keyCertSign]) && signatureMechanismInfo.isDecrypt())
+                (keyUsage[dataEncipherment] || keyUsage[keyCertSign])
+                    && signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
             .attr(CKA_SIGN,
                 (keyUsage[digitalSignature] || keyUsage[keyCertSign] || keyUsage[cRLSign] || keyUsage[nonRepudiation])
-                          && signatureMechanismInfo.isSign())
+                          && signatureMechanismInfo.hasFlagBit(CKF_SIGN))
             .attr(CKA_SIGN_RECOVER,
                 (keyUsage[digitalSignature] || keyUsage[keyCertSign] || keyUsage[cRLSign] || keyUsage[nonRepudiation])
-                          && signatureMechanismInfo.isSignRecover())
-            .attr(CKA_DERIVE, keyUsage[keyAgreement] && signatureMechanismInfo.isDerive())
-            .attr(CKA_UNWRAP, keyUsage[keyEncipherment] && signatureMechanismInfo.isUnwrap());
+                          && signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
+            .attr(CKA_DERIVE, keyUsage[keyAgreement] && signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+            .attr(CKA_UNWRAP, keyUsage[keyEncipherment] && signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
       } else {
         // if we have no mechanism information, we try to set the flags according to the key usage only
         p11RsaPrivateKey.attr(CKA_DECRYPT, keyUsage[dataEncipherment] || keyUsage[keyCertSign])
@@ -209,11 +210,11 @@ public class UploadPrivateKey extends TestBase {
       // if there is no key-usage extension in the certificate, try to set all
       // flags according to the mechanism info
       if (signatureMechanismInfo != null) {
-        p11RsaPrivateKey.attr(CKA_SIGN, signatureMechanismInfo.isSign())
-            .attr(CKA_SIGN_RECOVER, signatureMechanismInfo.isSignRecover())
-            .attr(CKA_DECRYPT, signatureMechanismInfo.isDecrypt())
-            .attr(CKA_DERIVE, signatureMechanismInfo.isDerive())
-            .attr(CKA_UNWRAP, signatureMechanismInfo.isUnwrap());
+        p11RsaPrivateKey.attr(CKA_SIGN, signatureMechanismInfo.hasFlagBit(CKF_SIGN))
+            .attr(CKA_SIGN_RECOVER, signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
+            .attr(CKA_DECRYPT, signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
+            .attr(CKA_DERIVE, signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+            .attr(CKA_UNWRAP, signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
       } else {
         // if we have neither mechanism info nor key usage we just try all
         p11RsaPrivateKey.attr(CKA_SIGN, true)

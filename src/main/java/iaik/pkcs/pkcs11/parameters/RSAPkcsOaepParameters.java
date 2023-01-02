@@ -46,7 +46,6 @@ import iaik.pkcs.pkcs11.Util;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 import sun.security.pkcs11.wrapper.CK_RSA_PKCS_OAEP_PARAMS;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKZ_DATA_SPECIFIED;
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKZ_SALT_SPECIFIED;
 
 /**
@@ -85,7 +84,7 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
   public RSAPkcsOaepParameters(long hashAlgorithm, long maskGenerationFunction, long source, byte[] sourceData) {
     super(hashAlgorithm, maskGenerationFunction);
     if ((source != 0) && (source != CKZ_SALT_SPECIFIED)) {
-      throw new IllegalArgumentException("Illegal value for argument 'source': " + Long.toHexString(source));
+      throw new IllegalArgumentException("Illegal value for argument 'source': " + Functions.ckzCodeToName(source));
     }
     this.source = source;
     this.sourceData = sourceData;
@@ -136,7 +135,7 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
    */
   public void setSource(long source) {
     if ((source != 0) && (source != CKZ_SALT_SPECIFIED)) {
-      throw new IllegalArgumentException("Illegal value for argument 'source': " + Long.toHexString(source));
+      throw new IllegalArgumentException("Illegal value for argument 'source': " + Functions.ckzCodeToName(source));
     }
     this.source = source;
   }

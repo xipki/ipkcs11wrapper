@@ -1009,7 +1009,7 @@ public interface PKCS11Constants {
   long CKF_MESSAGE_DECRYPT                      = 0x00000004L;
   long CKF_MESSAGE_SIGN                         = 0x00000008L;
   long CKF_MESSAGE_VERIFY                       = 0x00000010L;
-  long CKF_MULTI_MESSGE                         = 0x00000020L;
+  long CKF_MULTI_MESSAGE                        = 0x00000020L;
   long CKF_FIND_OBJECTS                         = 0x00000040L;
 
   long CKF_ENCRYPT                              = 0x00000100L;

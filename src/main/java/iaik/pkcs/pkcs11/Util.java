@@ -112,4 +112,11 @@ public class Util {
     }
   }
 
+  public static void toStringFlags(StringBuilder sb, String prefix, long flags, long... flagMasks) {
+    for (long flagMask : flagMasks) {
+      sb.append("\n").append(prefix).append("    ").append(Functions.ckfCodeToName(flagMask)).append(": ")
+          .append(((flags & flagMask) != 0L) ? "yes" : "no");
+    }
+  }
+
 }

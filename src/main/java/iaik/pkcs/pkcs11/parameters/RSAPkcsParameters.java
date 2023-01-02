@@ -101,7 +101,7 @@ abstract public class RSAPkcsParameters implements Parameters {
    */
   protected RSAPkcsParameters(long hashAlg, long mgf) {
     if (!mgf2HashAlgMap.containsKey(mgf)) {
-      throw new IllegalArgumentException("Illegal value for argument 'mgf': " + Long.toHexString(mgf));
+      throw new IllegalArgumentException("Illegal value for argument 'mgf': " + Functions.ckgCodeToName(mgf));
     }
 
     this.hashAlg = hashAlg;
@@ -151,7 +151,7 @@ abstract public class RSAPkcsParameters implements Parameters {
     if (mgf2HashAlgMap.containsKey(mgf)) {
       this.mgf = mgf;
     } else {
-      throw new IllegalArgumentException("Illegal value for argument 'mgf': " + Long.toHexString(mgf));
+      throw new IllegalArgumentException("Illegal value for argument 'mgf': " + Functions.ckgCodeToName(mgf));
     }
   }
 

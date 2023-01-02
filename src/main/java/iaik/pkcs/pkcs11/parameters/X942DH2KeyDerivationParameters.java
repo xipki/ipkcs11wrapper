@@ -92,9 +92,8 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    * @param publicData2
    *          The other party's second X9.42 public key value.
    */
-  public X942DH2KeyDerivationParameters(long keyDerivationFunction,
-      byte[] sharedData, byte[] publicData, long privateDataLength,
-      long privateDataHandle, byte[] publicData2) {
+  public X942DH2KeyDerivationParameters(long keyDerivationFunction, byte[] sharedData, byte[] publicData,
+                                        long privateDataLength, long privateDataHandle, byte[] publicData2) {
     super(keyDerivationFunction, publicData);
     this.otherInfo = sharedData;
     this.privateDataLength = privateDataLength;

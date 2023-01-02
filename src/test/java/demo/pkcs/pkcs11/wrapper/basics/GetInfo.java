@@ -45,6 +45,7 @@ package demo.pkcs.pkcs11.wrapper.basics;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import iaik.pkcs.pkcs11.*;
 import iaik.pkcs.pkcs11.wrapper.Functions;
+import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import org.junit.Test;
 
 /**
@@ -107,7 +108,7 @@ public class GetInfo extends TestBase {
       LOG.info("___________________________________________________");
       TokenInfo tokenInfo = token.getTokenInfo();
       LOG.info("listing objects for token: {}", tokenInfo);
-      if (!tokenInfo.isTokenInitialized()) {
+      if (!tokenInfo.hasFlagBit(PKCS11Constants.CKF_TOKEN_INITIALIZED)) {
         LOG.info("token not initialized yet");
         continue;
       }

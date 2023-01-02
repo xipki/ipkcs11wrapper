@@ -73,9 +73,8 @@ class VendorCode {
     }
 
     private static int toIntVersion(String version) {
-      int idx = version.indexOf('.');
-      return (Integer.parseInt(version.substring(0, idx)) << 8) +
-              Integer.parseInt(version.substring(idx + 1));
+      StringTokenizer st = new StringTokenizer(version, ".");
+      return (Integer.parseInt(st.nextToken()) << 8) + Integer.parseInt(st.nextToken());
     }
 
     private static boolean isEmpty(Collection<?> c) {
@@ -97,8 +96,7 @@ class VendorCode {
       String modulePath, String manufacturerID, String libraryDescription, Version libraryVersion)
       throws IOException {
     String confPath = System.getProperty("iaik.pkcs.pkcs11.wrapper.vendorcode.conf");
-    InputStream in = (confPath != null)
-        ? Files.newInputStream(Paths.get(modulePath))
+    InputStream in = (confPath != null) ? Files.newInputStream(Paths.get(modulePath))
         : VendorCode.class.getResourceAsStream("/iaik/pkcs/pkcs11/wrapper/vendorcode.conf");
     try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
       while (true) {
@@ -219,23 +217,19 @@ class VendorCode {
   }
 
   long ckkGenericToVendor(long genericCode) {
-    Long ret = ckkGenericToVendorMap.get(genericCode);
-    return ret == null ? genericCode : ret;
+    return ckkGenericToVendorMap.getOrDefault(genericCode, genericCode);
   }
 
   long ckkVendorToGeneric(long vendorCode) {
-    Long ret = ckkVendorToGenericMap.get(vendorCode);
-    return ret == null ? vendorCode : ret;
+    return ckkVendorToGenericMap.getOrDefault(vendorCode, vendorCode);
   }
 
   long ckmGenericToVendor(long genericCode) {
-    Long ret = ckmGenericToVendorMap.get(genericCode);
-    return ret == null ? genericCode : ret;
+    return ckmGenericToVendorMap.getOrDefault(genericCode, genericCode);
   }
 
   long ckmVendorToGeneric(long vendorCode) {
-    Long ret = ckmVendorToGenericMap.get(vendorCode);
-    return ret == null ? vendorCode : ret;
+    return ckmVendorToGenericMap.getOrDefault(vendorCode, vendorCode);
   }
 
 }

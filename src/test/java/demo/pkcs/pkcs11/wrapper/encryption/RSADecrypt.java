@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_DECRYPT;
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_RSA_PKCS;
 
 /**
@@ -53,7 +54,7 @@ public class RSADecrypt extends TestBase {
   private void main0(Token token, Session session) throws TokenException {
     // check, if this token can do RSA decryption
     Mechanism encMech = getSupportedMechanism(token, CKM_RSA_PKCS);
-    if (!token.getMechanismInfo(encMech.getMechanismCode()).isDecrypt()) {
+    if (!token.getMechanismInfo(encMech.getMechanismCode()).hasFlagBit(CKF_DECRYPT)) {
       LOG.info("This token does not support RSA decryption according to PKCS!");
       throw new TokenException("RSA decryption not supported!");
     }
