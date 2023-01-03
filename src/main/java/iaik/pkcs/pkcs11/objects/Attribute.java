@@ -70,7 +70,7 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
  */
 public abstract class Attribute {
 
-  protected static Hashtable<Long, Class<?>> attributeClasses;
+  private static Map<Long, Class<?>> attributeClasses;
 
   /**
    * True, if the object really possesses this attribute.
@@ -92,6 +92,50 @@ public abstract class Attribute {
    * and the value.
    */
   protected CK_ATTRIBUTE ckAttribute;
+
+  static {
+    attributeClasses = new HashMap<>(130);
+    String propFile = "/iaik/pkcs/pkcs11/wrapper/cka-type.properties";
+    Properties props = new Properties();
+    try {
+      props.load(Functions.class.getResourceAsStream(propFile));
+      for (String name : props.stringPropertyNames()) {
+        name = name.trim();
+        String type = props.getProperty(name).trim();
+        long code = Functions.ckaNameToCode(name);
+        if (code == -1) {
+          throw new IllegalStateException("unknown CKA: " + name);
+        }
+
+        if (attributeClasses.containsKey(code)) {
+          throw new IllegalArgumentException("duplicated definition of CKA: " + name);
+        }
+
+        Class<?> clazz = "Boolean".equalsIgnoreCase(type) ? BooleanAttribute.class
+            : "Long".equalsIgnoreCase(type) ? LongAttribute.class
+            : "CharArray".equalsIgnoreCase(type) ? CharArrayAttribute.class
+            : "ByteArray".equalsIgnoreCase(type) ? ByteArrayAttribute.class
+            : "Date".equalsIgnoreCase(type) ? DateAttribute.class
+            : "Mechanism".equalsIgnoreCase(type) ? MechanismAttribute.class
+            : "MechanismArray".equalsIgnoreCase(type) ? MechanismArrayAttribute.class
+            : "AttributeArray".equalsIgnoreCase(type) ? AttributeArray.class
+            : null;
+
+        if (clazz == null) {
+          throw new IllegalStateException("unknown type " + type);
+        }
+
+        attributeClasses.put(code, clazz);
+      }
+    } catch (Throwable t) {
+      t.printStackTrace();
+      throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
+    }
+
+    if (attributeClasses.isEmpty()) {
+      throw new IllegalStateException("no code to name map is defined properties file " + propFile);
+    }
+  }
 
   /**
    * Constructor taking the PKCS#11 type of the attribute.
@@ -178,66 +222,7 @@ public abstract class Attribute {
    *          The attribute type.
    * @return The class of the attribute type, or null if there is no such type.
    */
-  protected static synchronized Class<?> getAttributeClass(long type) {
-    if (attributeClasses == null) {
-      attributeClasses = new Hashtable<>(85);
-
-      long[] codes = new long[] {
-          CKA_ALWAYS_AUTHENTICATE, CKA_ALWAYS_SENSITIVE,       CKA_COLOR,        CKA_COPYABLE,
-          CKA_DECRYPT,             CKA_DERIVE,                 CKA_DESTROYABLE,  CKA_ENCRYPT,
-          CKA_EXTRACTABLE,         CKA_HAS_RESET,              CKA_LOCAL,        CKA_MODIFIABLE,
-          CKA_NEVER_EXTRACTABLE,   CKA_OTP_USER_FRIENDLY_MODE, CKA_PRIVATE,      CKA_RESET_ON_INIT,
-          CKA_SENSITIVE,           CKA_SIGN,                   CKA_SIGN_RECOVER, CKA_TOKEN,
-          CKA_TRUSTED,             CKA_UNWRAP,                 CKA_VERIFY,       CKA_VERIFY_RECOVER,
-          CKA_WRAP,                CKA_WRAP_WITH_TRUSTED};
-      for (long code : codes) {
-        attributeClasses.put(code, BooleanAttribute.class);
-      }
-
-      codes = new long[] {
-          CKA_BITS_PER_PIXEL, CKA_CERTIFICATE_CATEGORY, CKA_CERTIFICATE_TYPE,  CKA_CHAR_COLUMNS,
-          CKA_CHAR_ROWS,      CKA_CLASS,                CKA_HW_FEATURE_TYPE,   CKA_JAVA_MIDP_SECURITY_DOMAIN,
-          CKA_KEY_TYPE,       CKA_MECHANISM_TYPE,       CKA_MODULUS_BITS,      CKA_NAME_HASH_ALGORITHM,
-          CKA_OTP_CHALLENGE_REQUIREMENT,    CKA_OTP_COUNTER_REQUIREMENT,       CKA_OTP_FORMAT,
-          CKA_OTP_LENGTH,     CKA_OTP_PIN_REQUIREMENT,  CKA_OTP_TIME_INTERVAL, CKA_OTP_TIME_REQUIREMENT,
-          CKA_PIXEL_X,        CKA_PIXEL_Y,              CKA_PRIME_BITS,        CKA_PROFILE_ID,
-          CKA_RESOLUTION,     CKA_SUBPRIME_BITS,        CKA_VALUE_BITS,        CKA_VALUE_LEN};
-      for (long code : codes) {
-        attributeClasses.put(code, LongAttribute.class);
-      }
-
-      codes = new long[] {
-          CKA_AC_ISSUER,        CKA_ATTR_TYPES,             CKA_BASE,             CKA_CHECK_VALUE,
-          CKA_COEFFICIENT,      CKA_DEFAULT_CMS_ATTRIBUTES, CKA_EC_PARAMS,        CKA_EC_POINT,
-          CKA_EXPONENT_1,       CKA_EXPONENT_2,             CKA_GOST28147_PARAMS, CKA_GOSTR3410_PARAMS,
-          CKA_GOSTR3411_PARAMS,    CKA_HASH_OF_ISSUER_PUBLIC_KEY,    CKA_HASH_OF_SUBJECT_PUBLIC_KEY,
-          CKA_ID, CKA_ISSUER,   CKA_MODULUS,                CKA_OBJECT_ID,        CKA_OTP_COUNTER,
-          CKA_OTP_SERVICE_LOGO, CKA_OWNER,                  CKA_PRIME,            CKA_PRIME_1,
-          CKA_PRIME_2,          CKA_PRIVATE_EXPONENT,       CKA_PUBLIC_EXPONENT,  CKA_PUBLIC_KEY_INFO,
-          CKA_REQUIRED_CMS_ATTRIBUTES,  CKA_SERIAL_NUMBER,  CKA_SUBJECT,          CKA_SUBPRIME,
-          CKA_SUPPORTED_CMS_ATTRIBUTES, CKA_VALUE};
-      for (long code : codes) {
-        attributeClasses.put(code, ByteArrayAttribute.class);
-      }
-
-      codes = new long[] {
-          CKA_APPLICATION,           CKA_CHAR_SETS,  CKA_ENCODING_METHODS,
-          CKA_LABEL,                 CKA_MIME_TYPES, CKA_OTP_SERVICE_IDENTIFIER,
-          CKA_OTP_SERVICE_LOGO_TYPE, CKA_OTP_TIME,   CKA_OTP_USER_IDENTIFIER,
-          CKA_UNIQUE_ID,             CKA_URL};
-      for (long code : codes) {
-        attributeClasses.put(code, CharArrayAttribute.class);
-      }
-
-      attributeClasses.put(CKA_DERIVE_TEMPLATE, AttributeArray.class); //CK_ATTRIBUTE_PTR
-      attributeClasses.put(CKA_WRAP_TEMPLATE, AttributeArray.class); //CK_ATTRIBUTE_PTR
-      attributeClasses.put(CKA_UNWRAP_TEMPLATE, AttributeArray.class); //CK_ATTRIBUTE_PTR
-      attributeClasses.put(CKA_START_DATE, DateAttribute.class); //CK_DATE
-      attributeClasses.put(CKA_END_DATE, DateAttribute.class); //CK_DATE
-      attributeClasses.put(CKA_KEY_GEN_MECHANISM, MechanismAttribute.class); //CK_MECHANISM_TYPE
-      attributeClasses.put(CKA_ALLOWED_MECHANISMS, MechanismArrayAttribute.class); //CK_MECHANISM_TYPE_PTR
-    }
-
+  protected static Class<?> getAttributeClass(long type) {
     return attributeClasses.get(type);
   }
 
@@ -336,8 +321,8 @@ public abstract class Attribute {
    */
   protected String getValueString() {
     return (ckAttribute == null || ckAttribute.pValue == null) ? "<NULL_PTR>"
-        : (ckAttribute.type == CKA_CLASS)    ? Functions.ckoCodeToName((long) ckAttribute.pValue)
-        : (ckAttribute.type == CKA_KEY_TYPE) ? Functions.ckkCodeToName((long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_CLASS)            ? Functions.ckoCodeToName((long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_KEY_TYPE)         ? Functions.ckkCodeToName((long) ckAttribute.pValue)
         : (ckAttribute.type == CKA_CERTIFICATE_TYPE) ? Functions.ckcCodeToName((long) ckAttribute.pValue)
         : (ckAttribute.type == CKA_HW_FEATURE_TYPE)  ? Functions.ckhCodeToName((long) ckAttribute.pValue)
         : ckAttribute.pValue.toString();

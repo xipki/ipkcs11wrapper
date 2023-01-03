@@ -73,8 +73,8 @@ public class Functions {
       try {
         props.load(Functions.class.getResourceAsStream(resourcePath));
         for (String propName : props.stringPropertyNames()) {
-          String mechNames = props.getProperty(propName);
-          StringTokenizer tokens = new StringTokenizer(mechNames, ",");
+          String names = props.getProperty(propName);
+          StringTokenizer tokens = new StringTokenizer(names, ",");
 
           if (!tokens.hasMoreTokens()) {
             System.out.println("No name defined for code " + propName);
