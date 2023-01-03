@@ -128,7 +128,6 @@ public abstract class Attribute {
         attributeClasses.put(code, clazz);
       }
     } catch (Throwable t) {
-      t.printStackTrace();
       throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
     }
 
