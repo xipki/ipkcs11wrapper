@@ -40,49 +40,72 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11.objects;
 
 import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+
+import static org.xipki.pkcs11.PKCS11Constants.CK_UNAVAILABLE_INFORMATION;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * Objects of this class represent a mechanism attribute of a PKCS#11 object
+ * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public class MechanismAttribute extends LongAttribute {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param type
+   *          The PKCS#11 type of this attribute; e.g. CKA_VALUE_LEN.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public MechanismAttribute(long type) {
+    super(type);
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Set the mechanism value of this attribute.
+   * <code>null</code>, is also valid.
+   * A call to this method sets the present flag to true.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @param mechanism
+   *          The mechanism value to set. May be <code>null</code>.
    */
-  public long getErrorCode() {
-    return errorCode;
+  public MechanismAttribute setMechanism(Long mechanism) {
+    ckAttribute.pValue = mechanism;
+    present = true;
+    return this;
+  }
+
+  /**
+   * Get the long value of this attribute. Null, is also possible.
+   *
+   * @return The long value of this attribute or null.
+   */
+  public Long getMechanism() {
+    return ((ckAttribute != null) && (ckAttribute.pValue != null)) ? (Long) ckAttribute.pValue : null;
+  }
+
+  /**
+   * Get a string representation of the value of this attribute.
+   *
+   * @return A string representation of the value of this attribute.
+   */
+  @Override
+  protected String getValueString() {
+    if ((ckAttribute == null) || (ckAttribute.pValue == null)) {
+      return "<NULL_PTR>";
+    }
+
+    return (((Long) ckAttribute.pValue) != CK_UNAVAILABLE_INFORMATION)
+        ? Functions.ckmCodeToName((long) ckAttribute.pValue) : "<Information unavailable>";
+  }
+
+  @Override
+  public void setValue(Object value) {
+    longValue((Long) value);
   }
 
 }

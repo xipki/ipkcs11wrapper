@@ -40,49 +40,43 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11.parameters;
 
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.Version;
+import iaik.pkcs.pkcs11.wrapper.CK_VERSION;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * This class is used for the Mechanism.SSL3_PRE_MASTER_KEY_GEN.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
+ *
  */
-public class PKCS11Exception extends TokenException {
+public class VersionParameters extends Version implements Parameters {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Create a new VersionParameters object with the given major and minor
+   * version.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param major
+   *          The major version number.
+   * @param minor
+   *          The minor version number.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public VersionParameters(byte major, byte minor) {
+    super(major, minor);
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Get this parameters object as a CK_VERSION object.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @return This object as a CK_VERSION object.
    */
-  public long getErrorCode() {
-    return errorCode;
+  public CK_VERSION getPKCS11ParamsObject() {
+    CK_VERSION ret = new CK_VERSION();
+    ret.major = getMajor();
+    ret.minor = getMinor();
+    return ret;
   }
 
 }

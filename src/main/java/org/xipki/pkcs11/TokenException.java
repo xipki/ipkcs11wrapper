@@ -40,49 +40,50 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
-
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+package org.xipki.pkcs11;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * The base class for all exceptions in this package. It is able to wrap another
+ * exception from a lower layer.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public class TokenException extends Exception {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Constructor taking an exception message.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param message
+   *          The message giving details about the exception to ease
+   *          debugging.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public TokenException(String message) {
+    super(message);
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Constructor taking another exception to wrap.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @param encapsulatedException
+   *          The other exception the wrap into this.
    */
-  public long getErrorCode() {
-    return errorCode;
+  public TokenException(Exception encapsulatedException) {
+    super(encapsulatedException);
+  }
+
+  /**
+   * Constructor taking a message for this exception and another exception to
+   * wrap.
+   *
+   * @param message
+   *          The message giving details about the exception to ease
+   *          debugging.
+   * @param encapsulatedException
+   *          The other exception the wrap into this.
+   */
+  public TokenException(String message, Exception encapsulatedException) {
+    super(message, encapsulatedException);
   }
 
 }

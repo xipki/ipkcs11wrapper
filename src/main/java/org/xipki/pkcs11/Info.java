@@ -40,49 +40,98 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11;
 
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+import iaik.pkcs.pkcs11.wrapper.CK_INFO;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * Objects of this class provide information about a PKCS#11 module; i.e. the
+ * driver for a specific token.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public class Info {
 
   /**
-   * The code of the error which was the reason for this exception.
+   * The module claims to be compliant to this version of PKCS#11.
    */
-  private final long errorCode;
+  private final Version cryptokiVersion;
 
   /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * The identifier for the manufacturer of this module.
+   */
+  private final String manufacturerID;
+
+  /**
+   * A description of this module.
+   */
+  private final String libraryDescription;
+
+  /**
+   * The version number of this module.
+   */
+  private final Version libraryVersion;
+
+  /**
+   * Constructor taking the CK_INFO object of the token.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param ckInfo
+   *          The info object as got from PKCS11.C_GetInfo().
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public Info(CK_INFO ckInfo) {
+    Functions.requireNonNull("ckInfo", ckInfo);
+    cryptokiVersion = new Version(ckInfo.cryptokiVersion);
+    manufacturerID = new String(ckInfo.manufacturerID);
+    libraryDescription = new String(ckInfo.libraryDescription);
+    libraryVersion = new Version(ckInfo.libraryVersion);
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Get the version of PKCS#11 that this module claims to be compliant to.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @return The version object.
    */
-  public long getErrorCode() {
-    return errorCode;
+  public Version getCryptokiVersion() {
+    return cryptokiVersion;
+  }
+
+  /**
+   * Get the identifier of the manufacturer.
+   *
+   * @return A string identifying the manufacturer of this module.
+   */
+  public String getManufacturerID() {
+    return manufacturerID;
+  }
+
+  /**
+   * Get a short description of this module.
+   *
+   * @return A string describing the module.
+   */
+  public String getLibraryDescription() {
+    return libraryDescription;
+  }
+
+  /**
+   * Get the version of this PKCS#11 module.
+   *
+   * @return The version of this module.
+   */
+  public Version getLibraryVersion() {
+    return libraryVersion;
+  }
+
+  /**
+   * Returns the string representation of this object.
+   *
+   * @return the string representation of object
+   */
+  @Override
+  public String toString() {
+    return "Cryptoki Version: " + cryptokiVersion + "\nManufacturerID: " + manufacturerID +
+        "\nLibrary Description: " + libraryDescription + "\nLibrary Version: " + libraryVersion;
   }
 
 }

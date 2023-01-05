@@ -40,49 +40,75 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11;
 
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+import iaik.pkcs.pkcs11.wrapper.CK_VERSION;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * Objects of this class represent a version. This consists of a major and a
+ * minor version number.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
+ *
  */
-public class PKCS11Exception extends TokenException {
+public class Version {
 
   /**
-   * The code of the error which was the reason for this exception.
+   * The major version number.
    */
-  private final long errorCode;
+  private final byte major;
 
   /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * The minor version number.
+   */
+  private final  byte minor;
+
+  /**
+   * Constructor for internal use only.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  protected Version(byte major, byte minor) {
+    this.major = major;
+    this.minor = minor;
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Constructor taking a CK_VERSION object.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @param ckVersion
+   *          A CK_VERSION object.
+   *
    */
-  public long getErrorCode() {
-    return errorCode;
+  protected Version(CK_VERSION ckVersion) {
+    this(Functions.requireNonNull("ckVersion", ckVersion).major, ckVersion.minor);
+  }
+
+  /**
+   * Get the major version number.
+   *
+   * @return The major version number.
+   */
+  public byte getMajor() {
+    return major;
+  }
+
+  /**
+   * Get the minor version number.
+   *
+   * @return The minor version number.
+   */
+  public byte getMinor() {
+    return minor;
+  }
+
+  /**
+   * Returns the string representation of this object.
+   *
+   * @return the string representation of this object
+   */
+  public String toString() {
+    return (major & 0xff) + "." + (minor & 0xff);
   }
 
 }

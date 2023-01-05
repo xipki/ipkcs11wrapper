@@ -40,49 +40,44 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11;
 
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * Interface for notification callbacks. Object implementing this interface
+ * can be passed to the openSession method of a token.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public interface Notify {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * The module calls this method in certain events. 'Surrender' is the only
+   * event defined by now. If the application wants to return an error code,
+   * it can do this using PKCS11Exceptions. Throwing no exception means a
+   * return value of CKR_OK, and throwing a PKCS11Exception means a return
+   * value of the error code of the exception; e.g.<code><br>
+   * throw new PKCS11Exception(CKR_CANCEL);<br>
+   * </code><br>
+   * causes a return value of CKR_CANCEL.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param session
+   *          The session performing the callback.
+   * @param event
+   *          See CK_NOTIFICATION in PKCS#11. A return value of CKR_OK is
+   *          generated, if this method call returns regularly.
+   *          CKR_CANCEL can be returned to the module by throwing a
+   *          PKCS11Exception with the error-code CKR_CANCEL.
+   *          Till version 2.4 only CKN_SURRENDER is defined.
+   * @param application
+   *          The application-object passed to openSession.
+   * @exception PKCS11Exception
+   *              If the method fails for some reason, or as PKCS11Exception
+   *              with error-code CKR_CANCEL to signal the module to cancel
+   *              the ongoing operation.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
-  }
-
-  /**
-   * Returns the PKCS#11 error code.
-   *
-   * @return The error code; e.g. 0x00000030.
-   */
-  public long getErrorCode() {
-    return errorCode;
-  }
+  void notify(Session session, long event, Object application) throws PKCS11Exception;
 
 }

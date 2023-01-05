@@ -40,49 +40,83 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11;
 
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * Objects of this class show the state of a session. This state is only a
+ * snapshot of the session's state at the time this state object was created.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public class State {
 
   /**
-   * The code of the error which was the reason for this exception.
+   * The status code of this state as defined in PKCS#11.
    */
-  private final long errorCode;
+  private final long code;
 
   /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Constructor that simply takes the status code as defined in PKCS#11.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param code
+   *          One of: CKS_RO_PUBLIC_SESSION,
+   *                  CKS_RO_USER_FUNCTIONS,
+   *                  CKS_RW_PUBLIC_SESSION,
+   *                  CKS_RW_USER_FUNCTIONS or
+   *                  CKS_RW_SO_FUNCTIONS.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  protected State(long code) {
+    this.code = code;
+  }
+
+  public long getCode() {
+    return code;
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Compares the state code of this object with the other
+   * object. Returns only true, if those are equal in both objects.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @param otherObject
+   *          The other State object.
+   * @return True, if other is an instance of State and the state code
+   *         of both objects are equal. False, otherwise.
    */
-  public long getErrorCode() {
-    return errorCode;
+  @Override
+  public boolean equals(Object otherObject) {
+    if (this == otherObject) return true;
+    else if (!(otherObject instanceof State)) return false;
+
+    return (this.code == ((State) otherObject).code);
+  }
+
+  /**
+   * The overriding of this method should ensure that the objects of this
+   * class work correctly in a hashtable.
+   *
+   * @return The hash code of this object. Gained from the state code.
+   */
+  @Override
+  public int hashCode() {
+    return (int) code;
+  }
+
+  /**
+   * Returns the string representation of this object.
+   *
+   * @return The string representation of object
+   */
+  @Override
+  public String toString() {
+    return (code == CKS_RO_PUBLIC_SESSION) ? "Read-Only Public Session"
+        : (code == CKS_RO_USER_FUNCTIONS) ? "Read-Only User Session"
+        : (code == CKS_RW_PUBLIC_SESSION) ? "Read/Write Public Session"
+        : (code == CKS_RW_USER_FUNCTIONS) ? "Read/Write User Functions"
+        : (code == CKS_RW_SO_FUNCTIONS) ? "Read/Write Security Officer Functions"
+        : "ERROR: unknown session state with code: " + code;
   }
 
 }

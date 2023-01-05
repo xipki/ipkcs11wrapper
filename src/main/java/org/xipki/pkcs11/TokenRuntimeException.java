@@ -1,10 +1,10 @@
 // Copyright (c) 2002 Graz University of Technology. All rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted provided that the following conditions are met:
 //
-// 1. Redistributions of source code must retain the above copyright notice,
-//    this list of conditions and the following disclaimer.
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
 //
 // 2. Redistributions in binary form must reproduce the above copyright notice,
 //    this list of conditions and the following disclaimer in the documentation
@@ -20,8 +20,8 @@
 //    wherever such third-party acknowledgments normally appear.
 //
 // 4. The names "Graz University of Technology" and "IAIK of Graz University of
-//    Technology" must not be used to endorse or promote products derived from
-//    this software without prior written permission.
+//    Technology" must not be used to endorse or promote products derived from this
+//    software without prior written permission.
 //
 // 5. Products derived from this software may not be called "IAIK PKCS Wrapper",
 //    nor may "IAIK" appear in their name, without prior written permission of
@@ -40,49 +40,48 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
-
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+package org.xipki.pkcs11;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * The base class for all runtiem exceptions in this package. It is able to wrap a other exception
+ * from a lower layer.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
+ *
  */
-public class PKCS11Exception extends TokenException {
+public class TokenRuntimeException extends RuntimeException {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Constructor taking an exception message.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param message
+   *          The message giving details about the exception to ease debugging.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public TokenRuntimeException(String message) {
+    super(message);
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Constructor taking an other exception to wrap.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @param encapsulatedException
+   *          The other exception the wrap into this.
    */
-  public long getErrorCode() {
-    return errorCode;
+  public TokenRuntimeException(Exception encapsulatedException) {
+    super(encapsulatedException);
+  }
+
+  /**
+   * Constructor taking a message for this exception and an other exception to wrap.
+   *
+   * @param message
+   *          The message giving details about the exception to ease debugging.
+   * @param encapsulatedException
+   *          The other exception the wrap into this.
+   */
+  public TokenRuntimeException(String message, Exception encapsulatedException) {
+    super(message, encapsulatedException);
   }
 
 }

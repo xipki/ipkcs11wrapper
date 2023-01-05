@@ -40,49 +40,71 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11.objects;
 
 import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+
+import java.math.BigInteger;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * Objects of this class represent a byte-array attribute of a PKCS#11 object
+ * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public class ByteArrayAttribute extends Attribute {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param type
+   *          The PKCS#11 type of this attribute; e.g. CKA_VALUE.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public ByteArrayAttribute(long type) {
+    super(type);
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Set the byte-array value of this attribute. Null, is also valid.
+   * A call to this method sets the present flag to true.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @param value
+   *          The byte-array value to set. May be null.
    */
-  public long getErrorCode() {
-    return errorCode;
+  public ByteArrayAttribute byteArrayValue(byte[] value) {
+    ckAttribute.pValue = value;
+    present = true;
+    return this;
+  }
+
+  /**
+   * Get the byte-array value of this attribute. Null, is also possible.
+   *
+   * @return The byte-array value of this attribute or null.
+   */
+  public byte[] getByteArrayValue() {
+    return (byte[]) ckAttribute.pValue;
+  }
+
+  public BigInteger getUnsignedBigIntValue() {
+    return new BigInteger(1, (byte[]) ckAttribute.pValue);
+  }
+
+  /**
+   * Get a string representation of the value of this attribute.
+   *
+   * @return A string representation of the value of this attribute.
+   */
+  @Override
+  protected String getValueString() {
+    return ((ckAttribute != null) && (ckAttribute.pValue != null))
+      ? Functions.toHex((byte[]) ckAttribute.pValue) : "<NULL_PTR>";
+  }
+
+  @Override
+  public void setValue(Object value) {
+    byteArrayValue((byte[]) value);
   }
 
 }

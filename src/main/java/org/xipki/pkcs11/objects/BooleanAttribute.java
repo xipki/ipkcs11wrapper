@@ -40,49 +40,52 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
-
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+package org.xipki.pkcs11.objects;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * Objects of this class represent a boolean attribute of a PKCS#11 object
+ * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public class BooleanAttribute extends Attribute {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param type
+   *          The PKCS#11 type of this attribute; e.g. CKA_PRIVATE.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public BooleanAttribute(long type) {
+    super(type);
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Set the boolean value of this attribute. Null, is also valid.
+   * A call to this method sets the present flag to true.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @param value
+   *          The boolean value to set. May be null.
    */
-  public long getErrorCode() {
-    return errorCode;
+  public BooleanAttribute booleanValue(Boolean value) {
+    ckAttribute.pValue = value;
+    present = true;
+    return this;
+  }
+
+  /**
+   * Get the boolean value of this attribute. Null, is also possible.
+   *
+   * @return The boolean value of this attribute or null.
+   */
+  public Boolean getBooleanValue() {
+    return (Boolean) ckAttribute.pValue;
+  }
+
+  @Override
+  public void setValue(Object value) {
+    booleanValue((Boolean) value);
   }
 
 }

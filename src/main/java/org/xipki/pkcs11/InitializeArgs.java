@@ -40,49 +40,52 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
-
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+package org.xipki.pkcs11;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * The interface that an object must implement to be a valid parameter for the
+ * initialize method of a Module object.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public interface InitializeArgs {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Returns the object that implements the functionality for
+   * handling mutexes. It returns null, if no handler is set. If this method
+   * returns null, the wrapper does not pass any callback functions to the
+   * underlying module; i.e. is passes null-pointer for the functions.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @return The handler object for mutex functionality, or null, if there is
+   *         no handler for mutexes.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
-  }
+  MutexHandler getMutexHandler();
 
   /**
-   * Returns the PKCS#11 error code.
+   * Check, if application threads which are executing calls to the library
+   * may not use native operating system calls to spawn new threads.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @return True, if application threads which are executing calls to the
+   *         library may not use native operating system calls to spawn new
+   *         threads. False, if they may.
    */
-  public long getErrorCode() {
-    return errorCode;
-  }
+  boolean isLibraryCantCreateOsThreads();
+
+  /**
+   * Check, if the library can use the native operating system threading model
+   * for locking.
+   *
+   * @return True, if the library can use the native operating system
+   *         threading model for locking. False, otherwise.
+   */
+  boolean isOsLockingOk();
+
+  /**
+   * Reserved parameter.
+   *
+   * @return Should be null in this version.
+   */
+  Object getReserved();
 
 }

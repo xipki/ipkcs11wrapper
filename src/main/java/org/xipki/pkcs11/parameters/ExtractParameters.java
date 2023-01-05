@@ -40,49 +40,63 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
-
-import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
+package org.xipki.pkcs11.parameters;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * This class encapsulates parameters for Mechanisms.EXTRACT_KEY_FROM_KEY.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public class ExtractParameters implements Parameters {
 
   /**
-   * The code of the error which was the reason for this exception.
+   * The bit of the base key that should be used as the first bit of the
+   * derived key.
    */
-  private final long errorCode;
+  private long bitIndex;
 
   /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Create a new ExtractParameters object with the given bit index.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param bitIndex
+   *          The bit of the base key that should be used as the first bit of
+   *          the derived key.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public ExtractParameters(long bitIndex) {
+    this.bitIndex = bitIndex;
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Get this parameters object as a Long object.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @return This object as a Long object.
    */
-  public long getErrorCode() {
-    return errorCode;
+  @Override
+  public Long getPKCS11ParamsObject() {
+    return bitIndex;
+  }
+
+  /**
+   * Get the bit of the base key that should be used as the first bit of the
+   * derived key.
+   *
+   * @return The bit of the base key that should be used as the first bit of
+   *         the derived key.
+   */
+  public long getBitIndex() {
+    return bitIndex;
+  }
+
+  /**
+   * Returns the string representation of this object. Do not parse data from
+   * this string, it is for debugging only.
+   *
+   * @return A string representation of this object.
+   */
+  @Override
+  public String toString() {
+    return "Class: " + getClass().getName() + "\n  Bit Index (dec): " + bitIndex;
   }
 
 }

@@ -40,49 +40,76 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11.objects;
 
 import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenException;
 
 /**
- * This is the superclass of all checked exceptions used by this package. An
- * Exception of this class indicates that a function call to the underlying
- * PKCS#11 module returned a value not equal to CKR_OK. The application can get
- * the returned value by calling getErrorCode(). A return value not equal to
- * CKR_OK is the only reason for such an exception to be thrown.
- * PKCS#11 defines the meaning of an error-code, which may depend on the
- * context in which the error occurs.
+ * Objects of this class represent a mechanism array attribute of a PKCS#11
+ * object as specified by PKCS#11. This attribute is available since
+ * cryptoki version 2.20.
  *
- * @author Karl Scheibelhofer
+ * @author Birgit Haas
  * @version 1.0
  */
-public class PKCS11Exception extends TokenException {
+public class MechanismArrayAttribute extends Attribute {
 
   /**
-   * The code of the error which was the reason for this exception.
-   */
-  private final long errorCode;
-
-  /**
-   * Constructor taking the error code as defined for the CKR_* constants
-   * in PKCS#11.
+   * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param errorCode
-   *          The PKCS#11 error code (return value).
+   * @param type
+   *          The PKCS#11 type of this attribute; e.g. CKA_VALUE.
    */
-  public PKCS11Exception(long errorCode) {
-    super(Functions.ckrCodeToName(errorCode));
-    this.errorCode = errorCode;
+  public MechanismArrayAttribute(long type) {
+    super(type);
   }
 
   /**
-   * Returns the PKCS#11 error code.
+   * Set the attributes of this mechanism attribute array by specifying a
+   * Mechanism[]. Null, is also valid.
+   * A call to this method sets the present flag to true.
    *
-   * @return The error code; e.g. 0x00000030.
+   * @param value
+   *          The MechanismArrayAttribute value to set. May be null.
    */
-  public long getErrorCode() {
-    return errorCode;
+  public MechanismArrayAttribute mechanismAttributeArrayValue(long[] value) {
+    ckAttribute.pValue = value.clone();
+    present = true;
+    return this;
+  }
+
+  /**
+   * Get the mechanism attribute array value of this attribute as Mechanism[].
+   * Null, is also possible.
+   *
+   * @return The mechanism attribute array value of this attribute or null.
+   */
+  public long[] getMechanismAttributeArrayValue() {
+    return ckAttribute.pValue == null ? null : ((long[]) ckAttribute.pValue).clone();
+  }
+
+  /**
+   * Get a string representation of the value of this attribute.
+   *
+   * @return A string representation of the value of this attribute.
+   */
+  @Override
+  protected String getValueString() {
+    long[] allowedMechanisms = getMechanismAttributeArrayValue();
+    if (allowedMechanisms != null && allowedMechanisms.length > 0) {
+      StringBuilder sb = new StringBuilder(200);
+      for (long mech : allowedMechanisms) {
+        sb.append("\n      ").append(Functions.ckmCodeToName(mech));
+      }
+      return sb.toString();
+    } else {
+      return "<NULL_PTR>";
+    }
+  }
+
+  @Override
+  public void setValue(Object value) {
+    mechanismAttributeArrayValue((long[]) value);
   }
 
 }
