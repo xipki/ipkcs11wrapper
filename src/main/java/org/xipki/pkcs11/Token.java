@@ -202,9 +202,7 @@ public class Token {
   public MechanismInfo getMechanismInfo(long mechanism) throws TokenException {
     if ((mechanism & CKM_VENDOR_DEFINED) != 0L) {
       VendorCode vendorCode = slot.getModule().getVendorCode();
-      if (vendorCode != null) {
-        mechanism = vendorCode.ckmGenericToVendor(mechanism);
-      }
+      if (vendorCode != null) mechanism = vendorCode.ckmGenericToVendor(mechanism);
     }
 
     return new MechanismInfo(slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism));

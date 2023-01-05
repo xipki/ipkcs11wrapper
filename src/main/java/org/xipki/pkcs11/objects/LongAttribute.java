@@ -106,8 +106,7 @@ public class LongAttribute extends Attribute {
    * @return A string representation of the value of this attribute.
    */
   public String toString(int radix) {
-    return present ? (sensitive ? "<Value is sensitive>" : getValueString(radix))
-        : "<Attribute not present>";
+    return present ? (sensitive ? "<Value is sensitive>" : getValueString(radix)) : "<Attribute not present>";
   }
 
   public void setValue(Object value) {

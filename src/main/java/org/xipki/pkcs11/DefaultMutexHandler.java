@@ -82,9 +82,8 @@ public class DefaultMutexHandler implements MutexHandler {
       if (Thread.interrupted()) throw new InterruptedException();
 
       try {
-        while (locked) {
-          wait();
-        }
+        while (locked) wait();
+
         locked = true;
       } catch (InterruptedException ex) {
         notify();

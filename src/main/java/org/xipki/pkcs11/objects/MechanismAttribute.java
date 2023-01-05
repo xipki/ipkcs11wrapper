@@ -94,9 +94,7 @@ public class MechanismAttribute extends LongAttribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    if ((ckAttribute == null) || (ckAttribute.pValue == null)) {
-      return "<NULL_PTR>";
-    }
+    if ((ckAttribute == null) || (ckAttribute.pValue == null)) return "<NULL_PTR>";
 
     return (((Long) ckAttribute.pValue) != CK_UNAVAILABLE_INFORMATION)
         ? Functions.ckmCodeToName((long) ckAttribute.pValue) : "<Information unavailable>";

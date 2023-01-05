@@ -103,9 +103,7 @@ public abstract class Attribute {
         name = name.trim();
         String type = props.getProperty(name).trim();
         long code = Functions.ckaNameToCode(name);
-        if (code == -1) {
-          throw new TokenRuntimeException("unknown CKA: " + name);
-        }
+        if (code == -1) throw new TokenRuntimeException("unknown CKA: " + name);
 
         if (attributeClasses.containsKey(code)) {
           throw new TokenRuntimeException("duplicated definition of CKA: " + name);
@@ -120,9 +118,7 @@ public abstract class Attribute {
             : "MechanismArray".equalsIgnoreCase(type) ? MechanismArrayAttribute.class
             : "AttributeArray".equalsIgnoreCase(type) ? AttributeArray.class : null;
 
-        if (clazz == null) {
-          throw new TokenRuntimeException("unknown type " + type);
-        }
+        if (clazz == null) throw new TokenRuntimeException("unknown type " + type);
 
         attributeClasses.put(code, clazz);
       }
@@ -151,9 +147,7 @@ public abstract class Attribute {
 
   public static Attribute getInstance(long type, Object value) {
     Class<?> clazz = getAttributeClass(type);
-    if (clazz == null) {
-      throw new IllegalArgumentException("Unknown attribute type " + Functions.ckaCodeToName(type));
-    }
+    if (clazz == null) throw new IllegalArgumentException("Unknown attribute type " + Functions.ckaCodeToName(type));
 
     if (clazz == BooleanAttribute.class) {
       return new BooleanAttribute(type).booleanValue((Boolean) value);
@@ -340,9 +334,7 @@ public abstract class Attribute {
   public String toString(boolean withName, String indent) {
     StringBuilder sb = new StringBuilder(32).append(indent);
 
-    if (withName) {
-      sb.append(Functions.ckaCodeToName(ckAttribute.type)).append(": ");
-    }
+    if (withName) sb.append(Functions.ckaCodeToName(ckAttribute.type)).append(": ");
 
     String valueString = (!stateKnown) ? "<Value is not present or sensitive>"
         : present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";

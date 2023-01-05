@@ -104,9 +104,7 @@ public class DateAttribute extends Attribute {
    * @return The date value of this attribute or null.
    */
   public Date getDateValue() {
-    if (ckAttribute.pValue == null) {
-      return null;
-    }
+    if (ckAttribute.pValue == null) return null;
 
     CK_DATE ckDate = (CK_DATE) ckAttribute.pValue;
     int year = Integer.parseInt(new String(ckDate.year));

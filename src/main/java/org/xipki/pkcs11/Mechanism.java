@@ -44,8 +44,6 @@ package org.xipki.pkcs11;
 
 import org.xipki.pkcs11.parameters.Parameters;
 
-import java.util.Objects;
-
 /**
  * Objects of this class represent a mechanism as defined in PKCS#11. There are
  * constants defined for all mechanisms that PKCS#11 version 2.11 defines.

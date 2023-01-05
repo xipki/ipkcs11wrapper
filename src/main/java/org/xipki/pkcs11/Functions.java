@@ -76,6 +76,7 @@ public class Functions {
 
           if (!tokens.hasMoreTokens()) {
             System.out.println("No name defined for code " + propName);
+            continue;
           }
 
           long code = (propName.startsWith("0x") || propName.startsWith("0X"))
@@ -164,16 +165,12 @@ public class Functions {
       char[] data = hex.toCharArray();
       int len = data.length;
 
-      if ((len & 0x01) != 0) {
-        throw new IllegalArgumentException("Odd number of characters.");
-      }
+      if ((len & 0x01) != 0) throw new IllegalArgumentException("Odd number of characters.");
 
       byte[] out = new byte[len >> 1];
 
       // two characters from the hex value.
-      for (int i = 0, j = 0; j < len; i++) {
-        out[i] = (byte) (HINTS[data[j++]] | LINTS[data[j++]]);
-      }
+      for (int i = 0, j = 0; j < len; i++) out[i] = (byte) (HINTS[data[j++]] | LINTS[data[j++]]);
 
       return out;
     }
@@ -555,9 +552,8 @@ public class Functions {
   }
 
   public static <T> T requireNonNull(String paramName, T param) {
-    if (param == null) {
-      throw new NullPointerException("Argument '" + paramName + "' must not be null.");
-    }
+    if (param == null) throw new NullPointerException("Argument '" + paramName + "' must not be null.");
+
     return param;
   }
 
@@ -571,9 +567,7 @@ public class Functions {
 
   public static long requireAmong(String name, long argument, long... candidates) {
     for (long candidate : candidates) {
-      if (argument == candidate) {
-        return argument;
-      }
+      if (argument == candidate) return argument;
     }
 
     throw new IllegalArgumentException(name + " is not among " + Arrays.toString(candidates) + ": " + argument);
