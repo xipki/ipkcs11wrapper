@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.xipki.pkcs11.parameters.CcmParameters;
 import org.xipki.pkcs11.parameters.Parameters;
 
+import java.util.Arrays;
+
 /**
  * This demo program uses a PKCS#11 module to encrypt a given file and test if
  * the data can be decrypted.
@@ -77,7 +79,9 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     // initialize for encryption
     session.encryptInit(encryptionMechanism, encryptionKey);
 
-    byte[] encryptedData = session.encrypt(rawData);
+    byte[] buffer = new byte[rawData.length + 32];
+    int len = session.encrypt(rawData, 0, rawData.length, buffer, 0, buffer.length);
+    byte[] encryptedData = Arrays.copyOf(buffer, len);
 
     LOG.info("##################################################");
     LOG.info("trying to decrypt");
@@ -91,7 +95,9 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     // initialize for decryption
     session.decryptInit(decryptionMechanism, encryptionKey);
 
-    byte[] decryptedData = session.decrypt(encryptedData);
+    len = session.decrypt(encryptedData, 0, encryptedData.length, buffer, 0, buffer.length);
+    byte[] decryptedData = Arrays.copyOf(buffer, len);
+    Arrays.fill(buffer, (byte) 0);
     Assert.assertArrayEquals(rawData, decryptedData);
   }
 

@@ -48,7 +48,6 @@ import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.TokenException;
 import org.xipki.pkcs11.objects.AttributeVector;
-import org.xipki.pkcs11.parameters.AesCbcEncryptDataParameters;
 import org.junit.Test;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -81,10 +80,10 @@ public class DeriveKeyDemo extends TestBase {
     LOG.info("Base key " + baseKey);
     LOG.info("derive key");
 
-    // DES3 Key Template
     AttributeVector derivedKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
         .token(false).sensitive(true).extractable(true);
 
+    /*
     byte[] iv = new byte[16];
     byte[] data = new byte[32];
 
@@ -97,6 +96,7 @@ public class DeriveKeyDemo extends TestBase {
     long derivedKey = session.deriveKey(mechanism, baseKey, derivedKeyTemplate);
 
     LOG.info("Derived key: {}", derivedKey);
+     */
   }
 
 }

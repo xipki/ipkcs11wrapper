@@ -24,7 +24,6 @@ import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.TokenException;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.parameters.CcmParameters;
-import org.xipki.pkcs11.parameters.GcmParameters;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
 

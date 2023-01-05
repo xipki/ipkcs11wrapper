@@ -29,6 +29,7 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -45,6 +46,8 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
     public MyRunnable() {
     }
 
+    private final byte[] out = new byte[plainData.length + 64];
+
     @Override
     public void run() {
       while (!stop()) {
@@ -55,7 +58,8 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
             // initialize for signing
             session.decryptInit(encryptMechanism, key);
             // This signing operation is implemented in most of the drivers
-            byte[] decryptedData = session.decrypt(dataToDecrypt);
+            int len = session.decrypt(dataToDecrypt, 0, dataToDecrypt.length, out, 0, out.length);
+            byte[] decryptedData = Arrays.copyOf(out, len);
             Assert.assertArrayEquals(plainData, decryptedData);
           } finally {
             requiteSession(sessionBag);
@@ -91,8 +95,8 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
     // generate keypair on token
-    AttributeVector keyTemplate = getMinimalKeyTemplate()
-        .sensitive(true).token(true).id(id).encrypt(true).decrypt(true);
+    AttributeVector keyTemplate = getMinimalKeyTemplate().sensitive(true).token(true)
+        .id(id).encrypt(true).decrypt(true);
 
     ConcurrentSessionBagEntry sessionBag = borrowSession();
     try {
@@ -100,7 +104,9 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
       key = session.generateKey(keyGenMechanism, keyTemplate);
 
       session.encryptInit(encryptMechanism, key);
-      this.dataToDecrypt = session.encrypt(plainData);
+      byte[] buffer = new byte[inputLen + 64];
+      int len = session.encrypt(plainData, 0, inputLen, buffer, 0, buffer.length);
+      this.dataToDecrypt = Arrays.copyOf(buffer, len);
     } finally {
       requiteSession(sessionBag);
     }
