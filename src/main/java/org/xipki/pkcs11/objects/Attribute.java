@@ -42,9 +42,9 @@
 
 package org.xipki.pkcs11.objects;
 
-import org.xipki.pkcs11.TokenRuntimeException;
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.Functions;
+import org.xipki.pkcs11.TokenRuntimeException;
 
 import java.math.BigInteger;
 import java.util.*;

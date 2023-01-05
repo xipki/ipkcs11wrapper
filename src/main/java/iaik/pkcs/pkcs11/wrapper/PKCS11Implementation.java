@@ -42,11 +42,9 @@
 
 package iaik.pkcs.pkcs11.wrapper;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import org.xipki.pkcs11.PKCS11Module;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
 
 /**
  * This is the default implementation of the PKCS11 interface. It connects to the
@@ -62,12 +60,6 @@ import java.util.Locale;
  * @invariants (pkcs11ModulePath_ != null)
  */
 public class PKCS11Implementation implements PKCS11 {
-
-  /**
-   * The name of the native part of the wrapper; i.e. the filename without the extension (e.g.
-   * ".DLL" or ".so").
-   */
-  public static final String PKCS11_WRAPPER = "pkcs11wrapper";
 
   /**
    * Indicates, if the static linking and initialization of the library is already done.
@@ -101,150 +93,13 @@ public class PKCS11Implementation implements PKCS11 {
   public static synchronized void ensureLinkedAndInitialized() {
     if (!linkedAndInitialized) {
       try {
-        loadWrapperFromJar();
+        PKCS11Module.loadWrapperFromJar();
       } catch (IOException ioe) {
         throw new UnsatisfiedLinkError("no pkcs11wrapper in library path or jar file. " + ioe.getMessage());
       }
       initializeLibrary();
       linkedAndInitialized = true;
     }
-  }
-
-  /**
-   * Tries to load the PKCS#11 wrapper native library included in the class path (jar file). If
-   * loaded from the jar file and wrapperDebugVersion is true, uses the included debug version. The
-   * found native library is copied to the temporary-file directory and loaded from there.
-   *
-   * @throws IOException
-   *           if the wrapper native library for the system's architecture can't be found in the jar
-   *           file or if corresponding native library can't be written to temporary directory
-   */
-  private static void loadWrapperFromJar() throws IOException {
-    final String PKCS11_TEMP_DIR = "PKCS11_TEMP_DIR";
-    final int LINUX_INDEX = 0;
-    final int WIN_INDEX = 1;
-    final int MAC_INDEX = 2;
-
-    // subdirectories per OS.
-    final String[] WRAPPER_OS_PATH = {"unix/linux-", "windows/win-", "unix/macosx_universal/"};
-
-    // file suffix per OS.
-    final String[] WRAPPER_FILE_SUFFIX = {".so", ".dll", ".jnilib"};
-
-    // file prefix per OS.
-    final String[] WRAPPER_FILE_PREFIX = {"lib", "", "lib", "lib"};
-
-    // index constants per architecture as used in below array.
-    final int X64_INDEX = 0;
-    final int X86_INDEX = 1;
-    final int SPARC_INDEX = 2;
-
-    // subdirectories per architecture.
-    final String[] WRAPPER_ARCH_PATH = {"x86_64/", "x86/", "sparcv9/"};
-
-    int trialCounter = 0;
-
-    String osName = System.getProperty("os.name");
-    osName = osName.toLowerCase(Locale.ROOT);
-    int osIndex = osName.indexOf("win") > -1 ? WIN_INDEX
-        : osName.indexOf("linux") > -1 ? LINUX_INDEX
-        : osName.indexOf("mac") > -1 ? MAC_INDEX : 0; // it may be some Linux - try it
-
-    String archName = System.getProperty("os.arch");
-    int archIndex = archName.indexOf("64") > -1 ? X64_INDEX
-        : archName.toLowerCase(Locale.ROOT).indexOf("sparc") > -1 ? SPARC_INDEX
-        : archName.indexOf("32") > -1 || archName.indexOf("86") > -1 ? X86_INDEX : -1;
-
-    if (archIndex == -1) {
-      archIndex = 0;
-      trialCounter++;
-    }
-
-    ClassLoader classLoader = PKCS11Implementation.class.getClassLoader();
-    boolean isRelease = null != classLoader.getResource("natives/unix/linux-x86/release/libpkcs11wrapper.so");
-    String releaseOrDebugDir = isRelease ? "release/" : "debug/";
-
-    String system = "natives/" + WRAPPER_OS_PATH[osIndex];
-
-    String architecture = (osIndex == MAC_INDEX) ? "" : WRAPPER_ARCH_PATH[archIndex];
-
-    String libName = WRAPPER_FILE_PREFIX[osIndex] + PKCS11Implementation.PKCS11_WRAPPER;
-    String osFileEnding = WRAPPER_FILE_SUFFIX[osIndex];
-
-    boolean success = false;
-    boolean tryAgain;
-    do {
-      tryAgain = false;
-      String jarFilePath = system + architecture + releaseOrDebugDir;
-      File tempWrapperFile = null;
-      InputStream wrapperLibrary = classLoader.getResourceAsStream(jarFilePath + libName + osFileEnding);
-      if (wrapperLibrary == null) {
-        if (trialCounter < WRAPPER_ARCH_PATH.length) {
-          archIndex = trialCounter++;
-          architecture = WRAPPER_ARCH_PATH[archIndex];
-          tryAgain = true;
-          continue;
-        } else {
-          throw new IOException("No suitable wrapper native library for " + osName + " "
-              + archName + " found in jar file.");
-        }
-      }
-      try {
-        String directory = System.getProperty(PKCS11_TEMP_DIR, null);
-        if (directory != null && !directory.isEmpty()) {
-          File tempWrapperDirectory = new File(directory);
-          if (tempWrapperDirectory.exists()) {
-            tempWrapperFile = File.createTempFile(libName, osFileEnding, tempWrapperDirectory);
-          } else {
-            throw new IOException("Specified local temp directory '" + directory + "' does not exist!");
-          }
-        } else {
-          tempWrapperFile = File.createTempFile(libName, osFileEnding);
-        }
-        if (!tempWrapperFile.canWrite()) {
-          throw new IOException("Can't copy wrapper native library to local temporary directory - " +
-              "no write permission in " + tempWrapperFile.getAbsolutePath());
-        }
-        tempWrapperFile.deleteOnExit();
-
-        try (FileOutputStream os = new FileOutputStream(tempWrapperFile)) {
-          int read;
-          byte[] buffer = new byte[1024];
-          while ((read = wrapperLibrary.read(buffer)) > -1) {
-            os.write(buffer, 0, read);
-          }
-        } finally {
-          wrapperLibrary.close();
-        }
-      } catch (IOException e) {
-        // error writing found library, other architecture would not change this
-        if (tempWrapperFile != null) {
-          tempWrapperFile.delete();
-        }
-        throw new IOException("Can't copy wrapper native library to local temporary directory. " + e.getMessage());
-      } catch (RuntimeException e) {
-        if (tempWrapperFile != null) {
-          tempWrapperFile.delete();
-        }
-        throw e;
-      }
-
-      try {
-        System.load(tempWrapperFile.getAbsolutePath());
-        success = true;
-      } catch (UnsatisfiedLinkError e) {
-        tempWrapperFile.delete();
-        if (trialCounter < WRAPPER_ARCH_PATH.length) {
-          archIndex = trialCounter++;
-          architecture = WRAPPER_ARCH_PATH[archIndex];
-          tryAgain = true;
-        } else {
-          throw new IOException("No suitable wrapper native library found in jar file. "
-              + osName + " " + archName + " not supported.");
-        }
-      }
-    } while (!success && tryAgain);
-
   }
 
   /**
