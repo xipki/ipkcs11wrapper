@@ -9,11 +9,10 @@
     <version>7</version>
   </parent>
   <groupId>org.xipki</groupId>
-  <artifactId>pkcs11-wrapper2</artifactId>
+  <artifactId>ipkcs11wrapper</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>PKCS#11 wrapper 2</name>
-  <description>PKCS#11 wrapper 2 based on IAIK's PKCS#11 wrapper</description>
+  <name>ipkcs11wrapper</name>
   <properties>
     <!--must match the version defined above-->
     <bundle.version>1.0.0.SNAPSHOT</bundle.version>
@@ -41,9 +40,9 @@
     </repository>
   </distributionManagement>
   <scm>
-    <connection>scm:git:git@github.com:xipki/pkcs11wrapper2.git</connection>
-    <developerConnection>scm:git:git@github.com:xipki/pkcs11wrapper2.git</developerConnection>
-    <url>git@github.com:xipki/pkcs11wrapper2.git</url>
+    <connection>scm:git:git@github.com:xipki/ipkcs11wrapper.git</connection>
+    <developerConnection>scm:git:git@github.com:xipki/ipkcs11wrapper.git</developerConnection>
+    <url>git@github.com:xipki/ipkcs11wrapper.git</url>
   </scm>
   <dependencies>
     <dependency>
@@ -171,8 +170,8 @@
             <manifestEntries>
               <Export-Package>iaik.pkcs.pkcs11,iaik.pkcs.pkcs11.objects,iaik.pkcs.pkcs11.wrapper,iaik.pkcs.pkcs11.parameters</Export-Package>
               <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-              <Bundle-Name>pkcs11-wrapper2</Bundle-Name>
-              <Bundle-SymbolicName>org.xipki.pkcs11-wrapper2</Bundle-SymbolicName>
+              <Bundle-Name>pkcs11-wrapper</Bundle-Name>
+              <Bundle-SymbolicName>org.xipki.ipkcs11wrapper</Bundle-SymbolicName>
               <Bundle-Version>${bundle.version}</Bundle-Version>
             </manifestEntries>
           </archive>
@@ -199,8 +198,8 @@
               </excludes>
               <archive>
                 <manifestEntries>
-                  <Bundle-Name>pkcs11-wrapper2-debug</Bundle-Name>
-                  <Bundle-SymbolicName>org.xipki.pkcs11-wrapper2-debug</Bundle-SymbolicName>
+                  <Bundle-Name>ipkcs11wrapper-debug</Bundle-Name>
+                  <Bundle-SymbolicName>org.xipki.ipkcs11wrapper-debug</Bundle-SymbolicName>
                 </manifestEntries>
               </archive>
             </configuration>

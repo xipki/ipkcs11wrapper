@@ -7,13 +7,13 @@ For details please refer to the file [LICENSE](LICENSE).
 ## Prerequisite
 - JRE / JDK 8 or above
 
-Use pkcs11wrapper2 in your project
+Use ipkcs11wrapper in your project
 =====
 - Maven  
   ```
   <dependency>
       <groupId>org.xipki</groupId>
-      <artifactId>pkcs11-wrapper2</artifactId>
+      <artifactId>ipkcs11wrapper</artifactId>
       <version>1.0.0-SNAPSHOT</version>
   </dependency>
   ```
