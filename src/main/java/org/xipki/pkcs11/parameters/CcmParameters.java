@@ -92,6 +92,10 @@ public class CcmParameters implements Parameters {
         return params;
     }
 
+    public void setDataLen(long dataLen) {
+        this.dataLen = dataLen;
+    }
+
     /**
      * Returns the string representation of this object. Do not parse data from this string, it is for
      * debugging only.

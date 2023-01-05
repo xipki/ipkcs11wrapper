@@ -25,6 +25,8 @@ import org.xipki.pkcs11.TokenException;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Assert;
 import org.junit.Test;
+import org.xipki.pkcs11.parameters.CcmParameters;
+import org.xipki.pkcs11.parameters.Parameters;
 
 /**
  * This demo program uses a PKCS#11 module to encrypt a given file and test if
@@ -67,6 +69,10 @@ public abstract class SymmEncryptDecrypt extends TestBase {
 
     // be sure that your token can process the specified mechanism
     Mechanism encryptionMechanism = getEncryptionMech(token);
+    Parameters params = encryptionMechanism.getParameters();
+    if (params instanceof CcmParameters) {
+      ((CcmParameters) params).setDataLen(rawData.length);
+    }
 
     // initialize for encryption
     session.encryptInit(encryptionMechanism, encryptionKey);
@@ -77,6 +83,10 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     LOG.info("trying to decrypt");
 
     Mechanism decryptionMechanism = getEncryptionMech(token);
+    params = encryptionMechanism.getParameters();
+    if (params instanceof CcmParameters) {
+      ((CcmParameters) params).setDataLen(encryptedData.length - 16);
+    }
 
     // initialize for decryption
     session.decryptInit(decryptionMechanism, encryptionKey);
