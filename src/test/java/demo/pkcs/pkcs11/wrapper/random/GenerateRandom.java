@@ -71,7 +71,7 @@ public class GenerateRandom extends TestBase {
     LOG.info("generating {} bytes of random data... ", n);
     byte[] dataBuffer = session.generateRandom(n);
     LOG.info("random is");
-    LOG.info(Functions.toHexString(dataBuffer));
+    LOG.info(Functions.toHex(dataBuffer));
     LOG.info("finished");
     LOG.info("##################################################");
   }

@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11.objects;
 
-import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
+import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 
 /**
  * Objects of this class represent an attribute array of a PKCS#11 object
@@ -79,10 +79,11 @@ public class AttributeArray extends Attribute {
    * @param value
    *          The AttributeArray value to set. May be null.
    */
-  public void setAttributeArrayValue(AttributeVector value) {
+  public AttributeArray attributeArrayValue(AttributeVector value) {
     template = value;
     ckAttribute.pValue = value.toCkAttributes();
     present = true;
+    return this;
   }
 
   /**
@@ -104,16 +105,12 @@ public class AttributeArray extends Attribute {
     for (CK_ATTRIBUTE ck_attribute : attributesArray) {
       long type = ck_attribute.type;
       Class<?> implementation = Attribute.getAttributeClass(type);
-      Attribute attribute;
       if (implementation == null) {
-        attribute = new OtherAttribute(type);
-        attribute.setCkAttribute(ck_attribute);
+        template.attr(new OtherAttribute(type).ckAttribute(ck_attribute));
       } else {
         try {
-          attribute = (Attribute) implementation.getDeclaredConstructor(Attribute.class).newInstance();
-          attribute.setCkAttribute(ck_attribute);
-          attribute.setPresent(true);
-          template.attr(attribute);
+          Attribute attribute = (Attribute) implementation.getDeclaredConstructor(Attribute.class).newInstance();
+          template.attr(attribute.ckAttribute(ck_attribute).present(true));
         } catch (Exception ex) {
           System.err.println("Error when trying to create a " + implementation
               + " instance for " + type + ": " + ex.getMessage());
@@ -139,7 +136,7 @@ public class AttributeArray extends Attribute {
 
   @Override
   public void setValue(Object value) throws UnsupportedOperationException {
-    setAttributeArrayValue((AttributeVector) value);
+    attributeArrayValue((AttributeVector) value);
   }
 
 }

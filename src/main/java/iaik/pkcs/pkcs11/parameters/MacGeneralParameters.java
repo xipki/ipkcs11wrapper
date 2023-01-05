@@ -87,16 +87,6 @@ public class MacGeneralParameters implements Parameters {
   }
 
   /**
-   * Set the length of the MAC produced, in bytes.
-   *
-   * @param macLength
-   *          The length of the MAC produced, in bytes.
-   */
-  public void setMacLength(long macLength) {
-    this.macLength = macLength;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -104,7 +94,7 @@ public class MacGeneralParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  Mac Length (dec): " + macLength;
+    return "Class: " + getClass().getName() + "\n  Mac Length (dec): " + macLength;
   }
 
 }

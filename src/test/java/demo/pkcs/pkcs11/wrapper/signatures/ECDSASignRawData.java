@@ -79,7 +79,7 @@ public class ECDSASignRawData extends SignatureTestBase {
     // This signing operation is implemented in most of the drivers
     byte[] signatureValue = session.sign(hashValue);
 
-    LOG.info("The signature value is: {}", Functions.toHexString(signatureValue));
+    LOG.info("The signature value is: {}", Functions.toHex(signatureValue));
 
     // verify
     long generatedPublicKey = generatedKeyPair.getPublicKey();

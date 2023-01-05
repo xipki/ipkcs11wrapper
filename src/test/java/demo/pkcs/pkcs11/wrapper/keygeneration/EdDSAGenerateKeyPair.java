@@ -121,13 +121,13 @@ public class EdDSAGenerateKeyPair extends TestBase {
       byte[] encodedPoint = session.getByteArrayAttributeValue(generatedPublicKey, CKA_EC_POINT);
       byte[] curveOid = session.getByteArrayAttributeValue(generatedPublicKey, CKA_EC_PARAMS);
 
-      LOG.info("Public Key (Point): {}", Functions.toHexString(encodedPoint));
-      LOG.info("Public Key (Curve OID): {}", Functions.toHexString(curveOid));
+      LOG.info("Public Key (Point): {}", Functions.toHex(encodedPoint));
+      LOG.info("Public Key (Curve OID): {}", Functions.toHex(curveOid));
 
       // now we try to search for the generated keys
       LOG.info("##################################################");
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
-          Functions.toHexString(id));
+          Functions.toHex(id));
       // set the search template for the public key
       AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_EC_EDWARDS).attr(CKA_ID, id);
 

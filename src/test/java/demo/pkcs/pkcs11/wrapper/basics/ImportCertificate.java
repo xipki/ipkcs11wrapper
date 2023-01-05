@@ -174,11 +174,11 @@ public class ImportCertificate extends TestBase {
         if (objectID == null) {
           MessageDigest digest = MessageDigest.getInstance("SHA-1");
 
-          if (publicKey instanceof java.security.interfaces.RSAPublicKey) {
-            newObjectID = ((java.security.interfaces.RSAPublicKey) publicKey).getModulus().toByteArray();
+          if (publicKey instanceof RSAPublicKey) {
+            newObjectID = ((RSAPublicKey) publicKey).getModulus().toByteArray();
             newObjectID = digest.digest(newObjectID);
-          } else if (publicKey instanceof java.security.interfaces.DSAPublicKey) {
-            newObjectID = ((java.security.interfaces.DSAPublicKey) publicKey).getY().toByteArray();
+          } else if (publicKey instanceof DSAPublicKey) {
+            newObjectID = ((DSAPublicKey) publicKey).getY().toByteArray();
             newObjectID = digest.digest(newObjectID);
           } else {
             byte[] encodedCert = currentCertificate.getEncoded();

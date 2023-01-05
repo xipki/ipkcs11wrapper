@@ -52,8 +52,6 @@ import iaik.pkcs.pkcs11.parameters.InitializationVectorParameters;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
@@ -102,9 +100,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     // initialize for encryption
     session.encryptInit(encryptionMechanism, encryptionKey);
 
-    byte[] buffer = new byte[rawData.length + 64];
-    int cipherLen = session.encrypt(rawData, 0, rawData.length, buffer, 0, buffer.length);
-    byte[] encryptedData = Arrays.copyOf(buffer, cipherLen);
+    byte[] encryptedData = session.encrypt(rawData);
 
     LOG.info("##################################################");
     LOG.info("generate secret wrapping key");
@@ -145,9 +141,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     // initialize for decryption
     session.decryptInit(decryptionMechanism, unwrappedKey);
 
-    int decryptLen = session.decrypt(encryptedData, 0, encryptedData.length, buffer, 0, buffer.length);
-    byte[] decryptedData = Arrays.copyOf(buffer, decryptLen);
-    Arrays.fill(buffer, (byte) 0);
+    byte[] decryptedData = session.decrypt(encryptedData);
 
     Assert.assertArrayEquals(rawData, decryptedData);
 

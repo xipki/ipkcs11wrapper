@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11;
 
+import iaik.pkcs.pkcs11.wrapper.CK_TOKEN_INFO;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import sun.security.pkcs11.wrapper.CK_TOKEN_INFO;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -160,7 +160,7 @@ public class TokenInfo {
    *          The CK_TOKEN_INFO object as returned by PKCS11.C_GetTokenInfo.
    */
   protected TokenInfo(CK_TOKEN_INFO ckTokenInfo) {
-    Util.requireNonNull("ckTokenInfo", ckTokenInfo);
+    Functions.requireNonNull("ckTokenInfo", ckTokenInfo);
     label = new String(ckTokenInfo.label);
     manufacturerID = new String(ckTokenInfo.manufacturerID);
     model = new String(ckTokenInfo.model);
@@ -357,6 +357,14 @@ public class TokenInfo {
     return (flags & flagMask) != 0L;
   }
 
+  public boolean isProtectedAuthenticationPath() {
+    return hasFlagBit(CKF_PROTECTED_AUTHENTICATION_PATH);
+  }
+
+  public boolean isLoginRequired() {
+    return hasFlagBit(CKF_LOGIN_REQUIRED);
+  }
+
   /**
    * Returns the string representation of this object.
    *
@@ -364,86 +372,33 @@ public class TokenInfo {
    */
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder(1000)
-        .append("Manufacturer ID: ").append(manufacturerID)
-        .append("\nModel: ").append(model)
-        .append("\nSerial Number: ").append(serialNumber)
-        .append("\nMaximum Session Count: ").append(maxCountToString(maxSessionCount))
-        .append("\nSession Count: ").append(countToString(sessionCount))
-        .append("\nMaximum Read/Write Session Count: ").append(maxCountToString(maxRwSessionCount))
-        .append("\nRead/Write Session Count: ").append(countToString(rwSessionCount))
-        .append("\nMaximum PIN Length: ").append(maxPinLen)
-        .append("\nMinimum PIN Length: ").append(minPinLen)
-        .append("\nTotal Public Memory: ").append(countToString(totalPrivateMemory))
-        .append("\nFree Public Memory: ").append(countToString(freePublicMemory))
-        .append("\nTotal Private Memory: ").append(countToString(totalPrivateMemory))
-        .append("\nFree Private Memory: ").append(countToString(freePublicMemory))
-        .append("\nHardware Version: ").append(hardwareVersion)
-        .append("\nFirmware Version: ").append(firmwareVersion)
-        .append("\nTime: ").append(time)
-        .append("\nFlags: 0x").append(Functions.toFullHex(flags));
+    String text =
+          "Manufacturer ID:      " + manufacturerID         +
+        "\nModel:                " + model                  + "\nSerial Number:      " + serialNumber +
+        "\nMax Session Count:    " + mct(maxSessionCount)   + "\nSession Count:      " + ct(sessionCount) +
+        "\nMax RW Session Count: " + mct(maxRwSessionCount) + "\nRW Session Count:   " + ct(rwSessionCount) +
+        "\nMaxPIN Length:        " + maxPinLen              + "\nMin PIN Length:     " + minPinLen +
+        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Public Memory: " + ct(freePublicMemory) +
+        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Public Memory: " + ct(freePublicMemory) +
+        "\nHardware Version:     " + hardwareVersion        + "\nFirmware Version:   " + firmwareVersion +
+        "\nTime:                 " + time                   + "\nFlags: ";
 
-    Util.toStringFlags(sb, "", flags,
+    return Functions.toStringFlags(text, flags,
         CKF_RNG,                    CKF_WRITE_PROTECTED,        CKF_LOGIN_REQUIRED,
         CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN,         CKF_PROTECTED_AUTHENTICATION_PATH,
         CKF_DUAL_CRYPTO_OPERATIONS, CKF_TOKEN_INITIALIZED,      CKF_SECONDARY_AUTHENTICATION,
         CKF_USER_PIN_INITIALIZED,   CKF_USER_PIN_COUNT_LOW,     CKF_USER_PIN_FINAL_TRY,
-        CKF_USER_PIN_LOCKED,        CKF_USER_PIN_TO_BE_CHANGED,
-        CKF_SO_PIN_COUNT_LOW,       CKF_SO_PIN_FINAL_TRY,
-        CKF_SO_PIN_LOCKED,          CKF_SO_PIN_TO_BE_CHANGED);
-
-    return sb.toString();
+        CKF_USER_PIN_LOCKED,        CKF_USER_PIN_TO_BE_CHANGED, CKF_SO_PIN_COUNT_LOW,
+        CKF_SO_PIN_FINAL_TRY,       CKF_SO_PIN_LOCKED,          CKF_SO_PIN_TO_BE_CHANGED);
   }
 
-  private static String maxCountToString(long count) {
-    if (count == CK_UNAVAILABLE_INFORMATION) {
-      return "<Information unavailable>";
-    } else {
-      return (count == CK_EFFECTIVELY_INFINITE) ? "<effectively infinite>" : Long.toString(count);
-    }
+  private static String mct(long count) {
+    return (count == CK_UNAVAILABLE_INFORMATION) ? "<Information unavailable>"
+        : (count == CK_EFFECTIVELY_INFINITE) ? "<effectively infinite>" : Long.toString(count);
   }
 
-  private static String countToString(long count) {
+  private static String ct(long count) {
     return (count == CK_UNAVAILABLE_INFORMATION) ? "<Information unavailable>" : Long.toString(count);
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other TokenInfo object.
-   * @return True, if other is an instance of Info and all member variables of
-   *         both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof TokenInfo)) return false;
-
-    TokenInfo other = (TokenInfo) otherObject;
-    return label.equals(other.label)
-        && manufacturerID.equals(other.manufacturerID)      && model.equals(other.model)
-        && serialNumber.equals(other.serialNumber)          && time.equals(other.time)
-        && hardwareVersion.equals(other.hardwareVersion)    && firmwareVersion.equals(other.firmwareVersion)
-        && (maxSessionCount    == other.maxSessionCount)    && (sessionCount      == other.sessionCount)
-        && (maxRwSessionCount  == other.maxRwSessionCount)  && (rwSessionCount    == other.rwSessionCount)
-        && (totalPublicMemory  == other.totalPublicMemory)  && (freePublicMemory  == other.freePublicMemory)
-        && (totalPrivateMemory == other.totalPrivateMemory) && (freePrivateMemory == other.freePrivateMemory)
-        && (maxPinLen          == other.maxPinLen)          && (minPinLen         == other.minPinLen)
-        && (flags == other.flags);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object. Gained from the label,
-   *         manufacturerID, model and serialNumber.
-   */
-  @Override
-  public int hashCode() {
-    return label.hashCode() ^ manufacturerID.hashCode() ^ model.hashCode() ^ serialNumber.hashCode();
   }
 
 }

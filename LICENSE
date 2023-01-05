@@ -1,35 +1,45 @@
-The new code add by xipki are licensed under Apache License Version 2.0.
+This product includes software developed by Stiftung SIC which is licensed
+under "IAIK PKCS#11 Wrapper License". All other parts are licensed under
+Apache License, version 2.
 
-The original code are licensed as follows:
+===== IAIK PKCS#11 Wrapper License =====
 
-Copyright  (c) 2002 Graz University of Technology. All rights reserved.
+The Stiftung SIC (Stiftung Secure Information and Communication Technologies,
+Inffeldgasse 16a, A-8010 Graz, Austria / Europe), hereafter referred to as
+“Stiftung SIC”, provides the IAIK PKCS#11 Wrapper under an Apache-style license.
+In short, this means that you can use the IAIK PKCS#11 Wrapper for free for
+noncommercial and commercial developments provided you meet the conditions of
+the license text. The complete license text is as follows.
 
-Redistribution and use in  source and binary forms, with or without
-modification, are permitted  provided that the following conditions are met:
+IAIK PKCS#11 Wrapper License
 
-1. Redistributions of  source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
+Copyright (c) 2002 IAIK, 2003 Stiftung SIC. All rights reserved.
 
-2. Redistributions in  binary form must reproduce the above copyright notice,
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
    and/or other materials provided with the distribution.
 
 3. The end-user documentation included with the redistribution, if any, must
    include the following acknowledgment:
 
-   "This product includes software developed by IAIK of Graz University of
-    Technology."
+   “This product includes software developed by Stiftung SIC.”
 
-   Alternately, this acknowledgment may appear in the software itself, if
-   and wherever such third-party acknowledgments normally appear.
+   Alternately, this acknowledgment may appear in the software itself, if and
+   wherever such third-party acknowledgments normally appear.
 
-4. The names "Graz University of Technology" and "IAIK of Graz University of
-   Technology" must not be used to endorse or promote products derived from
-   this software without prior written permission.
+4. The names “Stiftung SIC” and “IAIK of Graz University of Technology” must
+   not be used to endorse or promote products derived from this software
+   without prior written permission.
 
-5. Products derived from this software may not be called
-   "IAIK PKCS Wrapper", nor may "IAIK" appear in their name, without prior
-   written permission of Graz University of Technology.
+5. Products derived from this software may not be called “IAIK PKCS Wrapper”,
+   nor may “IAIK” or “Stiftung SIC” appear in their name, without prior written
+   permission of Stiftung SIC.
 
 THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED
 WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED

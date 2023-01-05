@@ -68,9 +68,10 @@ public class LongAttribute extends Attribute {
    * @param value
    *          The long value to set. May be null.
    */
-  public void setLongValue(Long value) {
+  public LongAttribute longValue(Long value) {
     ckAttribute.pValue = value;
     present = true;
+    return this;
   }
 
   /**
@@ -111,7 +112,7 @@ public class LongAttribute extends Attribute {
 
   @Override
   public void setValue(Object value) {
-    setLongValue((Long) value);
+    longValue((Long) value);
   }
 
 }

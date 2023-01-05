@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11;
 
+import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM_INFO;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import sun.security.pkcs11.wrapper.CK_MECHANISM_INFO;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -72,23 +72,28 @@ public class MechanismInfo {
   private long flags;
 
   /**
-   * Default constructor. All member variables get the default value for their
-   * type.
-   */
-  public MechanismInfo() { /* left empty intentionally */
-  }
-
-  /**
    * Constructor taking a CK_MECHANISM_INFO object as data source.
    *
    * @param ckMechanismInfo
    *          The CK_MECHANISM_INFO object that provides the data.
    */
   public MechanismInfo(CK_MECHANISM_INFO ckMechanismInfo) {
-    Util.requireNonNull("ckMechanismInfo", ckMechanismInfo);
-    this.minKeySize = ckMechanismInfo.ulMinKeySize;
-    this.maxKeySize = ckMechanismInfo.ulMaxKeySize;
-    this.flags = ckMechanismInfo.flags;
+    this(Functions.requireNonNull("ckMechanismInfo", ckMechanismInfo).ulMinKeySize,
+        ckMechanismInfo.ulMaxKeySize, ckMechanismInfo.flags);
+  }
+
+  /**
+   * @param minKeySize
+   *          The minimum key length supported by this mechanism.
+   * @param maxKeySize
+   *          The maximum key length supported by this mechanism.
+   * @param flags
+   *          The flag bit(s).
+   */
+  public MechanismInfo(long minKeySize, long maxKeySize, long flags) {
+    this.minKeySize = minKeySize;
+    this.maxKeySize = maxKeySize;
+    this.flags = flags;
   }
 
   /**
@@ -147,29 +152,18 @@ public class MechanismInfo {
    * @param flagMask
    *          The mask of the flag bit(s).
    */
-  private void setFlagBit(long flagMask) {
+  public void setFlagBit(long flagMask) {
     flags |= flagMask;
   }
 
   /**
-   * Set the minimum key length supported by this mechanism.
+   * Clear the given feature flag.
    *
-   * @param minKeySize
-   *          The minimum key length supported by this mechanism.
+   * @param flagMask
+   *          The mask of the flag bit(s).
    */
-  public void setMinKeySize(long minKeySize) {
-    this.minKeySize = minKeySize;
-  }
-
-  /**
-  /**
-   * Set the maximum key length supported by this mechanism.
-   *
-   * @param maxKeySize
-   *          The maximum key length supported by this mechanism.
-   */
-  public void setMaxKeySize(long maxKeySize) {
-    this.maxKeySize = maxKeySize;
+  public void clearFlagBit(long flagMask) {
+    flags &= ~flagMask;
   }
 
   /**
@@ -184,19 +178,14 @@ public class MechanismInfo {
    * @return True, if the required features are supported.
    */
   public boolean supports(MechanismInfo requiredFeatures) {
-    Util.requireNonNull("requiredFeatures", requiredFeatures);
+    Functions.requireNonNull("requiredFeatures", requiredFeatures);
 
     long requiredMaxKeySize = requiredFeatures.getMaxKeySize();
-    if ((requiredMaxKeySize != 0) && (requiredMaxKeySize > maxKeySize)) {
-      return false;
-    }
-
     long requiredMinKeySize = requiredFeatures.getMinKeySize();
-    if ((requiredMinKeySize != 0) && (requiredMinKeySize < minKeySize)) {
-      return false;
-    }
 
-    return (requiredFeatures.flags & flags) == requiredFeatures.flags;
+    return (requiredMaxKeySize != 0 && requiredMaxKeySize > maxKeySize) ? false
+        :  (requiredMinKeySize != 0 && requiredMinKeySize < minKeySize) ? false
+        :  (requiredFeatures.flags & flags) == requiredFeatures.flags;
   }
 
   /**
@@ -206,27 +195,12 @@ public class MechanismInfo {
    */
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder(200)
-        .append("  Minimum Key-Size: ").append(minKeySize).append("\n  Maximum Key-Size: ").append(maxKeySize)
-        .append("\n  Flags: 0x").append(Functions.toFullHex(flags));
+    String text = "  Minimum Key-Size: " + minKeySize + "\n  Maximum Key-Size: " + maxKeySize + "\n  Flags: ";
 
-    Util.toStringFlags(sb, "  ", flags, CKF_HW,
-        CKF_ENCRYPT,      CKF_DECRYPT,     CKF_DIGEST,         CKF_SIGN,
-        CKF_SIGN_RECOVER, CKF_VERIFY,      CKF_VERIFY_RECOVER, CKF_GENERATE_KEY_PAIR,
-        CKF_GENERATE,     CKF_WRAP,        CKF_UNWRAP,         CKF_DERIVE,
-        CKF_EXTENSION,    CKF_EC_F_P,      CKF_EC_F_2M,        CKF_EC_ECPARAMETERS,
-        CKF_EC_OID,       CKF_EC_COMPRESS, CKF_EC_UNCOMPRESS);
-    return sb.toString();
-  }
-
-  /**
-   * Clear the given feature flag.
-   *
-   * @param flagMask
-   *          The mask of the flag bit(s).
-   */
-  private void clearFlagBit(long flagMask) {
-    flags &= ~flagMask;
+    return Functions.toStringFlags(text, flags, CKF_HW,    CKF_ENCRYPT,   CKF_DECRYPT,     CKF_DIGEST,
+        CKF_SIGN, CKF_SIGN_RECOVER, CKF_VERIFY, CKF_VERIFY_RECOVER, CKF_GENERATE_KEY_PAIR, CKF_GENERATE,
+        CKF_WRAP, CKF_UNWRAP,       CKF_DERIVE, CKF_EXTENSION,      CKF_EC_F_P,            CKF_EC_F_2M,
+        CKF_EC_ECPARAMETERS,        CKF_EC_OID, CKF_EC_COMPRESS,    CKF_EC_UNCOMPRESS);
   }
 
 }

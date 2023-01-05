@@ -17,7 +17,7 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * This class encapsulates parameters byte arrays.
@@ -29,7 +29,7 @@ public class OpaqueParameters implements Parameters {
   private byte[] bytes;
 
   public OpaqueParameters(byte[] bytes) {
-    this.bytes = bytes;
+    this.bytes = Functions.requireNonNull("bytes", bytes);
   }
 
   /**
@@ -52,13 +52,9 @@ public class OpaqueParameters implements Parameters {
     return bytes;
   }
 
-  public void setBytes(byte[] bytes) {
-    this.bytes = Util.requireNonNull("bytes", bytes);
-  }
-
   @Override
   public String toString() {
-    return "  Bytes (hex): " + Util.toHex(bytes);
+    return "Class: " + getClass().getName() + "\n  Bytes (hex): " + Functions.toHex(bytes);
   }
 
 }

@@ -56,7 +56,7 @@ public class NotifyDemo extends TestBase {
 
   private static class MyNotify implements Notify {
 
-    public void notify(Session session, boolean surrender, Object application) {
+    public void notify(Session session, long event, Object application) {
       System.out.println("we got a Notify callback !!!");
       // we do not throw an exception, this means return value CKR_OK
     }

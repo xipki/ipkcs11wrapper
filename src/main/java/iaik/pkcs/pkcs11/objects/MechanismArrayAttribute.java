@@ -72,9 +72,10 @@ public class MechanismArrayAttribute extends Attribute {
    * @param value
    *          The MechanismArrayAttribute value to set. May be null.
    */
-  public void setMechanismAttributeArrayValue(long[] value) {
+  public MechanismArrayAttribute mechanismAttributeArrayValue(long[] value) {
     ckAttribute.pValue = value.clone();
     present = true;
+    return this;
   }
 
   /**
@@ -108,7 +109,7 @@ public class MechanismArrayAttribute extends Attribute {
 
   @Override
   public void setValue(Object value) {
-    setMechanismAttributeArrayValue((long[]) value);
+    mechanismAttributeArrayValue((long[]) value);
   }
 
 }

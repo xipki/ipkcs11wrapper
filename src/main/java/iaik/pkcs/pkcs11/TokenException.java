@@ -51,20 +51,6 @@ package iaik.pkcs.pkcs11;
  */
 public class TokenException extends Exception {
 
-  private static final long serialVersionUID = 2259867040069453007L;
-
-  /**
-   * An encapsulated (inner) exception. Possibly, an exception from a lower
-   * layer that can be propagated to a higher layer only in wrapped form.
-   */
-  private Exception encapsulatedException;
-
-  /**
-   * The default constructor.
-   */
-  public TokenException() {
-  }
-
   /**
    * Constructor taking an exception message.
    *
@@ -83,7 +69,7 @@ public class TokenException extends Exception {
    *          The other exception the wrap into this.
    */
   public TokenException(Exception encapsulatedException) {
-    this.encapsulatedException = encapsulatedException;
+    super(encapsulatedException);
   }
 
   /**
@@ -97,30 +83,7 @@ public class TokenException extends Exception {
    *          The other exception the wrap into this.
    */
   public TokenException(String message, Exception encapsulatedException) {
-    super(message);
-    this.encapsulatedException = encapsulatedException;
-  }
-
-  /**
-   * Get the encapsulated (wrapped) exception. May be null.
-   *
-   * @return The encapsulated (wrapped) exception, or null if there is no
-   *         inner exception.
-   */
-  public Exception getEncapsulatedException() {
-    return encapsulatedException;
-  }
-
-  /**
-   * Returns the string representation of this exception, including the string
-   * representation of the wrapped (encapsulated) exception.
-   *
-   * @return The string representation of exception.
-   */
-  @Override
-  public String toString() {
-    return (encapsulatedException == null) ? super.toString()
-        : super.toString() + ", Encapsulated Exception: " + encapsulatedException;
+    super(message, encapsulatedException);
   }
 
 }

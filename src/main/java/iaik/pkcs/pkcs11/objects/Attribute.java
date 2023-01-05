@@ -42,9 +42,9 @@
 
 package iaik.pkcs.pkcs11.objects;
 
-import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.TokenRuntimeException;
+import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -70,7 +70,7 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
  */
 public abstract class Attribute {
 
-  private static Map<Long, Class<?>> attributeClasses;
+  private static final Map<Long, Class<?>> attributeClasses;
 
   /**
    * True, if the object really possesses this attribute.
@@ -104,11 +104,11 @@ public abstract class Attribute {
         String type = props.getProperty(name).trim();
         long code = Functions.ckaNameToCode(name);
         if (code == -1) {
-          throw new IllegalStateException("unknown CKA: " + name);
+          throw new TokenRuntimeException("unknown CKA: " + name);
         }
 
         if (attributeClasses.containsKey(code)) {
-          throw new IllegalArgumentException("duplicated definition of CKA: " + name);
+          throw new TokenRuntimeException("duplicated definition of CKA: " + name);
         }
 
         Class<?> clazz = "Boolean".equalsIgnoreCase(type) ? BooleanAttribute.class
@@ -118,21 +118,20 @@ public abstract class Attribute {
             : "Date".equalsIgnoreCase(type) ? DateAttribute.class
             : "Mechanism".equalsIgnoreCase(type) ? MechanismAttribute.class
             : "MechanismArray".equalsIgnoreCase(type) ? MechanismArrayAttribute.class
-            : "AttributeArray".equalsIgnoreCase(type) ? AttributeArray.class
-            : null;
+            : "AttributeArray".equalsIgnoreCase(type) ? AttributeArray.class : null;
 
         if (clazz == null) {
-          throw new IllegalStateException("unknown type " + type);
+          throw new TokenRuntimeException("unknown type " + type);
         }
 
         attributeClasses.put(code, clazz);
       }
     } catch (Throwable t) {
-      throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
+      throw new TokenRuntimeException("error reading properties file " + propFile + ": " + t.getMessage());
     }
 
     if (attributeClasses.isEmpty()) {
-      throw new IllegalStateException("no code to name map is defined properties file " + propFile);
+      throw new TokenRuntimeException("no code to name map is defined properties file " + propFile);
     }
   }
 
@@ -157,11 +156,8 @@ public abstract class Attribute {
     }
 
     if (clazz == BooleanAttribute.class) {
-      BooleanAttribute attr = new BooleanAttribute(type);
-      attr.setBooleanValue((Boolean) value);
-      return attr;
+      return new BooleanAttribute(type).booleanValue((Boolean) value);
     } else if (clazz == ByteArrayAttribute.class) {
-      ByteArrayAttribute attr = new ByteArrayAttribute(type);
       byte[] baValue;
       if (value instanceof BigInteger) {
         baValue = ((BigInteger) value).toByteArray();
@@ -171,20 +167,12 @@ public abstract class Attribute {
       } else {
         baValue = (byte[]) value;
       }
-      attr.setByteArrayValue(baValue);
-      return attr;
+      return new ByteArrayAttribute(type).byteArrayValue(baValue);
     } else if (clazz == CharArrayAttribute.class) {
-      CharArrayAttribute attr = new CharArrayAttribute(type);
-      if (value instanceof String) {
-        attr.setCharArrayValue(((String) value).toCharArray());
-      } else {
-        attr.setCharArrayValue((char[]) value);
-      }
-      return attr;
+      char[] thisValue = (value instanceof String) ? ((String) value).toCharArray() : (char[]) value;
+      return new CharArrayAttribute(type).charArrayValue(thisValue);
     } else if (clazz == DateAttribute.class) {
-      DateAttribute attr = new DateAttribute(type);
-      attr.setDateValue((Date) value);
-      return attr;
+      return new DateAttribute(type).dateValue((Date) value);
     } else if (clazz == LongAttribute.class) {
       LongAttribute attr = new LongAttribute(type);
       setLongAttrValue(attr, value);
@@ -199,11 +187,7 @@ public abstract class Attribute {
   }
 
   private static void setLongAttrValue(LongAttribute attr, Object value) {
-    if (value instanceof Integer) {
-      attr.setLongValue((long) (int) value);
-    } else {
-      attr.setLongValue((Long) value);
-    }
+    attr.longValue((value instanceof Integer) ? (long) (int) value : (Long) value);
   }
 
   /**
@@ -225,8 +209,9 @@ public abstract class Attribute {
     return attributeClasses.get(type);
   }
 
-  public void setStateKnown(boolean stateKnown) {
+  public Attribute stateKnown(boolean stateKnown) {
     this.stateKnown = stateKnown;
+    return this;
   }
 
   /**
@@ -236,8 +221,9 @@ public abstract class Attribute {
    * @param present
    *          True, if attribute is present.
    */
-  public void setPresent(boolean present) {
+  public Attribute present(boolean present) {
     this.present = present;
+    return this;
   }
 
   /**
@@ -247,8 +233,9 @@ public abstract class Attribute {
    * @param sensitive
    *          True, if attribute is sensitive.
    */
-  public void setSensitive(boolean sensitive) {
+  public Attribute sensitive(boolean sensitive) {
     this.sensitive = sensitive;
+    return this;
   }
 
   /**
@@ -272,8 +259,9 @@ public abstract class Attribute {
    * @param ckAttribute
    *          The new CK_ATTRIBUTE of this Attribute.
    */
-  public void setCkAttribute(CK_ATTRIBUTE ckAttribute) {
-    this.ckAttribute = Util.requireNonNull("ckAttribute", ckAttribute);
+  public Attribute ckAttribute(CK_ATTRIBUTE ckAttribute) {
+    this.ckAttribute = Functions.requireNonNull("ckAttribute", ckAttribute);
+    return this;
   }
 
   /**
@@ -358,8 +346,7 @@ public abstract class Attribute {
     }
 
     String valueString = (!stateKnown) ? "<Value is not present or sensitive>"
-        : present ? (sensitive ? "<Value is sensitive>" : getValueString())
-        : "<Attribute not present>";
+        : present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";
     return sb.append(valueString).toString();
   }
 
@@ -398,24 +385,23 @@ public abstract class Attribute {
     else if (!(otherObject instanceof Attribute)) return false;
 
     Attribute other = (Attribute) otherObject;
-    if (this.getType() != other.getType()) {
+    if (getType() != other.getType()) {
       return false;
     }
 
-    if (this.stateKnown && other.stateKnown) {
+    if (stateKnown && other.stateKnown) {
       // state both known
-      if (!this.present && !other.present) {
+      if (!present && !other.present) {
         // both not present
         return true;
-      } else if (this.present && other.present) {
+      } else if (present && other.present) {
         // both present
-        return this.sensitive == other.sensitive &&
-            Objects.deepEquals(this.ckAttribute.pValue, other.ckAttribute.pValue);
+        return sensitive == other.sensitive && Objects.deepEquals(ckAttribute.pValue, other.ckAttribute.pValue);
       } else {
         // one absent and other present
         return false;
       }
-    } else if (!this.stateKnown && !other.stateKnown) {
+    } else if (!stateKnown && !other.stateKnown) {
       // state both known
       return true;
     } else {
@@ -432,8 +418,7 @@ public abstract class Attribute {
    */
   @Override
   public final int hashCode() {
-    int valueHashCode = (ckAttribute.pValue != null) ? ckAttribute.pValue.hashCode() : 0;
-    return ((int) ckAttribute.type) ^ valueHashCode;
+    return ((int) ckAttribute.type) ^ ((ckAttribute.pValue != null) ? ckAttribute.pValue.hashCode() : 0);
   }
 
 }

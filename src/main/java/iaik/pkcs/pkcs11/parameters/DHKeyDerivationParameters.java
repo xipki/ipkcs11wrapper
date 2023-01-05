@@ -42,16 +42,14 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
 import iaik.pkcs.pkcs11.wrapper.Functions;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * This abstract class encapsulates parameters for the DH mechanisms
- * Mechanism.ECDH1_DERIVE, Mechanism.ECDH1_COFACTOR_DERIVE,
- * Mechanism.ECMQV_DERIVE, Mechanism.X9_42_DH_DERIVE ,
- * Mechanism.X9_42_DH_HYBRID_DERIVE and Mechanism.X9_42_MQV_DERIVE.
+ * CKM_ECDH1_DERIVE, CKM_CDH1_COFACTOR_DERIVE, CKM_ECMQV_DERIVE,
+ * CKM_X9_42_DH_DERIVE, CKM_X9_42_DH_HYBRID_DERIVE and CKM_X9_42_MQV_DERIVE.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
@@ -77,9 +75,10 @@ abstract public class DHKeyDerivationParameters implements Parameters {
    * @param publicData
    *          The other party's public key value.
    */
-  protected DHKeyDerivationParameters(long kdf, byte[] publicData) {
-    setPublicData(publicData);
-    setKeyDerivationFunction(kdf);
+  public DHKeyDerivationParameters(long kdf, byte[] publicData) {
+    this.publicData = Functions.requireNonNull("publicData", publicData);
+    this.kdf = Functions.requireAmong("kdf", kdf, CKD_NULL, CKD_SHA1_KDF, CKD_SHA1_KDF_ASN1,
+                  CKD_SHA1_KDF_CONCATENATE);
   }
 
   /**
@@ -102,31 +101,6 @@ abstract public class DHKeyDerivationParameters implements Parameters {
   }
 
   /**
-   * Set the key derivation function used on the shared secret value.
-   *
-   * @param kdf
-   *          The key derivation function used on the shared secret value.
-   *          One of the values defined in CKD_
-   */
-  public void setKeyDerivationFunction(long kdf) {
-    if ((kdf != CKD_NULL) && (kdf != CKD_SHA1_KDF)
-        && (kdf != CKD_SHA1_KDF_ASN1) && (kdf != CKD_SHA1_KDF_CONCATENATE)) {
-      throw new IllegalArgumentException("Illegal value for argument 'kdf': " + Functions.ckdCodeToName(kdf));
-    }
-    this.kdf = kdf;
-  }
-
-  /**
-   * Set the other party's public key value.
-   *
-   * @param publicData
-   *          The other party's public key value.
-   */
-  public void setPublicData(byte[] publicData) {
-    this.publicData = Util.requireNonNull("publicData", publicData);
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -134,7 +108,8 @@ abstract public class DHKeyDerivationParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  Key Derivation Function: " + Functions.ckdCodeToName(kdf) + "\n  Public Data: " + Util.toHex(publicData);
+    return "Class: " + getClass().getName() + "\n  Key Derivation Function: " + Functions.ckdCodeToName(kdf) +
+        "\n  Public Data: " + Functions.toHex(publicData);
   }
 
 }

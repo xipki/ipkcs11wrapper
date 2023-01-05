@@ -59,6 +59,7 @@ import org.xipki.util.Hex;
 
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.DSAPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
@@ -316,7 +317,7 @@ public class TestBase {
     return new AttributeVector().attr(CKA_CLASS, CKO_PRIVATE_KEY).attr(CKA_KEY_TYPE, keyType);
   }
 
-  protected static java.security.PublicKey generateJCEPublicKey(Session session, long p11Key, Long keyType)
+  protected static PublicKey generateJCEPublicKey(Session session, long p11Key, Long keyType)
       throws InvalidKeySpecException, PKCS11Exception {
     if (keyType == null) {
       keyType = session.getLongAttributeValue(p11Key, CKA_KEY_TYPE);

@@ -68,9 +68,10 @@ public class BooleanAttribute extends Attribute {
    * @param value
    *          The boolean value to set. May be null.
    */
-  public void setBooleanValue(Boolean value) {
+  public BooleanAttribute booleanValue(Boolean value) {
     ckAttribute.pValue = value;
     present = true;
+    return this;
   }
 
   /**
@@ -84,7 +85,7 @@ public class BooleanAttribute extends Attribute {
 
   @Override
   public void setValue(Object value) {
-    setBooleanValue((Boolean) value);
+    booleanValue((Boolean) value);
   }
 
 }

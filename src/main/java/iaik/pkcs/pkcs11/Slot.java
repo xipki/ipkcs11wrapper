@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11;
 
-import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * Objects of this class represent slots that can accept tokens. The application
@@ -89,26 +89,8 @@ public class Slot {
    *           The identifier of the slot.
    */
   protected Slot(PKCS11Module module, long slotID) {
-    this.module = Util.requireNonNull("module", module);
+    this.module = Functions.requireNonNull("module", module);
     this.slotID = slotID;
-  }
-
-  /**
-   * Compares the slot ID and the module_ of this object with the slot ID and
-   * module_ of the other object. Returns only true, if both are equal.
-   *
-   * @param otherObject
-   *          The other Slot object.
-   * @return True, if other is an instance of Slot and the slot ID and module_
-   *         of both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof Slot)) return false;
-
-    Slot other = (Slot) otherObject;
-    return (slotID == other.slotID) && module.equals(other.module);
   }
 
   /**
@@ -156,11 +138,7 @@ public class Slot {
    *              If reading the information fails.
    */
   public SlotInfo getSlotInfo() throws TokenException {
-    try {
-      return new SlotInfo(module.getPKCS11Module().C_GetSlotInfo(slotID));
-    } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
-      throw new PKCS11Exception(ex);
-    }
+    return new SlotInfo(module.getPKCS11Module().C_GetSlotInfo(slotID));
   }
 
   /**
@@ -174,17 +152,6 @@ public class Slot {
    */
   public Token getToken() throws TokenException {
     return getSlotInfo().isTokenPresent() ? new Token(this) : null;
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object. Gained from the slot ID.
-   */
-  @Override
-  public int hashCode() {
-    return (int) slotID;
   }
 
   /**

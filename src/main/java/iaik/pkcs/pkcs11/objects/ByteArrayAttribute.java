@@ -72,9 +72,10 @@ public class ByteArrayAttribute extends Attribute {
    * @param value
    *          The byte-array value to set. May be null.
    */
-  public void setByteArrayValue(byte[] value) {
+  public ByteArrayAttribute byteArrayValue(byte[] value) {
     ckAttribute.pValue = value;
     present = true;
+    return this;
   }
 
   /**
@@ -98,12 +99,12 @@ public class ByteArrayAttribute extends Attribute {
   @Override
   protected String getValueString() {
     return ((ckAttribute != null) && (ckAttribute.pValue != null))
-      ? Functions.toHexString((byte[]) ckAttribute.pValue) : "<NULL_PTR>";
+      ? Functions.toHex((byte[]) ckAttribute.pValue) : "<NULL_PTR>";
   }
 
   @Override
   public void setValue(Object value) {
-    setByteArrayValue((byte[]) value);
+    byteArrayValue((byte[]) value);
   }
 
 }

@@ -42,11 +42,9 @@
 
 package iaik.pkcs.pkcs11;
 
-import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
-import sun.security.pkcs11.wrapper.CK_MECHANISM_INFO;
-import sun.security.pkcs11.wrapper.CK_NOTIFY;
+import iaik.pkcs.pkcs11.wrapper.CK_NOTIFY;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,35 +98,6 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
  */
 public class Token {
 
-  public static final String CLASS_PKCS11Exception = "sun.security.pkcs11.wrapper.PKCS11Exception";
-
-  private static final Constructor<?> PKCS11ExceptionConstructor;
-
-  private static final int PKCS11ExceptionConstructorType;
-
-  static {
-    Constructor<?> constructor = null;
-    int type = 0;
-
-    try {
-      Class<?> clazz = Class.forName(CLASS_PKCS11Exception);
-
-      constructor = Util.getConstructor(clazz, long.class);
-      if (constructor != null) {
-        type = 1;
-      } else {
-        constructor= Util.getConstructor(clazz, long.class, String.class);
-        if (constructor != null) {
-          type = 2;
-        }
-      }
-    } catch (Exception ex) {
-    }
-
-    PKCS11ExceptionConstructor = constructor;
-    PKCS11ExceptionConstructorType = type;
-  }
-
   /**
    * The reference to the slot.
    */
@@ -147,24 +116,8 @@ public class Token {
    *          The reference to the slot.
    */
   protected Token(Slot slot) {
-    this.slot = Util.requireNonNull("slot", slot);
+    this.slot = Functions.requireNonNull("slot", slot);
     this.useUtf8Encoding = slot.isUseUtf8Encoding();
-  }
-
-  /**
-   * Compares the slot of this object with the other object.
-   * Returns only true, if those are equal in both objects.
-   *
-   * @param otherObject
-   *          The other Token object.
-   * @return True, if other is an instance of Token and the slot
-   *         member variable of both objects are equal. False, otherwise.
-   */
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof Token)) return false;
-
-    return this.slot.equals(((Token) otherObject).slot);
   }
 
   /**
@@ -198,11 +151,7 @@ public class Token {
    *              If reading the information fails.
    */
   public TokenInfo getTokenInfo() throws TokenException {
-    try {
-      return new TokenInfo(slot.getModule().getPKCS11Module().C_GetTokenInfo(slot.getSlotID()));
-    } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
-      throw new PKCS11Exception(ex);
-    }
+    return new TokenInfo(slot.getModule().getPKCS11Module().C_GetTokenInfo(slot.getSlotID()));
   }
 
   public List<Long> getMechanismList2() throws TokenException {
@@ -225,18 +174,13 @@ public class Token {
    *              If reading the list of supported mechanisms fails.
    */
   public long[] getMechanismList() throws TokenException {
-    long[] mechanisms;
-    try {
-      mechanisms = slot.getModule().getPKCS11Module().C_GetMechanismList(slot.getSlotID());
-    } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
-      throw new PKCS11Exception(ex);
-    }
+    long[] mechanisms = slot.getModule().getPKCS11Module().C_GetMechanismList(slot.getSlotID());
 
     VendorCode vendorCode = slot.getModule().getVendorCode();
     if (vendorCode != null) {
       for (int i = 0; i < mechanisms.length; i++) {
         long code = mechanisms[i];
-        if ((code & CKM_VENDOR_DEFINED) != 0 && vendorCode != null) {
+        if (vendorCode != null && (code & CKM_VENDOR_DEFINED) != 0L) {
           mechanisms[i] = vendorCode.ckmVendorToGeneric(code);
         }
       }
@@ -257,30 +201,14 @@ public class Token {
    *              supported by this token.
    */
   public MechanismInfo getMechanismInfo(long mechanism) throws TokenException {
-    if ((mechanism & CKM_VENDOR_DEFINED) != 0) {
+    if ((mechanism & CKM_VENDOR_DEFINED) != 0L) {
       VendorCode vendorCode = slot.getModule().getVendorCode();
       if (vendorCode != null) {
         mechanism = vendorCode.ckmGenericToVendor(mechanism);
       }
     }
 
-    try {
-      CK_MECHANISM_INFO info = slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism);
-      return new MechanismInfo(info);
-    } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
-      throw new PKCS11Exception(ex);
-    }
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object. Gained from the slot ID.
-   */
-  @Override
-  public int hashCode() {
-    return slot.hashCode();
+    return new MechanismInfo(slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism));
   }
 
   /**
@@ -320,43 +248,17 @@ public class Token {
    *              If the session could not be opened.
    */
   public Session openSession(boolean rwSession, Object application, Notify notify) throws TokenException {
-    long flags = CKF_SERIAL_SESSION;
-    flags |= rwSession ? CKF_RW_SESSION : 0L;
+    long flags = rwSession ? CKF_SERIAL_SESSION | CKF_RW_SESSION : CKF_SERIAL_SESSION;
     // we need it for the Notify already here
     final Session newSession = new Session(this, -1);
     CK_NOTIFY ckNotify = null;
     if (notify != null) {
       ckNotify = (hSession, event, pApplication) -> {
-        boolean surrender = (event & CKN_SURRENDER) != 0L;
-        try {
-          notify.notify(newSession, surrender, pApplication);
-        } catch (PKCS11Exception ex) {
-          long errorCode = ex.getErrorCode();
-          try {
-            if (PKCS11ExceptionConstructorType == 0) {
-              // ignore
-            } else if (PKCS11ExceptionConstructorType == 1) {
-              // JDK 8 - 16
-              throw (sun.security.pkcs11.wrapper.PKCS11Exception) PKCS11ExceptionConstructor.newInstance(errorCode);
-            } else if (PKCS11ExceptionConstructorType == 2) {
-              // JDK 17+
-              final String extraInfo = null;
-              throw (sun.security.pkcs11.wrapper.PKCS11Exception)
-                  PKCS11ExceptionConstructor.newInstance(errorCode, extraInfo);
-            }
-          } catch (Throwable th) {
-            // ignore
-          }
-        }
+        notify.notify(newSession, event, pApplication);
       };
     }
 
-    long sessionHandle;
-    try {
-      sessionHandle = slot.getModule().getPKCS11Module().C_OpenSession(slot.getSlotID(), flags, application, ckNotify);
-    } catch (sun.security.pkcs11.wrapper.PKCS11Exception ex) {
-      throw new PKCS11Exception(ex);
-    }
+    long sessionHandle = slot.getModule().getPKCS11Module().C_OpenSession(slot.getSlotID(), flags, application, ckNotify);
     //now we have the session handle available
     newSession.setSessionHandle(sessionHandle);
 

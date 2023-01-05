@@ -87,7 +87,7 @@ abstract public class RSAPkcsParameters implements Parameters {
   }
 
   /**
-   * Create a new RSAPkcsarameters object with the given attributes.
+   * Create a new RSAPkcsParameters object with the given attributes.
    *
    * @param hashAlg
    *          The message digest algorithm used to calculate the digest of the
@@ -129,33 +129,6 @@ abstract public class RSAPkcsParameters implements Parameters {
   }
 
   /**
-   * Set the message digest algorithm used to calculate the digest of the
-   * encoding parameter.
-   *
-   * @param hashAlg
-   *          The message digest algorithm used to calculate the digest of the
-   *          encoding parameter.
-   */
-  public void setHashAlgorithm(long hashAlg) {
-    this.hashAlg = hashAlg;
-  }
-
-  /**
-   * Set the mask function to apply to the encoded block. One of the constants
-   * defined in the MessageGenerationFunctionType interface.
-   *
-   * @param mgf
-   *          The mask to apply to the encoded block.
-   */
-  public void setMaskGenerationFunction(long mgf) {
-    if (mgf2HashAlgMap.containsKey(mgf)) {
-      this.mgf = mgf;
-    } else {
-      throw new IllegalArgumentException("Illegal value for argument 'mgf': " + Functions.ckgCodeToName(mgf));
-    }
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -163,8 +136,8 @@ abstract public class RSAPkcsParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  Hash Algorithm: " + Functions.ckmCodeToName(hashAlg)
-        + "\n  Mask Generation Function: " + Functions.ckgCodeToName(mgf);
+    return "Class: " + getClass().getName() + "\n  Hash Algorithm: " + Functions.ckmCodeToName(hashAlg) +
+        "\n  Mask Generation Function: " + Functions.ckgCodeToName(mgf);
   }
 
 }

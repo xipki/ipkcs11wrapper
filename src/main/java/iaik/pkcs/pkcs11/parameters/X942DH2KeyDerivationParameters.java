@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
-import sun.security.pkcs11.wrapper.CK_X9_42_DH2_DERIVE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.CK_X9_42_DH2_DERIVE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * This abstract class encapsulates parameters for the X9.42 DH mechanisms
@@ -98,7 +98,7 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
     this.otherInfo = sharedData;
     this.privateDataLength = privateDataLength;
     this.privateDataHandle = privateDataHandle;
-    this.publicData2 = Util.requireNonNull("publicData2", publicData2);
+    this.publicData2 = Functions.requireNonNull("publicData2", publicData2);
   }
 
   /**
@@ -108,7 +108,7 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    * @return This object as a CK_X9_42_DH2_DERIVE_PARAMS object.
    */
   @Override
-  public CK_X9_42_DH2_DERIVE_PARAMS getPKCS11ParamsObject() {
+  public Object getPKCS11ParamsObject() {
     CK_X9_42_DH2_DERIVE_PARAMS params = new CK_X9_42_DH2_DERIVE_PARAMS();
 
     params.kdf = kdf;
@@ -128,16 +128,6 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    */
   public byte[] getOtherInfo() {
     return otherInfo;
-  }
-
-  /**
-   * Set the data shared between the two parties.
-   *
-   * @param otherInfo
-   *          The data shared between the two parties.
-   */
-  public void setOtherInfo(byte[] otherInfo) {
-    this.otherInfo = otherInfo;
   }
 
   /**
@@ -168,36 +158,6 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Set the key for the second X9.42 private key value.
-   *
-   * @param privateDataHandle
-   *          The key for the second X9.42 private key value.
-   */
-  public void setPrivateDataHandle(long privateDataHandle) {
-    this.privateDataHandle = privateDataHandle;
-  }
-
-  /**
-   * Set the length in bytes of the second X9.42 private key.
-   *
-   * @param privateDataLength
-   *          The length in bytes of the second X9.42 private key.
-   */
-  public void setPrivateDataLength(long privateDataLength) {
-    this.privateDataLength = privateDataLength;
-  }
-
-  /**
-   * Set the other party's second X9.42 public key value.
-   *
-   * @param publicData2
-   *          The other party's second X9.42 public key value.
-   */
-  public void setPublicData2(byte[] publicData2) {
-    this.publicData2 = Util.requireNonNull("publicData2", publicData2);
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -206,10 +166,8 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
   @Override
   public String toString() {
     return super.toString() +
-        "\n  Other Info: "+ Util.toHex(otherInfo) +
-        "\n  Private Data Length (dec): " + privateDataLength +
-        "\n  Private Data Handle: " + privateDataHandle +
-        "\n  Public Data 2: " + Util.toHex(publicData2);
+        "\n  Other Info: "+ Functions.toHex(otherInfo)  + "\n  Private Data Length (dec): " + privateDataLength +
+        "\n  Private Data Handle: " + privateDataHandle + "\n  Public Data 2: " + Functions.toHex(publicData2);
   }
 
 }

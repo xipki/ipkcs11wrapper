@@ -29,7 +29,6 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
@@ -49,8 +48,6 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
     public MyRunnable() {
     }
 
-    private final byte[] out = new byte[plainData.length + 64];
-
     @Override
     public void run() {
       while (!stop()) {
@@ -61,8 +58,7 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
             // initialize for signing
             session.decryptInit(encryptMechanism, key);
             // This signing operation is implemented in most of the drivers
-            int len = session.decrypt(dataToDecrypt, 0, dataToDecrypt.length, out, 0, out.length);
-            byte[] decryptedData = Arrays.copyOf(out, len);
+            byte[] decryptedData = session.decrypt(dataToDecrypt);
             Assert.assertArrayEquals(plainData, decryptedData);
           } finally {
             requiteSession(sessionBag);
@@ -108,9 +104,7 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
       key = session.generateKey(keyGenMechanism, keyTemplate);
 
       session.encryptInit(encryptMechanism, key);
-      byte[] buffer = new byte[inputLen + 64];
-      int len = session.encrypt(plainData, 0, inputLen, buffer, 0, buffer.length);
-      this.dataToDecrypt = Arrays.copyOf(buffer, len);
+      this.dataToDecrypt = session.encrypt(plainData);
     } finally {
       requiteSession(sessionBag);
     }

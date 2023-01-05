@@ -58,14 +58,10 @@ import iaik.pkcs.pkcs11.TokenException;
  */
 public class PKCS11Exception extends TokenException {
 
-  private static final long serialVersionUID = -5193259612747392211L;
-
   /**
    * The code of the error which was the reason for this exception.
    */
   private final long errorCode;
-
-  private final String errorDescription;
 
   /**
    * Constructor taking the error code as defined for the CKR_* constants
@@ -75,24 +71,8 @@ public class PKCS11Exception extends TokenException {
    *          The PKCS#11 error code (return value).
    */
   public PKCS11Exception(long errorCode) {
+    super(Functions.ckrCodeToName(errorCode));
     this.errorCode = errorCode;
-    this.errorDescription = Functions.ckrCodeToName(errorCode);
-  }
-
-  public PKCS11Exception(sun.security.pkcs11.wrapper.PKCS11Exception ex) {
-    this(ex.getErrorCode());
-  }
-
-  /**
-   * This method gets the corresponding text error message from
-   * a property file. If this file is not available, it returns the error
-   * code as a hex-string.
-   *
-   * @return The message or the error code; e.g. "CKR_DEVICE_ERROR" or
-   *         "0x00000030".
-   */
-  public String getMessage() {
-    return errorDescription;
   }
 
   /**

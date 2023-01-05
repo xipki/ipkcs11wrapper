@@ -1,6 +1,6 @@
 package iaik.pkcs.pkcs11.objects;
 
-import sun.security.pkcs11.wrapper.CK_ATTRIBUTE;
+import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 
 import java.math.BigInteger;
 import java.util.*;

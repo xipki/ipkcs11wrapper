@@ -68,9 +68,10 @@ public class CharArrayAttribute extends Attribute {
    * @param value
    *          The char-array value to set. May be null.
    */
-  public void setCharArrayValue(char[] value) {
+  public CharArrayAttribute charArrayValue(char[] value) {
     ckAttribute.pValue = value;
     present = true;
+    return this;
   }
 
   /**
@@ -93,13 +94,12 @@ public class CharArrayAttribute extends Attribute {
    */
   @Override
   protected String getValueString() {
-    return ((ckAttribute != null) && (ckAttribute.pValue != null))
-            ? new String((char[]) ckAttribute.pValue) : "<NULL_PTR>";
+    return (ckAttribute != null && ckAttribute.pValue != null) ? new String((char[]) ckAttribute.pValue) : "<NULL_PTR>";
   }
 
   @Override
   public void setValue(Object value) {
-    setCharArrayValue((char[]) value);
+    charArrayValue((char[]) value);
   }
 
 }

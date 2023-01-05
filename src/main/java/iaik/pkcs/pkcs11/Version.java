@@ -42,7 +42,8 @@
 
 package iaik.pkcs.pkcs11;
 
-import sun.security.pkcs11.wrapper.CK_VERSION;
+import iaik.pkcs.pkcs11.wrapper.CK_VERSION;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * Objects of this class represent a version. This consists of a major and a
@@ -57,18 +58,20 @@ public class Version {
   /**
    * The major version number.
    */
-  private byte major;
+  private final byte major;
 
   /**
    * The minor version number.
    */
-  private byte minor;
+  private final  byte minor;
 
   /**
    * Constructor for internal use only.
    *
    */
-  protected Version() { /* left empty intentionally */
+  protected Version(byte major, byte minor) {
+    this.major = major;
+    this.minor = minor;
   }
 
   /**
@@ -79,32 +82,7 @@ public class Version {
    *
    */
   protected Version(CK_VERSION ckVersion) {
-    if (ckVersion == null) {
-      throw new NullPointerException("Argument 'ckVersion' must not be null.");
-    }
-    this.major = ckVersion.major;
-    this.minor = ckVersion.minor;
-  }
-
-
-  /**
-   * Set the major version number.
-   *
-   * @param major
-   *          The major version number.
-   */
-  public void setMajor(byte major) {
-    this.major = major;
-  }
-
-  /**
-   * Set the minor version number.
-   *
-   * @param minor
-   *          The minor version number.
-   */
-  public void setMinor(byte minor) {
-    this.minor = minor;
+    this(Functions.requireNonNull("ckVersion", ckVersion).major, ckVersion.minor);
   }
 
   /**
@@ -132,36 +110,6 @@ public class Version {
    */
   public String toString() {
     return (major & 0xff) + "." + (minor & 0xff);
-  }
-
-  /**
-   * Compares major and minor version number of this objects with the other
-   * object. Returns only true, if both are equal in both objects.
-   *
-   * @param otherObject
-   *          The other Version object.
-   * @return True, if other is an instance of Version and all member variables of
-   *         both objects are equal. False, otherwise.
-   */
-  public boolean equals(java.lang.Object otherObject) {
-    boolean equal = false;
-
-    if (otherObject instanceof Version) {
-      Version other = (Version) otherObject;
-      equal = (this == other) || ((this.major == other.major) && (this.minor == other.minor));
-    }
-
-    return equal;
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this class
-   * work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  public int hashCode() {
-    return major ^ minor;
   }
 
 }

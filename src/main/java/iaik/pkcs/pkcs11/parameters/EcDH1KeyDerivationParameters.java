@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
-import sun.security.pkcs11.wrapper.CK_ECDH1_DERIVE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.CK_ECDH1_DERIVE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * This abstract class encapsulates parameters for the DH mechanisms
@@ -84,7 +84,11 @@ public class EcDH1KeyDerivationParameters extends DHKeyDerivationParameters {
    */
   @Override
   public CK_ECDH1_DERIVE_PARAMS getPKCS11ParamsObject() {
-    return new CK_ECDH1_DERIVE_PARAMS(kdf, sharedData, publicData);
+    CK_ECDH1_DERIVE_PARAMS ret = new CK_ECDH1_DERIVE_PARAMS();
+    ret.kdf = kdf;
+    ret.pPublicData = publicData;
+    ret.pSharedData = sharedData;
+    return ret;
   }
 
   /**
@@ -97,16 +101,6 @@ public class EcDH1KeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Set the data shared between the two parties.
-   *
-   * @param sharedData
-   *          The data shared between the two parties.
-   */
-  public void setSharedData(byte[] sharedData) {
-    this.sharedData = sharedData;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -114,7 +108,7 @@ public class EcDH1KeyDerivationParameters extends DHKeyDerivationParameters {
    */
   @Override
   public String toString() {
-    return super.toString() + "\n  Shared Data: " + Util.toHex(sharedData);
+    return super.toString() + "\n  Shared Data: " + Functions.toHex(sharedData);
   }
 
 }

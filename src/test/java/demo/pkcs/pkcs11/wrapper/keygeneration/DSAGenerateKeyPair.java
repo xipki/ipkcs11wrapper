@@ -124,12 +124,12 @@ public class DSAGenerateKeyPair extends TestBase {
       LOG.info("##################################################");
       byte[] value = session.getByteArrayAttributeValue(generatedPublicKey, CKA_VALUE);
 
-      LOG.info("Public Key (Value): {}", Functions.toHexString(value));
+      LOG.info("Public Key (Value): {}", Functions.toHex(value));
 
       // now we try to search for the generated keys
       LOG.info("##################################################");
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
-          Functions.toHexString(id));
+          Functions.toHex(id));
       // set the search template for the public key
       AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_DSA).attr(CKA_ID, id);
 

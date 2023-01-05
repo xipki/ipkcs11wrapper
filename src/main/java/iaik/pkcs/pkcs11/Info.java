@@ -42,7 +42,8 @@
 
 package iaik.pkcs.pkcs11;
 
-import sun.security.pkcs11.wrapper.CK_INFO;
+import iaik.pkcs.pkcs11.wrapper.CK_INFO;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * Objects of this class provide information about a PKCS#11 module; i.e. the
@@ -80,7 +81,7 @@ public class Info {
    *          The info object as got from PKCS11.C_GetInfo().
    */
   public Info(CK_INFO ckInfo) {
-    Util.requireNonNull("ckInfo", ckInfo);
+    Functions.requireNonNull("ckInfo", ckInfo);
     cryptokiVersion = new Version(ckInfo.cryptokiVersion);
     manufacturerID = new String(ckInfo.manufacturerID);
     libraryDescription = new String(ckInfo.libraryDescription);
@@ -132,37 +133,6 @@ public class Info {
   public String toString() {
     return "Cryptoki Version: " + cryptokiVersion + "\nManufacturerID: " + manufacturerID +
         "\nLibrary Description: " + libraryDescription + "\nLibrary Version: " + libraryVersion;
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other Info object.
-   * @return True, if other is an instance of Info and all member variables of
-   *         both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof Info)) return false;
-
-    Info other = (Info) otherObject;
-    return    cryptokiVersion.equals(other.cryptokiVersion)    && manufacturerID.equals(other.manufacturerID)
-        && libraryDescription.equals(other.libraryDescription) && libraryVersion.equals(other.libraryVersion);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object. Gained from all member variables.
-   */
-  @Override
-  public int hashCode() {
-    return cryptokiVersion.hashCode() ^ manufacturerID.hashCode()
-        ^ libraryDescription.hashCode() ^ libraryVersion.hashCode();
   }
 
 }

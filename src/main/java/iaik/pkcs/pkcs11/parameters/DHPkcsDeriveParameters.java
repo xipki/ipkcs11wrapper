@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * This class encapsulates parameters for the algorithms
@@ -66,7 +66,7 @@ public class DHPkcsDeriveParameters implements Parameters {
    *          protocol.
    */
   public DHPkcsDeriveParameters(byte[] publicValue) {
-    this.publicValue = publicValue;
+    this.publicValue = Functions.requireNonNull("publicValue", publicValue);
   }
 
   /**
@@ -90,17 +90,6 @@ public class DHPkcsDeriveParameters implements Parameters {
   }
 
   /**
-   * Set the public value of the other party in the key agreement protocol.
-   *
-   * @param publicValue
-   *          The public value of the other party in the key agreement
-   *          protocol.
-   */
-  public void setPublicValue(byte[] publicValue) {
-    this.publicValue = Util.requireNonNull("publicValue", publicValue);
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -108,7 +97,7 @@ public class DHPkcsDeriveParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  Public Value (hex): " + Util.toHex(publicValue);
+    return "Class: " + getClass().getName() + "\n  Public Value: " + Functions.toHex(publicValue);
   }
 
 }

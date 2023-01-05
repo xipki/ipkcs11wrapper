@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
-import sun.security.pkcs11.wrapper.CK_X9_42_DH1_DERIVE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.CK_X9_42_DH1_DERIVE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * This abstract class encapsulates parameters for the X9.42 DH
@@ -103,16 +103,6 @@ public class X942DH1KeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Set the data shared between the two parties.
-   *
-   * @param otherInfo
-   *          The data shared between the two parties.
-   */
-  public void setOtherInfo(byte[] otherInfo) {
-    this.otherInfo = otherInfo;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -120,7 +110,7 @@ public class X942DH1KeyDerivationParameters extends DHKeyDerivationParameters {
    */
   @Override
   public String toString() {
-    return super.toString() + "\n  Other Info: " + Util.toHex(otherInfo);
+    return super.toString() + "\n  Other Info: " + Functions.toHex(otherInfo);
   }
 
 }

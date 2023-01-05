@@ -42,9 +42,8 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.CK_PKCS5_PBKD2_PARAMS;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import sun.security.pkcs11.wrapper.CK_PKCS5_PBKD2_PARAMS;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKP_PKCS5_PBKD2_HMAC_SHA1;
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKZ_SALT_SPECIFIED;
@@ -104,19 +103,12 @@ public class PKCS5PBKD2Parameters implements Parameters {
    */
   public PKCS5PBKD2Parameters(long saltSource, byte[] saltSourceData,
       long iterations, long pseudoRandomFunction, byte[] pseudoRandomFunctionData) {
-    if (saltSource != CKZ_SALT_SPECIFIED) {
-      throw new IllegalArgumentException(
-          "Illegal value for argument 'saltSource': " + Functions.ckzCodeToName(saltSource));
-    }
-    if (pseudoRandomFunction != CKP_PKCS5_PBKD2_HMAC_SHA1) {
-      throw new IllegalArgumentException("Illegal value for argument 'pseudoRandomFunction': "
-          + Functions.ckpCodeToName(pseudoRandomFunction));
-    }
-    this.saltSource = saltSource;
-    this.saltSourceData = Util.requireNonNull("saltSourceData", saltSourceData);
+    this.saltSource = Functions.requireAmong("saltSource", saltSource, CKZ_SALT_SPECIFIED);
+    this.pseudoRandomFunction = Functions.requireAmong("pseudoRandomFunction",
+                                  pseudoRandomFunction, CKP_PKCS5_PBKD2_HMAC_SHA1);
+    this.saltSourceData = Functions.requireNonNull("saltSourceData", saltSourceData);
     this.iterations = iterations;
-    this.pseudoRandomFunction = pseudoRandomFunction;
-    this.pseudoRandomFunctionData = Util.requireNonNull("pseudoRandomFunctionData", pseudoRandomFunctionData);
+    this.pseudoRandomFunctionData = Functions.requireNonNull("pseudoRandomFunctionData", pseudoRandomFunctionData);
   }
 
   /**
@@ -186,70 +178,6 @@ public class PKCS5PBKD2Parameters implements Parameters {
   }
 
   /**
-   * Set the source of the salt value.
-   *
-   * @param saltSource
-   *          The source of the salt value. One of the constants defined in
-   *          the SaltSourceType interface
-   */
-  public void setSaltSource(long saltSource) {
-    if (saltSource != CKZ_SALT_SPECIFIED) {
-      throw new IllegalArgumentException("Illegal value for argument 'saltSource': "
-          + Functions.ckzCodeToName(saltSource));
-    }
-    this.saltSource = saltSource;
-  }
-
-  /**
-   * Set the data used as the input for the salt source.
-   *
-   * @param saltSourceData
-   *          The data used as the input for the salt source.
-   */
-  public void setSaltSourceData(byte[] saltSourceData) {
-    this.saltSourceData = Util.requireNonNull("saltSourceData", saltSourceData);
-  }
-
-  /**
-   * Set the number of iterations to perform when generating each block of
-   * random data.
-   *
-   * @param iterations
-   *          The number of iterations to perform when generating each block
-   *          of random data.
-   */
-  public void setIterations(long iterations) {
-    this.iterations = iterations;
-  }
-
-  /**
-   * Set the pseudo-random function (PRF) to used to generate the key.
-   *
-   * @param pseudoRandomFunction
-   *          The pseudo-random function (PRF) to used to generate the key.
-   *          One of the constants defined in the PseudoRandomFunctionType
-   *          interface.
-   */
-  public void setPseudoRandomFunction(long pseudoRandomFunction) {
-    if (pseudoRandomFunction != CKP_PKCS5_PBKD2_HMAC_SHA1) {
-      throw new IllegalArgumentException(
-        "Illegal value for argument 'pseudoRandomFunction': " + Functions.ckpCodeToName(pseudoRandomFunction));
-    }
-    this.pseudoRandomFunction = pseudoRandomFunction;
-  }
-
-  /**
-   * Set the data used as the input for PRF in addition to the salt value.
-   *
-   * @param pseudoRandomFunctionData
-   *          The data used as the input for PRF in addition to the salt
-   *          value.
-   */
-  public void setPseudoRandomFunctionData(byte[] pseudoRandomFunctionData) {
-    this.pseudoRandomFunctionData = Util.requireNonNull("pseudoRandomFunctionData", pseudoRandomFunctionData);
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -257,11 +185,10 @@ public class PKCS5PBKD2Parameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  Salt Source: " + Functions.ckzCodeToName(saltSource) +
-        "\n  Salt Source Data (hex): " + Util.toHex(saltSourceData) +
-        "\n  Iterations (dec): " + iterations +
+    return "Class: " + getClass().getName() + "\n  Salt Source: " + Functions.ckzCodeToName(saltSource) +
+        "\n  Salt Source Data (hex): " + Functions.toHex(saltSourceData) + "\n  Iterations (dec): " + iterations +
         "\n  Pseudo-Random Function: " + Functions.ckpCodeToName(pseudoRandomFunction) +
-        "\n  Pseudo-Random Function Data (hex): " + Util.toHex(pseudoRandomFunctionData);
+        "\n  Pseudo-Random Function Data: " + Functions.toHex(pseudoRandomFunctionData);
   }
 
 }

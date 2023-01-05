@@ -43,7 +43,7 @@
 package iaik.pkcs.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.Version;
-import sun.security.pkcs11.wrapper.CK_VERSION;
+import iaik.pkcs.pkcs11.wrapper.CK_VERSION;
 
 /**
  * This class is used for the Mechanism.SSL3_PRE_MASTER_KEY_GEN.
@@ -55,15 +55,6 @@ import sun.security.pkcs11.wrapper.CK_VERSION;
 public class VersionParameters extends Version implements Parameters {
 
   /**
-   * Create a new VersionParameters object with the major and minor version set
-   * to zero.
-   *
-   */
-  public VersionParameters() {
-    super();
-  }
-
-  /**
    * Create a new VersionParameters object with the given major and minor
    * version.
    *
@@ -73,8 +64,7 @@ public class VersionParameters extends Version implements Parameters {
    *          The minor version number.
    */
   public VersionParameters(byte major, byte minor) {
-    setMajor(major);
-    setMinor(minor);
+    super(major, minor);
   }
 
   /**
@@ -83,20 +73,10 @@ public class VersionParameters extends Version implements Parameters {
    * @return This object as a CK_VERSION object.
    */
   public CK_VERSION getPKCS11ParamsObject() {
-    return new CK_VERSION(getMajor(), getMinor());
-  }
-
-  /**
-   * This method allows setting the major and minor version numbers using a
-   * version object of the lower level API.
-   *
-   * @param input
-   *          The version objet providing the major and minor version.
-   *
-   */
-  public void setPKCS11ParamsObject(CK_VERSION input) {
-    setMajor(input.major);
-    setMinor(input.minor);
+    CK_VERSION ret = new CK_VERSION();
+    ret.major = getMajor();
+    ret.minor = getMinor();
+    return ret;
   }
 
 }

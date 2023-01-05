@@ -61,7 +61,7 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
             // initialize for signing
             session.encryptInit(encryptMechanism, key);
             // This signing operation is implemented in most of the drivers
-            session.encrypt(data, 0, inputLen, out, 0, out.length);
+            session.encrypt(data);
           } finally {
             requiteSession(sessionBag);
           }

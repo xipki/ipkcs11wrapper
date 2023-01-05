@@ -1,32 +1,22 @@
-[![Build Status](https://secure.travis-ci.org/xipki/pkcs11wrapper2.svg)](http://travis-ci.org/xipki/pkcs11wrapper2)
-[![GitHub release](https://img.shields.io/github/release/xipki/pkcs11wrapper2.svg)](https://github.com/xipki/pkcs11wrapper2/releases)
-[![Github forks](https://img.shields.io/github/forks/xipki/pkcs11wrapper2.svg)](https://github.com/xipki/pkcs11wrapper2/network)
-[![Github stars](https://img.shields.io/github/stars/xipki/pkcs11wrapper2.svg)](https://github.com/xipki/pkcs11wrapper2/stargazers)
-
-[Original Readme.txt](IAIK.Readme.txt)
+## Licenses
+This product includes software (IAIK PKCS#11 wrapper version 1.6.1) 
+developed by Stiftung SIC which is licensed under "IAIK PKCS#11 Wrapper License".
+All other parts are licensed under Apache License, version 2.
+For details please refer to the file [LICENSE](LICENSE).
 
 ## Prerequisite
-- JRE / JDK 8 (build 162+) or above
+- JRE / JDK 8 or above
 
-Use xipki/pkcs11wrapper in your project
+Use pkcs11wrapper2 in your project
 =====
 - Maven  
   ```
   <dependency>
-      <groupId>org.xipki.iaik</groupId>
-      <artifactId>sunpkcs11-wrapper2</artifactId>
+      <groupId>org.xipki</groupId>
+      <artifactId>pkcs11-wrapper2</artifactId>
       <version>1.0.0-SNAPSHOT</version>
   </dependency>
   ```
-- Or copy the following jar file to your classpath:
-  - [sunpkcs11-wrapper2-1.0.0.jar](https://github.com/xipki/pkcs11wrapper2/releases/download/v1.0.0/sunpkcs11-wrapper-1.0.0.jar)
-
-JDK17 or above
-=====
-To use pkcs11wrapper in JDK 17 or above, please add the following java option:
-```
---add-exports=jdk.crypto.cryptoki/sun.security.pkcs11.wrapper=ALL-UNNAMED
-```
 
 JUnit tests
 =====
@@ -39,4 +29,3 @@ JUnit tests
    - By default, the speed test will take 3 seconds, you can change the
      value via the Java property `speed.duration`, e.g.
     `-Dspeed.duration=10s` for 10 seconds.
-

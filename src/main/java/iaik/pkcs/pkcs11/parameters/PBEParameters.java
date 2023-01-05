@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
-import sun.security.pkcs11.wrapper.CK_PBE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.CK_PBE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * This class encapsulates parameters for the Mechanism.PBA_* and
@@ -91,8 +91,8 @@ public class PBEParameters implements Parameters {
       throw new IllegalArgumentException("Argument 'iv' must be null or must have length 8, if it is not null.");
     }
     this.iv = iv;
-    this.password = Util.requireNonNull("password", password);
-    this.salt = Util.requireNonNull("salt", salt);
+    this.password = Functions.requireNonNull("password", password);
+    this.salt = Functions.requireNonNull("salt", salt);
     this.iterations = iterations;
   }
 
@@ -150,49 +150,6 @@ public class PBEParameters implements Parameters {
   }
 
   /**
-   * Set the 8-byte initialization vector (IV), if an IV is required.
-   *
-   * @param iv
-   *          The 8-byte initialization vector (IV), if an IV is required.
-   */
-  public void setInitializationVector(char[] iv) {
-    if ((iv != null) && (iv.length != 8)) {
-      throw new IllegalArgumentException("Argument 'iv' must be null or must have length 8, if it is not null.");
-    }
-    this.iv = iv;
-  }
-
-  /**
-   * Set the password to be used in the PBE key generation.
-   *
-   * @param password
-   *          The password to be used in the PBE key generation.
-   */
-  public void setPassword(char[] password) {
-    this.password = Util.requireNonNull("password", password);
-  }
-
-  /**
-   * Set the salt to be used in the PBE key generation.
-   *
-   * @param salt
-   *          The salt to be used in the PBE key generation.
-   */
-  public void setSalt(char[] salt) {
-    this.salt = Util.requireNonNull("salt", salt);
-  }
-
-  /**
-   * Set the number of iterations required for the generation.
-   *
-   * @param iterations
-   *          The number of iterations required for the generation.
-   */
-  public void setIterations(long iterations) {
-    this.iterations = iterations;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -200,10 +157,9 @@ public class PBEParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  IV: " + ((iv != null) ? new String(iv) : null) +
-        "\n  Password: " + ((password != null) ? new String(password) : null) +
-        "\n  Salt: " + ((salt != null) ? new String(salt) : null) +
-        "\n  Iterations (dec): " + iterations;
+    return "Class: " + getClass().getName() + "\n  IV: " + (iv != null ? new String(iv) : null) +
+        "\n  Password: " + (password != null ? new String(password) : null) +
+        "\n  Salt: " + (salt != null ? new String(salt) : null) + "\n  Iterations (dec): " + iterations;
   }
 
 }

@@ -42,9 +42,8 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.CK_RSA_PKCS_OAEP_PARAMS;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import sun.security.pkcs11.wrapper.CK_RSA_PKCS_OAEP_PARAMS;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKZ_SALT_SPECIFIED;
 
@@ -83,10 +82,7 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
    */
   public RSAPkcsOaepParameters(long hashAlgorithm, long maskGenerationFunction, long source, byte[] sourceData) {
     super(hashAlgorithm, maskGenerationFunction);
-    if ((source != 0) && (source != CKZ_SALT_SPECIFIED)) {
-      throw new IllegalArgumentException("Illegal value for argument 'source': " + Functions.ckzCodeToName(source));
-    }
-    this.source = source;
+    this.source = Functions.requireAmong("source", source, 0, CKZ_SALT_SPECIFIED);
     this.sourceData = sourceData;
   }
 
@@ -127,30 +123,6 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
   }
 
   /**
-   * Set the source of the encoding parameter. One of the constants defined in
-   * the SourceType interface.
-   *
-   * @param source
-   *          The source of the encoding parameter.
-   */
-  public void setSource(long source) {
-    if ((source != 0) && (source != CKZ_SALT_SPECIFIED)) {
-      throw new IllegalArgumentException("Illegal value for argument 'source': " + Functions.ckzCodeToName(source));
-    }
-    this.source = source;
-  }
-
-  /**
-   * Set the data used as the input for the encoding parameter source.
-   *
-   * @param sourceData
-   *          The data used as the input for the encoding parameter source.
-   */
-  public void setSourceData(byte[] sourceData) {
-    this.sourceData = sourceData;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -159,7 +131,7 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
   @Override
   public String toString() {
     return super.toString() + "\n  Source: " + Functions.ckzCodeToName(source)
-        + "\n  Source Data (hex): " + Util.toHex(sourceData);
+        + "\n  Source Data (hex): " + Functions.toHex(sourceData);
   }
 
 }

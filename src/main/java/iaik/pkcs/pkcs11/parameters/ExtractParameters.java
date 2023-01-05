@@ -89,18 +89,6 @@ public class ExtractParameters implements Parameters {
   }
 
   /**
-   * Set the bit of the base key that should be used as the first bit of the
-   * derived key.
-   *
-   * @param bitIndex
-   *          The bit of the base key that should be used as the first bit of
-   *          the derived key.
-   */
-  public void setBitIndex(long bitIndex) {
-    this.bitIndex = bitIndex;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -108,7 +96,7 @@ public class ExtractParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  Bit Index (dec): " + bitIndex;
+    return "Class: " + getClass().getName() + "\n  Bit Index (dec): " + bitIndex;
   }
 
 }

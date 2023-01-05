@@ -45,8 +45,9 @@ package demo.pkcs.pkcs11.wrapper.basics;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import iaik.pkcs.pkcs11.*;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Constants;
 import org.junit.Test;
+
+import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_TOKEN_INITIALIZED;
 
 /**
  * This demo program lists information about a library, the available slots, the
@@ -108,7 +109,7 @@ public class GetInfo extends TestBase {
       LOG.info("___________________________________________________");
       TokenInfo tokenInfo = token.getTokenInfo();
       LOG.info("listing objects for token: {}", tokenInfo);
-      if (!tokenInfo.hasFlagBit(PKCS11Constants.CKF_TOKEN_INITIALIZED)) {
+      if (!tokenInfo.hasFlagBit(CKF_TOKEN_INITIALIZED)) {
         LOG.info("token not initialized yet");
         continue;
       }

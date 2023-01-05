@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11;
 
+import iaik.pkcs.pkcs11.wrapper.CK_SESSION_INFO;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import sun.security.pkcs11.wrapper.CK_SESSION_INFO;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_RW_SESSION;
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_SERIAL_SESSION;
@@ -88,7 +88,7 @@ public class SessionInfo {
    *          The object providing the session information.
    */
   protected SessionInfo(CK_SESSION_INFO ckSessionInfo) {
-    Util.requireNonNull("ckSessionInfo", ckSessionInfo);
+    Functions.requireNonNull("ckSessionInfo", ckSessionInfo);
     this.slotID = ckSessionInfo.slotID;
     this.state = new State(ckSessionInfo.state);
     this.deviceError = ckSessionInfo.ulDeviceError;
@@ -143,10 +143,8 @@ public class SessionInfo {
    */
   @Override
   public String toString() {
-    return "State: " + state + "\nDevice Error: 0x" + Long.toHexString(deviceError) +
-        "\nFlags: 0x" + Functions.toFullHex(flags) +
-        (isRwSession() ?     "\n    Read/write    " : "\nRead-only") +
-        (isSerialSession() ? "\n    Serial session" : "\nParallel session");
+    String text = "State: " + state + "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\nFlags: ";
+    return Functions.toStringFlags(text, flags, CKF_RW_SESSION, CKF_SERIAL_SESSION);
   }
 
   /**

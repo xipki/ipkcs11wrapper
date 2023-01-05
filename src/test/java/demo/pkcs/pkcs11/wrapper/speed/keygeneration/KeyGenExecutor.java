@@ -86,9 +86,9 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
 
   private final boolean inToken;
 
-  public KeyGenExecutor(long mechnism, int keyLen, Token token, char[] pin, boolean inToken) throws TokenException {
-    super(describe(mechnism, keyLen, inToken), token, pin);
-    this.mechanism = new Mechanism(mechnism);
+  public KeyGenExecutor(long mechanism, int keyLen, Token token, char[] pin, boolean inToken) throws TokenException {
+    super(describe(mechanism, keyLen, inToken), token, pin);
+    this.mechanism = new Mechanism(mechanism);
     this.inToken = inToken;
   }
 
@@ -99,9 +99,9 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
     return new MyRunnable();
   }
 
-  private static String describe(long mechnism, int keyLen, boolean inToken) {
+  private static String describe(long mechanism, int keyLen, boolean inToken) {
     StringBuilder sb = new StringBuilder(100)
-      .append(Functions.ckmCodeToName(mechnism)).append(" (");
+      .append(Functions.ckmCodeToName(mechanism)).append(" (");
     if (keyLen > 0) {
       sb.append(keyLen * 8).append(" bits, ");
     }

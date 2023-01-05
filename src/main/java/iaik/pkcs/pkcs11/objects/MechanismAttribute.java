@@ -73,9 +73,10 @@ public class MechanismAttribute extends LongAttribute {
    * @param mechanism
    *          The mechanism value to set. May be <code>null</code>.
    */
-  public void setMechanism(Long mechanism) {
+  public MechanismAttribute setMechanism(Long mechanism) {
     ckAttribute.pValue = mechanism;
     present = true;
+    return this;
   }
 
   /**
@@ -104,7 +105,7 @@ public class MechanismAttribute extends LongAttribute {
 
   @Override
   public void setValue(Object value) {
-    setLongValue((Long) value);
+    longValue((Long) value);
   }
 
 }

@@ -21,7 +21,7 @@ import iaik.pkcs.pkcs11.Mechanism;
 import iaik.pkcs.pkcs11.Token;
 import iaik.pkcs.pkcs11.TokenException;
 import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.parameters.GCMParameters;
+import iaik.pkcs.pkcs11.parameters.GcmParameters;
 import org.junit.Test;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
@@ -49,7 +49,7 @@ public class AESGCMEncryptDecrypt extends SymmEncryptDecrypt {
   public void main() throws TokenException {
     // check whether supported in current JDK
     try {
-      new GCMParameters(16, new byte[12], null);
+      new GcmParameters(new byte[12], null, 128);
     } catch (IllegalStateException ex) {
       System.err.println("AES-GCM unsupported in current JDK, skip");
       return;
@@ -66,7 +66,7 @@ public class AESGCMEncryptDecrypt extends SymmEncryptDecrypt {
   @Override
   protected Mechanism getEncryptionMech(Token token) throws TokenException {
     Mechanism mech = getSupportedMechanism(token, CKM_AES_GCM);
-    GCMParameters params = new GCMParameters(16, iv, aad);
+    GcmParameters params = new GcmParameters(iv, aad, 128);
     mech.setParameters(params);
     return mech;
   }

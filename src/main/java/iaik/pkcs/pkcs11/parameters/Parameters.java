@@ -52,7 +52,7 @@ public interface Parameters {
 
   /**
    * Get this parameters object as an object of the corresponding *_PARAMS
-   * class of the sun.security.pkcs11.wrapper package.
+   * class of the iaik.pkcs.pkcs11.wrapper package.
    *
    * @return The object of the corresponding *_PARAMS class.
    */

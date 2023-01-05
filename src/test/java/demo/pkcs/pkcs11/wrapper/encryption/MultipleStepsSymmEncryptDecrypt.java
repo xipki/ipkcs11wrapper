@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKA_TOKEN;
@@ -46,7 +47,7 @@ public abstract class MultipleStepsSymmEncryptDecrypt extends TestBase {
   protected abstract Mechanism getEncryptionMech(Token token) throws TokenException;
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws TokenException, IOException {
     Token token = getNonNullToken();
 
     Session session = openReadWriteSession(token);
@@ -57,7 +58,7 @@ public abstract class MultipleStepsSymmEncryptDecrypt extends TestBase {
     }
   }
 
-  private void main0(Token token, Session session) throws TokenException {
+  private void main0(Token token, Session session) throws TokenException, IOException {
     LOG.info("##################################################");
     LOG.info("generate secret encryption/decryption key");
     Mechanism keyMechanism = getKeyGenMech(token);
@@ -77,26 +78,22 @@ public abstract class MultipleStepsSymmEncryptDecrypt extends TestBase {
     session.encryptInit(encryptionMechanism, encryptionKey);
 
     ByteArrayOutputStream bout = new ByteArrayOutputStream(rawData.length);
-    byte[] buffer = new byte[128];
-
-    int len;
 
     // update
     for (int i = 0; i < rawData.length; i += 64) {
       int inLen = Math.min(rawData.length - i, 64);
 
-      len = session.encryptUpdate(rawData, i, inLen, buffer, 0, buffer.length);
-      if (len > 0) {
-        bout.write(buffer, 0, len);
+      byte[] part = session.encryptUpdate(Arrays.copyOfRange(rawData, i, i + inLen));
+      if (part != null && part.length > 0) {
+        bout.write(part);
       }
     }
 
     // final
-    len = session.encryptFinal(buffer, 0, buffer.length);
-    if (len > 0) {
-      bout.write(buffer, 0, len);
+    byte[] part = session.encryptFinal();
+    if (part != null && part.length > 0) {
+      bout.write(part);
     }
-    Arrays.fill(buffer, (byte) 0);
 
     byte[] encryptedData = bout.toByteArray();
 
@@ -114,18 +111,17 @@ public abstract class MultipleStepsSymmEncryptDecrypt extends TestBase {
     for (int i = 0; i < encryptedData.length; i += 64) {
       int inLen = Math.min(encryptedData.length - i, 64);
 
-      len = session.decryptUpdate(encryptedData, i, inLen, buffer, 0, buffer.length);
-      if (len > 0) {
-        bout.write(buffer, 0, len);
+      part = session.decryptUpdate(Arrays.copyOfRange(encryptedData, i, i + inLen));
+      if (part != null && part.length > 0) {
+        bout.write(part);
       }
     }
 
     // final
-    len = session.decryptFinal(buffer, 0, buffer.length);
-    if (len > 0) {
-      bout.write(buffer, 0, len);
+    part = session.decryptFinal();
+    if (part != null && part.length > 0) {
+      bout.write(part);
     }
-    Arrays.fill(buffer, (byte) 0);
 
     byte[] decryptedData = bout.toByteArray();
     Assert.assertArrayEquals(rawData, decryptedData);

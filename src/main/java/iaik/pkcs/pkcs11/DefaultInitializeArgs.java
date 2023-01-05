@@ -76,9 +76,7 @@ public class DefaultInitializeArgs implements InitializeArgs {
    * Default constructor.
    */
   public DefaultInitializeArgs() {
-    mutexHandler = null;
-    libraryCantCreateOsThreads = false;
-    osLockingOk = true;
+    this(null, false, true);
     reserved = null;
   }
 
@@ -152,42 +150,6 @@ public class DefaultInitializeArgs implements InitializeArgs {
   }
 
   /**
-   * This method sets the object that implements the functionality for
-   * handling mutexes. It should be null to set no handler.
-   *
-   * @param mutexHandler
-   *        The handler object for mutex functionality, or null to use no handler.
-   */
-  public void setMutexHandler(MutexHandler mutexHandler) {
-    this.mutexHandler = mutexHandler;
-  }
-
-  /**
-   * Set, if application threads which are executing calls to the library may
-   * not use native operating system calls to spawn new threads.
-   *
-   * @param libraryCantCreateOsThreads
-   *          True, if application threads which are executing calls to the
-   *          library may not use native operating system calls to spawn new
-   *          threads. False, if they may.
-   */
-  public void setLibraryCantCreateOsThreads(boolean libraryCantCreateOsThreads) {
-    this.libraryCantCreateOsThreads = libraryCantCreateOsThreads;
-  }
-
-  /**
-   * set, if the library can use the native operating system threading model
-   * for locking.
-   *
-   * @param osLockingOk
-   *          True, if the library can use the native operating system
-   *          threading model for locking. False, otherwise.
-   */
-  public void setOsLockingOk(boolean osLockingOk) {
-    this.osLockingOk = osLockingOk;
-  }
-
-  /**
    * Set the reserved parameter.
    *
    * @param reserved
@@ -206,8 +168,7 @@ public class DefaultInitializeArgs implements InitializeArgs {
   public String toString() {
     return  "Mutex Handler: " + (mutexHandler != null ? "present" : "not present") +
       "\nLibrary can't create OS-Threads: " + libraryCantCreateOsThreads +
-      "\nOS-Locking OK: " + osLockingOk +
-      "\nReserved parameter: " + reserved;
+      "\nOS-Locking OK: " + osLockingOk + "\nReserved parameter: " + reserved;
   }
 
 }

@@ -53,6 +53,7 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -159,15 +160,14 @@ public class RSAGenerateKeyPair extends TestBase {
       RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(modulus, publicExponent);
 
       KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-      java.security.interfaces.RSAPublicKey javaRsaPublicKey =
-          (java.security.interfaces.RSAPublicKey) keyFactory.generatePublic(rsaPublicKeySpec);
+      RSAPublicKey javaRsaPublicKey = (RSAPublicKey) keyFactory.generatePublic(rsaPublicKeySpec);
       X509EncodedKeySpec x509EncodedPublicKey = keyFactory.getKeySpec(javaRsaPublicKey, X509EncodedKeySpec.class);
       x509EncodedPublicKey.getEncoded();
 
       // now we try to search for the generated keys
       LOG.info("##################################################");
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
-          Functions.toHexString(id));
+          Functions.toHex(id));
       // set the search template for the public key
       AttributeVector exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).attr(CKA_ID, id);
 

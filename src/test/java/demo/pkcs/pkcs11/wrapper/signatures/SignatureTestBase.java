@@ -22,6 +22,7 @@ import iaik.pkcs.pkcs11.Session;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.BeforeClass;
 
+import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
@@ -43,7 +44,7 @@ public class SignatureTestBase extends TestBase {
   protected void jceVerifySignature(String algorithm, Session session, long publicKeyHandle, long keyType,
                                     byte[] data, byte[] signatureValue) throws Exception {
     // verify with JCE
-    java.security.PublicKey jcePublicKey = generateJCEPublicKey(session, publicKeyHandle, keyType);
+    PublicKey jcePublicKey = generateJCEPublicKey(session, publicKeyHandle, keyType);
     Signature signature = Signature.getInstance(algorithm, "BC");
     signature.initVerify(jcePublicKey);
     signature.update(data);

@@ -65,11 +65,12 @@ public interface Notify {
    *
    * @param session
    *          The session performing the callback.
-   * @param surrender
+   * @param event
    *          See CK_NOTIFICATION in PKCS#11. A return value of CKR_OK is
    *          generated, if this method call returns regularly.
    *          CKR_CANCEL can be returned to the module by throwing a
    *          PKCS11Exception with the error-code CKR_CANCEL.
+   *          Till version 2.4 only CKN_SURRENDER is defined.
    * @param application
    *          The application-object passed to openSession.
    * @exception PKCS11Exception
@@ -77,6 +78,6 @@ public interface Notify {
    *              with error-code CKR_CANCEL to signal the module to cancel
    *              the ongoing operation.
    */
-  void notify(Session session, boolean surrender, Object application) throws PKCS11Exception;
+  void notify(Session session, long event, Object application) throws PKCS11Exception;
 
 }

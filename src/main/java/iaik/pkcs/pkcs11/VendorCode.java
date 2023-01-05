@@ -26,22 +26,10 @@ class VendorCode {
     }
 
     boolean matches(String modulePath, String manufacturerID, String libraryDescription, Version libraryVersion) {
-      if (!isEmpty(modulePaths)) {
-        if (!contains(modulePaths, Paths.get(modulePath).getFileName().toString())) {
-          return false;
-        }
-      }
-
-      if (!isEmpty(manufacturerIDs)) {
-        if (!contains(manufacturerIDs, manufacturerID)) {
-          return false;
-        }
-      }
-
-      if (!isEmpty(descriptions)) {
-        if (!contains(descriptions, libraryDescription)) {
-          return false;
-        }
+      if ((!isEmpty(modulePaths)     && !contains(modulePaths,     Paths.get(modulePath).getFileName().toString())) ||
+          (!isEmpty(manufacturerIDs) && !contains(manufacturerIDs, manufacturerID)) ||
+          (!isEmpty(descriptions)    && !contains(descriptions,    libraryDescription))) {
+        return false;
       }
 
       if (isEmpty(versions)) {
@@ -53,15 +41,8 @@ class VendorCode {
       for (String t : versions) {
         int idx = t.indexOf("-");
 
-        int from;
-        int to;
-        if (idx == -1) {
-          from = toIntVersion(t);
-          to = from;
-        } else {
-          from = toIntVersion(t.substring(0, idx));
-          to = toIntVersion(t.substring(idx + 1));
-        }
+        int from = (idx == -1) ? toIntVersion(t) : toIntVersion(t.substring(0, idx));
+        int to   = (idx == -1) ? from            : toIntVersion(t.substring(idx + 1));
 
         if (iVersion >= from && iVersion <= to) {
           match = true;
@@ -184,26 +165,22 @@ class VendorCode {
       String name = entry.getKey().toUpperCase(Locale.ROOT);
       String valueStr = entry.getValue().toUpperCase(Locale.ROOT);
       boolean hex = valueStr.startsWith("0X");
-      if (hex) {
-        valueStr = valueStr.substring(2);
-      }
-
-      long vendorCode = hex ? Long.parseLong(valueStr, 16) : Long.parseLong(valueStr);
+      long vendorCode = hex ? Long.parseLong(valueStr.substring(2), 16) : Long.parseLong(valueStr);
 
       if (name.startsWith("CKK_VENDOR_")) {
         long genericCode = Functions.ckkNameToCode(name);
         if (genericCode == -1) {
-          throw new IllegalArgumentException("unknown name in vendorcode block: " + name);
+          throw new TokenRuntimeException("unknown name in vendorcode block: " + name);
         }
         ckkGenericToVendorMap.put(genericCode, vendorCode);
       } else if (name.startsWith("CKM_VENDOR_")) {
         long genericCode = Functions.ckmNameToCode(name);
         if (genericCode == -1) {
-          throw new IllegalArgumentException("unknown name in vendorcode block: " + name);
+          throw new TokenRuntimeException("unknown name in vendorcode block: " + name);
         }
         ckmGenericToVendorMap.put(genericCode, vendorCode);
       } else {
-        throw new IllegalArgumentException("Unknown name in vendorcode block: " + name);
+        throw new TokenRuntimeException("Unknown name in vendorcode block: " + name);
       }
     }
 

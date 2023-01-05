@@ -1,10 +1,10 @@
 // Copyright (c) 2002 Graz University of Technology. All rights reserved.
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted provided that the following conditions are met:
 //
-// 1. Redistributions of source code must retain the above copyright notice,
-//    this list of conditions and the following disclaimer.
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
 //
 // 2. Redistributions in binary form must reproduce the above copyright notice,
 //    this list of conditions and the following disclaimer in the documentation
@@ -20,8 +20,8 @@
 //    wherever such third-party acknowledgments normally appear.
 //
 // 4. The names "Graz University of Technology" and "IAIK of Graz University of
-//    Technology" must not be used to endorse or promote products derived from
-//    this software without prior written permission.
+//    Technology" must not be used to endorse or promote products derived from this
+//    software without prior written permission.
 //
 // 5. Products derived from this software may not be called "IAIK PKCS Wrapper",
 //    nor may "IAIK" appear in their name, without prior written permission of
@@ -42,103 +42,57 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
-import iaik.pkcs.pkcs11.wrapper.Functions;
-import sun.security.pkcs11.wrapper.CK_RSA_PKCS_PSS_PARAMS;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
+import iaik.pkcs.pkcs11.wrapper.CK_RSA_PKCS_PSS_PARAMS;
 
 /**
  * This class encapsulates parameters for the Mechanism.RSA_PKCS_PSS.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
+ *
  */
 public class RSAPkcsPssParameters extends RSAPkcsParameters {
-
-  private static final String CLASS_CK_PARAMS = "sun.security.pkcs11.wrapper.CK_RSA_PKCS_PSS_PARAMS";
-
-  private static final Constructor<?> constructor;
-
-  private static final Constructor<?> constructorNoArgs;
-
-  private static final Field hashAlgField;
-
-  private static final Field mgfField;
-
-  private static final Field sLenField;
 
   /**
    * The length of the salt value in octets.
    */
   private long saltLength;
 
-  static {
-    Class<?> clazz = CK_RSA_PKCS_PSS_PARAMS.class;
-
-    constructor = Util.getConstructor(clazz, String.class, String.class, String.class, int.class);
-    constructorNoArgs = (constructor != null) ? null : Util.getConstructor(clazz);
-
-    if (constructorNoArgs != null) {
-      hashAlgField = Util.getField(clazz, "hashAlg");
-      mgfField = Util.getField(clazz, "mgf");
-      sLenField = Util.getField(clazz, "sLen");
-    } else {
-      hashAlgField = null;
-      mgfField = null;
-      sLenField = null;
-    }
-  }
-
   /**
    * Create a new RSAPkcsOaepParameters object with the given attributes.
    *
-   * @param hashAlg
-   *          The message digest algorithm used to calculate the digest of the
-   *          encoding parameter.
-   * @param mgf
-   *          The mask to apply to the encoded block. One of the constants
-   *          defined in the MessageGenerationFunctionType interface.
+   * @param hashAlgorithm
+   *          The message digest algorithm used to calculate the digest of the encoding parameter.
+   * @param maskGenerationFunction
+   *          The mask to apply to the encoded block. One of the constants defined in the
+   *          MessageGenerationFunctionType interface.
    * @param saltLength
    *          The length of the salt value in octets.
+   * @preconditions (hashAlgorithm != null) and (maskGenerationFunction ==
+   *                MessageGenerationFunctionType.Sha1)
+   *
    */
-  public RSAPkcsPssParameters(long hashAlg, long mgf, long saltLength) {
-    super(hashAlg, mgf);
-    if (constructor == null && constructorNoArgs == null) {
-      throw new IllegalStateException("could not find constructor for class " + CLASS_CK_PARAMS);
-    }
+  public RSAPkcsPssParameters(long hashAlgorithm, long maskGenerationFunction, long saltLength) {
+    super(hashAlgorithm, maskGenerationFunction);
     this.saltLength = saltLength;
   }
 
   /**
-   * Get this parameters object as an object of the CK_RSA_PKCS_PSS_PARAMS
-   * class.
+   * Get this parameters object as an object of the CK_RSA_PKCS_PSS_PARAMS class.
    *
    * @return This object as a CK_RSA_PKCS_PSS_PARAMS object.
+   *
+   * @postconditions (result != null)
    */
   @Override
-  public CK_RSA_PKCS_PSS_PARAMS getPKCS11ParamsObject() {
-    if (constructorNoArgs != null) {
-      try {
-        CK_RSA_PKCS_PSS_PARAMS ret = (CK_RSA_PKCS_PSS_PARAMS) constructorNoArgs.newInstance();
-        hashAlgField.set(ret, hashAlg);
-        mgfField.set(ret, mgf);
-        sLenField.set(ret, saltLength);
-        return ret;
-      } catch (Exception ex) {
-        throw new IllegalStateException("Could not create new instance of " + CLASS_CK_PARAMS, ex);
-      }
-    } else {
-      String hashAlgName = Functions.getHashAlgName(hashAlg);
-      String mgfHashAlgName = Functions.getHashAlgName(mgf2HashAlgMap.get(mgf));
-      try {
-        return (CK_RSA_PKCS_PSS_PARAMS) constructor.newInstance(
-            hashAlgName, "MGF1", mgfHashAlgName, (int) saltLength);
-      } catch (Exception ex) {
-        throw new IllegalStateException("Could not create new instance of " + CLASS_CK_PARAMS, ex);
-      }
-    }
+  public Object getPKCS11ParamsObject() {
+    CK_RSA_PKCS_PSS_PARAMS params = new CK_RSA_PKCS_PSS_PARAMS();
+
+    params.hashAlg = hashAlg;
+    params.mgf = mgf;
+    params.sLen = saltLength;
+
+    return params;
   }
 
   /**
@@ -151,18 +105,8 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
   }
 
   /**
-   * Set the length of the salt value in octets.
-   *
-   * @param saltLength
-   *          The length of the salt value in octets.
-   */
-  public void setSaltLength(long saltLength) {
-    this.saltLength = saltLength;
-  }
-
-  /**
-   * Returns the string representation of this object. Do not parse data from
-   * this string, it is for debugging only.
+   * Returns the string representation of this object. Do not parse data from this string, it is for
+   * debugging only.
    *
    * @return A string representation of this object.
    */

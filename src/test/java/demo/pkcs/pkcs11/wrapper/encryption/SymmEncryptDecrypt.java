@@ -26,8 +26,6 @@ import iaik.pkcs.pkcs11.objects.AttributeVector;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKA_TOKEN;
 
 /**
@@ -75,9 +73,7 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     // initialize for encryption
     session.encryptInit(encryptionMechanism, encryptionKey);
 
-    byte[] buffer = new byte[rawData.length + 32];
-    int len = session.encrypt(rawData, 0, rawData.length, buffer, 0, buffer.length);
-    byte[] encryptedData = Arrays.copyOf(buffer, len);
+    byte[] encryptedData = session.encrypt(rawData);
 
     LOG.info("##################################################");
     LOG.info("trying to decrypt");
@@ -87,9 +83,7 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     // initialize for decryption
     session.decryptInit(decryptionMechanism, encryptionKey);
 
-    len = session.decrypt(encryptedData, 0, encryptedData.length, buffer, 0, buffer.length);
-    byte[] decryptedData = Arrays.copyOf(buffer, len);
-    Arrays.fill(buffer, (byte) 0);
+    byte[] decryptedData = session.decrypt(encryptedData);
     Assert.assertArrayEquals(rawData, decryptedData);
   }
 

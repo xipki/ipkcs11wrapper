@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11.objects;
 
-import sun.security.pkcs11.wrapper.CK_DATE;
+import iaik.pkcs.pkcs11.wrapper.CK_DATE;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -75,7 +75,7 @@ public class DateAttribute extends Attribute {
    * @param value
    *          The date value to set. May be null.
    */
-  public void setDateValue(Date value) {
+  public DateAttribute dateValue(Date value) {
     if (value == null) {
       ckAttribute.pValue = null;
     } else {
@@ -86,12 +86,16 @@ public class DateAttribute extends Attribute {
       // month counting starts with zero
       int month = calendar.get(Calendar.MONTH) + 1;
       int day = calendar.get(Calendar.DAY_OF_MONTH);
-      ckAttribute.pValue = new CK_DATE(
-          Integer.toString(year).toCharArray(),
-          (month < 10 ? "0" + month: Integer.toString(month)).toCharArray(),
-          (day < 10 ? "0" + day: Integer.toString(day)).toCharArray());
+
+      CK_DATE ckDate = new CK_DATE();
+      ckAttribute.pValue = ckDate;
+
+      ckDate.year =Integer.toString(year).toCharArray();
+      ckDate.month = (month < 10 ? "0" + month: Integer.toString(month)).toCharArray();
+      ckDate.day = (day < 10 ? "0" + day: Integer.toString(day)).toCharArray();
     }
     present = true;
+    return this;
   }
 
   /**
@@ -117,7 +121,7 @@ public class DateAttribute extends Attribute {
 
   @Override
   public void setValue(Object value) {
-    setDateValue((Date) value);
+    dateValue((Date) value);
   }
 
   /**

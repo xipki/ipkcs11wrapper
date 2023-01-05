@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11.wrapper;
 
-import iaik.pkcs.pkcs11.Mechanism;
+import iaik.pkcs.pkcs11.TokenRuntimeException;
 
 import java.util.*;
 
@@ -80,22 +80,18 @@ public class Functions {
             System.out.println("No name defined for code " + propName);
           }
 
-          long code;
-          if (propName.startsWith("0x") || propName.startsWith("0X")) {
-            code = Long.parseLong(propName.substring(2), 16);
-          } else {
-            code = Long.parseLong(propName);
-          }
+          long code = (propName.startsWith("0x") || propName.startsWith("0X"))
+              ? Long.parseLong(propName.substring(2), 16) : Long.parseLong(propName);
 
           if (codeNameMap.containsKey(code)) {
-            throw new IllegalArgumentException("duplicated definition of " + prefix + ": " + toFullHex(code));
+            throw new TokenRuntimeException("duplicated definition of " + prefix + ": " + toFullHex(code));
           }
 
           boolean first = true;
           while (tokens.hasMoreTokens()) {
             String name = tokens.nextToken();
             if (!name.startsWith(prefix)) {
-              throw new IllegalArgumentException(name + " does not start with " + prefix);
+              throw new TokenRuntimeException(name + " does not start with " + prefix);
             }
 
             if (first) {
@@ -116,7 +112,7 @@ public class Functions {
       }
 
       if (codeNameMap.isEmpty()) {
-        throw new IllegalStateException("no code to name map is defined properties file " + resourcePath);
+        throw new IllegalStateException("no code to name map is defined in the properties file " + resourcePath);
       }
     }
 
@@ -130,15 +126,16 @@ public class Functions {
       return (code != null) ? code : -1;
     }
 
+    Set<Long> codes() {
+      return codeNameMap.keySet();
+    }
+
   }
 
   private static class Hex {
 
-    private static final char[] DIGITS = {'0', '1', '2', '3', '4',
-        '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-
-    private static final char[] UPPER_DIGITS = {'0', '1', '2', '3', '4',
-        '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final char[] DIGITS = "0123456789abcdef".toCharArray();
+    private static final char[] UPPER_DIGITS = "0123456789ABCDEF".toCharArray();
 
     private static final int[] LINTS = new int['f' + 1];
     private static final int[] HINTS = new int[LINTS.length];
@@ -151,22 +148,18 @@ public class Functions {
       for (int i = 0; i < LINTS.length; i++) HINTS[i] = LINTS[i] << 4;
     }
 
-    public static String encode(byte[] bytes) {
-      return new String(encodeToChars(bytes));
-    }
-
-    public static char[] encodeToChars(byte[] data) {
+    public static String encode(byte[] data) {
       int len = data.length;
 
       char[] out = new char[len << 1];
 
-      // two characters form the hex value.
+      // two characters from the hex value.
       for (int i = 0, j = 0; i < len; i++) {
         out[j++] = DIGITS[(0xF0 & data[i]) >>> 4];
         out[j++] = DIGITS[0x0F & data[i]];
       }
 
-      return out;
+      return new String(out);
     }
 
     public static byte[] decode(String hex) {
@@ -179,7 +172,7 @@ public class Functions {
 
       byte[] out = new byte[len >> 1];
 
-      // two characters form the hex value.
+      // two characters from the hex value.
       for (int i = 0, j = 0; j < len; i++) {
         out[i] = (byte) (HINTS[data[j++]] | LINTS[data[j++]]);
       }
@@ -551,7 +544,7 @@ public class Functions {
    *          the byte array to be converted
    * @return the hexadecimal string representation of the byte array
    */
-  public static String toHexString(byte[] value) {
+  public static String toHex(byte[] value) {
     return Hex.encode(value);
   }
 
@@ -559,12 +552,51 @@ public class Functions {
     return Hex.decode(encoded);
   }
 
-  public static String getHashAlgName(Mechanism hashMechanism) {
-    return getHashAlgName(hashMechanism.getMechanismCode());
-  }
-
   public static String getHashAlgName(long hashMechanism) {
     return hashMechCodeToHashNames.get(hashMechanism);
+  }
+
+  public static <T> T requireNonNull(String paramName, T param) {
+    if (param == null) {
+      throw new NullPointerException("Argument '" + paramName + "' must not be null.");
+    }
+    return param;
+  }
+
+  public static long requireRange(String name, long argument, long min, long max) {
+    if (argument < min || argument > max) {
+      throw new IllegalArgumentException(String.format(
+          "%s may not be out of the range [%d, %d]: %d", name, min, max, argument));
+    }
+    return argument;
+  }
+
+  public static long requireAmong(String name, long argument, long... candidates) {
+    for (long candidate : candidates) {
+      if (argument == candidate) {
+        return argument;
+      }
+    }
+
+    throw new IllegalArgumentException(name + " is not among " + Arrays.toString(candidates) + ": " + argument);
+  }
+
+  public static String toStringFlags(String prefix, long flags, long... flagMasks) {
+    StringBuilder sb = new StringBuilder(prefix.length() + 100);
+    sb.append(prefix).append("0x").append(Functions.toFullHex(flags)).append(" (");
+    boolean first = true;
+    for (long flagMask : flagMasks) {
+      if ((flags & flagMask) != 0L) {
+        if (first) {
+          first = false;
+        } else {
+          sb.append(" | ");
+        }
+        sb.append(Functions.ckfCodeToName(flagMask));
+      }
+    }
+
+    return sb.append(")").toString();
   }
 
 }

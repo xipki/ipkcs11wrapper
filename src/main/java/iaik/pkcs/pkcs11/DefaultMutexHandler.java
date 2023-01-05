@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11;
 
-import sun.security.pkcs11.wrapper.PKCS11Exception;
+import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 
 /**
  * This class offers a default-implementation of a MutexHandler.

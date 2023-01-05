@@ -70,7 +70,7 @@ public class GenerateKeyAndSign extends TestBase {
     byte[] dataToBeSigned = "12345678901234567890123456789012345".getBytes();
     byte[] signatureValue = session.sign(dataToBeSigned);
     LOG.info("Finished");
-    LOG.info("Signature Value: {}", Functions.toHexString(signatureValue));
+    LOG.info("Signature Value: {}", Functions.toHex(signatureValue));
     LOG.info("##################################################");
   }
 

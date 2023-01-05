@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11;
 
+import iaik.pkcs.pkcs11.wrapper.CK_SLOT_INFO;
 import iaik.pkcs.pkcs11.wrapper.Functions;
-import sun.security.pkcs11.wrapper.CK_SLOT_INFO;
 
 import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -92,7 +92,7 @@ public class SlotInfo {
    *          The CK_SLOT_INFO object as given by PKCS11.C_GetSlotInfo().
    */
   protected SlotInfo(CK_SLOT_INFO ckSlotInfo) {
-    Util.requireNonNull("ckSlotInfo", ckSlotInfo);
+    Functions.requireNonNull("ckSlotInfo", ckSlotInfo);
     this.slotDescription = new String(ckSlotInfo.slotDescription);
     this.manufacturerID = new String(ckSlotInfo.manufacturerID);
     this.hardwareVersion = new Version(ckSlotInfo.hardwareVersion);
@@ -175,47 +175,9 @@ public class SlotInfo {
    */
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder(200)
-        .append("Slot Description: ").append(slotDescription)
-        .append("\nManufacturer ID: ").append(manufacturerID)
-        .append("\nHardware Version: ").append(hardwareVersion)
-        .append("\nFirmware Version: ").append(firmwareVersion)
-        .append("\nFlags: 0X").append(Functions.toFullHex(flags));
-    Util.toStringFlags(sb, "", flags, CKF_TOKEN_PRESENT, CKF_REMOVABLE_DEVICE, CKF_HW);
-    return sb.toString();
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other SlotInfo object.
-   * @return True, if other is an instance of Info and all member variables of
-   *         both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof SlotInfo)) return false;
-
-    SlotInfo other = (SlotInfo) otherObject;
-    return slotDescription.equals(other.slotDescription) && manufacturerID.equals(other.manufacturerID)
-        && hardwareVersion.equals(other.hardwareVersion) && firmwareVersion.equals(other.firmwareVersion)
-        && (flags == other.flags);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object. Gained from the slotDescription,
-   *         manufacturerID, hardwareVersion and firmwareVersion.
-   */
-  @Override
-  public int hashCode() {
-    return slotDescription.hashCode() ^ manufacturerID.hashCode()
-        ^ hardwareVersion.hashCode() ^ firmwareVersion.hashCode();
+    String text = "Slot Description: " + slotDescription + "\nManufacturer ID: " + manufacturerID +
+        "\nHardware Version: " + hardwareVersion + "\nFirmware Version: " + firmwareVersion + "\nFlags: ";
+    return Functions.toStringFlags(text, flags, CKF_TOKEN_PRESENT, CKF_REMOVABLE_DEVICE, CKF_HW);
   }
 
 }

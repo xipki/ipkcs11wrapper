@@ -42,8 +42,8 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
-import sun.security.pkcs11.wrapper.CK_ECDH2_DERIVE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.CK_ECDH2_DERIVE_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * This abstract class encapsulates parameters for the DH mechanism
@@ -98,7 +98,7 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
     this.sharedData = sharedData;
     this.privateDataLength = privateDataLength;
     this.privateDataHandle = privateDataHandle;
-    this.publicData2 = Util.requireNonNull("publicData2", publicData2);
+    this.publicData2 = Functions.requireNonNull("publicData2", publicData2);
   }
 
   /**
@@ -131,16 +131,6 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Set the data shared between the two parties.
-   *
-   * @param sharedData
-   *          The data shared between the two parties.
-   */
-  public void setSharedData(byte[] sharedData) {
-    this.sharedData = sharedData;
-  }
-
-  /**
    * Get the key for the second EC private key value.
    *
    * @return The key for the second EC private key value.
@@ -168,36 +158,6 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Set the key for the second EC private key value.
-   *
-   * @param privateDataHandle
-   *          The key for the second EC private key value.
-   */
-  public void setPrivateDataHandle(long privateDataHandle) {
-    this.privateDataHandle = privateDataHandle;
-  }
-
-  /**
-   * Set the length in bytes of the second EC private key.
-   *
-   * @param privateDataLength
-   *          The length in bytes of the second EC private key.
-   */
-  public void setPrivateDataLength(long privateDataLength) {
-    this.privateDataLength = privateDataLength;
-  }
-
-  /**
-   * Set the other party's second EC public key value.
-   *
-   * @param publicData2
-   *          The other party's second EC public key value.
-   */
-  public void setPublicData2(byte[] publicData2) {
-    this.publicData2 = Util.requireNonNull("publicData2", publicData2);
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -206,8 +166,8 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
   @Override
   public String toString() {
     return super.toString() +
-        "\n  Shared Data: " + Util.toHex(sharedData) + "\n  Private Data Length (dec): " + privateDataLength +
-        "\n  Private Data: " + privateDataHandle + "\n  Public Data 2: " + Util.toHex(publicData2);
+        "\n  Shared Data: " + Functions.toHex(sharedData) + "\n  Private Data Length (dec): " + privateDataLength +
+        "\n  Private Data: " + privateDataHandle + "\n  Public Data 2: " + Functions.toHex(publicData2);
   }
 
 }

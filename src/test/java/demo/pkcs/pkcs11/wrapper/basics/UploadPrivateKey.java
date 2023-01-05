@@ -58,6 +58,7 @@ import java.security.PrivateKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,14 +122,14 @@ public class UploadPrivateKey extends TestBase {
       throw new IOException("Given file does not include a key!");
     }
 
-    java.security.PrivateKey jcaPrivateKey = (PrivateKey) keystore.getKey(keyAlias, filePassword);
+    PrivateKey jcaPrivateKey = (PrivateKey) keystore.getKey(keyAlias, filePassword);
 
     if (!jcaPrivateKey.getAlgorithm().equals("RSA")) {
       LOG.error("Private Key in the PKCS#12 file is not a RSA key.");
       throw new IOException("Given file does not include a RSA key!");
     }
 
-    java.security.interfaces.RSAPrivateKey jcaRsaPrivateKey = (java.security.interfaces.RSAPrivateKey) jcaPrivateKey;
+    RSAPrivateKey jcaRsaPrivateKey = (RSAPrivateKey) jcaPrivateKey;
 
     LOG.info("got private key");
 

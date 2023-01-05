@@ -42,7 +42,7 @@
 
 package iaik.pkcs.pkcs11.parameters;
 
-import iaik.pkcs.pkcs11.Util;
+import iaik.pkcs.pkcs11.wrapper.Functions;
 
 /**
  * This class encapsulates parameters for general block ciphers in CBC mode.
@@ -68,7 +68,7 @@ public class InitializationVectorParameters implements Parameters {
    *          The initialization vector.
    */
   public InitializationVectorParameters(byte[] iv) {
-    this.iv = Util.requireNonNull("iv", iv);
+    this.iv = Functions.requireNonNull("iv", iv);
   }
 
   /**
@@ -91,16 +91,6 @@ public class InitializationVectorParameters implements Parameters {
   }
 
   /**
-   * Set the initialization vector.
-   *
-   * @param iv
-   *          The initialization vector.
-   */
-  public void setInitializationVector(byte[] iv) {
-    this.iv = Util.requireNonNull("iv", iv);
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *
@@ -108,7 +98,7 @@ public class InitializationVectorParameters implements Parameters {
    */
   @Override
   public String toString() {
-    return "  Initialization Vector (hex): " + Util.toHex(iv);
+    return "  Initialization Vector (hex): " + Functions.toHex(iv);
   }
 
 }
