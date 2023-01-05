@@ -43,16 +43,16 @@
 package demo.pkcs.pkcs11.wrapper.encryption;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.parameters.InitializationVectorParameters;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.parameters.InitializationVectorParameters;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program uses a PKCS#11 module to wrap and unwrap a secret key.
@@ -76,14 +76,8 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("generate secret encryption/decryption key");
     Mechanism keyMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
 
-    AttributeVector secretEncryptionKeyTemplate = newSecretKey(CKK_AES)
-        .attr(CKA_TOKEN, false)
-        .attr(CKA_VALUE_LEN, 16)
-        .attr(CKA_ENCRYPT, true)
-        .attr(CKA_DECRYPT, true)
-        .attr(CKA_PRIVATE, true)
-        .attr(CKA_SENSITIVE, true)
-        .attr(CKA_EXTRACTABLE, true);
+    AttributeVector secretEncryptionKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
+        .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true);
 
     long encryptionKey = session.generateKey(keyMechanism, secretEncryptionKeyTemplate);
 
@@ -106,25 +100,15 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("generate secret wrapping key");
 
     Mechanism wrapKeyMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
-    AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES)
-        .attr(CKA_TOKEN, false)
-        .attr(CKA_VALUE_LEN, 16)
-        .attr(CKA_ENCRYPT, true)
-        .attr(CKA_DECRYPT, true)
-        .attr(CKA_PRIVATE, true)
-        .attr(CKA_SENSITIVE, true)
-        .attr(CKA_EXTRACTABLE, true)
-        .attr(CKA_WRAP, true)
-        .attr(CKA_UNWRAP, true);
+    AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
+        .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).unwrap(true);
 
     long wrappingKey = session.generateKey(wrapKeyMechanism, wrapKeyTemplate);
 
     LOG.info("wrapping key");
 
     byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, encryptionKey);
-    AttributeVector keyTemplate = newSecretKey(CKK_AES)
-        .attr(CKA_DECRYPT, true)
-        .attr(CKA_TOKEN, false);
+    AttributeVector keyTemplate = newSecretKey(CKK_AES).decrypt(true).token(false);
 
     LOG.info("unwrapping key");
 

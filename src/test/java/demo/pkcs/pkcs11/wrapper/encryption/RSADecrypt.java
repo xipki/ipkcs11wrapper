@@ -18,16 +18,16 @@
 package demo.pkcs.pkcs11.wrapper.encryption;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.KeyPair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKF_DECRYPT;
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_RSA_PKCS;
+import static org.xipki.pkcs11.PKCS11Constants.CKF_DECRYPT;
+import static org.xipki.pkcs11.PKCS11Constants.CKM_RSA_PKCS;
 
 /**
  * This demo shows how to use a PKCS#11 token to decrypt a session key

@@ -43,13 +43,13 @@
 package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program can be used to download data to the card.
@@ -77,13 +77,10 @@ public class WriteDataObjects extends TestBase {
     String label = "dummy-label-" + System.currentTimeMillis();
 
     // create certificate object template
-    AttributeVector dataObjectTemplate = new AttributeVector()
-        .attr(CKA_CLASS, CKO_DATA)
+    AttributeVector dataObjectTemplate = new AttributeVector().class_(CKO_DATA)
         // we could also set the name that manages this data object
-        //.attr(CKA_APPLICATION, "Application Name")
-        .attr(CKA_LABEL, label)
-        .attr(CKA_VALUE, data)
-        .attr(CKA_TOKEN, true);
+        //.application("Application Name")
+        .label(label).value(data).token(true);
 
     // print template
     LOG.info("{}", dataObjectTemplate);

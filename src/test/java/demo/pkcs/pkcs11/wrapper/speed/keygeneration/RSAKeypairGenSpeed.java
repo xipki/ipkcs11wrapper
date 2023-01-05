@@ -19,14 +19,14 @@ package demo.pkcs.pkcs11.wrapper.speed.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * EDDSA Keypair Generation Speed Test

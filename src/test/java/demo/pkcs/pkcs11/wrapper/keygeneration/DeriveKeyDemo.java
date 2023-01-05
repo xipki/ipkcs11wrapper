@@ -43,14 +43,15 @@
 package demo.pkcs.pkcs11.wrapper.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.parameters.AesCbcEncryptDataParameters;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program shows how to derive a DES3 key.
@@ -69,47 +70,37 @@ public class DeriveKeyDemo extends TestBase {
   }
 
   private void main0(Token token, Session session) throws TokenException {
-    Mechanism keyGenerationMechanism = getSupportedMechanism(token, CKM_DES3_KEY_GEN);
+    Mechanism keyGenerationMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
 
-    AttributeVector baseKeyTemplate = newSecretKey(CKK_DES3)
-        .attr(CKA_TOKEN, false)
-        .attr(CKA_DERIVE, true)
-        // we only have a read-only session, thus we only create a session object
-        .attr(CKA_TOKEN, false)
-        .attr(CKA_SENSITIVE, true)
-        .attr(CKA_EXTRACTABLE, true);
+    AttributeVector baseKeyTemplate = newSecretKey(CKK_AES).valueLen(32).token(false).derive(true)
+        .token(false) // we only have a read-only session, thus we only create a session object
+        .sensitive(true).extractable(true);
 
     long baseKey = session.generateKey(keyGenerationMechanism, baseKeyTemplate);
 
     System.out.println("Base key " + baseKey);
 
-    /* TODO: uncomment me if supported by the underlying Sun's PKCS11Wrapper
     System.out.println("##################################################");
     System.out.println("derive key");
 
     // DES3 Key Template
-    Attributes derived3DESKeyTemplate = newSecretKey(CKK_DES3);
+    AttributeVector derivedKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
+        .token(false).sensitive(true).extractable(true);
 
-    Attributes derivedKeyTemplate = derived3DESKeyTemplate;
+    byte[] iv = new byte[16];
+    byte[] data = new byte[32];
 
-    derivedKeyTemplate.attr(CKA_TOKEN, false)
-        .attr(CKA_SENSITIVE, true).attr(CKA_EXTRACTABLE, true);
-
-    byte[] iv = new byte[8];
-    byte[] data = new byte[24];
-
-    DesCbcEncryptDataParameters param = new DesCbcEncryptDataParameters(iv, data);
-    Mechanism mechanism = getSupportedMechanism(token, CKM_DES3_CBC_ENCRYPT_DATA);
+    AesCbcEncryptDataParameters param = new AesCbcEncryptDataParameters(iv, data);
+    Mechanism mechanism = getSupportedMechanism(token, CKM_AES_CBC_ENCRYPT_DATA);
     mechanism.setParameters(param);
 
     System.out.println("Derivation Mechanism: ");
-    System.out.println(mechanism.toString());
+    System.out.println(mechanism);
     System.out.println("--------------------------------------------------");
 
     long derivedKey = session.deriveKey(mechanism, baseKey, derivedKeyTemplate);
 
     System.out.println("Derived key: " + derivedKey);
-    */
   }
 
 }

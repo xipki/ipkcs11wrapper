@@ -20,18 +20,16 @@ package demo.pkcs.pkcs11.wrapper.speed.encryption;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
 import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Random;
-
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Decryptor executor base class.
@@ -40,8 +38,7 @@ import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
  */
 public abstract class DecryptExecutor extends Pkcs11Executor {
 
-  private static final Logger LOG =
-      LoggerFactory.getLogger(DecryptExecutor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DecryptExecutor.class);
 
   public class MyRunnable implements Runnable {
 
@@ -86,8 +83,7 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
   protected abstract AttributeVector getMinimalKeyTemplate();
 
   public DecryptExecutor(String description, Mechanism keyGenMechanism,
-      Token token, char[] pin, Mechanism encryptMechanism, int inputLen)
-          throws TokenException {
+      Token token, char[] pin, Mechanism encryptMechanism, int inputLen) throws TokenException {
     super(description, token, pin);
     this.encryptMechanism = encryptMechanism;
     this.plainData = TestBase.randomBytes(inputLen);
@@ -95,8 +91,8 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
     // generate keypair on token
-    AttributeVector keyTemplate = getMinimalKeyTemplate().attr(CKA_SENSITIVE, true).attr(CKA_TOKEN, true)
-        .attr(CKA_ID, id).attr(CKA_ENCRYPT, true).attr(CKA_DECRYPT, true);
+    AttributeVector keyTemplate = getMinimalKeyTemplate()
+        .sensitive(true).token(true).id(id).encrypt(true).decrypt(true);
 
     ConcurrentSessionBagEntry sessionBag = borrowSession();
     try {

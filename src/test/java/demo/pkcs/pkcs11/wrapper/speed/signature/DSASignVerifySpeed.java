@@ -19,16 +19,16 @@ package demo.pkcs.pkcs11.wrapper.speed.signature;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.xipki.util.BenchmarkExecutor;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * DSA sign / verify speed test.
@@ -84,11 +84,7 @@ public class DSASignVerifySpeed extends TestBase {
   }
 
   private AttributeVector getMinimalPublicKeyTemplate0() {
-    return newPublicKey(CKK_DSA)
-        .attr(CKA_PRIME, Functions.decodeHex(DSA_P))
-        .attr(CKA_SUBPRIME, Functions.decodeHex(DSA_Q))
-        .attr(CKA_BASE, Functions.decodeHex(DSA_G))
-        .attr(CKA_TOKEN, false);
+    return newPublicKey(CKK_DSA).prime(DSA_P).subprime(DSA_Q).base(DSA_G).token(false);
   }
 
   @Test

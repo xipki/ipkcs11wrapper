@@ -20,18 +20,16 @@ package demo.pkcs.pkcs11.wrapper.speed.signature;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
 import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.objects.KeyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Random;
-
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Verify executor base class.
@@ -83,8 +81,7 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
   private final byte[] signatureToVerify;
 
   public VerifyExecutor(String description, Mechanism keypairGenMechanism,
-      Token token, char[] pin, Mechanism signMechanism, int inputLen)
-          throws TokenException {
+      Token token, char[] pin, Mechanism signMechanism, int inputLen) throws TokenException {
     super(description, token, pin);
     this.signMechanism = signMechanism;
 
@@ -93,12 +90,10 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate()
-        .attr(CKA_TOKEN, true).attr(CKA_ID, id).attr(CKA_VERIFY, true);
+    AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate().token(true).id(id).verify(true);
 
     AttributeVector privateKeyTemplate = getMinimalPrivateKeyTemplate()
-        .attr(CKA_SENSITIVE, true).attr(CKA_PRIVATE, true)
-        .attr(CKA_TOKEN, true).attr(CKA_ID, id).attr(CKA_SIGN, true);
+        .sensitive(true).private_(true).token(true).id(id).sign(true);
 
     ConcurrentSessionBagEntry sessionBag = borrowSession();
     try {

@@ -17,13 +17,13 @@
 
 package demo.pkcs.pkcs11.wrapper.encryption;
 
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.parameters.InitializationVectorParameters;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.parameters.InitializationVectorParameters;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program uses a PKCS#11 module to encrypt and decrypt via AES.
@@ -53,9 +53,7 @@ public class TripleDESPadEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected AttributeVector getKeyTemplate() {
-    return newSecretKey(CKK_DES3)
-        .attr(CKA_ENCRYPT, true)
-        .attr(CKA_DECRYPT, true);
+    return newSecretKey(CKK_DES3).encrypt(true).decrypt(true);
   }
 
 }

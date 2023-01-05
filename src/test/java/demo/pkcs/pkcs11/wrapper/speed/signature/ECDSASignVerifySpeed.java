@@ -19,16 +19,16 @@ package demo.pkcs.pkcs11.wrapper.speed.signature;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.xipki.util.BenchmarkExecutor;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * ECDSA sign / verify speed test.
@@ -87,7 +87,7 @@ public class ECDSASignVerifySpeed extends TestBase {
     // set the general attributes for the public key
     // OID: 1.2.840.10045.3.1.7 (secp256r1, alias NIST P-256)
     byte[] encodedCurveOid = new byte[] {0x06, 0x08, 0x2a, (byte) 0x86, 0x48, (byte) 0xce, 0x3d, 0x03, 0x01, 0x07};
-    return newPublicKey(CKK_EC).attr(CKA_EC_PARAMS, encodedCurveOid);
+    return newPublicKey(CKK_EC).ecParams(encodedCurveOid);
   }
 
   @Test

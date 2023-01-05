@@ -44,10 +44,10 @@ package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.MechanismInfo;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.MechanismInfo;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program can be used to personalize a card. It uploads a private
@@ -101,7 +101,7 @@ public class UploadPrivateKey extends TestBase {
 
   private void main0(Token token, Session session) throws Exception {
     LOG.info("##################################################");
-    LOG.info("Reading private key and certifiacte from: {}", p12ResourcePath);
+    LOG.info("Reading private key and certificate from: {}", p12ResourcePath);
     char[] filePassword = p12Password.toCharArray();
     InputStream dataInputStream = getResourceAsStream(p12ResourcePath);
     KeyStore keystore = KeyStore.getInstance("PKCS12");
@@ -176,69 +176,58 @@ public class UploadPrivateKey extends TestBase {
       newObjectID = certificateFingerprint;
     }
 
-    AttributeVector p11RsaPrivateKey = newPrivateKey(CKK_RSA)
-        .attr(CKA_SENSITIVE, true).attr(CKA_TOKEN, true)
-        .attr(CKA_PRIVATE, true).attr(CKA_LABEL, keyLabel).attr(CKA_ID, newObjectID)
-        .attr(CKA_SUBJECT, userCertificate.getSubjectX500Principal().getEncoded());
+    AttributeVector p11RsaPrivateKey = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true)
+        .label(keyLabel).id(newObjectID).subject(userCertificate.getSubjectX500Principal().getEncoded());
 
     if (keyUsage != null) {
       // set the attributes in a way netscape does, this should work with most
       // tokens
       if (signatureMechanismInfo != null) {
         p11RsaPrivateKey
-            .attr(CKA_DECRYPT,
-                (keyUsage[dataEncipherment] || keyUsage[keyCertSign])
-                    && signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
-            .attr(CKA_SIGN,
-                (keyUsage[digitalSignature] || keyUsage[keyCertSign] || keyUsage[cRLSign] || keyUsage[nonRepudiation])
+            .decrypt((keyUsage[dataEncipherment] || keyUsage[keyCertSign])
+                      && signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
+            .sign((keyUsage[digitalSignature] || keyUsage[keyCertSign] || keyUsage[cRLSign] || keyUsage[nonRepudiation])
                           && signatureMechanismInfo.hasFlagBit(CKF_SIGN))
-            .attr(CKA_SIGN_RECOVER,
-                (keyUsage[digitalSignature] || keyUsage[keyCertSign] || keyUsage[cRLSign] || keyUsage[nonRepudiation])
+            .signRecover((keyUsage[digitalSignature] || keyUsage[keyCertSign] || keyUsage[cRLSign]
+                              || keyUsage[nonRepudiation])
                           && signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
-            .attr(CKA_DERIVE, keyUsage[keyAgreement] && signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
-            .attr(CKA_UNWRAP, keyUsage[keyEncipherment] && signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
+            .derive(keyUsage[keyAgreement] && signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+            .unwrap(keyUsage[keyEncipherment] && signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
       } else {
         // if we have no mechanism information, we try to set the flags according to the key usage only
-        p11RsaPrivateKey.attr(CKA_DECRYPT, keyUsage[dataEncipherment] || keyUsage[keyCertSign])
-            .attr(CKA_SIGN, keyUsage[digitalSignature] || keyUsage[keyCertSign]
+        p11RsaPrivateKey.decrypt(keyUsage[dataEncipherment] || keyUsage[keyCertSign])
+            .sign(keyUsage[digitalSignature] || keyUsage[keyCertSign]
                                       || keyUsage[cRLSign] || keyUsage[nonRepudiation])
-            .attr(CKA_SIGN_RECOVER, keyUsage[digitalSignature] || keyUsage[keyCertSign]
+            .signRecover(keyUsage[digitalSignature] || keyUsage[keyCertSign]
                                       || keyUsage[cRLSign] || keyUsage[nonRepudiation])
-            .attr(CKA_DERIVE, keyUsage[keyAgreement])
-            .attr(CKA_UNWRAP, keyUsage[keyEncipherment]);
+            .derive(keyUsage[keyAgreement])
+            .unwrap(keyUsage[keyEncipherment]);
       }
     } else {
       // if there is no key-usage extension in the certificate, try to set all
       // flags according to the mechanism info
       if (signatureMechanismInfo != null) {
-        p11RsaPrivateKey.attr(CKA_SIGN, signatureMechanismInfo.hasFlagBit(CKF_SIGN))
-            .attr(CKA_SIGN_RECOVER, signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
-            .attr(CKA_DECRYPT, signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
-            .attr(CKA_DERIVE, signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
-            .attr(CKA_UNWRAP, signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
+        p11RsaPrivateKey.sign(signatureMechanismInfo.hasFlagBit(CKF_SIGN))
+            .signRecover(signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
+            .decrypt(signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
+            .derive(signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+            .unwrap(signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
       } else {
         // if we have neither mechanism info nor key usage we just try all
-        p11RsaPrivateKey.attr(CKA_SIGN, true)
-            .attr(CKA_SIGN_RECOVER, true)
-            .attr(CKA_DECRYPT, true)
-            .attr(CKA_DERIVE, true)
-            .attr(CKA_UNWRAP, true);
+        p11RsaPrivateKey.sign(true).signRecover(true).decrypt(true).derive(true).unwrap(true);
       }
     }
 
-    p11RsaPrivateKey.attr(CKA_MODULUS, jcaRsaPrivateKey.getModulus())
-        .attr(CKA_PRIVATE_EXPONENT, jcaRsaPrivateKey.getPrivateExponent())
-        .attr(CKA_PUBLIC_EXPONENT, ((RSAPublicKey) userCertificate.getPublicKey()).getPublicExponent());
+    p11RsaPrivateKey.modulus(jcaRsaPrivateKey.getModulus())
+        .privateExponent(jcaRsaPrivateKey.getPrivateExponent())
+        .publicExponent(((RSAPublicKey) userCertificate.getPublicKey()).getPublicExponent());
 
     if (jcaRsaPrivateKey instanceof RSAPrivateCrtKey) {
       // if we have the CRT field, we write it to the card
       // e.g. gemsafe seems to need it
       RSAPrivateCrtKey crtKey = (RSAPrivateCrtKey) jcaRsaPrivateKey;
-      p11RsaPrivateKey.attr(CKA_PRIME_1, crtKey.getPrimeP())
-          .attr(CKA_PRIME_2, crtKey.getPrimeQ())
-          .attr(CKA_EXPONENT_1, crtKey.getPrimeExponentP())
-          .attr(CKA_EXPONENT_1, crtKey.getPrimeExponentQ())
-          .attr(CKA_COEFFICIENT, crtKey.getCrtCoefficient());
+      p11RsaPrivateKey.prime1(crtKey.getPrimeP()).prime2(crtKey.getPrimeQ()).exponent1(crtKey.getPrimeExponentP())
+          .exponent2(crtKey.getPrimeExponentQ()).coefficient(crtKey.getCrtCoefficient());
     }
 
     LOG.info("{}", p11RsaPrivateKey);
@@ -251,17 +240,12 @@ public class UploadPrivateKey extends TestBase {
       LOG.info("creating certificate object on the card... ");
 
       // create certificate object template
-      AttributeVector certTemp = new AttributeVector()
-          .attr(CKA_CLASS, CKO_CERTIFICATE)
-          .attr(CKA_CERTIFICATE_TYPE, CKC_X_509)
-          .attr(CKA_TOKEN, true)
-          .attr(CKA_PRIVATE, false)
-          .attr(CKA_ID, newObjectID)
-          .attr(CKA_LABEL, keyLabel)
-          .attr(CKA_SUBJECT, userCertificate.getSubjectX500Principal().getEncoded())
-          .attr(CKA_ISSUER, userCertificate.getIssuerX500Principal().getEncoded())
-          .attr(CKA_SERIAL_NUMBER, Util.encodedAsn1Integer(userCertificate.getSerialNumber()))
-          .attr(CKA_VALUE, userCertificate.getEncoded());
+      AttributeVector certTemp = new AttributeVector().class_(CKO_CERTIFICATE).certificateType(CKC_X_509)
+          .token(true).private_(false).id(newObjectID).label(keyLabel)
+          .subject(userCertificate.getSubjectX500Principal().getEncoded())
+          .issuer(userCertificate.getIssuerX500Principal().getEncoded())
+          .serialNumber(Util.encodedAsn1Integer(userCertificate.getSerialNumber()))
+          .value(userCertificate.getEncoded());
 
       LOG.info("{}", certTemp);
       newP1kcs11Objects.add(session.createObject(certTemp));

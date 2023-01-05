@@ -19,18 +19,16 @@ package demo.pkcs.pkcs11.wrapper.speed.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
 import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Functions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Random;
-
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Secret key generation executor base class.
@@ -51,15 +49,13 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
       while (!stop()) {
         try {
           // generate key on token
-          AttributeVector secretKeyTemplate = getMinimalKeyTemplate().attr(CKA_TOKEN, inToken);
+          AttributeVector secretKeyTemplate = getMinimalKeyTemplate()
+              .token(inToken).sensitive(true).encrypt(true).decrypt(true);
           if (inToken) {
             byte[] id = new byte[20];
             new Random().nextBytes(id);
-            secretKeyTemplate.attr(CKA_ID, id);
+            secretKeyTemplate.id(id);
           }
-
-          secretKeyTemplate.attr(CKA_SENSITIVE, true)
-              .attr(CKA_ENCRYPT, true).attr(CKA_DECRYPT, true);
 
           ConcurrentSessionBagEntry sessionBag = borrowSession();
           long key;

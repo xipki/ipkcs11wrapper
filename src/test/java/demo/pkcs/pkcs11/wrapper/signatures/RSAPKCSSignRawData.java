@@ -18,19 +18,19 @@
 package demo.pkcs.pkcs11.wrapper.signatures;
 
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.objects.KeyPair;
-import iaik.pkcs.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 import org.xipki.util.Hex;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKK_RSA;
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKM_RSA_PKCS;
+import static org.xipki.pkcs11.PKCS11Constants.CKK_RSA;
+import static org.xipki.pkcs11.PKCS11Constants.CKM_RSA_PKCS;
 
 /**
  * Signs some raw data on the token using CKM_RSA_PKCS.

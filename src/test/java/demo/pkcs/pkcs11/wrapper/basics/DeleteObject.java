@@ -43,14 +43,14 @@
 package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.SessionInfo;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.SessionInfo;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program allows to delete certain objects on a certain token.
@@ -73,9 +73,7 @@ public class DeleteObject extends TestBase {
     LOG.info("using session: {}", sessionInfo);
 
     // create a new object to be deleted later
-    AttributeVector secKeyTemplate = newSecretKey(CKK_GENERIC_SECRET)
-        .attr(CKA_TOKEN, true)
-        .attr(CKA_VALUE, new byte[32]);
+    AttributeVector secKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(true).value(new byte[32]);
 
     long secKeyHandle = session.createObject(secKeyTemplate);
     session.destroyObject(secKeyHandle);

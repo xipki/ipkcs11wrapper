@@ -18,7 +18,7 @@
 package demo.pkcs.pkcs11.wrapper.signatures;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Session;
+import org.xipki.pkcs11.Session;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.BeforeClass;
 

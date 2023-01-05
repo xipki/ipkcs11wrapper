@@ -18,11 +18,11 @@
 package demo.pkcs.pkcs11.wrapper.encryption;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.CKA_TOKEN;
+import static org.xipki.pkcs11.PKCS11Constants.CKA_TOKEN;
 
 /**
  * This demo program uses a PKCS#11 module to encrypt a given file and test if

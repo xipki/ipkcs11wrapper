@@ -42,11 +42,11 @@
 
 package demo.pkcs.pkcs11.wrapper.util;
 
-import iaik.pkcs.pkcs11.*;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERSequence;
+import org.xipki.pkcs11.*;
 import org.xipki.util.Args;
 
 import javax.naming.InvalidNameException;
@@ -56,7 +56,7 @@ import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This class contains only static methods. It is the place for all functions

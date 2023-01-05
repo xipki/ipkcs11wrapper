@@ -20,17 +20,15 @@ package demo.pkcs.pkcs11.wrapper.speed.encryption;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
 import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Random;
-
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * Encrypt executor base.
@@ -97,8 +95,7 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
 
     // generate keypair on token
     AttributeVector keyTemplate = getMinimalKeyTemplate()
-        .attr(CKA_SENSITIVE, true).attr(CKA_TOKEN, true).attr(CKA_ID, id)
-        .attr(CKA_ENCRYPT, true).attr(CKA_DECRYPT, true);
+        .sensitive(true).token(true).id(id).encrypt(true).decrypt(true);
 
     ConcurrentSessionBagEntry sessionBag = borrowSession();
     try {

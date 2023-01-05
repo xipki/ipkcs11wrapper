@@ -19,16 +19,16 @@ package demo.pkcs.pkcs11.wrapper.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.*;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.objects.KeyPair;
-import iaik.pkcs.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.*;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
 import java.util.List;
 import java.util.Random;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program generates an Ed25519 key-pair on the token.
@@ -78,28 +78,26 @@ public class EdDSAGenerateKeyPair extends TestBase {
     byte[] encodedCurveOid = new byte[] {0x06, 0x03, 0x2b, 0x65, 0x70};
     byte[] id = new byte[20];
     new Random().nextBytes(id);
-    publicKeyTemplate.attr(CKA_EC_PARAMS, encodedCurveOid)
-        .attr(CKA_TOKEN, true).attr(CKA_ID, id);
+    publicKeyTemplate.ecParams(encodedCurveOid).token(true).id(id);
 
-    privateKeyTemplate.attr(CKA_SENSITIVE, true).attr(CKA_TOKEN, true)
-        .attr(CKA_PRIVATE, true).attr(CKA_ID, id);
+    privateKeyTemplate.sensitive(true).token(true).private_(true).id(id);
 
     // set the attributes in a way netscape does, this should work with most
     // tokens
     if (signatureMechanismInfo != null) {
       publicKeyTemplate
-          .attr(CKA_VERIFY, signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
-          .attr(CKA_VERIFY_RECOVER, signatureMechanismInfo.hasFlagBit(CKF_VERIFY_RECOVER))
-          .attr(CKA_ENCRYPT, signatureMechanismInfo.hasFlagBit(CKF_ENCRYPT))
-          .attr(CKA_DERIVE, signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
-          .attr(CKA_WRAP, signatureMechanismInfo.hasFlagBit(CKF_WRAP));
+          .verify(signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
+          .verifyRecover(signatureMechanismInfo.hasFlagBit(CKF_VERIFY_RECOVER))
+          .encrypt(signatureMechanismInfo.hasFlagBit(CKF_ENCRYPT))
+          .derive(signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+          .wrap(signatureMechanismInfo.hasFlagBit(CKF_WRAP));
 
       privateKeyTemplate
-          .attr(CKA_SIGN, signatureMechanismInfo.hasFlagBit(CKF_SIGN))
-          .attr(CKA_SIGN_RECOVER, signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
-          .attr(CKA_DECRYPT, signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
-          .attr(CKA_DERIVE, signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
-          .attr(CKA_UNWRAP, signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
+          .sign(signatureMechanismInfo.hasFlagBit(CKF_SIGN))
+          .signRecover(signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
+          .decrypt(signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
+          .derive(signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+          .unwrap(signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
     } else {
       // if we have no information we assume these attributes
       privateKeyTemplate.attr(CKA_SIGN, true).attr(CKA_DECRYPT, true);

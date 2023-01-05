@@ -44,17 +44,17 @@ package demo.pkcs.pkcs11.wrapper.macs;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program uses a PKCS#11 module to MAC a given file and test if the
@@ -77,8 +77,7 @@ public class MAC extends TestBase {
     LOG.info("##################################################");
     LOG.info("generate secret MAC key");
 
-    AttributeVector macKeyTemplate = newSecretKey(CKK_GENERIC_SECRET)
-        .attr(CKA_SIGN, true).attr(CKA_TOKEN, false);
+    AttributeVector macKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).sign(true).token(false);
 
     long secretMACKey;
     int keyBytesLen = 32;

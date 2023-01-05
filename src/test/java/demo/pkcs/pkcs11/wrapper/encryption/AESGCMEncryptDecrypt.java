@@ -17,14 +17,14 @@
 
 package demo.pkcs.pkcs11.wrapper.encryption;
 
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.parameters.GcmParameters;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.parameters.GcmParameters;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program uses a PKCS#11 module to encrypt and decrypt via
@@ -73,10 +73,7 @@ public class AESGCMEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected AttributeVector getKeyTemplate() {
-    return newSecretKey(CKK_AES)
-        .attr(CKA_ENCRYPT, true)
-        .attr(CKA_DECRYPT, true)
-        .attr(CKA_VALUE_LEN, 16);
+    return newSecretKey(CKK_AES).encrypt(true).decrypt(true).valueLen(16);
   }
 
 }

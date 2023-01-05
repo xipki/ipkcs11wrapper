@@ -44,17 +44,17 @@ package demo.pkcs.pkcs11.wrapper.encryption;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program uses a PKCS#11 module to wrap and unwrap a MAC secret key.
@@ -75,26 +75,21 @@ public class WrapUnwrapHmacKey extends TestBase {
 
   private void main0(Token token, Session session) throws TokenException {
     LOG.info("##################################################");
-    AttributeVector secretMACKeyTemplate = newSecretKey(CKK_GENERIC_SECRET)
-        .attr(CKA_TOKEN, false)
-        .attr(CKA_SIGN, true)
-        .attr(CKA_VERIFY, true)
-        .attr(CKA_PRIVATE, true)
-        .attr(CKA_SENSITIVE, true)
-        .attr(CKA_EXTRACTABLE, true);
+    AttributeVector secretMACKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false)
+        .sign(true).verify(true).private_(true).sensitive(true).extractable(true);
 
     long hmacKey;
     int keyBytesLen = 32;
     Mechanism keyMechanism = Mechanism.get(CKM_GENERIC_SECRET_KEY_GEN);
     if (Util.supports(token, keyMechanism.getMechanismCode())) {
       LOG.info("generate secret MAC key");
-      secretMACKeyTemplate.attr(CKA_VALUE_LEN, keyBytesLen);
+      secretMACKeyTemplate.valueLen(keyBytesLen);
       hmacKey = session.generateKey(keyMechanism, secretMACKeyTemplate);
     } else {
       LOG.info("import secret MAC key (generation not supported)");
       byte[] keyValue = new byte[keyBytesLen];
       new SecureRandom().nextBytes(keyValue);
-      secretMACKeyTemplate.attr(CKA_VALUE, keyValue);
+      secretMACKeyTemplate.value(keyValue);
 
       hmacKey = session.createObject(secretMACKeyTemplate);
     }
@@ -114,15 +109,8 @@ public class WrapUnwrapHmacKey extends TestBase {
     LOG.info("##################################################");
     LOG.info("generate secret wrapping key");
     Mechanism wrapKeyMechanism = Mechanism.get(CKM_AES_KEY_GEN);
-    AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES)
-        .attr(CKA_VALUE_LEN, 16)
-        .attr(CKA_ENCRYPT, true)
-        .attr(CKA_DECRYPT, true)
-        .attr(CKA_PRIVATE, true)
-        .attr(CKA_SENSITIVE, true)
-        .attr(CKA_EXTRACTABLE, true)
-        .attr(CKA_WRAP, true)
-        .attr(CKA_TOKEN, false);
+    AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
+        .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).token(false);
 
     long wrappingKey = session.generateKey(wrapKeyMechanism, wrapKeyTemplate);
 
@@ -132,9 +120,7 @@ public class WrapUnwrapHmacKey extends TestBase {
     byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, hmacKey);
     LOG.info("unwrapping key");
 
-    AttributeVector keyTemplate = newSecretKey(CKK_GENERIC_SECRET)
-        .attr(CKA_VERIFY, true)
-        .attr(CKA_TOKEN, false);
+    AttributeVector keyTemplate = newSecretKey(CKK_GENERIC_SECRET).verify(true).token(false);
 
     long unwrappedKey = session.unwrapKey(wrapMechanism, wrappingKey, wrappedKey, keyTemplate);
 

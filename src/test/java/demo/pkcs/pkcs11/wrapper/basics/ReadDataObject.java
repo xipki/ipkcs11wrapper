@@ -43,15 +43,15 @@
 package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.TokenInfo;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.TokenInfo;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program read a data object with a specific label from the token.
@@ -83,8 +83,8 @@ public class ReadDataObject extends TestBase {
     String label = "pkcs11demo-data-" + System.currentTimeMillis();
 
     // Create a new PKCS#11 object first
-    AttributeVector newDataTemplate = new AttributeVector()
-        .attr(CKA_CLASS, CKO_DATA).attr(CKA_LABEL, label).attr(CKA_VALUE, "hello world".getBytes());
+    AttributeVector newDataTemplate = new AttributeVector().class_(CKO_DATA).label(label)
+        .value("hello world".getBytes());
     long newDataHandle = session.createObject(newDataTemplate);
 
     try {
@@ -95,7 +95,7 @@ public class ReadDataObject extends TestBase {
       // dataObjectTemplate.getApplication().setCharArrayValue("Application Name");
 
       // set the data object's label
-      dataObjectTemplate.attr(CKA_LABEL, label);
+      dataObjectTemplate.label(label);
 
       // print template
       LOG.info("{}", dataObjectTemplate);

@@ -43,18 +43,18 @@
 package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.Attribute;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.objects.ByteArrayAttribute;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.Attribute;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.objects.ByteArrayAttribute;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import org.junit.Test;
 
 import java.util.*;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This class demonstrates how to use the GenericSearchTemplate class.

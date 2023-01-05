@@ -18,9 +18,9 @@
 package demo.pkcs.pkcs11.wrapper.speed;
 
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
 import org.xipki.util.BenchmarkExecutor;
 import org.xipki.util.concurrent.ConcurrentBag;
 

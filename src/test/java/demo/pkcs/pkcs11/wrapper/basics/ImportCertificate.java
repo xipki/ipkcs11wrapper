@@ -44,11 +44,11 @@ package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.TokenInfo;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.TokenInfo;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
 import javax.crypto.interfaces.DHPublicKey;
@@ -69,7 +69,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program imports a given X.509 certificate onto a PKCS#11 token.
@@ -117,18 +117,15 @@ public class ImportCertificate extends TestBase {
     AttributeVector searchTemplate = new AttributeVector();
     if (publicKey.getAlgorithm().equalsIgnoreCase("RSA")) {
       RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
-      searchTemplate.attr(CKA_CLASS, CKO_PRIVATE_KEY).attr(CKA_KEY_TYPE, CKK_RSA)
-          .attr(CKA_MODULUS, rsaPublicKey.getModulus());
+      searchTemplate.class_(CKO_PRIVATE_KEY).keyType(CKK_RSA).modulus(rsaPublicKey.getModulus());
     } else if (publicKey.getAlgorithm().equalsIgnoreCase("DSA")) {
       DSAParams dsaParams = ((DSAPublicKey) publicKey).getParams();
-      searchTemplate.attr(CKA_CLASS, CKO_PRIVATE_KEY).attr(CKA_KEY_TYPE, CKK_DSA)
-          .attr(CKA_BASE, dsaParams.getG()).attr(CKA_PRIME, dsaParams.getP())
-          .attr(CKA_SUBPRIME, dsaParams.getQ());
+      searchTemplate.class_(CKO_PRIVATE_KEY).keyType(CKK_DSA)
+          .base(dsaParams.getG()).prime(dsaParams.getP()).subprime(dsaParams.getQ());
     } else if (publicKey.getAlgorithm().equalsIgnoreCase("DH")
         || publicKey.getAlgorithm().equalsIgnoreCase("DiffieHellman")) {
       DHParameterSpec dhParams = ((DHPublicKey) publicKey).getParams();
-      searchTemplate.attr(CKA_CLASS, CKO_PRIVATE_KEY).attr(CKA_KEY_TYPE, CKK_DSA)
-          .attr(CKA_BASE, dhParams.getG()).attr(CKA_PRIME, dhParams.getP());
+      searchTemplate.class_(CKO_PRIVATE_KEY).keyType(CKK_DSA).base(dhParams.getG()).prime(dhParams.getP());
     }
 
     byte[] objectID = null;
@@ -191,17 +188,9 @@ public class ImportCertificate extends TestBase {
 
         byte[] encodedAsn1serialNumber = Util.encodedAsn1Integer(currentCertificate.getSerialNumber());
 
-        AttributeVector pkcs11X509PublicKeyCertificate = new AttributeVector()
-            .attr(CKA_CLASS, CKO_CERTIFICATE)
-            .attr(CKA_CERTIFICATE_TYPE, CKC_X_509)
-            .attr(CKA_TOKEN, true)
-            .attr(CKA_PRIVATE, false)
-            .attr(CKA_LABEL, label)
-            .attr(CKA_ID, newObjectID)
-            .attr(CKA_SUBJECT, encodedSubject)
-            .attr(CKA_ISSUER, encodedIssuer)
-            .attr(CKA_SERIAL_NUMBER, encodedAsn1serialNumber)
-            .attr(CKA_VALUE, currentCertificate.getEncoded());
+        AttributeVector pkcs11X509PublicKeyCertificate = new AttributeVector().class_(CKO_CERTIFICATE)
+            .certificateType(CKC_X_509).token(true).private_(false).label(label).id(newObjectID).issuer(encodedIssuer)
+            .subject(encodedSubject).serialNumber(encodedAsn1serialNumber).value(currentCertificate.getEncoded());
 
         LOG.info("{}", pkcs11X509PublicKeyCertificate);
         LOG.info("___________________________________________________");

@@ -18,14 +18,14 @@
 package demo.pkcs.pkcs11.wrapper.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import iaik.pkcs.pkcs11.Mechanism;
-import iaik.pkcs.pkcs11.Session;
-import iaik.pkcs.pkcs11.Token;
-import iaik.pkcs.pkcs11.TokenException;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
+import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program shows how to generate secret keys.
@@ -50,9 +50,7 @@ public class GenerateKey extends TestBase {
     LOG.info("##################################################");
     LOG.info("Generating generic secret key");
 
-    AttributeVector secretKeyTemplate = newSecretKey(CKK_GENERIC_SECRET)
-        .attr(CKA_VALUE_LEN, 16).attr(CKA_TOKEN, false);
-
+    AttributeVector secretKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false).valueLen(16);
     long secretKey = session.generateKey(mech, secretKeyTemplate);
 
     LOG.info("the secret key is {}", secretKey);

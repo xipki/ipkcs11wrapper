@@ -44,10 +44,10 @@ package demo.pkcs.pkcs11.wrapper.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import iaik.pkcs.pkcs11.*;
-import iaik.pkcs.pkcs11.objects.AttributeVector;
-import iaik.pkcs.pkcs11.objects.KeyPair;
-import iaik.pkcs.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.*;
+import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -60,7 +60,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.List;
 import java.util.Random;
 
-import static iaik.pkcs.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This demo program generates a 2048-bit RSA key-pair on the token.
@@ -113,32 +113,29 @@ public class RSAGenerateKeyPair extends TestBase {
     new Random().nextBytes(id);
 
     // set the general attributes for the public key
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_RSA).attr(CKA_MODULUS_BITS, 2048)
-        .attr(CKA_TOKEN, true).attr(CKA_ID, id);
-
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_RSA).attr(CKA_SENSITIVE, true)
-        .attr(CKA_TOKEN, true).attr(CKA_PRIVATE, true).attr(CKA_ID, id);
+    AttributeVector publicKeyTemplate = newPublicKey(CKK_RSA).modulusBits(2048).token(true).id(id);
+    AttributeVector privateKeyTemplate = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true).id(id);
 
     // set the attributes in a way netscape does, this should work with most
     // tokens
     if (signatureMechanismInfo != null) {
       publicKeyTemplate
-          .attr(CKA_VERIFY, signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
-          .attr(CKA_VERIFY_RECOVER, signatureMechanismInfo.hasFlagBit(CKF_VERIFY_RECOVER))
-          .attr(CKA_ENCRYPT, signatureMechanismInfo.hasFlagBit(CKF_ENCRYPT))
-          .attr(CKA_DERIVE, signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
-          .attr(CKA_WRAP, signatureMechanismInfo.hasFlagBit(CKF_WRAP));
+          .verify(signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
+          .verifyRecover(signatureMechanismInfo.hasFlagBit(CKF_VERIFY_RECOVER))
+          .encrypt(signatureMechanismInfo.hasFlagBit(CKF_ENCRYPT))
+          .derive(signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+          .wrap(signatureMechanismInfo.hasFlagBit(CKF_WRAP));
 
       privateKeyTemplate
-          .attr(CKA_SIGN, signatureMechanismInfo.hasFlagBit(CKF_SIGN))
-          .attr(CKA_SIGN_RECOVER, signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
-          .attr(CKA_DECRYPT, signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
-          .attr(CKA_DERIVE, signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
-          .attr(CKA_UNWRAP, signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
+          .sign(signatureMechanismInfo.hasFlagBit(CKF_SIGN))
+          .signRecover(signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
+          .decrypt(signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
+          .derive(signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
+          .unwrap(signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
     } else {
       // if we have no information we assume these attributes
-      privateKeyTemplate.attr(CKA_SIGN, true).attr(CKA_DECRYPT, true);
-      publicKeyTemplate.attr(CKA_VERIFY, true).attr(CKA_ENCRYPT, true);
+      privateKeyTemplate.sign(true).decrypt(true);
+      publicKeyTemplate.verify(true).encrypt(true);
     }
 
     KeyPair generatedKeyPair = session.generateKeyPair(
@@ -154,10 +151,9 @@ public class RSAGenerateKeyPair extends TestBase {
       LOG.info("__________________________________________________");
 
       LOG.info("##################################################");
-      byte[][] attrValues = session.getByteArrayAttributeValues(generatedPublicKey, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
-      BigInteger modulus = new BigInteger(1, attrValues[0]);
-      BigInteger publicExponent = new BigInteger(1, attrValues[1]);
-      RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(modulus, publicExponent);
+      BigInteger[] attrValues = session.getByteArrayAttributeBigIntValues(generatedPublicKey,
+          CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+      RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(attrValues[0], attrValues[1]);
 
       KeyFactory keyFactory = KeyFactory.getInstance("RSA");
       RSAPublicKey javaRsaPublicKey = (RSAPublicKey) keyFactory.generatePublic(rsaPublicKeySpec);
@@ -169,7 +165,7 @@ public class RSAGenerateKeyPair extends TestBase {
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
           Functions.toHex(id));
       // set the search template for the public key
-      AttributeVector exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).attr(CKA_ID, id);
+      AttributeVector exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).id(id);
 
       session.findObjectsInit(exportRsaPublicKeyTemplate);
       long[] foundPublicKeys = session.findObjects(1);
