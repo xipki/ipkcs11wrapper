@@ -371,14 +371,14 @@ public class TokenInfo {
    */
   public String toString() {
     String text = "Manufacturer ID:      " + manufacturerID         +
-        "\nModel:                " + model                  + "\nSerial Number:      " + serialNumber +
-        "\nMax Session Count:    " + mct(maxSessionCount)   + "\nSession Count:      " + ct(sessionCount) +
-        "\nMax RW Session Count: " + mct(maxRwSessionCount) + "\nRW Session Count:   " + ct(rwSessionCount) +
-        "\nMaxPIN Length:        " + maxPinLen              + "\nMin PIN Length:     " + minPinLen +
-        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Public Memory: " + ct(freePublicMemory) +
-        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Public Memory: " + ct(freePublicMemory) +
-        "\nHardware Version:     " + hardwareVersion        + "\nFirmware Version:   " + firmwareVersion +
-        "\nTime:                 " + time                   + "\nFlags: ";
+        "\nModel:                " + model                  + "\nSerial Number:        " + serialNumber +
+        "\nMax Session Count:    " + mct(maxSessionCount)   + "\nSession Count:        " + ct(sessionCount) +
+        "\nMax RW Session Count: " + mct(maxRwSessionCount) + "\nRW Session Count:     " + ct(rwSessionCount) +
+        "\nMaxPIN Length:        " + maxPinLen              + "\nMin PIN Length:       " + minPinLen +
+        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Public Memory:   " + ct(freePublicMemory) +
+        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Public Memory:   " + ct(freePublicMemory) +
+        "\nHardware Version:     " + hardwareVersion        + "\nFirmware Version:     " + firmwareVersion +
+        "\nTime:                 " + time                   + "\nFlags:                ";
 
     return Functions.toStringFlags(text, flags, CKF_RNG, CKF_WRITE_PROTECTED, CKF_LOGIN_REQUIRED,
         CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN, CKF_PROTECTED_AUTHENTICATION_PATH, CKF_DUAL_CRYPTO_OPERATIONS,
