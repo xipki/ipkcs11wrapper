@@ -614,8 +614,8 @@ public interface PKCS11 {
    *          CK_ULONG ulParameterLen)
    *          Depending on the mechanism, pParameter can be input or output.
    * @param pAssociatedData
-   *          the Associated Data for usage of AEAD Mechanisms and the data's length (PKCS#11 param: CK_BYTE_PTR pAssociatedData,
-   *          CK_ULONG ulAssociatedDataLen)
+   *          the Associated Data for usage of AEAD Mechanisms and the data's length (PKCS#11 param:
+   *          CK_BYTE_PTR pAssociatedData, CK_ULONG ulAssociatedDataLen)
    * @param pPlainText
    *          the Plaintext to get encrypted and the text's length (PKCS#11 param: CK_BYTE_PTR pPlaintext,
    *          CK_ULONG ulPlaintextLen)

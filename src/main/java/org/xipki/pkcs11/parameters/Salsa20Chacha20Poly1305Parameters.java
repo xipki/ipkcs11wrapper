@@ -76,7 +76,6 @@ public class Salsa20Chacha20Poly1305Parameters implements Parameters {
      * @return This object as a CK_SALSA20_CHACHA20_POLY1305_PARAMS object.
      * @postconditions (result != null)
      */
-    @Override
     public Object getPKCS11ParamsObject() {
         CK_SALSA20_CHACHA20_POLY1305_PARAMS params = new CK_SALSA20_CHACHA20_POLY1305_PARAMS();
         params.pNonce = nonce;
@@ -101,7 +100,6 @@ public class Salsa20Chacha20Poly1305Parameters implements Parameters {
      *
      * @return A string representation of this object.
      */
-    @Override
     public String toString() {
       return "Class: " + getClass().getName() +
           "\n  Nonce: " + Functions.toHex(nonce) + "\n  AAD: " + Functions.toHex(aad);

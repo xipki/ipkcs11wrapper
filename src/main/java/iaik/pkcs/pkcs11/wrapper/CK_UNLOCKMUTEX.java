@@ -59,6 +59,6 @@ public interface CK_UNLOCKMUTEX {
    * @exception PKCS11Exception
    *              If unlocking the mutex fails.
    */
-  public void CK_UNLOCKMUTEX(Object pMutex) throws PKCS11Exception;
+  void CK_UNLOCKMUTEX(Object pMutex) throws PKCS11Exception;
 
 }

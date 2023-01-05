@@ -73,7 +73,6 @@ public class Salsa20Parameters implements Parameters {
      * @return This object as a CK_SALSA20_PARAMS object.
      * @postconditions (result != null)
      */
-    @Override
     public Object getPKCS11ParamsObject() {
         CK_SALSA20_PARAMS params = new CK_SALSA20_PARAMS();
         params.pBlockCounter = blockCounter;
@@ -87,7 +86,6 @@ public class Salsa20Parameters implements Parameters {
      *
      * @return A string representation of this object.
      */
-    @Override
     public String toString() {
       return "Class: " + getClass().getName() + "\n  Nonce: " + Functions.toHex(nonce);
     }

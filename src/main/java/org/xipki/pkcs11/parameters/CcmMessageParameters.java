@@ -88,7 +88,6 @@ public class CcmMessageParameters implements MessageParameters {
      * @return This object as a CK_CCM_MESSAGE_PARAMS object.
      * @postconditions (result != null)
      */
-    @Override
     public Object getPKCS11ParamsObject() {
         CK_CCM_MESSAGE_PARAMS params = new CK_CCM_MESSAGE_PARAMS();
         params.ulDataLen = dataLen;
@@ -105,7 +104,6 @@ public class CcmMessageParameters implements MessageParameters {
      *
      * @param obj Object to read the parameters from
      */
-    @Override
     public void setValuesFromPKCS11Object(Object obj) {
         CK_CCM_MESSAGE_PARAMS params = (CK_CCM_MESSAGE_PARAMS) obj;
         init(params.ulDataLen, params.pNonce, params.ulNonceFixedBits, params.nonceGenerator, params.pMAC);
@@ -117,7 +115,6 @@ public class CcmMessageParameters implements MessageParameters {
      *
      * @return A string representation of this object.
      */
-    @Override
     public String toString() {
         return "Class: " + getClass().getName() + "\n  DataLen: " + dataLen + ", NonceFixedBits: " + nonceFixedBits +
             "\n  Nonce: " + Functions.toHex(nonce) + "\n  MAC: " + Functions.toHex(mac);

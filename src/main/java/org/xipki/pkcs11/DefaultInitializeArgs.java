@@ -110,7 +110,6 @@ public class DefaultInitializeArgs implements InitializeArgs {
    * @return The handler object for mutex functionality, or null, if there is
    *         no handler for mutexes.
    */
-  @Override
   public MutexHandler getMutexHandler() {
     return mutexHandler;
   }
@@ -123,7 +122,6 @@ public class DefaultInitializeArgs implements InitializeArgs {
    *         library may not use native operating system calls to spawn new
    *         threads. False, if they may.
    */
-  @Override
   public boolean isLibraryCantCreateOsThreads() {
     return libraryCantCreateOsThreads;
   }
@@ -135,7 +133,6 @@ public class DefaultInitializeArgs implements InitializeArgs {
    * @return True, if the library can use the native operating system
    *         threading model for locking. False, otherwise.
    */
-  @Override
   public boolean isOsLockingOk() {
     return osLockingOk;
   }
@@ -164,7 +161,6 @@ public class DefaultInitializeArgs implements InitializeArgs {
    *
    * @return The string representation of object
    */
-  @Override
   public String toString() {
     return  "Mutex Handler: " + (mutexHandler != null ? "present" : "not present") +
       "\nLibrary can't create OS-Threads: " + libraryCantCreateOsThreads +

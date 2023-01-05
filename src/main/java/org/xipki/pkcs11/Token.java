@@ -269,7 +269,6 @@ public class Token {
    *
    * @return the string representation of this object
    */
-  @Override
   public String toString() {
     return "Token in Slot: " + slot;
   }

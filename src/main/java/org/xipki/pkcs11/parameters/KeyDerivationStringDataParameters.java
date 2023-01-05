@@ -79,7 +79,6 @@ public class KeyDerivationStringDataParameters implements Parameters {
    *
    * @postconditions (result != null)
    */
-  @Override
   public Object getPKCS11ParamsObject() {
     CK_KEY_DERIVATION_STRING_DATA params = new CK_KEY_DERIVATION_STRING_DATA();
     params.pData = data;
@@ -103,7 +102,6 @@ public class KeyDerivationStringDataParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
-  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  String data: " + Functions.toHex(data);
   }

@@ -172,7 +172,6 @@ public class SlotInfo {
    *
    * @return the string representation of object
    */
-  @Override
   public String toString() {
     String text = "Slot Description: " + slotDescription + "\nManufacturer ID: " + manufacturerID +
         "\nHardware Version: " + hardwareVersion + "\nFirmware Version: " + firmwareVersion + "\nFlags: ";

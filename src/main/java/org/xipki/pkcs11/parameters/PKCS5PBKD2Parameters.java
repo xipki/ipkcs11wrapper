@@ -117,7 +117,6 @@ public class PKCS5PBKD2Parameters implements Parameters {
    *
    * @return This object as a CK_PKCS5_PBKD2_PARAMS object.
    */
-  @Override
   public CK_PKCS5_PBKD2_PARAMS getPKCS11ParamsObject() {
     CK_PKCS5_PBKD2_PARAMS params = new CK_PKCS5_PBKD2_PARAMS();
 
@@ -183,7 +182,6 @@ public class PKCS5PBKD2Parameters implements Parameters {
    *
    * @return A string representation of this object.
    */
-  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  Salt Source: " + Functions.ckzCodeToName(saltSource) +
         "\n  Salt Source Data (hex): " + Functions.toHex(saltSourceData) + "\n  Iterations (dec): " + iterations +

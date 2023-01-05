@@ -119,63 +119,8 @@ public class DateAttribute extends Attribute {
     return calendar.getTime();
   }
 
-  @Override
   public void setValue(Object value) {
     dateValue((Date) value);
-  }
-
-  /**
-   * Check the given dates for equality. This method considers both dates as
-   * equal, if both are <code>null</code> or both contain exactly the same
-   * char values.
-   *
-   * @param date1
-   *          The first date.
-   * @param date2
-   *          The second date.
-   * @return True, if both dates are <code>null</code> or both contain the
-   *         same char values. False, otherwise.
-   */
-  private static boolean equals(CK_DATE date1, CK_DATE date2) {
-    if (date1 == date2) {
-      return true;
-    } else if ((date1 != null) && (date2 != null)) {
-      return Arrays.equals(date1.year, date2.year)
-          && Arrays.equals(date1.month, date2.month)
-          && Arrays.equals(date1.day, date2.day);
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Calculate a hash code for the given date object.
-   *
-   * @param date
-   *          The date object.
-   * @return A hash code for the given date.
-   */
-  private static int hashCode(CK_DATE date) {
-    int hash = 0;
-
-    if (date != null) {
-      if (date.year.length == 4) {
-        hash ^= (0xFFFF & date.year[0]) << 16;
-        hash ^= 0xFFFF & date.year[1];
-        hash ^= (0xFFFF & date.year[2]) << 16;
-        hash ^= 0xFFFF & date.year[3];
-      }
-      if (date.month.length == 2) {
-        hash ^= (0xFFFF & date.month[0]) << 16;
-        hash ^= 0xFFFF & date.month[1];
-      }
-      if (date.day.length == 2) {
-        hash ^= (0xFFFF & date.day[0]) << 16;
-        hash ^= 0xFFFF & date.day[1];
-      }
-    }
-
-    return hash;
   }
 
 }

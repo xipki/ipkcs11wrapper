@@ -93,7 +93,6 @@ public class MechanismAttribute extends LongAttribute {
    *
    * @return A string representation of the value of this attribute.
    */
-  @Override
   protected String getValueString() {
     if ((ckAttribute == null) || (ckAttribute.pValue == null)) {
       return "<NULL_PTR>";
@@ -103,7 +102,6 @@ public class MechanismAttribute extends LongAttribute {
         ? Functions.ckmCodeToName((long) ckAttribute.pValue) : "<Information unavailable>";
   }
 
-  @Override
   public void setValue(Object value) {
     longValue((Long) value);
   }

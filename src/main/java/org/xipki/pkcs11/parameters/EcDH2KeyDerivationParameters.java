@@ -107,7 +107,6 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @return This object as a CK_ECDH2_DERIVE_PARAMS object.
    */
-  @Override
   public CK_ECDH2_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_ECDH2_DERIVE_PARAMS params = new CK_ECDH2_DERIVE_PARAMS();
 
@@ -163,7 +162,6 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @return A string representation of this object.
    */
-  @Override
   public String toString() {
     return super.toString() +
         "\n  Shared Data: " + Functions.toHex(sharedData) + "\n  Private Data Length (dec): " + privateDataLength +

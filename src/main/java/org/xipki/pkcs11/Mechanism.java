@@ -89,35 +89,6 @@ public class Mechanism {
   }
 
   /**
-   * Override equals to check for the equality of mechanism code and
-   * parameter.
-   *
-   * @param otherObject
-   *          The other Mechanism object.
-   * @return True, if other is an instance of this class and
-   *         pkcs11MechanismCode and parameter of both objects are equal.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof Mechanism)) return false;
-
-    Mechanism other = (Mechanism) otherObject;
-    return (pkcs11MechanismCode == other.pkcs11MechanismCode) && Objects.equals(parameters, other.parameters);
-  }
-
-  /**
-   * Override hashCode to ensure that hashtable still works after overriding
-   * equals.
-   *
-   * @return The hash code of this object. Taken from the mechanism code.
-   */
-  @Override
-  public int hashCode() {
-    return (int) pkcs11MechanismCode;
-  }
-
-  /**
    * Get the parameters object of this mechanism.
    *
    * @return The parameters of this mechanism. May be null.
@@ -160,7 +131,6 @@ public class Mechanism {
    *
    * @return the string representation of this object
    */
-  @Override
   public String toString() {
     return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
   }

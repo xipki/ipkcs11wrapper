@@ -9,17 +9,13 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
 
 public class AttributeVector {
 
-  private final List<Attribute> attributes;
+  private final List<Attribute> attributes = new LinkedList<>();
 
   public AttributeVector() {
-    this.attributes = new LinkedList<>();
   }
 
   public AttributeVector(Attribute... attributes) {
-    if (attributes == null || attributes.length == 0) {
-      this.attributes = new LinkedList<>();
-    } else {
-      this.attributes = new ArrayList<>(attributes.length);
+    if (attributes != null) {
       for (Attribute attr : attributes) {
         if (attr != null) {
           attr(attr);
@@ -413,13 +409,12 @@ public class AttributeVector {
     return attr == null ? null : ((ByteArrayAttribute) attr).getByteArrayValue();
   }
 
-  @Override
   public String toString() {
     return toString("");
   }
 
   public String toString(String indent) {
-    StringBuilder sb = new StringBuilder(32);
+    StringBuilder sb = new StringBuilder(200);
     sb.append(indent).append("Attribute Vector:");
 
     String indent2 = indent + "  ";

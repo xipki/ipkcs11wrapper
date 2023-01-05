@@ -78,10 +78,8 @@ public class DeriveKeyDemo extends TestBase {
 
     long baseKey = session.generateKey(keyGenerationMechanism, baseKeyTemplate);
 
-    System.out.println("Base key " + baseKey);
-
-    System.out.println("##################################################");
-    System.out.println("derive key");
+    LOG.info("Base key " + baseKey);
+    LOG.info("derive key");
 
     // DES3 Key Template
     AttributeVector derivedKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
@@ -94,13 +92,11 @@ public class DeriveKeyDemo extends TestBase {
     Mechanism mechanism = getSupportedMechanism(token, CKM_AES_CBC_ENCRYPT_DATA);
     mechanism.setParameters(param);
 
-    System.out.println("Derivation Mechanism: ");
-    System.out.println(mechanism);
-    System.out.println("--------------------------------------------------");
+    LOG.info("Derivation Mechanism: {}", mechanism);
 
     long derivedKey = session.deriveKey(mechanism, baseKey, derivedKeyTemplate);
 
-    System.out.println("Derived key: " + derivedKey);
+    LOG.info("Derived key: {}", derivedKey);
   }
 
 }

@@ -42,8 +42,6 @@
 
 package iaik.pkcs.pkcs11.wrapper;
 
-import org.xipki.pkcs11.PKCS11Module;
-
 import java.io.IOException;
 
 /**
@@ -62,11 +60,6 @@ import java.io.IOException;
 public class PKCS11Implementation implements PKCS11 {
 
   /**
-   * Indicates, if the static linking and initialization of the library is already done.
-   */
-  private static boolean linkedAndInitialized;
-
-  /**
    * The PKCS#11 module to connect to. This is the PKCS#11 driver of the token; e.g. pk2priv.dll.
    */
   private final String pkcs11ModulePath;
@@ -76,7 +69,7 @@ public class PKCS11Implementation implements PKCS11 {
    * class.
    *
    */
-  protected static synchronized native void initializeLibrary();
+  public static synchronized native void initializeLibrary();
 
   /**
    * This method does the finalization of the native library. It is called exactly once for this
@@ -84,23 +77,6 @@ public class PKCS11Implementation implements PKCS11 {
    *
    */
   protected static synchronized native void finalizeLibrary();
-
-  /**
-   * This method ensures that the library is linked to this class and that it is initialized. Tries
-   * to load the PKCS#11 wrapper native library from the library or the class path (jar file).
-   *
-   */
-  public static synchronized void ensureLinkedAndInitialized() {
-    if (!linkedAndInitialized) {
-      try {
-        PKCS11Module.loadWrapperFromJar();
-      } catch (IOException ioe) {
-        throw new UnsatisfiedLinkError("no pkcs11wrapper in library path or jar file. " + ioe.getMessage());
-      }
-      initializeLibrary();
-      linkedAndInitialized = true;
-    }
-  }
 
   /**
    * Connects to the PKCS#11 driver given. The filename must contain the path, if the driver is not
@@ -116,9 +92,12 @@ public class PKCS11Implementation implements PKCS11 {
    *
    */
   public PKCS11Implementation(String pkcs11ModulePath) throws IOException {
-    ensureLinkedAndInitialized();
     connect(pkcs11ModulePath);
     this.pkcs11ModulePath = pkcs11ModulePath;
+  }
+
+  public String getPkcs11ModulePath() {
+    return pkcs11ModulePath;
   }
 
   /**

@@ -84,7 +84,6 @@ public class GcmMessageParameters implements Parameters, MessageParameters {
      * @return This object as a CK_ECDH1_DERIVE_PARAMS object.
      * @postconditions (result != null)
      */
-    @Override
     public Object getPKCS11ParamsObject() {
         CK_GCM_MESSAGE_PARAMS params = new CK_GCM_MESSAGE_PARAMS();
         params.pIv = iv;
@@ -111,7 +110,6 @@ public class GcmMessageParameters implements Parameters, MessageParameters {
      *
      * @return A string representation of this object.
      */
-    @Override
     public String toString() {
         return "Class: " + getClass().getName() + "\n  IV: " + Functions.toHex(iv) +
             "\n  Tag: " + Functions.toHex(tag) + "\n  ivGenerator: " + ivGenerator + "\n  IVFixedBits: " + ivFixedBits;

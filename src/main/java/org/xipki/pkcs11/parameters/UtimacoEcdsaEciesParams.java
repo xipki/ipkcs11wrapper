@@ -95,7 +95,6 @@ public class UtimacoEcdsaEciesParams implements Parameters {
         this.sharedSecret2 = sharedSecret2 == null ? null : sharedSecret2.clone();
     }
 
-    @Override
     public Object getPKCS11ParamsObject() {
         CK_ECDSA_ECIES_PARAMS pkcs11Params = new CK_ECDSA_ECIES_PARAMS();
         pkcs11Params.hashAlg = hashAlg;
@@ -109,7 +108,6 @@ public class UtimacoEcdsaEciesParams implements Parameters {
         return pkcs11Params;
     }
 
-    @Override
     public String toString() {
         String ret = "Class: " + getClass().getName() + "\n  hash algorithm:   " + Functions.ckmCodeToName(hashAlg) +
             "\n  crypto algorithm: " + Functions.ckmCodeToName(cryptAlg) + "\n  crypto options:   " + cryptOpt +

@@ -323,7 +323,6 @@ public abstract class Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
-  @Override
   public String toString() {
     return toString(true, "");
   }
@@ -367,58 +366,6 @@ public abstract class Attribute {
    */
   public long getType() {
     return ckAttribute.type;
-  }
-
-  /**
-   * True, if both attributes are not present or if both attributes are
-   * present and all other member variables are equal. False, otherwise.
-   *
-   * @param otherObject
-   *          The other object to compare to.
-   * @return True, if both attributes are not present or if both attributes
-   *         are present and all other member variables are equal. False,
-   *         otherwise.
-   */
-  @Override
-  public final boolean equals(Object otherObject) {
-    if (this == otherObject)  return true;
-    else if (!(otherObject instanceof Attribute)) return false;
-
-    Attribute other = (Attribute) otherObject;
-    if (getType() != other.getType()) {
-      return false;
-    }
-
-    if (stateKnown && other.stateKnown) {
-      // state both known
-      if (!present && !other.present) {
-        // both not present
-        return true;
-      } else if (present && other.present) {
-        // both present
-        return sensitive == other.sensitive && Objects.deepEquals(ckAttribute.pValue, other.ckAttribute.pValue);
-      } else {
-        // one absent and other present
-        return false;
-      }
-    } else if (!stateKnown && !other.stateKnown) {
-      // state both known
-      return true;
-    } else {
-      // one with known state and other with unknown state
-      return false;
-    }
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object.
-   */
-  @Override
-  public final int hashCode() {
-    return ((int) ckAttribute.type) ^ ((ckAttribute.pValue != null) ? ckAttribute.pValue.hashCode() : 0);
   }
 
 }

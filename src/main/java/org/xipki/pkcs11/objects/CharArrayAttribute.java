@@ -92,12 +92,10 @@ public class CharArrayAttribute extends Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
-  @Override
   protected String getValueString() {
     return (ckAttribute != null && ckAttribute.pValue != null) ? new String((char[]) ckAttribute.pValue) : "<NULL_PTR>";
   }
 
-  @Override
   public void setValue(Object value) {
     charArrayValue((char[]) value);
   }

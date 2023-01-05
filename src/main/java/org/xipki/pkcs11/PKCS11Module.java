@@ -47,9 +47,10 @@ import iaik.pkcs.pkcs11.wrapper.PKCS11;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Implementation;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -114,11 +115,14 @@ public class PKCS11Module {
   /**
    * Interface to the underlying PKCS#11 module.
    */
-  private final PKCS11 pkcs11;
-
-  private final String pkcs11ModulePath;
+  private final PKCS11Implementation pkcs11;
 
   private VendorCode vendorCode;
+
+  /**
+   * Indicates, if the static linking and initialization of the library is already done.
+   */
+  private static boolean linkedAndInitialized;
 
   /**
    * Create a new module that uses the given PKCS11 interface to interact with
@@ -127,9 +131,8 @@ public class PKCS11Module {
    * @param pkcs11
    *          The PKCS#11 module to interact with the token.
    */
-  protected PKCS11Module(PKCS11 pkcs11, String pkcs11ModulePath) {
+  protected PKCS11Module(PKCS11Implementation pkcs11) {
     this.pkcs11 = Functions.requireNonNull("pkcs11", pkcs11);
-    this.pkcs11ModulePath = pkcs11ModulePath;
   }
 
   /**
@@ -145,11 +148,32 @@ public class PKCS11Module {
    *
    */
   public static PKCS11Module getInstance(String pkcs11ModulePath) throws IOException {
-    Functions.requireNonNull("pkcs11ModulePath", pkcs11ModulePath);
-    return new PKCS11Module(new PKCS11Implementation(pkcs11ModulePath), pkcs11ModulePath);
+    ensureLinkedAndInitialized();
+    return new PKCS11Module(new PKCS11Implementation(Functions.requireNonNull("pkcs11ModulePath", pkcs11ModulePath)));
   }
 
-  VendorCode getVendorCode() {
+  /**
+   * This method ensures that the library is linked to this class and that it is initialized. Tries
+   * to load the PKCS#11 wrapper native library from the library or the class path (jar file).
+   *
+   */
+  public static synchronized void ensureLinkedAndInitialized() {
+    if (!linkedAndInitialized) {
+      try {
+        System.loadLibrary("pkcs11wrapper");
+      } catch (UnsatisfiedLinkError e) {
+        try {
+          PKCS11Module.loadWrapperFromJar();
+        } catch (IOException ioe) {
+          throw new UnsatisfiedLinkError("no pkcs11wrapper in library path or jar file. " + ioe.getMessage());
+        }
+      }
+      PKCS11Implementation.initializeLibrary();
+      linkedAndInitialized = true;
+    }
+  }
+
+  public VendorCode getVendorCode() {
     return vendorCode;
   }
 
@@ -179,9 +203,7 @@ public class PKCS11Module {
    *              If initialization fails.
    */
   public void initialize(InitializeArgs initArgs) throws TokenException {
-    if (initArgs == null) {
-      initArgs = new DefaultInitializeArgs();
-    }
+    if (initArgs == null) initArgs = new DefaultInitializeArgs();
 
     final MutexHandler mutexHandler = initArgs.getMutexHandler();
     CK_C_INITIALIZE_ARGS wrapperInitArgs = new CK_C_INITIALIZE_ARGS();
@@ -190,26 +212,20 @@ public class PKCS11Module {
     wrapperInitArgs.LockMutex    = mutexHandler == null ? null : mutexHandler::lockMutex;
     wrapperInitArgs.UnlockMutex  = mutexHandler == null ? null : mutexHandler::unlockMutex;
 
-    if (initArgs.isLibraryCantCreateOsThreads()) {
-      wrapperInitArgs.flags |= CKF_LIBRARY_CANT_CREATE_OS_THREADS;
-    }
-    if (initArgs.isOsLockingOk()) {
-      wrapperInitArgs.flags |= CKF_OS_LOCKING_OK;
-    }
+    wrapperInitArgs.flags |= initArgs.isLibraryCantCreateOsThreads() ? CKF_LIBRARY_CANT_CREATE_OS_THREADS : 0;
+    wrapperInitArgs.flags |= initArgs.isOsLockingOk() ? CKF_OS_LOCKING_OK : 0;
     wrapperInitArgs.pReserved = initArgs.getReserved();
 
     // pReserved of CK_C_INITIALIZE_ARGS not used yet, just set to standard conform UTF8
     pkcs11.C_Initialize(wrapperInitArgs, true);
 
     Info info = getInfo();
-    VendorCode vendorCode = null;
     try {
-      vendorCode = VendorCode.getVendorCode(pkcs11ModulePath, info.getManufacturerID(),
+      vendorCode = VendorCode.getVendorCode(pkcs11.getPkcs11ModulePath(), info.getManufacturerID(),
           info.getLibraryDescription(), info.getLibraryVersion());
     } catch (IOException e) {
       System.err.println("Error loading vendorcode: " + e.getMessage());
     }
-    setVendorCode(vendorCode);
   }
 
   /**
@@ -266,8 +282,7 @@ public class PKCS11Module {
    *              there was no event available, or if an error occurred.
    */
   public Slot waitForSlotEvent(boolean dontBlock) throws TokenException {
-    long slotID = pkcs11.C_WaitForSlotEvent(dontBlock ? CKF_DONT_BLOCK : 0L, null);
-    return new Slot(this, slotID);
+    return new Slot(this, pkcs11.C_WaitForSlotEvent(dontBlock ? CKF_DONT_BLOCK : 0L, null));
   }
 
   /**
@@ -284,7 +299,6 @@ public class PKCS11Module {
    *
    * @return The string representation of object
    */
-  @Override
   public String toString() {
     return (pkcs11 != null) ? pkcs11.toString() : "null";
   }
@@ -316,10 +330,9 @@ public class PKCS11Module {
     // index constants per architecture as used in below array.
     final int X64_INDEX = 0;
     final int X86_INDEX = 1;
-    final int SPARC_INDEX = 2;
 
     // subdirectories per architecture.
-    final String[] WRAPPER_ARCH_PATH = {"x86_64/", "x86/", "sparcv9/"};
+    final String[] WRAPPER_ARCH_PATH = {"x86_64/", "x86/"};
 
     int trialCounter = 0;
 
@@ -331,7 +344,6 @@ public class PKCS11Module {
 
     String archName = System.getProperty("os.arch");
     int archIndex = archName.indexOf("64") > -1 ? X64_INDEX
-        : archName.toLowerCase(Locale.ROOT).indexOf("sparc") > -1 ? SPARC_INDEX
         : archName.indexOf("32") > -1 || archName.indexOf("86") > -1 ? X86_INDEX : -1;
 
     if (archIndex == -1) {
@@ -386,12 +398,8 @@ public class PKCS11Module {
         }
         tempWrapperFile.deleteOnExit();
 
-        try (FileOutputStream os = new FileOutputStream(tempWrapperFile)) {
-          int read;
-          byte[] buffer = new byte[1024];
-          while ((read = wrapperLibrary.read(buffer)) > -1) {
-            os.write(buffer, 0, read);
-          }
+        try {
+          Files.copy(wrapperLibrary, tempWrapperFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } finally {
           wrapperLibrary.close();
         }

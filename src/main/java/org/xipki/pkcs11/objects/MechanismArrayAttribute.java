@@ -93,7 +93,6 @@ public class MechanismArrayAttribute extends Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
-  @Override
   protected String getValueString() {
     long[] allowedMechanisms = getMechanismAttributeArrayValue();
     if (allowedMechanisms != null && allowedMechanisms.length > 0) {
@@ -107,7 +106,6 @@ public class MechanismArrayAttribute extends Attribute {
     }
   }
 
-  @Override
   public void setValue(Object value) {
     mechanismAttributeArrayValue((long[]) value);
   }

@@ -231,33 +231,6 @@ public class Session {
   }
 
   /**
-   * Compares the sessionHandle and token_ of this object with the other object. Returns only true,
-   * if those are equal in both objects.
-   *
-   * @param otherObject
-   *          The other Session object.
-   * @return True, if other is an instance of Token and the session handles and tokens of both
-   *         objects are equal. False, otherwise.
-   */
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof Session)) return false;
-
-    Session other = (Session) otherObject;
-    return (sessionHandle == other.sessionHandle) && token.equals(other.token);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this class work correctly in a
-   * hashtable.
-   *
-   * @return The hash code of this object. Gained from the sessionHandle.
-   */
-  public int hashCode() {
-    return (int) sessionHandle;
-  }
-
-  /**
    * Get the handle of this session.
    *
    * @return The handle of this session.
@@ -1583,9 +1556,8 @@ public class Session {
    * @throws TokenException in case of error.
    */
   public boolean isRwSession() throws TokenException {
-    if (this.rwSession == null) {
-      this.rwSession = getSessionInfo().isRwSession();
-    }
+    if (this.rwSession == null) this.rwSession = getSessionInfo().isRwSession();
+
     return this.rwSession.booleanValue();
   }
 
@@ -1594,7 +1566,6 @@ public class Session {
    *
    * @return the string representation of this object
    */
-  @Override
   public String toString() {
     return "Session Handle: 0x" + Long.toHexString(sessionHandle) +  "\nToken: " + token;
   }
@@ -1758,9 +1729,8 @@ public class Session {
       attribute.stateKnown(templateNotNull).present(templateNotNull).sensitive(!templateNotNull);
 
       if (templateNotNull) {
-        if (attribute instanceof BooleanAttribute) {
-          fixBooleanAttrValue(template);
-        }
+        if (attribute instanceof BooleanAttribute) fixBooleanAttrValue(template);
+
         attribute.ckAttribute(template);
       }
     }
@@ -1778,15 +1748,11 @@ public class Session {
       try {
         getAttributeValue(objectHandle, attr, true);
       } catch (PKCS11Exception ex) {
-        if (delayedEx == null) {
-          delayedEx = ex;
-        }
+        if (delayedEx == null) delayedEx = ex;
       }
     }
 
-    if (delayedEx != null) {
-      throw delayedEx;
-    }
+    if (delayedEx != null) throw delayedEx;
   }
 
   /**
@@ -1827,9 +1793,7 @@ public class Session {
       attributeTemplateList[0].type = attribute.getType();
       pkcs11.C_GetAttributeValue(sessionHandle, objectHandle, attributeTemplateList, useUtf8);
 
-      if (attribute instanceof BooleanAttribute) {
-        fixBooleanAttrValue(attributeTemplateList[0]);
-      }
+      if (attribute instanceof BooleanAttribute) fixBooleanAttrValue(attributeTemplateList[0]);
 
       attribute.ckAttribute(attributeTemplateList[0]).stateKnown(true).present(true).sensitive(false);
       postProcessGetAttribute(attribute);
@@ -1840,21 +1804,15 @@ public class Session {
         // we can ignore this and proceed; e.g. a v2.01 module won't
         // have the object ID attribute
         attribute.stateKnown(true).present(false).getCkAttribute().pValue = null;
-        if (!ignoreParsableException) {
-          throw ex;
-        }
+        if (!ignoreParsableException) throw ex;
       } else if (ec == CKR_ATTRIBUTE_SENSITIVE) {
         // this means, that some requested attributes are missing, but we can ignore this and
         // proceed; e.g. a v2.01 module won't have the object ID attribute
         attribute.stateKnown(true).present(true).sensitive(true).getCkAttribute().pValue = null;
-        if (!ignoreParsableException) {
-          throw ex;
-        }
+        if (!ignoreParsableException) throw ex;
       } else if (ec == CKR_ARGUMENTS_BAD || ec == CKR_FUNCTION_FAILED || ec == CKR_FUNCTION_REJECTED) {
         attribute.stateKnown(true).present(false).sensitive(false).getCkAttribute().pValue = null;
-        if (!ignoreParsableException) {
-          throw ex;
-        }
+        if (!ignoreParsableException) throw ex;
       } else {
         // there was a different error that we should propagate
         throw ex;
@@ -1863,9 +1821,8 @@ public class Session {
   }
 
   private CK_ATTRIBUTE[] toCKAttributes(AttributeVector attributeVector) {
-    if (attributeVector == null) {
-      return null;
-    }
+    if (attributeVector == null) return null;
+
     CK_ATTRIBUTE[] ret = attributeVector.toCkAttributes();
     if (vendorCode != null) {
       for (CK_ATTRIBUTE ckAttr : ret) {

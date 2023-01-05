@@ -75,7 +75,6 @@ public class Salsa20Chacha20Poly1305MessageParameters implements MessageParamete
      * @return This object as a CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS object.
      * @postconditions (result != null)
      */
-    @Override
     public Object getPKCS11ParamsObject() {
         CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS params = new CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS();
         params.pNonce = nonce;
@@ -89,7 +88,6 @@ public class Salsa20Chacha20Poly1305MessageParameters implements MessageParamete
      *
      * @param obj Object to read the parameters from
      */
-    @Override
     public void setValuesFromPKCS11Object(Object obj) {
       this.nonce = ((CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS) obj).pNonce;
       this.tag = ((CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS) obj).pTag;
@@ -101,7 +99,6 @@ public class Salsa20Chacha20Poly1305MessageParameters implements MessageParamete
      *
      * @return A string representation of this object.
      */
-    @Override
     public String toString() {
       return "Class: " + getClass().getName() + "\n  Nonce: " + Functions.toHex(nonce) +
           "\n  pTag: " + Functions.toHex(tag);

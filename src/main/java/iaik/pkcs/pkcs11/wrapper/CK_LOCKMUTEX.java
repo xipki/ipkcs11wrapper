@@ -59,6 +59,6 @@ public interface CK_LOCKMUTEX {
    * @exception PKCS11Exception
    *              If locking the mutex fails.
    */
-  public void CK_LOCKMUTEX(Object pMutex) throws PKCS11Exception;
+  void CK_LOCKMUTEX(Object pMutex) throws PKCS11Exception;
 
 }

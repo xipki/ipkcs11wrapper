@@ -59,6 +59,6 @@ public interface CK_DESTROYMUTEX {
    * @exception PKCS11Exception
    *              If destroying the mutex fails.
    */
-  public void CK_DESTROYMUTEX(Object pMutex) throws PKCS11Exception;
+  void CK_DESTROYMUTEX(Object pMutex) throws PKCS11Exception;
 
 }

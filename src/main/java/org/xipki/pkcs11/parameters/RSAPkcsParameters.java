@@ -134,7 +134,6 @@ abstract public class RSAPkcsParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
-  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  Hash Algorithm: " + Functions.ckmCodeToName(hashAlg) +
         "\n  Mask Generation Function: " + Functions.ckgCodeToName(mgf);

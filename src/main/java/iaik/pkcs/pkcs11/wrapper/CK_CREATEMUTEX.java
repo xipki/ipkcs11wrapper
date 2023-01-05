@@ -58,6 +58,6 @@ public interface CK_CREATEMUTEX {
    * @exception PKCS11Exception
    *              If creating the mutex fails.
    */
-  public Object CK_CREATEMUTEX() throws PKCS11Exception;
+  Object CK_CREATEMUTEX() throws PKCS11Exception;
 
 }

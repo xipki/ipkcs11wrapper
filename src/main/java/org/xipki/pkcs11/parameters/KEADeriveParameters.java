@@ -101,7 +101,6 @@ public class KEADeriveParameters implements Parameters {
    *
    * @postconditions (result != null)
    */
-  @Override
   public Object getPKCS11ParamsObject() {
     CK_KEA_DERIVE_PARAMS params = new CK_KEA_DERIVE_PARAMS();
 
@@ -162,7 +161,6 @@ public class KEADeriveParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
-  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  Is Sender: " + isSender +
         "\n  Random Data A: " + Functions.toHex(randomA) + "\n  Random Data B: " + Functions.toHex(randomB) +

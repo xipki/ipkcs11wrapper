@@ -85,7 +85,6 @@ public class State {
    * @return True, if other is an instance of State and the state code
    *         of both objects are equal. False, otherwise.
    */
-  @Override
   public boolean equals(Object otherObject) {
     if (this == otherObject) return true;
     else if (!(otherObject instanceof State)) return false;
@@ -99,7 +98,6 @@ public class State {
    *
    * @return The hash code of this object. Gained from the state code.
    */
-  @Override
   public int hashCode() {
     return (int) code;
   }
@@ -109,7 +107,6 @@ public class State {
    *
    * @return The string representation of object
    */
-  @Override
   public String toString() {
     return (code == CKS_RO_PUBLIC_SESSION) ? "Read-Only Public Session"
         : (code == CKS_RO_USER_FUNCTIONS) ? "Read-Only User Session"

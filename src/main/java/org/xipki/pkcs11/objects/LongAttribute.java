@@ -110,7 +110,6 @@ public class LongAttribute extends Attribute {
         : "<Attribute not present>";
   }
 
-  @Override
   public void setValue(Object value) {
     longValue((Long) value);
   }

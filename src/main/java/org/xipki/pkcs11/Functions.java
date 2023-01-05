@@ -581,7 +581,7 @@ public class Functions {
 
   public static String toStringFlags(String prefix, long flags, long... flagMasks) {
     StringBuilder sb = new StringBuilder(prefix.length() + 100);
-    sb.append(prefix).append("0x").append(Functions.toFullHex(flags)).append(" (");
+    sb.append(prefix).append("0x").append(toFullHex(flags)).append(" (");
     boolean first = true;
     for (long flagMask : flagMasks) {
       if ((flags & flagMask) != 0L) {

@@ -78,7 +78,6 @@ public class GcmParameters implements Parameters {
      * @return This object as a CK_GCM_PARAMS object.
      * @postconditions (result != null)
      */
-    @Override
     public Object getPKCS11ParamsObject() {
         CK_GCM_PARAMS params = new CK_GCM_PARAMS();
         params.pIv = iv;
@@ -94,7 +93,6 @@ public class GcmParameters implements Parameters {
      *
      * @return A string representation of this object.
      */
-    @Override
     public String toString() {
         return "Class: " + getClass().getName() + "\n   IV: " + Functions.toHex(iv) +
             "\n  AAD: " + (aad == null ? " " : Functions.toHex(aad)) + "\n   TagBits: " + tagBits;

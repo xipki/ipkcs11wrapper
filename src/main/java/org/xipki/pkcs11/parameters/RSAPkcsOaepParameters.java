@@ -92,7 +92,6 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
    *
    * @return This object as a CK_RSA_PKCS_OAEP_PARAMS object.
    */
-  @Override
   public CK_RSA_PKCS_OAEP_PARAMS getPKCS11ParamsObject() {
     CK_RSA_PKCS_OAEP_PARAMS params = new CK_RSA_PKCS_OAEP_PARAMS();
 
@@ -128,7 +127,6 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
    *
    * @return A string representation of this object.
    */
-  @Override
   public String toString() {
     return super.toString() + "\n  Source: " + Functions.ckzCodeToName(source)
         + "\n  Source Data (hex): " + Functions.toHex(sourceData);

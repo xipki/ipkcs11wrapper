@@ -11,11 +11,11 @@ import java.util.*;
 class VendorCode {
 
   private static class ConfBlock {
-    List<String> modulePaths;
-    List<String> manufacturerIDs;
-    List<String> descriptions;
-    List<String> versions;
-    final Map<String, String> nameToCodeMap = new HashMap<>();
+    private List<String> modulePaths;
+    private List<String> manufacturerIDs;
+    private List<String> descriptions;
+    private List<String> versions;
+    private final Map<String, String> nameToCodeMap = new HashMap<>();
 
     void validate() throws IOException {
       if (isEmpty(modulePaths) && isEmpty(manufacturerIDs) && isEmpty(descriptions)) {
@@ -38,7 +38,6 @@ class VendorCode {
       boolean match = false;
       for (String t : versions) {
         int idx = t.indexOf("-");
-
         int from = (idx == -1) ? toIntVersion(t) : toIntVersion(t.substring(0, idx));
         int to   = (idx == -1) ? from            : toIntVersion(t.substring(idx + 1));
 
@@ -71,9 +70,8 @@ class VendorCode {
     }
   }
 
-  static VendorCode getVendorCode(
-      String modulePath, String manufacturerID, String libraryDescription, Version libraryVersion)
-      throws IOException {
+  static VendorCode getVendorCode(String modulePath, String manufacturerID, String libraryDescription,
+                                  Version libraryVersion) throws IOException {
     String confPath = System.getProperty("org.xipki.pkcs11.vendorcode.conf");
     InputStream in = (confPath != null) ? Files.newInputStream(Paths.get(modulePath))
         : VendorCode.class.getClassLoader().getResourceAsStream("org/xipki/pkcs11/vendorcode.conf");
@@ -119,12 +117,12 @@ class VendorCode {
             continue;
           }
 
-          String name = line.substring(0, idx).trim();
           String value = line.substring(idx + 1).trim();
           if (value.isEmpty()) {
             continue;
           }
 
+          String name = line.substring(0, idx).trim();
           if (name.equalsIgnoreCase("module.path")) {
             block.modulePaths = Arrays.asList(value.toLowerCase(Locale.ROOT).split(":"));
           } else if (name.equalsIgnoreCase("module.mid")) {
@@ -138,11 +136,9 @@ class VendorCode {
           }
         } else if (line.startsWith("CKK_") || line.startsWith("CKM_")) {
           int idx = line.indexOf(' ');
-          if (idx == -1) {
-            continue;
+          if (idx != -1) {
+            block.nameToCodeMap.put(line.substring(0, idx).trim(), line.substring(idx + 1).trim());
           }
-
-          block.nameToCodeMap.put(line.substring(0, idx).trim(), line.substring(idx + 1).trim());
         }
       }
     }

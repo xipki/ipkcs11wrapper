@@ -96,34 +96,6 @@ public class MechanismInfo {
   }
 
   /**
-   * Override equals to check for the equality of mechanism information.
-   *
-   * @param otherObject
-   *          The other MechanismInfo object.
-   * @return True, if other is an instance of this class and
-   *         all member variables are equal.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof MechanismInfo)) return false;
-
-    MechanismInfo other = (MechanismInfo) otherObject;
-    return (minKeySize == other.minKeySize) && (maxKeySize == other.maxKeySize) && (flags == other.flags);
-  }
-
-  /**
-   * Override hashCode to ensure that hashtable still works after overriding
-   * equals.
-   *
-   * @return The hash code of this object. Taken from the mechanism code.
-   */
-  @Override
-  public int hashCode() {
-    return (int) (minKeySize ^ maxKeySize ^ flags);
-  }
-
-  /**
    * Get the minimum key length supported by this mechanism.
    *
    * @return The minimum key length supported by this mechanism.
@@ -192,14 +164,12 @@ public class MechanismInfo {
    *
    * @return the string representation of this object
    */
-  @Override
   public String toString() {
     String text = "  Minimum Key-Size: " + minKeySize + "\n  Maximum Key-Size: " + maxKeySize + "\n  Flags: ";
 
-    return Functions.toStringFlags(text, flags, CKF_HW,    CKF_ENCRYPT,   CKF_DECRYPT,     CKF_DIGEST,
-        CKF_SIGN, CKF_SIGN_RECOVER, CKF_VERIFY, CKF_VERIFY_RECOVER, CKF_GENERATE_KEY_PAIR, CKF_GENERATE,
-        CKF_WRAP, CKF_UNWRAP,       CKF_DERIVE, CKF_EXTENSION,      CKF_EC_F_P,            CKF_EC_F_2M,
-        CKF_EC_ECPARAMETERS,        CKF_EC_OID, CKF_EC_COMPRESS,    CKF_EC_UNCOMPRESS);
+    return Functions.toStringFlags(text, flags, CKF_HW, CKF_ENCRYPT, CKF_DECRYPT, CKF_DIGEST, CKF_SIGN, CKF_VERIFY,
+        CKF_SIGN_RECOVER, CKF_VERIFY_RECOVER, CKF_GENERATE_KEY_PAIR, CKF_GENERATE, CKF_WRAP, CKF_UNWRAP, CKF_DERIVE,
+        CKF_EXTENSION, CKF_EC_F_P, CKF_EC_F_2M, CKF_EC_ECPARAMETERS, CKF_EC_OID, CKF_EC_COMPRESS, CKF_EC_UNCOMPRESS);
   }
 
 }

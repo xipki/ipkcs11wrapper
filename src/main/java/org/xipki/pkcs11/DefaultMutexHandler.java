@@ -79,9 +79,8 @@ public class DefaultMutexHandler implements MutexHandler {
      *            If the current thread has been interrupted.
      */
     public synchronized void lock() throws InterruptedException {
-      if (Thread.interrupted()) {
-        throw new InterruptedException();
-      }
+      if (Thread.interrupted()) throw new InterruptedException();
+
       try {
         while (locked) {
           wait();
@@ -126,7 +125,6 @@ public class DefaultMutexHandler implements MutexHandler {
    *            If the wrapper should return a different value than CKR_OK to
    *            the library. It gets the error-code and returns it as CK_RV.
    */
-  @Override
   public Object createMutex() throws PKCS11Exception {
     return new Mutex();
   }
@@ -140,7 +138,6 @@ public class DefaultMutexHandler implements MutexHandler {
    *            If the wrapper should return a different value than CKR_OK to
    *            the library. It gets the error-code and returns it as CK_RV.
    */
-  @Override
   public void destroyMutex(Object mutex) throws PKCS11Exception {
     // trust in the garbage collector
   }
@@ -160,7 +157,6 @@ public class DefaultMutexHandler implements MutexHandler {
    *            If the wrapper should return a different value than CKR_OK to
    *            the library. It gets the error-code and returns it as CK_RV.
    */
-  @Override
   public void lockMutex(Object mutex) throws PKCS11Exception {
     if (!(mutex instanceof Mutex)) {
       throw new IllegalStateException("CKR_MUTEX_BAD: mutex is not instance of " + Mutex.class.getName());
@@ -201,7 +197,6 @@ public class DefaultMutexHandler implements MutexHandler {
    *            If the wrapper should return a different value than CKR_OK to
    *            the library. It gets the error-code and returns it as CK_RV.
    */
-  @Override
   public void unlockMutex(Object mutex) throws PKCS11Exception {
     if (!(mutex instanceof Mutex)) {
       throw new IllegalStateException("CKR_MUTEX_BAD: mutex is not instance of " + Mutex.class.getName());

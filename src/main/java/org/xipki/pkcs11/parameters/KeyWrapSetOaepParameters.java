@@ -84,7 +84,6 @@ public class KeyWrapSetOaepParameters implements Parameters {
    *
    * @postconditions (result != null)
    */
-  @Override
   public Object getPKCS11ParamsObject() {
     CK_KEY_WRAP_SET_OAEP_PARAMS params = new CK_KEY_WRAP_SET_OAEP_PARAMS();
 
@@ -118,7 +117,6 @@ public class KeyWrapSetOaepParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
-  @Override
   public String toString() {
     return "Class: " + getClass().getName() +
         "\n  Block Contents Byte: 0x" + Integer.toHexString(0xFF & blockContents) + "\n  X: " + Functions.toHex(x);

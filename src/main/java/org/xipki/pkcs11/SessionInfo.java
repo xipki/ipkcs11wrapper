@@ -140,41 +140,9 @@ public class SessionInfo {
    *
    * @return The string representation of object
    */
-  @Override
   public String toString() {
     String text = "State: " + state + "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\nFlags: ";
     return Functions.toStringFlags(text, flags, CKF_RW_SESSION, CKF_SERIAL_SESSION);
-  }
-
-  /**
-   * Compares all member variables of this object with the other object.
-   * Returns only true, if all are equal in both objects.
-   *
-   * @param otherObject
-   *          The other SessionInfo object.
-   * @return True, if other is an instance of Info and all member variables of
-   *         both objects are equal. False, otherwise.
-   */
-  @Override
-  public boolean equals(Object otherObject) {
-    if (this == otherObject) return true;
-    else if (!(otherObject instanceof SessionInfo)) return false;
-
-    SessionInfo other = (SessionInfo) otherObject;
-    return (slotID == other.slotID) && state.equals(other.state)
-        && (deviceError == other.deviceError) && (flags == other.flags);
-  }
-
-  /**
-   * The overriding of this method should ensure that the objects of this
-   * class work correctly in a hashtable.
-   *
-   * @return The hash code of this object. Gained from the slotID, state and
-   *         deviceError.
-   */
-  @Override
-  public int hashCode() {
-    return ((int) slotID) ^ state.hashCode() ^ ((int) deviceError);
   }
 
 }

@@ -76,7 +76,6 @@ public class InitializationVectorParameters implements Parameters {
    *
    * @return This object as a byte array.
    */
-  @Override
   public byte[] getPKCS11ParamsObject() {
     return iv;
   }
@@ -96,7 +95,6 @@ public class InitializationVectorParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
-  @Override
   public String toString() {
     return "  Initialization Vector (hex): " + Functions.toHex(iv);
   }

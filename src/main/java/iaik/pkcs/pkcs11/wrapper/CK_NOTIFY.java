@@ -60,7 +60,7 @@ public interface CK_NOTIFY {
    *
    * @exception PKCS11Exception in case of error.
    */
-  public void CK_NOTIFY(long hSession, long event, Object pApplication)
+  void CK_NOTIFY(long hSession, long event, Object pApplication)
       throws PKCS11Exception;
 
 }

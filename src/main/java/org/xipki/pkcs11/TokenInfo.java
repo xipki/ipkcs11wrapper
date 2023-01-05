@@ -369,10 +369,8 @@ public class TokenInfo {
    *
    * @return the string representation of object
    */
-  @Override
   public String toString() {
-    String text =
-          "Manufacturer ID:      " + manufacturerID         +
+    String text = "Manufacturer ID:      " + manufacturerID         +
         "\nModel:                " + model                  + "\nSerial Number:      " + serialNumber +
         "\nMax Session Count:    " + mct(maxSessionCount)   + "\nSession Count:      " + ct(sessionCount) +
         "\nMax RW Session Count: " + mct(maxRwSessionCount) + "\nRW Session Count:   " + ct(rwSessionCount) +
@@ -382,13 +380,11 @@ public class TokenInfo {
         "\nHardware Version:     " + hardwareVersion        + "\nFirmware Version:   " + firmwareVersion +
         "\nTime:                 " + time                   + "\nFlags: ";
 
-    return Functions.toStringFlags(text, flags,
-        CKF_RNG,                    CKF_WRITE_PROTECTED,        CKF_LOGIN_REQUIRED,
-        CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN,         CKF_PROTECTED_AUTHENTICATION_PATH,
-        CKF_DUAL_CRYPTO_OPERATIONS, CKF_TOKEN_INITIALIZED,      CKF_SECONDARY_AUTHENTICATION,
-        CKF_USER_PIN_INITIALIZED,   CKF_USER_PIN_COUNT_LOW,     CKF_USER_PIN_FINAL_TRY,
-        CKF_USER_PIN_LOCKED,        CKF_USER_PIN_TO_BE_CHANGED, CKF_SO_PIN_COUNT_LOW,
-        CKF_SO_PIN_FINAL_TRY,       CKF_SO_PIN_LOCKED,          CKF_SO_PIN_TO_BE_CHANGED);
+    return Functions.toStringFlags(text, flags, CKF_RNG, CKF_WRITE_PROTECTED, CKF_LOGIN_REQUIRED,
+        CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN, CKF_PROTECTED_AUTHENTICATION_PATH, CKF_DUAL_CRYPTO_OPERATIONS,
+        CKF_TOKEN_INITIALIZED, CKF_SECONDARY_AUTHENTICATION, CKF_USER_PIN_INITIALIZED, CKF_USER_PIN_COUNT_LOW,
+        CKF_USER_PIN_FINAL_TRY, CKF_USER_PIN_LOCKED, CKF_USER_PIN_TO_BE_CHANGED, CKF_SO_PIN_COUNT_LOW,
+        CKF_SO_PIN_FINAL_TRY, CKF_SO_PIN_LOCKED, CKF_SO_PIN_TO_BE_CHANGED);
   }
 
   private static String mct(long count) {

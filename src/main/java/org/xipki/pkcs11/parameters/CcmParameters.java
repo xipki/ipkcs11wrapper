@@ -82,7 +82,6 @@ public class CcmParameters implements Parameters {
      * @return This object as a CK_CCM_PARAMS object.
      * @postconditions (result != null)
      */
-    @Override
     public Object getPKCS11ParamsObject() {
         CK_CCM_PARAMS params = new CK_CCM_PARAMS();
         params.pNonce = nonce;
@@ -99,7 +98,6 @@ public class CcmParameters implements Parameters {
      *
      * @return A string representation of this object.
      */
-    @Override
     public String toString() {
         return "Class: " + getClass().getName() + "\n  DataLen: " + dataLen + ", MacLen: " + macLen +
             "\n  Nonce: " + Functions.toHex(nonce) + "\n  AAD: " + (aad == null ? "null" : Functions.toHex(nonce));

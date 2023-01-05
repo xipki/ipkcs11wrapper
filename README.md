@@ -1,5 +1,5 @@
 ## Licenses
-This product includes software (IAIK PKCS#11 wrapper version 1.6.1) 
+This product includes software (IAIK PKCS#11 wrapper version 1.6.6) 
 developed by Stiftung SIC which is licensed under "IAIK PKCS#11 Wrapper License".
 All other parts are licensed under Apache License, version 2.
 For details please refer to the file [LICENSE](LICENSE).

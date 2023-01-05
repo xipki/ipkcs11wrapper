@@ -128,7 +128,6 @@ public class Info {
    *
    * @return the string representation of object
    */
-  @Override
   public String toString() {
     return "Cryptoki Version: " + cryptokiVersion + "\nManufacturerID: " + manufacturerID +
         "\nLibrary Description: " + libraryDescription + "\nLibrary Version: " + libraryVersion;

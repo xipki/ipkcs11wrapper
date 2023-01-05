@@ -125,7 +125,6 @@ public class AttributeArray extends Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
-  @Override
   protected String getValueString() {
     if (template == null) {
       template = getAttributeArrayValue();
@@ -134,7 +133,6 @@ public class AttributeArray extends Attribute {
     return (template == null) ? "<NULL_PTR>" : template.toString();
   }
 
-  @Override
   public void setValue(Object value) throws UnsupportedOperationException {
     attributeArrayValue((AttributeVector) value);
   }

@@ -63,16 +63,6 @@ public class TokenRuntimeException extends RuntimeException {
   }
 
   /**
-   * Constructor taking an other exception to wrap.
-   *
-   * @param encapsulatedException
-   *          The other exception the wrap into this.
-   */
-  public TokenRuntimeException(Exception encapsulatedException) {
-    super(encapsulatedException);
-  }
-
-  /**
    * Constructor taking a message for this exception and an other exception to wrap.
    *
    * @param message
