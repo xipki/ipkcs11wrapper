@@ -45,14 +45,12 @@ package org.xipki.pkcs11;
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM;
 import iaik.pkcs.pkcs11.wrapper.PKCS11;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import org.xipki.pkcs11.objects.*;
 import org.xipki.pkcs11.parameters.CcmMessageParameters;
 import org.xipki.pkcs11.parameters.MessageParameters;
 import org.xipki.pkcs11.parameters.Parameters;
 import org.xipki.pkcs11.parameters.Salsa20Chacha20Poly1305MessageParameters;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -153,11 +151,11 @@ public class Session {
    * @param pin
    *          The new user-PIN. This parameter may be null, if the token has a protected
    *          authentication path. Refer to the PKCS#11 standard for details.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If the session has not the right to set the PIN of if the operation fails for some
    *              other reason.
    */
-  public void initPIN(char[] pin) throws TokenException {
+  public void initPIN(char[] pin) throws PKCS11Exception {
     pkcs11.C_InitPIN(sessionHandle, pin, useUtf8);
   }
 
@@ -168,20 +166,20 @@ public class Session {
    *          The old (current) user-PIN.
    * @param newPin
    *          The new value for the user-PIN.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If setting the new PIN fails.
    */
-  public void setPIN(char[] oldPin, char[] newPin) throws TokenException {
+  public void setPIN(char[] oldPin, char[] newPin) throws PKCS11Exception {
     pkcs11.C_SetPIN(sessionHandle, oldPin, newPin, useUtf8);
   }
 
   /**
    * Closes this session.
    *
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If closing the session failed.
    */
-  public void closeSession() throws TokenException {
+  public void closeSession() throws PKCS11Exception {
     pkcs11.C_CloseSession(sessionHandle);
   }
 
@@ -198,20 +196,20 @@ public class Session {
    * Get information about this session.
    *
    * @return An object providing information about this session.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If getting the information failed.
    */
-  public SessionInfo getSessionInfo() throws TokenException {
+  public SessionInfo getSessionInfo() throws PKCS11Exception {
     return new SessionInfo(pkcs11.C_GetSessionInfo(sessionHandle));
   }
 
   /**
    * terminates active session based operations.
    *
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If terminiating operations failed
    */
-  public void sessionCancel() throws TokenException {
+  public void sessionCancel() throws PKCS11Exception {
     long flags = 0L; //Add Flags?
     pkcs11.C_SessionCancel(sessionHandle, flags);
   }
@@ -239,10 +237,10 @@ public class Session {
    * exactly this state.
    *
    * @return The current operation state as a byte array.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If saving the state fails or is not possible.
    */
-  public byte[] getOperationState() throws TokenException {
+  public byte[] getOperationState() throws PKCS11Exception {
     return pkcs11.C_GetOperationState(sessionHandle);
   }
 
@@ -259,7 +257,7 @@ public class Session {
    * @param authenticationKeyHandle
    *          A signing, verification of MAC key handle, if a signing, verification or MAC operation needs
    *          to be restored that could not save the key.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If restoring the state fails.
    */
   public void setOperationState(byte[] operationState, long encryptionKeyHandle, long authenticationKeyHandle)
@@ -289,10 +287,10 @@ public class Session {
    *          CKU_SO for the security officer or CKU_USER to login the user.
    * @param pin
    *          The PIN. The security officer-PIN or the user-PIN depending on the userType parameter.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If login fails.
    */
-  public void login(long userType, char[] pin) throws TokenException {
+  public void login(long userType, char[] pin) throws PKCS11Exception {
     pkcs11.C_Login(sessionHandle, userType, pin, useUtf8);
   }
 
@@ -307,20 +305,20 @@ public class Session {
    *          The PIN. The security officer-PIN or the user-PIN depending on the userType parameter.
    * @param username
    *          The username of the user.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If login fails.
    */
-  public void loginUser(long userType, char[] pin, char[] username) throws TokenException {
+  public void loginUser(long userType, char[] pin, char[] username) throws PKCS11Exception {
     pkcs11.C_LoginUser(sessionHandle, userType, pin, username, useUtf8);
   }
 
   /**
    * Logs out this session.
    *
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If logging out the session fails.
    */
-  public void logout() throws TokenException {
+  public void logout() throws PKCS11Exception {
     pkcs11.C_Logout(sessionHandle);
   }
 
@@ -350,11 +348,11 @@ public class Session {
    * @return A new PKCS#11 Object that serves holds all the
    *         (readable) attributes of the object on the token. In contrast to the templateObject,
    *         this object might have certain attributes set to token-dependent default-values.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If the creation of the new object fails. If it fails, the no new object was
    *              created on the token.
    */
-  public long createObject(AttributeVector template) throws TokenException {
+  public long createObject(AttributeVector template) throws PKCS11Exception {
     return pkcs11.C_CreateObject(sessionHandle, toOutCKAttributes(template), useUtf8);
   }
 
@@ -371,10 +369,10 @@ public class Session {
    *          case the new object is just a one-to-one copy of the sourceObject.
    * @return The new object that is created by copying the source object and setting attributes to
    *         the values given by the template.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If copying the object fails for some reason.
    */
-  public long copyObject(long sourceObjectHandle, AttributeVector template) throws TokenException {
+  public long copyObject(long sourceObjectHandle, AttributeVector template) throws PKCS11Exception {
     return pkcs11.C_CopyObject(sessionHandle, sourceObjectHandle, toOutCKAttributes(template), useUtf8);
   }
 
@@ -392,11 +390,11 @@ public class Session {
    * @param template
    *          This methods gets all present attributes of this template object and set this
    *          attributes at the objectToUpdate.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If updateing the attributes fails. All or no attributes are updated.
    *
    */
-  public void setAttributeValues(long objectToUpdateHandle, AttributeVector template) throws TokenException {
+  public void setAttributeValues(long objectToUpdateHandle, AttributeVector template) throws PKCS11Exception {
     pkcs11.C_SetAttributeValue(sessionHandle, objectToUpdateHandle, toOutCKAttributes(template), useUtf8);
   }
 
@@ -407,10 +405,10 @@ public class Session {
    *
    * @param objectHandle
    *          The object handle that should be destroyed.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If the object could not be destroyed.
    */
-  public void destroyObject(long objectHandle) throws TokenException {
+  public void destroyObject(long objectHandle) throws PKCS11Exception {
     pkcs11.C_DestroyObject(sessionHandle, objectHandle);
   }
 
@@ -421,12 +419,12 @@ public class Session {
    * @param objectHandle
    *          The object to get the size for.
    * @return The object's size bytes.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If determining the size fails.
    * @preconditions (object != null)
    *
    */
-  public long getObjectSize(long objectHandle) throws TokenException {
+  public long getObjectSize(long objectHandle) throws PKCS11Exception {
     return pkcs11.C_GetObjectSize(sessionHandle, objectHandle);
   }
 
@@ -439,10 +437,10 @@ public class Session {
    *          The object that serves as a template for searching. If this object is null, the find
    *          operation will find all objects that this session can see. Notice, that only a user
    *          session will see private objects.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing the find operation fails.
    */
-  public void findObjectsInit(AttributeVector template) throws TokenException {
+  public void findObjectsInit(AttributeVector template) throws PKCS11Exception {
     pkcs11.C_FindObjectsInit(sessionHandle, toOutCKAttributes(template), useUtf8);
   }
 
@@ -457,12 +455,12 @@ public class Session {
    *          Specifies how many objects to return with this call.
    * @return An array of found objects. The maximum size of this array is maxObjectCount, the
    *         minimum length is 0. Never returns null.
-   * @exception TokenException
-   *              A plain TokenException if something during PKCS11 FindObject went wrong, a
-   *              TokenException with a nested TokenException if the Exception is raised during
+   * @exception PKCS11Exception
+   *              A plain PKCS11Exception if something during PKCS11 FindObject went wrong, a
+   *              PKCS11Exception with a nested PKCS11Exception if the Exception is raised during
    *              object parsing.
    */
-  public long[] findObjects(int maxObjectCount) throws TokenException {
+  public long[] findObjects(int maxObjectCount) throws PKCS11Exception {
     return pkcs11.C_FindObjects(sessionHandle, maxObjectCount);
   }
 
@@ -470,10 +468,10 @@ public class Session {
    * Finalizes a find operation. The application must call this method to finalize a find operation
    * before attempting to start any other operation.
    *
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If finalizing the current find operation was not possible.
    */
-  public void findObjectsFinal() throws TokenException {
+  public void findObjectsFinal() throws PKCS11Exception {
     pkcs11.C_FindObjectsFinal(sessionHandle);
   }
 
@@ -490,10 +488,10 @@ public class Session {
    *          The mechanism to use; e.g. Mechanism.DES_CBC.
    * @param keyHandle
    *          The decryption key to use.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    */
-  public void encryptInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void encryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_EncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -533,10 +531,10 @@ public class Session {
    * @param outLen
    *          buffer size for the encrypted data
    * @return the length of encrypted data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If encrypting failed.
    */
-  public int encrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+  public int encrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_Encrypt(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -561,10 +559,10 @@ public class Session {
    * @param outLen
    *          buffer size for the encrypted data
    * @return the length of encrypted data for this update
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If encrypting the data failed.
    */
-  public int encryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+  public int encryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_EncryptUpdate(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -582,10 +580,10 @@ public class Session {
    * @param outLen
    *          buffer size for the encrypted data
    * @return the length of the last part of the encrypted data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If calculating the final result failed.
    */
-  public int encryptFinal(byte[] out, int outOfs, int outLen) throws TokenException {
+  public int encryptFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     byte[] res = pkcs11.C_EncryptFinal(sessionHandle);
     return copyResToBuffer(res, out, outOfs, outLen);
   }
@@ -603,12 +601,12 @@ public class Session {
    *          The mechanism to use; e.g. Mechanism.DES_CBC.
    * @param keyHandle
    *          The decryption key to use.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    * @preconditions (mechansim != null) and (key != null)
    *
    */
-  public void messageEncryptInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void messageEncryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_MessageEncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -625,10 +623,10 @@ public class Session {
    *          The plaintext getting encrypted
    *
    * @return The ciphertext
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If encrypting failed.
    */
-  public byte[] encryptMessage(Parameters parameter, byte[] associatedData, byte[] plaintext) throws TokenException {
+  public byte[] encryptMessage(Parameters parameter, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
     Object paramObject = toCkParameters(parameter);
     byte[] rv = pkcs11.C_EncryptMessage(sessionHandle, paramObject, associatedData, plaintext, useUtf8);
 
@@ -651,9 +649,9 @@ public class Session {
    *            The IV or nonce
    * @param associatedData
    *            The associated Data for AEAS Mechanisms
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void encryptMessageBegin(Parameters parameter, byte[] associatedData) throws TokenException {
+  public void encryptMessageBegin(Parameters parameter, byte[] associatedData) throws PKCS11Exception {
     pkcs11.C_EncryptMessageBegin(sessionHandle, toCkParameters(parameter), associatedData, useUtf8);
   }
 
@@ -669,10 +667,10 @@ public class Session {
    * @param isLastOperation
    *          If this is the last part of the multi-part message encryption, this should be true
    * @return The encrypted message part
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
   public byte[] encryptMessageNext(Parameters parameter, byte[] plaintext, boolean isLastOperation)
-      throws TokenException {
+      throws PKCS11Exception {
     Object paramObject = toCkParameters(parameter);
     if(parameter instanceof MessageParameters) {
       ((MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
@@ -684,9 +682,9 @@ public class Session {
   /**
    * Finishes a Message Encryption Operation which has previously been started with messageEncryptInit.
    *
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void messageEncryptFinal() throws TokenException {
+  public void messageEncryptFinal() throws PKCS11Exception {
     pkcs11.C_MessageEncryptFinal(sessionHandle);
   }
 
@@ -703,11 +701,11 @@ public class Session {
    *          The mechanism to use; e.g. Mechanism.DES_CBC.
    * @param keyHandle
    *          The decryption key to use.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    *
    */
-  public void decryptInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void decryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_DecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -730,10 +728,10 @@ public class Session {
    * @param outLen
    *          buffer size for the decrypted data
    * @return the length of decrypted data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If decrypting failed.
    */
-  public int decrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+  public int decrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_Decrypt(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -758,10 +756,10 @@ public class Session {
    * @param outLen
    *          buffer size for the decrypted data
    * @return the length of decrypted data for this update
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If decrypting the data failed.
    */
-  public int decryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+  public int decryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_DecryptUpdate(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -779,10 +777,10 @@ public class Session {
    * @param outLen
    *          buffer size for the decrypted data
    * @return the length of this last part of decrypted data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If calculating the final result failed.
    */
-  public int decryptFinal(byte[] out, int outOfs, int outLen) throws TokenException {
+  public int decryptFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkOutParams(out, outOfs, outLen);
     byte[] res = pkcs11.C_DecryptFinal(sessionHandle);
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -801,10 +799,10 @@ public class Session {
    *          The mechanism to use; e.g. Mechanism.DES_CBC.
    * @param keyHandle
    *          The decryption key to use.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    */
-  public void messageDecryptInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void messageDecryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_MessageDecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -821,10 +819,10 @@ public class Session {
    *          The plaintext getting encrypted
    *
    * @return The ciphertext
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If encrypting failed.
    */
-  public byte[] decryptMessage(Parameters parameter, byte[] associatedData, byte[] plaintext) throws TokenException {
+  public byte[] decryptMessage(Parameters parameter, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
     return pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(parameter), associatedData, plaintext, useUtf8);
   }
 
@@ -834,9 +832,9 @@ public class Session {
    *          The parameter object
    * @param associatedData
    *            The associated Data for AEAS Mechanisms
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void decryptMessageBegin(Parameters parameter, byte[] associatedData) throws TokenException {
+  public void decryptMessageBegin(Parameters parameter, byte[] associatedData) throws PKCS11Exception {
     pkcs11.C_DecryptMessageBegin(sessionHandle, toCkParameters(parameter), associatedData, useUtf8);
   }
 
@@ -852,10 +850,10 @@ public class Session {
    * @param isLastOperation
    *          If this is the last part of the multi-part message encryption, this should be true
    * @return the decrypted message part
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
   public byte[] decryptMessageNext(Parameters parameter, byte[] ciphertext, boolean isLastOperation)
-      throws TokenException {
+      throws PKCS11Exception {
     return pkcs11.C_DecryptMessageNext(sessionHandle, toCkParameters(parameter),
         ciphertext, isLastOperation ? CKF_END_OF_MESSAGE : 0, useUtf8);
   }
@@ -863,9 +861,9 @@ public class Session {
   /**
    * finishes multi-part message decryption operation.
    *
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void messageDecryptFinal() throws TokenException {
+  public void messageDecryptFinal() throws PKCS11Exception {
     pkcs11.C_MessageDecryptFinal(sessionHandle);
   }
 
@@ -879,10 +877,10 @@ public class Session {
    *
    * @param mechanism
    *          The mechanism to use; e.g. Mechanism.SHA_1.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    */
-  public void digestInit(Mechanism mechanism) throws TokenException {
+  public void digestInit(Mechanism mechanism) throws PKCS11Exception {
     pkcs11.C_DigestInit(sessionHandle, toCkMechanism(mechanism), useUtf8);
   }
 
@@ -904,10 +902,10 @@ public class Session {
    * @param outLen
    *          buffer size for the digested data
    * @return the length of digested data for this update
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If digesting the data failed.
    */
-  public int digestSingle(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+  public int digestSingle(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_Digest(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -925,10 +923,10 @@ public class Session {
    *          buffer offset of the to-be-digested data
    * @param partLen
    *          length of the to-be-digested data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If digesting the data failed.
    */
-  public void digestUpdate(byte[] part, int partOfs, int partLen) throws TokenException {
+  public void digestUpdate(byte[] part, int partOfs, int partLen) throws PKCS11Exception {
     pkcs11.C_DigestUpdate(sessionHandle, part);
   }
 
@@ -938,10 +936,10 @@ public class Session {
    *
    * @param keyHandle
    *          The key to digest the value of.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If digesting the key failed.
    */
-  public void digestKey(long keyHandle) throws TokenException {
+  public void digestKey(long keyHandle) throws PKCS11Exception {
     pkcs11.C_DigestKey(sessionHandle, keyHandle);
   }
 
@@ -958,10 +956,10 @@ public class Session {
    * @param outLen
    *          buffer size for the message digest
    * @return the length of message digest
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If calculating the final message digest failed.
    */
-  public int digestFinal(byte[] out, int outOfs, int outLen) throws TokenException {
+  public int digestFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkOutParams(out, outOfs, outLen);
     byte[] res = pkcs11.C_DigestFinal(sessionHandle);
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -981,10 +979,10 @@ public class Session {
    *          The mechanism to use; e.g. Mechanism.RSA_PKCS.
    * @param keyHandle
    *          The signing key to use.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    */
-  public void signInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void signInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -996,10 +994,10 @@ public class Session {
    * @param data
    *          The data to sign.
    * @return The signed data.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If signing the data failed.
    */
-  public byte[] sign(byte[] data) throws TokenException {
+  public byte[] sign(byte[] data) throws PKCS11Exception {
     return pkcs11.C_Sign(sessionHandle, data);
   }
 
@@ -1015,10 +1013,10 @@ public class Session {
    *          buffer offset of the to-be-signed data
    * @param inLen
    *          length of the to-be-signed data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If signing the data failed.
    */
-  public void signUpdate(byte[] in, int inOfs, int inLen) throws TokenException {
+  public void signUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
     checkInParams(in, inOfs, inLen);
     pkcs11.C_SignUpdate(sessionHandle, copy(in, inOfs, inLen));
   }
@@ -1032,10 +1030,10 @@ public class Session {
    *          expected length of the signature value.
    * @return The final result of the signing operation; i.e. the signature
    *         value.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If calculating the final signature value failed.
    */
-  public byte[] signFinal(int expectedLen) throws TokenException {
+  public byte[] signFinal(int expectedLen) throws PKCS11Exception {
     return pkcs11.C_SignFinal(sessionHandle);
   }
 
@@ -1052,10 +1050,10 @@ public class Session {
    *          The mechanism to use; e.g. Mechanism.RSA_9796.
    * @param keyHandle
    *          The signing key to use.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    */
-  public void signRecoverInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void signRecoverInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_SignRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1077,10 +1075,10 @@ public class Session {
    * @param outLen
    *          buffer size for the signed data
    * @return the length of signed data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If signing the data failed.
    */
-  public int signRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+  public int signRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_SignRecover(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -1092,9 +1090,9 @@ public class Session {
    *          the mechanism parameter to use
    * @param keyHandle
    *          the key to sign the data with
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void messageSignInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void messageSignInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_MessageSignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1102,10 +1100,10 @@ public class Session {
    *
    * @param parameter the mechanism parameter to use
    * @param data the data to sign
-   * @throws TokenException if signing failed.
+   * @throws PKCS11Exception if signing failed.
    * @return the signature
    */
-  public byte[] signMessage(Parameters parameter, byte[] data) throws TokenException {
+  public byte[] signMessage(Parameters parameter, byte[] data) throws PKCS11Exception {
     return pkcs11.C_SignMessage(sessionHandle, toCkParameters(parameter), data, useUtf8);
   }
 
@@ -1115,9 +1113,9 @@ public class Session {
    *
    * @param parameter
    *          the mechanism parameter to use
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void signMessageBegin(Parameters parameter) throws TokenException{
+  public void signMessageBegin(Parameters parameter) throws PKCS11Exception{
     pkcs11.C_SignMessageBegin(sessionHandle, toCkParameters(parameter), useUtf8);
   }
 
@@ -1131,9 +1129,9 @@ public class Session {
    *          the message to sign
    * @param isLastOperation specifies if this is the last part of this messsage.
    * @return the signature
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public byte[] signMessageNext(Parameters parameter, byte[] data, boolean isLastOperation) throws TokenException {
+  public byte[] signMessageNext(Parameters parameter, byte[] data, boolean isLastOperation) throws PKCS11Exception {
     return pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(parameter), data, isLastOperation, useUtf8);
   }
 
@@ -1141,9 +1139,9 @@ public class Session {
    * finishes a message-based signing process.
    * The message-based signing process MUST have been initialized with messageSignInit.
    *
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void messageSignFinal() throws TokenException {
+  public void messageSignFinal() throws PKCS11Exception {
     pkcs11.C_MessageSignFinal(sessionHandle);
   }
 
@@ -1161,10 +1159,10 @@ public class Session {
    *          The mechanism to use; e.g. Mechanism.RSA_PKCS.
    * @param keyHandle
    *          The verification key to use.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    */
-  public void verifyInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void verifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_VerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1179,11 +1177,11 @@ public class Session {
    *          The data that was signed.
    * @param signature
    *          The signature or MAC to verify.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If verifying the signature fails. This is also the case, if the signature is
    *              forged.
    */
-  public void verify(byte[] data, byte[] signature) throws TokenException {
+  public void verify(byte[] data, byte[] signature) throws PKCS11Exception {
     pkcs11.C_Verify(sessionHandle, data, signature);
   }
 
@@ -1198,10 +1196,10 @@ public class Session {
    *          buffer offset of the to-be-verified data
    * @param inLen
    *          length of the to-be-verified data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If verifying (e.g. digesting) the data failed.
    */
-  public void verifyUpdate(byte[] in, int inOfs, int inLen) throws TokenException {
+  public void verifyUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
     checkInParams(in, inOfs, inLen);
     pkcs11.C_VerifyUpdate(sessionHandle, copy(in, inOfs, inLen));
   }
@@ -1216,11 +1214,11 @@ public class Session {
    *
    * @param signature
    *          The signature value.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If verifying the signature fails. This is also the case, if the signature is
    *              forged.
    */
-  public void verifyFinal(byte[] signature) throws TokenException {
+  public void verifyFinal(byte[] signature) throws PKCS11Exception {
     pkcs11.C_VerifyFinal(sessionHandle, signature);
   }
 
@@ -1237,10 +1235,10 @@ public class Session {
    *          The mechanism to use; e.g. Mechanism.RSA_9796.
    * @param keyHandle
    *          The verification key to use.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initializing this operation failed.
    */
-  public void verifyRecoverInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void verifyRecoverInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_VerifyRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1262,10 +1260,10 @@ public class Session {
    * @param outLen
    *          buffer size for the verified data
    * @return the length of verified data
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If signing the data failed.
    */
-  public int verifyRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+  public int verifyRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_VerifyRecover(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -1280,9 +1278,9 @@ public class Session {
    *          the mechanism to use
    * @param keyHandle
    *          the verification key to use
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void messageVerifyInit(Mechanism mechanism, long keyHandle) throws TokenException {
+  public void messageVerifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_MessageVerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1296,9 +1294,9 @@ public class Session {
    *          the message to verify with the signature
    * @param signature
    *          the signature of the message
-   * @throws TokenException if the message cant be verified
+   * @throws PKCS11Exception if the message cant be verified
    */
-  public void verifyMessage(Parameters parameter, byte[] data, byte[] signature) throws TokenException {
+  public void verifyMessage(Parameters parameter, byte[] data, byte[] signature) throws PKCS11Exception {
     pkcs11.C_VerifyMessage(sessionHandle, toCkParameters(parameter), data, signature, useUtf8);
   }
 
@@ -1308,9 +1306,9 @@ public class Session {
    *
    * @param parameter
    *          the mechanism parameter to use
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void verifyMessageBegin(Parameters parameter) throws TokenException {
+  public void verifyMessageBegin(Parameters parameter) throws PKCS11Exception {
     pkcs11.C_VerifyMessageBegin(sessionHandle, toCkParameters(parameter), useUtf8);
   }
 
@@ -1326,19 +1324,19 @@ public class Session {
    *          the data to be verified
    * @param signature
    *           NUll if there is data follow, the signature if its the last part of the signing operation
-   * @throws TokenException
+   * @throws PKCS11Exception
    *            if The Signature is invalid
    */
-  public void verifyMessageNext(Parameters parameter, byte[] data, byte[] signature) throws TokenException {
+  public void verifyMessageNext(Parameters parameter, byte[] data, byte[] signature) throws PKCS11Exception {
     pkcs11.C_VerifyMessageNext(sessionHandle, toCkParameters(parameter), data, signature, useUtf8);
   }
 
   /**
    * finishes a message-based verification process.
    * The message-based verification process must have been initialized with messageVerifyInit.
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public void messageVerifyFinal() throws TokenException {
+  public void messageVerifyFinal() throws PKCS11Exception {
     pkcs11.C_MessageVerifyFinal(sessionHandle);
   }
 
@@ -1350,10 +1348,10 @@ public class Session {
    * @param part
    *          The piece of data to digest and encrypt.
    * @return The intermediate result of the encryption.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If digesting or encrypting the data failed.
    */
-  public byte[] digestEncryptedUpdate(byte[] part) throws TokenException {
+  public byte[] digestEncryptedUpdate(byte[] part) throws PKCS11Exception {
     return pkcs11.C_DigestEncryptUpdate(sessionHandle, part);
   }
 
@@ -1366,10 +1364,10 @@ public class Session {
    * @param part
    *          The piece of data to decrypt and digest.
    * @return The intermediate result of the decryption; the decrypted data.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If decrypting or digesting the data failed.
    */
-  public byte[] decryptDigestUpdate(byte[] part) throws TokenException {
+  public byte[] decryptDigestUpdate(byte[] part) throws PKCS11Exception {
     return pkcs11.C_DecryptDigestUpdate(sessionHandle, part);
   }
 
@@ -1381,10 +1379,10 @@ public class Session {
    * @param part
    *          The piece of data to sign and encrypt.
    * @return The intermediate result of the encryption; the encrypted data.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If signing or encrypting the data failed.
    */
-  public byte[] signEncryptUpdate(byte[] part) throws TokenException {
+  public byte[] signEncryptUpdate(byte[] part) throws PKCS11Exception {
     return pkcs11.C_SignEncryptUpdate(sessionHandle, part);
   }
 
@@ -1397,10 +1395,10 @@ public class Session {
    * @param encryptedPart
    *          The piece of data to decrypt and verify.
    * @return The intermediate result of the decryption; the decrypted data.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If decrypting or verifying the data failed.
    */
-  public byte[] decryptVerifyUpdate(byte[] encryptedPart) throws TokenException {
+  public byte[] decryptVerifyUpdate(byte[] encryptedPart) throws PKCS11Exception {
     return pkcs11.C_DecryptVerifyUpdate(sessionHandle, encryptedPart);
   }
 
@@ -1415,10 +1413,10 @@ public class Session {
    *          The template for the new key or domain parameters; e.g. a DESSecretKey object which
    *          has set certain attributes.
    * @return The newly generated secret key or domain parameters.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If generating a new secret key or domain parameters failed.
    */
-  public long generateKey(Mechanism mechanism, AttributeVector template) throws TokenException {
+  public long generateKey(Mechanism mechanism, AttributeVector template) throws PKCS11Exception {
     return pkcs11.C_GenerateKey(sessionHandle, toCkMechanism(mechanism), toOutCKAttributes(template), useUtf8);
   }
 
@@ -1437,11 +1435,11 @@ public class Session {
    *          The template for the new private key part; e.g. a RSAPrivateKey object which has set
    *          certain attributes (e.g. sign and decrypt).
    * @return The newly generated key-pair.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If generating a new key-pair failed.
    */
   public KeyPair generateKeyPair(Mechanism mechanism, AttributeVector publicKeyTemplate,
-                                 AttributeVector privateKeyTemplate) throws TokenException {
+                                 AttributeVector privateKeyTemplate) throws PKCS11Exception {
     long[] objectHandles = pkcs11.C_GenerateKeyPair(sessionHandle, toCkMechanism(mechanism),
         toOutCKAttributes(publicKeyTemplate), toOutCKAttributes(privateKeyTemplate), useUtf8);
     return new KeyPair(objectHandles[0], objectHandles[1]);
@@ -1457,10 +1455,10 @@ public class Session {
    * @param keyHandle
    *          The key to wrap (encrypt).
    * @return The wrapped key as byte array.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If wrapping the key failed.
    */
-  public byte[] wrapKey(Mechanism mechanism, long wrappingKeyHandle, long keyHandle) throws TokenException {
+  public byte[] wrapKey(Mechanism mechanism, long wrappingKeyHandle, long keyHandle) throws PKCS11Exception {
     return pkcs11.C_WrapKey(sessionHandle, toCkMechanism(mechanism), wrappingKeyHandle, keyHandle, useUtf8);
   }
 
@@ -1478,11 +1476,11 @@ public class Session {
    * @param keyTemplate
    *          The template for creating the new key object.
    * @return A key object representing the newly created key object.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If unwrapping the key or creating a new key object failed.
    */
   public long unwrapKey(Mechanism mechanism, long unwrappingKeyHandle, byte[] wrappedKey, AttributeVector keyTemplate)
-      throws TokenException {
+      throws PKCS11Exception {
     return pkcs11.C_UnwrapKey(sessionHandle, toCkMechanism(mechanism),
         unwrappingKeyHandle, wrappedKey, toOutCKAttributes(keyTemplate), useUtf8);
   }
@@ -1501,10 +1499,10 @@ public class Session {
    * @return A key object representing the newly derived (created) key object or null, if the used
    *         mechanism uses other means to return its values; e.g. the CKM_SSL3_KEY_AND_MAC_DERIVE
    *         mechanism.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If deriving the key or creating a new key object failed.
    */
-  public long deriveKey(Mechanism mechanism, long baseKeyHandle, AttributeVector template) throws TokenException {
+  public long deriveKey(Mechanism mechanism, long baseKeyHandle, AttributeVector template) throws PKCS11Exception {
     return pkcs11.C_DeriveKey(sessionHandle, toCkMechanism(mechanism), baseKeyHandle,
         toOutCKAttributes(template), useUtf8);
   }
@@ -1514,10 +1512,10 @@ public class Session {
    *
    * @param seed
    *          The seed bytes to mix in.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If mixing in the seed failed.
    */
-  public void seedRandom(byte[] seed) throws TokenException {
+  public void seedRandom(byte[] seed) throws PKCS11Exception {
     pkcs11.C_SeedRandom(sessionHandle, seed);
   }
 
@@ -1527,10 +1525,10 @@ public class Session {
    * @param numberOfBytesToGenerate
    *          The number of random bytes to generate.
    * @return An array of random bytes with length numberOfBytesToGenerate.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If generating random bytes failed.
    */
-  public byte[] generateRandom(int numberOfBytesToGenerate) throws TokenException {
+  public byte[] generateRandom(int numberOfBytesToGenerate) throws PKCS11Exception {
     byte[] randomBytesBuffer = new byte[numberOfBytesToGenerate];
     pkcs11.C_GenerateRandom(sessionHandle, randomBytesBuffer);
     return randomBytesBuffer;
@@ -1540,10 +1538,10 @@ public class Session {
    * Legacy function that will normally throw an PKCS11Exception with the error-code
    * CKR_FUNCTION_NOT_PARALLEL.
    *
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              Throws always an PKCS11Excption.
    */
-  public void getFunctionStatus() throws TokenException {
+  public void getFunctionStatus() throws PKCS11Exception {
     pkcs11.C_GetFunctionStatus(sessionHandle);
   }
 
@@ -1551,19 +1549,19 @@ public class Session {
    * Legacy function that will normally throw an PKCS11Exception with the error-code
    * CKR_FUNCTION_NOT_PARALLEL.
    *
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              Throws always an PKCS11Excption.
    */
-  public void cancelFunction() throws TokenException {
+  public void cancelFunction() throws PKCS11Exception {
     pkcs11.C_CancelFunction(sessionHandle);
   }
 
   /**
    * Determines if this session is a R/W session.
    * @return true if this is a R/W session, false otherwise.
-   * @throws TokenException in case of error.
+   * @throws PKCS11Exception in case of error.
    */
-  public boolean isRwSession() throws TokenException {
+  public boolean isRwSession() throws PKCS11Exception {
     if (this.rwSession == null) this.rwSession = getSessionInfo().isRwSession();
 
     return this.rwSession.booleanValue();

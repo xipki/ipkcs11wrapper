@@ -148,16 +148,16 @@ class VendorCode {
 
       if (name.startsWith("CKK_VENDOR_")) {
         long genericCode = Functions.ckkNameToCode(name);
-        if (genericCode == -1) throw new TokenRuntimeException("unknown name in vendorcode block: " + name);
+        if (genericCode == -1) throw new IllegalStateException("unknown name in vendorcode block: " + name);
 
         ckkGenericToVendorMap.put(genericCode, vendorCode);
       } else if (name.startsWith("CKM_VENDOR_")) {
         long genericCode = Functions.ckmNameToCode(name);
-        if (genericCode == -1) throw new TokenRuntimeException("unknown name in vendorcode block: " + name);
+        if (genericCode == -1) throw new IllegalStateException("unknown name in vendorcode block: " + name);
 
         ckmGenericToVendorMap.put(genericCode, vendorCode);
       } else {
-        throw new TokenRuntimeException("Unknown name in vendorcode block: " + name);
+        throw new IllegalStateException("Unknown name in vendorcode block: " + name);
       }
     }
 

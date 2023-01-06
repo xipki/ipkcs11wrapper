@@ -44,7 +44,6 @@ package org.xipki.pkcs11.objects;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.Functions;
-import org.xipki.pkcs11.TokenRuntimeException;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -103,10 +102,10 @@ public abstract class Attribute {
         name = name.trim();
         String type = props.getProperty(name).trim();
         long code = Functions.ckaNameToCode(name);
-        if (code == -1) throw new TokenRuntimeException("unknown CKA: " + name);
+        if (code == -1) throw new IllegalStateException("unknown CKA: " + name);
 
         if (attributeClasses.containsKey(code)) {
-          throw new TokenRuntimeException("duplicated definition of CKA: " + name);
+          throw new IllegalStateException("duplicated definition of CKA: " + name);
         }
 
         Class<?> clazz = "Boolean".equalsIgnoreCase(type) ? BooleanAttribute.class
@@ -118,16 +117,16 @@ public abstract class Attribute {
             : "MechanismArray".equalsIgnoreCase(type) ? MechanismArrayAttribute.class
             : "AttributeArray".equalsIgnoreCase(type) ? AttributeArray.class : null;
 
-        if (clazz == null) throw new TokenRuntimeException("unknown type " + type);
+        if (clazz == null) throw new IllegalStateException("unknown type " + type);
 
         attributeClasses.put(code, clazz);
       }
     } catch (Throwable t) {
-      throw new TokenRuntimeException("error reading properties file " + propFile + ": " + t.getMessage());
+      throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
     }
 
     if (attributeClasses.isEmpty()) {
-      throw new TokenRuntimeException("no code to name map is defined properties file " + propFile);
+      throw new IllegalStateException("no code to name map is defined properties file " + propFile);
     }
   }
 

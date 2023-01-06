@@ -83,13 +83,13 @@ public class Functions {
               ? Long.parseLong(propName.substring(2), 16) : Long.parseLong(propName);
 
           if (codeNameMap.containsKey(code)) {
-            throw new TokenRuntimeException("duplicated definition of " + prefix + ": " + toFullHex(code));
+            throw new IllegalStateException("duplicated definition of " + prefix + ": " + toFullHex(code));
           }
 
           boolean first = true;
           while (tokens.hasMoreTokens()) {
             String name = tokens.nextToken();
-            if (!name.startsWith(prefix)) throw new TokenRuntimeException(name + " does not start with " + prefix);
+            if (!name.startsWith(prefix)) throw new IllegalStateException(name + " does not start with " + prefix);
 
             if (first) {
               codeNameMap.put(code, name);

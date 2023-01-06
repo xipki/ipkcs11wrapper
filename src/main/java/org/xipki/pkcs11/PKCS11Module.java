@@ -185,10 +185,10 @@ public class PKCS11Module {
    * Gets information about the module; i.e. the PKCS#11 module behind.
    *
    * @return An object holding information about the module.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If getting the information fails.
    */
-  public ModuleInfo getInfo() throws TokenException {
+  public ModuleInfo getInfo() throws PKCS11Exception {
     return new ModuleInfo(pkcs11.C_GetInfo());
   }
 
@@ -196,10 +196,10 @@ public class PKCS11Module {
    * Initializes the module. The application must call this method before
    * calling any other method of the module.
    *
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If initialization fails.
    */
-  public void initialize() throws TokenException {
+  public void initialize() throws PKCS11Exception {
     CK_C_INITIALIZE_ARGS wrapperInitArgs = new CK_C_INITIALIZE_ARGS();
     wrapperInitArgs.flags |= CKF_OS_LOCKING_OK;
 
@@ -223,12 +223,12 @@ public class PKCS11Module {
    *
    * @param args
    *          Must be null in version 2.x of PKCS#11.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If finalization fails.
    * @preconditions (args == null)
    *
    */
-  public void finalize(Object args) throws TokenException {
+  public void finalize(Object args) throws PKCS11Exception {
     pkcs11.C_Finalize(args);
   }
 
@@ -241,10 +241,10 @@ public class PKCS11Module {
    * @param tokenPresent
    *          Whether only slots with present token are returned.
    * @return An array of Slot objects, may be an empty array but not null.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If error occurred.
    */
-  public Slot[] getSlotList(boolean tokenPresent) throws TokenException {
+  public Slot[] getSlotList(boolean tokenPresent) throws PKCS11Exception {
     long[] slotIDs = pkcs11.C_GetSlotList(tokenPresent);
     Slot[] slots = new Slot[slotIDs.length];
     for (int i = 0; i < slots.length; i++) {
@@ -264,11 +264,11 @@ public class PKCS11Module {
    * @param dontBlock
    *          Can false (BLOCK) or true (DONT_BLOCK).
    * @return The slot for which an event occurred.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If the method was called with WaitingBehavior.DONT_BLOCK but
    *              there was no event available, or if an error occurred.
    */
-  public Slot waitForSlotEvent(boolean dontBlock) throws TokenException {
+  public Slot waitForSlotEvent(boolean dontBlock) throws PKCS11Exception {
     return new Slot(this, pkcs11.C_WaitForSlotEvent(dontBlock ? CKF_DONT_BLOCK : 0L, null));
   }
 
