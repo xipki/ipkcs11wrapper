@@ -74,7 +74,7 @@ public class AesCbcEncryptDataParameters extends CbcEncryptDataParameters {
    *
    * @postconditions (result != null)
    */
-  public Object getPKCS11ParamsObject() {
+  public CK_AES_CBC_ENCRYPT_DATA_PARAMS getPKCS11ParamsObject() {
     CK_AES_CBC_ENCRYPT_DATA_PARAMS params = new CK_AES_CBC_ENCRYPT_DATA_PARAMS();
 
     params.iv = iv;

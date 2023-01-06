@@ -117,7 +117,7 @@ public class GenericFind extends TestBase {
     // for each private signature key try to find a public key certificate with the same ID
     Map<Long, Long> privateKeyToCertificateTable = new HashMap<>(privateSignatureKeys.size() * 5 / 4);
     for (long privateSignatureKeyHandle : privateSignatureKeys) {
-      byte[] id = session.getByteArrayAttributeValue(privateSignatureKeyHandle, CKA_ID);
+      byte[] id = session.getByteArrayAttrValue(privateSignatureKeyHandle, CKA_ID);
       ByteArrayAttribute idAttr = (ByteArrayAttribute) Attribute.getInstance(CKA_ID, id);
       AttributeVector certificateSearchTemplate = new AttributeVector(idAttr);
       session.findObjectsInit(certificateSearchTemplate);
@@ -138,7 +138,7 @@ public class GenericFind extends TestBase {
   }
 
   private static String getLabel(Session session, long hObject) throws PKCS11Exception {
-    return session.getCharAttributeStringValue(hObject, CKA_LABEL);
+    return session.getStringAttrValue(hObject, CKA_LABEL);
   }
 
 }

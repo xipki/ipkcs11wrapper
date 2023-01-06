@@ -53,7 +53,7 @@ import org.xipki.pkcs11.Functions;
  */
 public class RsaAesKeyWrapParameters implements Parameters {
 
-    private long AESKeyBits;
+    private int AESKeyBits;
     private RSAPkcsOaepParameters OAEPParams;
 
     /**
@@ -63,7 +63,7 @@ public class RsaAesKeyWrapParameters implements Parameters {
      * @param  OAEPParams parameters of the temporary AES key wrapping. See also the description of <br>
      *                     PKCS #1 RSA OAEP mechanism parameters.
      */
-    public RsaAesKeyWrapParameters(long AESKeyBits, RSAPkcsOaepParameters OAEPParams) {
+    public RsaAesKeyWrapParameters(int AESKeyBits, RSAPkcsOaepParameters OAEPParams) {
         this.AESKeyBits = AESKeyBits;
         this.OAEPParams = OAEPParams;
     }
@@ -74,7 +74,7 @@ public class RsaAesKeyWrapParameters implements Parameters {
      * @return This object as a CK_SALSA20_PARAMS object.
      * @postconditions (result != null)
      */
-    public Object getPKCS11ParamsObject() {
+    public CK_RSA_AES_KEY_WRAP_PARAMS getPKCS11ParamsObject() {
         CK_RSA_AES_KEY_WRAP_PARAMS params = new CK_RSA_AES_KEY_WRAP_PARAMS();
         params.ulAESKeyBits = AESKeyBits;
         params.pOAEPParams = OAEPParams.getPKCS11ParamsObject();

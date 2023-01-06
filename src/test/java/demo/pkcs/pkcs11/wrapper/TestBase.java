@@ -287,26 +287,26 @@ public class TestBase {
   protected static PublicKey generateJCEPublicKey(Session session, long p11Key, Long keyType)
       throws InvalidKeySpecException, PKCS11Exception {
     if (keyType == null) {
-      keyType = session.getLongAttributeValue(p11Key, CKA_KEY_TYPE);
+      keyType = session.getLongAttrValue(p11Key, CKA_KEY_TYPE);
     }
 
     if (keyType == CKK_RSA) {
-      BigInteger[] attrValues = session.getByteArrayAttributeBigIntValues(p11Key, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+      BigInteger[] attrValues = session.getBigIntAttrValues(p11Key, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
       return KeyUtil.generateRSAPublicKey(new RSAPublicKeySpec(attrValues[0], attrValues[1]));
     } else if (keyType == CKK_DSA) {
-      BigInteger[] attrValues = session.getByteArrayAttributeBigIntValues(p11Key,
+      BigInteger[] attrValues = session.getBigIntAttrValues(p11Key,
           CKA_VALUE, CKA_PRIME, CKA_SUBPRIME, CKA_BASE); // y, p, q, g
 
       DSAPublicKeySpec keySpec = new DSAPublicKeySpec(attrValues[0], attrValues[1], attrValues[2], attrValues[3]);
       return KeyUtil.generateDSAPublicKey(keySpec);
     } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS
         || keyType == CKK_EC_MONTGOMERY || keyType == CKK_VENDOR_SM2) {
-      byte[] encodedPoint = session.getByteArrayAttributeValue(p11Key, CKA_EC_POINT);
+      byte[] encodedPoint = session.getByteArrayAttrValue(p11Key, CKA_EC_POINT);
       encodedPoint = ASN1OctetString.getInstance(encodedPoint).getOctets();
 
       byte[] ecParams;
       try {
-        ecParams = session.getByteArrayAttributeValue(p11Key, CKA_EC_PARAMS);
+        ecParams = session.getByteArrayAttrValue(p11Key, CKA_EC_PARAMS);
       } catch (PKCS11Exception ex) {
         if (keyType == CKK_VENDOR_SM2) {
           // GMObjectIdentifiers.sm2p256v1.getEncoded();

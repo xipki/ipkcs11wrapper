@@ -55,7 +55,7 @@ public class GcmParameters implements Parameters {
 
     private byte[] iv;
     private byte[] aad;
-    private long tagBits;
+    private int tagBits;
 
     /**
      * Create a new GCMParameters object with the given attributes.
@@ -66,7 +66,7 @@ public class GcmParameters implements Parameters {
      *                  depending on the algorithm implementation within the hsm, ulTagBits may be any
      *                  one of the following five values: 128, 120, 112, 104, or 96, may be 64 or 32;
      */
-    public GcmParameters(byte[] iv, byte[] aad, long tagBits) {
+    public GcmParameters(byte[] iv, byte[] aad, int tagBits) {
         this.iv = Functions.requireNonNull("iv", iv);
         this.tagBits = Functions.requireRange("tagBits", tagBits, 0, 128);
         this.aad = aad;
@@ -78,7 +78,7 @@ public class GcmParameters implements Parameters {
      * @return This object as a CK_GCM_PARAMS object.
      * @postconditions (result != null)
      */
-    public Object getPKCS11ParamsObject() {
+    public CK_GCM_PARAMS getPKCS11ParamsObject() {
         CK_GCM_PARAMS params = new CK_GCM_PARAMS();
         params.pIv = iv;
         params.pAAD = aad;

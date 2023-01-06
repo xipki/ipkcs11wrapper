@@ -54,7 +54,7 @@ public class ExtractParameters implements Parameters {
    * The bit of the base key that should be used as the first bit of the
    * derived key.
    */
-  private long bitIndex;
+  private int bitIndex;
 
   /**
    * Create a new ExtractParameters object with the given bit index.
@@ -63,7 +63,7 @@ public class ExtractParameters implements Parameters {
    *          The bit of the base key that should be used as the first bit of
    *          the derived key.
    */
-  public ExtractParameters(long bitIndex) {
+  public ExtractParameters(int bitIndex) {
     this.bitIndex = bitIndex;
   }
 
@@ -73,7 +73,7 @@ public class ExtractParameters implements Parameters {
    * @return This object as a Long object.
    */
   public Long getPKCS11ParamsObject() {
-    return bitIndex;
+    return (long) bitIndex;
   }
 
   /**
@@ -83,7 +83,7 @@ public class ExtractParameters implements Parameters {
    * @return The bit of the base key that should be used as the first bit of
    *         the derived key.
    */
-  public long getBitIndex() {
+  public int getBitIndex() {
     return bitIndex;
   }
 

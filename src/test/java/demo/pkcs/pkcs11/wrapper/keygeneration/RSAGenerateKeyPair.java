@@ -151,7 +151,7 @@ public class RSAGenerateKeyPair extends TestBase {
       LOG.info("__________________________________________________");
 
       LOG.info("##################################################");
-      BigInteger[] attrValues = session.getByteArrayAttributeBigIntValues(generatedPublicKey,
+      BigInteger[] attrValues = session.getBigIntAttrValues(generatedPublicKey,
           CKA_MODULUS, CKA_PUBLIC_EXPONENT);
       RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(attrValues[0], attrValues[1]);
 

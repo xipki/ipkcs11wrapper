@@ -111,8 +111,8 @@ public class ReadDataObject extends TestBase {
         LOG.info("___________________________________________________");
         LOG.info("found this data object with handle: {}", dataObjectHandle);
         LOG.info("  Class: {}",
-            Functions.ckoCodeToName(session.getLongAttributeValue(dataObjectHandle, CKA_CLASS)));
-        LOG.info("  Label: {}", session.getCharAttributeStringValue(dataObjectHandle, CKA_LABEL));
+            Functions.ckoCodeToName(session.getLongAttrValue(dataObjectHandle, CKA_CLASS)));
+        LOG.info("  Label: {}", session.getStringAttrValue(dataObjectHandle, CKA_LABEL));
         LOG.info("___________________________________________________");
         // FIXME, there may be more than one that matches the given template,
         // the label is not unique in general

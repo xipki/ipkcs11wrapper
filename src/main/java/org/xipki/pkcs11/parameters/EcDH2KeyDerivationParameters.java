@@ -62,7 +62,7 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
   /**
    * The length in bytes of the second EC private key.
    */
-  private long privateDataLength;
+  private int privateDataLength;
 
   /**
    * The key for the second EC private key value.
@@ -93,7 +93,7 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
    *          The other party's second EC public key value.
    */
   public EcDH2KeyDerivationParameters(long kdf, byte[] sharedData, byte[] publicData,
-      long privateDataLength, long privateDataHandle, byte[] publicData2) {
+      int privateDataLength, long privateDataHandle, byte[] publicData2) {
     super(kdf, publicData);
     this.sharedData = sharedData;
     this.privateDataLength = privateDataLength;

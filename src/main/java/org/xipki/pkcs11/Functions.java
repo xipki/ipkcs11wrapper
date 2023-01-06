@@ -579,12 +579,20 @@ public class Functions {
     return param;
   }
 
-  public static long requireRange(String name, long argument, long min, long max) {
+  public static int requireRange(String name, int argument, int min, int max) {
     if (argument < min || argument > max) {
       throw new IllegalArgumentException(String.format(
           "%s may not be out of the range [%d, %d]: %d", name, min, max, argument));
     }
     return argument;
+  }
+
+  public static int requireAmong(String name, int argument, int... candidates) {
+    for (int candidate : candidates) {
+      if (argument == candidate) return argument;
+    }
+
+    throw new IllegalArgumentException(name + " is not among " + Arrays.toString(candidates) + ": " + argument);
   }
 
   public static long requireAmong(String name, long argument, long... candidates) {

@@ -87,8 +87,12 @@ public class ByteArrayAttribute extends Attribute {
     return (byte[]) ckAttribute.pValue;
   }
 
-  public BigInteger getUnsignedBigIntValue() {
+  public BigInteger getBigIntValue() {
     return new BigInteger(1, (byte[]) ckAttribute.pValue);
+  }
+
+  public BigInteger getSignedBigIntValue() {
+    return new BigInteger((byte[]) ckAttribute.pValue);
   }
 
   /**

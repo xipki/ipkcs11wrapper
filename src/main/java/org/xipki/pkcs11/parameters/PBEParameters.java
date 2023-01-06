@@ -72,7 +72,7 @@ public class PBEParameters implements Parameters {
   /**
    * The number of iterations required for the generation.
    */
-  private long iterations;
+  private int iterations;
 
   /**
    * Create a new PBEDeriveParameters object with the given attributes.
@@ -86,7 +86,7 @@ public class PBEParameters implements Parameters {
    * @param iterations
    *          The number of iterations required for the generation.
    */
-  public PBEParameters(char[] iv, char[] password, char[] salt, long iterations) {
+  public PBEParameters(char[] iv, char[] password, char[] salt, int iterations) {
     this.iv = Functions.requireNonNull("iv", iv);
     Functions.requireAmong("iv.length", iv.length, 8);
     this.password = Functions.requireNonNull("password", password);
@@ -142,7 +142,7 @@ public class PBEParameters implements Parameters {
    *
    * @return The number of iterations required for the generation.
    */
-  public long getIterations() {
+  public int getIterations() {
     return iterations;
   }
 

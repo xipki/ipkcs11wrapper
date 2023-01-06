@@ -371,32 +371,32 @@ public class AttributeVector {
     return null;
   }
 
-  public Boolean getAttributeBooleanValue(long type) {
+  public Boolean getBooleanAttrValue(long type) {
     Attribute attr = getAttribute(type);
     return attr == null ? null : ((BooleanAttribute) attr).getBooleanValue();
   }
 
-  public Long getAttributeLongValue(long type) {
+  public Long getLongAttrValue(long type) {
     Attribute attr = getAttribute(type);
     return attr == null ? null : ((LongAttribute) attr).getLongValue();
   }
 
-  public Integer getAttributeIntValue(long type) {
-    Long value = getAttributeLongValue(type);
+  public Integer getIntAttrValue(long type) {
+    Long value = getLongAttrValue(type);
     return value == null ? null : value.intValue();
   }
 
-  public char[] getAttributeCharArrayValue(long type) {
+  public char[] getCharArrayAttrValue(long type) {
     Attribute attr = getAttribute(type);
     return attr == null ? null : ((CharArrayAttribute) attr).getCharArrayValue();
   }
 
-  public String getAttributeStringValue(long type) {
+  public String getStringAttrValue(long type) {
     Attribute attr = getAttribute(type);
     return attr == null ? null : ((CharArrayAttribute) attr).getStringValue();
   }
 
-  public byte[] getAttributeByteArrayValue(long type) {
+  public byte[] getByteArrayAttrValue(long type) {
     Attribute attr = getAttribute(type);
     return attr == null ? null : ((ByteArrayAttribute) attr).getByteArrayValue();
   }

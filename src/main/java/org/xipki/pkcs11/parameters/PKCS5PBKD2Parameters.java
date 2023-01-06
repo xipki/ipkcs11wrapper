@@ -70,7 +70,7 @@ public class PKCS5PBKD2Parameters implements Parameters {
    * The number of iterations to perform when generating each block of random
    * data.
    */
-  private long iterations;
+  private int iterations;
 
   /**
    * The pseudo-random function (PRF) to used to generate the key.
@@ -102,7 +102,7 @@ public class PKCS5PBKD2Parameters implements Parameters {
    *          value.
    */
   public PKCS5PBKD2Parameters(long saltSource, byte[] saltSourceData,
-      long iterations, long pseudoRandomFunction, byte[] pseudoRandomFunctionData) {
+      int iterations, long pseudoRandomFunction, byte[] pseudoRandomFunctionData) {
     this.saltSource = Functions.requireAmong("saltSource", saltSource, CKZ_SALT_SPECIFIED);
     this.pseudoRandomFunction = Functions.requireAmong("pseudoRandomFunction",
                                   pseudoRandomFunction, CKP_PKCS5_PBKD2_HMAC_SHA1);
@@ -154,7 +154,7 @@ public class PKCS5PBKD2Parameters implements Parameters {
    * @return The number of iterations to perform when generating each block of
    *         random data.
    */
-  public long getIterations() {
+  public int getIterations() {
     return iterations;
   }
 

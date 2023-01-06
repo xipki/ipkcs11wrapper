@@ -79,7 +79,7 @@ public class KeyDerivationStringDataParameters implements Parameters {
    *
    * @postconditions (result != null)
    */
-  public Object getPKCS11ParamsObject() {
+  public CK_KEY_DERIVATION_STRING_DATA getPKCS11ParamsObject() {
     CK_KEY_DERIVATION_STRING_DATA params = new CK_KEY_DERIVATION_STRING_DATA();
     params.pData = data;
     return params;

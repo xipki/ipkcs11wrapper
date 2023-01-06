@@ -905,7 +905,7 @@ public class Session {
    * @exception PKCS11Exception
    *              If digesting the data failed.
    */
-  public int digestSingle(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+  public int digest(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_Digest(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
@@ -1592,20 +1592,36 @@ public class Session {
     return parameter == null ? null : parameter.getPKCS11ParamsObject();
   }
 
-  public Long getLongAttributeValue(long objectHandle, long attributeType) throws PKCS11Exception {
+  public Integer getIntAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
+    Long value = getLongAttrValue(objectHandle, attributeType);
+    return value == null ? null : value.intValue();
+  }
+
+  public Integer[] getIntAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+    Long[] value = getLongAttrValues(objectHandle, attributeTypes);
+    if (value == null) return null;
+
+    Integer[] ret = new Integer[value.length];
+    for (int i = 0; i < value.length; i++) {
+      if (value[i] != null) ret[i] = value[i].intValue();
+    }
+    return ret;
+  }
+
+  public Long getLongAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     LongAttribute attr = new LongAttribute(attributeType);
-    getAttributeValue(objectHandle, attr);
+    getAttrValue(objectHandle, attr);
     return attr.getLongValue();
   }
 
-  public Long[] getLongAttributeValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+  public Long[] getLongAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
     LongAttribute[] attrs = new LongAttribute[attributeTypes.length];
     int idx = 0;
     for (long attrType : attributeTypes) {
       attrs[idx++] = new LongAttribute(attrType);
     }
 
-    getAttributeValues(objectHandle, attrs);
+    getAttrValues(objectHandle, attrs);
 
     Long[] ret = new Long[attributeTypes.length];
     idx = 0;
@@ -1615,20 +1631,20 @@ public class Session {
     return ret;
   }
 
-  public char[] getCharAttributeValue(long objectHandle, long attributeType) throws PKCS11Exception {
+  public char[] getCharArrayAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     CharArrayAttribute attr = new CharArrayAttribute(attributeType);
-    getAttributeValue(objectHandle, attr);
+    getAttrValue(objectHandle, attr);
     return attr.getCharArrayValue();
   }
 
-  public char[][] getCharAttributeValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+  public char[][] getCharArrayAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
     CharArrayAttribute[] attrs = new CharArrayAttribute[attributeTypes.length];
     int idx = 0;
     for (long attrType : attributeTypes) {
       attrs[idx++] = new CharArrayAttribute(attrType);
     }
 
-    getAttributeValues(objectHandle, attrs);
+    getAttrValues(objectHandle, attrs);
 
     char[][] ret = new char[attributeTypes.length][];
     idx = 0;
@@ -1638,13 +1654,13 @@ public class Session {
     return ret;
   }
 
-  public String getCharAttributeStringValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    char[] chars = getCharAttributeValue(objectHandle, attributeType);
+  public String getStringAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
+    char[] chars = getCharArrayAttrValue(objectHandle, attributeType);
     return chars == null ? null : new String(chars);
   }
 
-  public String[] getCharAttributeStringValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
-    char[][] charsArray = getCharAttributeValues(objectHandle, attributeTypes);
+  public String[] getStringAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+    char[][] charsArray = getCharArrayAttrValues(objectHandle, attributeTypes);
 
     String[] ret = new String[attributeTypes.length];
     int idx = 0;
@@ -1654,14 +1670,14 @@ public class Session {
     return ret;
   }
 
-  public BigInteger getByteArrayAttributeBigIntValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    byte[] value = getByteArrayAttributeValue(objectHandle, attributeType);
+  public BigInteger getBigIntAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
+    byte[] value = getByteArrayAttrValue(objectHandle, attributeType);
     return value == null ? null : new BigInteger(1, value);
   }
 
-  public BigInteger[] getByteArrayAttributeBigIntValues(long objectHandle, long... attributeTypes)
+  public BigInteger[] getBigIntAttrValues(long objectHandle, long... attributeTypes)
       throws PKCS11Exception {
-    byte[][] values = getByteArrayAttributeValues(objectHandle, attributeTypes);
+    byte[][] values = getByteArrayAttrValues(objectHandle, attributeTypes);
     BigInteger[] ret = new BigInteger[attributeTypes.length];
     for (int i = 0; i < values.length; i++) {
       ret[i] = new BigInteger(1, values[i]);
@@ -1669,20 +1685,20 @@ public class Session {
     return ret;
   }
 
-  public byte[] getByteArrayAttributeValue(long objectHandle, long attributeType) throws PKCS11Exception {
+  public byte[] getByteArrayAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     ByteArrayAttribute attr = new ByteArrayAttribute(attributeType);
-    getAttributeValue(objectHandle, attr);
+    getAttrValue(objectHandle, attr);
     return attr.getByteArrayValue();
   }
 
-  public byte[][] getByteArrayAttributeValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+  public byte[][] getByteArrayAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
     ByteArrayAttribute[] attrs = new ByteArrayAttribute[attributeTypes.length];
     int idx = 0;
     for (long attrType : attributeTypes) {
       attrs[idx++] = new ByteArrayAttribute(attrType);
     }
 
-    getAttributeValues(objectHandle, attrs);
+    getAttrValues(objectHandle, attrs);
 
     byte[][] ret = new byte[attributeTypes.length][];
     idx = 0;
@@ -1706,7 +1722,7 @@ public class Session {
    * @exception PKCS11Exception
    *              If getting the attributes failed.
    */
-  public void getAttributeValues(long objectHandle, Attribute... attributes) throws PKCS11Exception {
+  public void getAttrValues(long objectHandle, Attribute... attributes) throws PKCS11Exception {
     Functions.requireNonNull("attributes", attributes);
 
     CK_ATTRIBUTE[] attributeTemplateList = new CK_ATTRIBUTE[attributes.length];
@@ -1748,7 +1764,7 @@ public class Session {
     delayedEx = null;
     for (Attribute attr : attributes) {
       try {
-        getAttributeValue(objectHandle, attr, true);
+        getAttrValue(objectHandle, attr, true);
       } catch (PKCS11Exception ex) {
         if (delayedEx == null) delayedEx = ex;
       }
@@ -1781,11 +1797,11 @@ public class Session {
    * @exception PKCS11Exception
    *              If getting the attribute failed.
    */
-  public void getAttributeValue(long objectHandle, Attribute attribute) throws PKCS11Exception {
-    getAttributeValue(objectHandle, attribute, true);
+  public void getAttrValue(long objectHandle, Attribute attribute) throws PKCS11Exception {
+    getAttrValue(objectHandle, attribute, true);
   }
 
-  public void getAttributeValue(long objectHandle, Attribute attribute, boolean ignoreParsableException)
+  public void getAttrValue(long objectHandle, Attribute attribute, boolean ignoreParsableException)
       throws PKCS11Exception {
     attribute.stateKnown(false).present(false);
 
@@ -1859,19 +1875,19 @@ public class Session {
   }
 
   private static void checkParams(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) {
-    Functions.requireNonNull("in", in);
-    Functions.requireNonNull("out", out);
-    if (in.length < inOfs + inLen) throw new IllegalArgumentException("inOfs + inLen > in.length");
-    if (out.length < outOfs + outLen) throw new IllegalArgumentException("outOfs + outLen > out.length");
+    checkInParams(in, inOfs, inLen);
+    checkOutParams(out, outOfs, outLen);
   }
 
   private static void checkInParams(byte[] in, int inOfs, int inLen) {
     Functions.requireNonNull("in", in);
+    if (inOfs < 0 || inLen <= 0) throw new IllegalArgumentException("inOfs or inLen is invalid");
     if (in.length < inOfs + inLen) throw new IllegalArgumentException("inOfs + inLen > in.length");
   }
 
   private static void checkOutParams(byte[] out, int outOfs, int outLen) {
     Functions.requireNonNull("out", out);
+    if (outOfs < 0 || outLen <= 0) throw new IllegalArgumentException("outOfs or outLen is invalid");
     if (out.length < outOfs + outLen) throw new IllegalArgumentException("outOfs + outLen > out.length");
   }
 

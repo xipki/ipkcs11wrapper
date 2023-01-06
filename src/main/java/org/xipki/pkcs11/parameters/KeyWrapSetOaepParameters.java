@@ -84,7 +84,7 @@ public class KeyWrapSetOaepParameters implements Parameters {
    *
    * @postconditions (result != null)
    */
-  public Object getPKCS11ParamsObject() {
+  public CK_KEY_WRAP_SET_OAEP_PARAMS getPKCS11ParamsObject() {
     CK_KEY_WRAP_SET_OAEP_PARAMS params = new CK_KEY_WRAP_SET_OAEP_PARAMS();
 
     params.bBC = blockContents;

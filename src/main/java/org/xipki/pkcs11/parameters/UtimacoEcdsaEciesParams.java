@@ -95,7 +95,7 @@ public class UtimacoEcdsaEciesParams implements Parameters {
         this.sharedSecret2 = sharedSecret2 == null ? null : sharedSecret2.clone();
     }
 
-    public Object getPKCS11ParamsObject() {
+    public CK_ECDSA_ECIES_PARAMS getPKCS11ParamsObject() {
         CK_ECDSA_ECIES_PARAMS pkcs11Params = new CK_ECDSA_ECIES_PARAMS();
         pkcs11Params.hashAlg = hashAlg;
         pkcs11Params.cryptAlg = cryptAlg;

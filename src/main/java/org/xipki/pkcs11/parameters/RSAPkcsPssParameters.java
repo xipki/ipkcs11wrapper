@@ -56,7 +56,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
   /**
    * The length of the salt value in octets.
    */
-  private long saltLength;
+  private int saltLength;
 
   /**
    * Create a new RSAPkcsOaepParameters object with the given attributes.
@@ -69,7 +69,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
    * @param saltLength
    *          The length of the salt value in octets.
    */
-  public RSAPkcsPssParameters(long hashAlgorithm, long maskGenerationFunction, long saltLength) {
+  public RSAPkcsPssParameters(long hashAlgorithm, long maskGenerationFunction, int saltLength) {
     super(hashAlgorithm, maskGenerationFunction);
     this.saltLength = saltLength;
   }
@@ -81,7 +81,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
    *
    * @postconditions (result != null)
    */
-  public Object getPKCS11ParamsObject() {
+  public CK_RSA_PKCS_PSS_PARAMS getPKCS11ParamsObject() {
     CK_RSA_PKCS_PSS_PARAMS params = new CK_RSA_PKCS_PSS_PARAMS();
 
     params.hashAlg = hashAlg;
@@ -96,7 +96,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
    *
    * @return The length of the salt value in octets.
    */
-  public long getSaltLength() {
+  public int getSaltLength() {
     return saltLength;
   }
 

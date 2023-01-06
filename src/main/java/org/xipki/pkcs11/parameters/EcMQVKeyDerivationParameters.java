@@ -57,7 +57,7 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
   private byte[] sharedData;
 
   /** the length in bytes of the second EC private key. */
-  private long privateDataLen;
+  private int privateDataLen;
 
   /** key handle for second EC private key value. */
   private long privateData;
@@ -88,7 +88,7 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
    *          Handle to the first party's ephemeral public key
    */
   public EcMQVKeyDerivationParameters(long keyDerivationFunction, byte[] sharedData, byte[] publicData,
-      long privateDataLen, long privateData, byte[] publicData2, long publicKey) {
+      int privateDataLen, long privateData, byte[] publicData2, long publicKey) {
     super(keyDerivationFunction, publicData);
     this.sharedData = sharedData;
     this.privateDataLen = privateDataLen;
@@ -104,7 +104,7 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @postconditions (result != null)
    */
-  public Object getPKCS11ParamsObject() {
+  public CK_ECMQV_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_ECMQV_DERIVE_PARAMS params = new CK_ECMQV_DERIVE_PARAMS();
 
     params.kdf = kdf;
@@ -132,7 +132,7 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @return the length in bytes of the second EC private key
    */
-  public long getPrivateDataLen() {
+  public int getPrivateDataLen() {
     return privateDataLen;
   }
 

@@ -55,7 +55,7 @@ public class MacGeneralParameters implements Parameters {
   /**
    * The length of the MAC produced, in bytes.
    */
-  private long macLength;
+  private int macLength;
 
   /**
    * Create a new MacGeneralParameters object with the given MAC length.
@@ -63,7 +63,7 @@ public class MacGeneralParameters implements Parameters {
    * @param macLength
    *          The length of the MAC produced, in bytes.
    */
-  public MacGeneralParameters(long macLength) {
+  public MacGeneralParameters(int macLength) {
     this.macLength = macLength;
   }
 
@@ -73,7 +73,7 @@ public class MacGeneralParameters implements Parameters {
    * @return This object as a Long object.
    */
   public Long getPKCS11ParamsObject() {
-    return macLength;
+    return (long) macLength;
   }
 
   /**
@@ -81,7 +81,7 @@ public class MacGeneralParameters implements Parameters {
    *
    * @return The length of the MAC produced, in bytes.
    */
-  public long getMacLength() {
+  public int getMacLength() {
     return macLength;
   }
 

@@ -110,7 +110,7 @@ public class DSAGenerateKeyPair extends TestBase {
       LOG.info("The private key is {}", generatedPrivateKey);
 
       LOG.info("##################################################");
-      byte[] value = session.getByteArrayAttributeValue(generatedPublicKey, CKA_VALUE);
+      byte[] value = session.getByteArrayAttrValue(generatedPublicKey, CKA_VALUE);
 
       LOG.info("Public Key (Value): {}", Functions.toHex(value));
 

@@ -117,8 +117,8 @@ public class ECGenerateKeyPair extends TestBase {
       LOG.info("The private key is {}", generatedPrivateKey);
 
       LOG.info("##################################################");
-      byte[] encodedPoint = session.getByteArrayAttributeValue(generatedPublicKey, CKA_EC_POINT);
-      byte[] curveOid = session.getByteArrayAttributeValue(generatedPublicKey, CKA_EC_PARAMS);
+      byte[] encodedPoint = session.getByteArrayAttrValue(generatedPublicKey, CKA_EC_POINT);
+      byte[] curveOid = session.getByteArrayAttrValue(generatedPublicKey, CKA_EC_PARAMS);
 
       LOG.info("Public Key (Point): {}", Functions.toHex(encodedPoint));
       LOG.info("Public Key (Curve OID): {}", Functions.toHex(curveOid));

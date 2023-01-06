@@ -53,22 +53,22 @@ import org.xipki.pkcs11.Functions;
  */
 public class CcmParameters implements Parameters {
 
-    private long dataLen;
+    private int dataLen;
     private byte[] nonce;
     private byte[] aad;
-    private long macLen;
+    private int macLen;
 
     /**
      * Create a new CCMParameters object with the given attributes.
      *
      * @param dataLen length of the data where 0 &le; ulDataLen &lt; 2^8L. This length should not include the length
-     *                  of the MAC that is appended to the cipher text.
-     *                  (where L is the size in bytes of the data length's length(2 &lt; L &lt; 8)
-     * @param nonce    the nonce
-     * @param aad      additional authentication data. This data is authenticated but not encrypted.
+     *                of the MAC that is appended to the cipher text.
+     *                (where L is the size in bytes of the data length's length(2 &lt; L &lt; 8)
+     * @param nonce   the nonce
+     * @param aad     additional authentication data. This data is authenticated but not encrypted.
      * @param macLen  length of the MAC (output following cipher text) in bytes. Valid values are (4, 6, 8, 10, 12, 14 and 16)
      */
-    public CcmParameters(long dataLen, byte[] nonce, byte[] aad, long macLen) {
+    public CcmParameters(int dataLen, byte[] nonce, byte[] aad, int macLen) {
         this.nonce = Functions.requireNonNull("nonce", nonce);
         Functions.requireRange("nonce.length", nonce.length, 7, 13);
         this.macLen = Functions.requireAmong("macLen", macLen, 4, 6, 8, 10, 12, 14, 16);
@@ -82,7 +82,7 @@ public class CcmParameters implements Parameters {
      * @return This object as a CK_CCM_PARAMS object.
      * @postconditions (result != null)
      */
-    public Object getPKCS11ParamsObject() {
+    public CK_CCM_PARAMS getPKCS11ParamsObject() {
         CK_CCM_PARAMS params = new CK_CCM_PARAMS();
         params.pNonce = nonce;
         params.pAAD = aad;
@@ -92,7 +92,7 @@ public class CcmParameters implements Parameters {
         return params;
     }
 
-    public void setDataLen(long dataLen) {
+    public void setDataLen(int dataLen) {
         this.dataLen = dataLen;
     }
 

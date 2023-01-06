@@ -73,7 +73,7 @@ public class Chacha20Parameters implements Parameters {
      * @return This object as a CK_CHACHA20_PARAMS object.
      * @postconditions (result != null)
      */
-    public Object getPKCS11ParamsObject() {
+    public CK_CHACHA20_PARAMS getPKCS11ParamsObject() {
         CK_CHACHA20_PARAMS params = new CK_CHACHA20_PARAMS();
         params.pBlockCounter = blockCounter;
         params.pNonce = nonce;

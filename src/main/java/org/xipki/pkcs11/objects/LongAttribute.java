@@ -84,16 +84,12 @@ public class LongAttribute extends Attribute {
   }
 
   /**
-   * Get a string representation of the value of this attribute. The radix
-   * for the presentation can be specified; e.g. 16 for hex, 10 for decimal.
+   * Get the int value of this attribute. Null, is also possible.
    *
-   * @param radix
-   *          The radix for the representation of the value.
-   * @return A string representation of the value of this attribute.
+   * @return The int value of this attribute or null.
    */
-  protected String getValueString(int radix) {
-    return ((ckAttribute != null) && (ckAttribute.pValue != null))
-        ? Long.toString(((Long) ckAttribute.pValue), radix) : "<NULL_PTR>";
+  public Integer getIntValue() {
+    return ckAttribute.pValue == null ? null : ((Long) ckAttribute.pValue).intValue();
   }
 
   /**
@@ -106,7 +102,9 @@ public class LongAttribute extends Attribute {
    * @return A string representation of the value of this attribute.
    */
   public String toString(int radix) {
-    return present ? (sensitive ? "<Value is sensitive>" : getValueString(radix)) : "<Attribute not present>";
+    String valueText = ((ckAttribute != null) && (ckAttribute.pValue != null))
+        ? Long.toString(((Long) ckAttribute.pValue), radix) : "<NULL_PTR>";
+    return present ? (sensitive ? "<Value is sensitive>" : valueText) : "<Attribute not present>";
   }
 
   public void setValue(Object value) {

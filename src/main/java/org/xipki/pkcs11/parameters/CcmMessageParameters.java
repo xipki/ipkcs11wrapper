@@ -53,7 +53,7 @@ import org.xipki.pkcs11.Functions;
  */
 public class CcmMessageParameters implements MessageParameters {
 
-    private long dataLen;
+    private int dataLen;
     private byte[] nonce;
     private long nonceFixedBits;
     private long nonceGenerator;
@@ -70,11 +70,11 @@ public class CcmMessageParameters implements MessageParameters {
      *                          unique for a given session.
      * @param mac CCM MAC returned on MessageEncrypt, provided on MessageDecrypt
      */
-    public CcmMessageParameters(long dataLen, byte[] nonce, long nonceFixedBits, long nonceGenerator, byte[] mac) {
+    public CcmMessageParameters(int dataLen, byte[] nonce, long nonceFixedBits, long nonceGenerator, byte[] mac) {
         init(dataLen, nonce, nonceFixedBits, nonceGenerator, mac);
     }
 
-    private void init(long dataLen, byte[] nonce, long nonceFixedBits, long nonceGenerator, byte[] mac) {
+    private void init(int dataLen, byte[] nonce, long nonceFixedBits, long nonceGenerator, byte[] mac) {
         this.dataLen = dataLen;
         this.nonce = nonce;
         this.nonceFixedBits = nonceFixedBits;
@@ -88,7 +88,7 @@ public class CcmMessageParameters implements MessageParameters {
      * @return This object as a CK_CCM_MESSAGE_PARAMS object.
      * @postconditions (result != null)
      */
-    public Object getPKCS11ParamsObject() {
+    public CK_CCM_MESSAGE_PARAMS getPKCS11ParamsObject() {
         CK_CCM_MESSAGE_PARAMS params = new CK_CCM_MESSAGE_PARAMS();
         params.ulDataLen = dataLen;
         params.pNonce = nonce;
@@ -106,7 +106,7 @@ public class CcmMessageParameters implements MessageParameters {
      */
     public void setValuesFromPKCS11Object(Object obj) {
         CK_CCM_MESSAGE_PARAMS params = (CK_CCM_MESSAGE_PARAMS) obj;
-        init(params.ulDataLen, params.pNonce, params.ulNonceFixedBits, params.nonceGenerator, params.pMAC);
+        init((int) params.ulDataLen, params.pNonce, params.ulNonceFixedBits, params.nonceGenerator, params.pMAC);
     }
 
     /**
@@ -124,7 +124,7 @@ public class CcmMessageParameters implements MessageParameters {
         return mac;
     }
 
-    public long getDataLen() {
+    public int getDataLen() {
         return dataLen;
     }
 

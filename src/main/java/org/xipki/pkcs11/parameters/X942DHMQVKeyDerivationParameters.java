@@ -54,7 +54,7 @@ public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParame
   private long publicKeyHandle;
 
   public X942DHMQVKeyDerivationParameters(long keyDerivationFunction, byte[] sharedData,
-      byte[] publicData, long privateDataLength, long privateDataHandle, byte[] publicData2, long publicKeyHandle) {
+      byte[] publicData, int privateDataLength, long privateDataHandle, byte[] publicData2, long publicKeyHandle) {
     super(keyDerivationFunction, sharedData, publicData, privateDataLength, privateDataHandle, publicData2);
 
     this.publicKeyHandle = publicKeyHandle;
@@ -66,7 +66,7 @@ public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParame
    * @return This object as a CK_X9_42_DH2_DERIVE_PARAMS object.
    * @postconditions (result ! = null)
    */
-  public Object getPKCS11ParamsObject() {
+  public CK_X9_42_DHMQV_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_X9_42_DHMQV_DERIVE_PARAMS params = new CK_X9_42_DHMQV_DERIVE_PARAMS();
 
     params.kdf = kdf;

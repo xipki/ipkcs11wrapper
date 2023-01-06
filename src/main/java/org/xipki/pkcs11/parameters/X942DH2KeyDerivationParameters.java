@@ -62,7 +62,7 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
   /**
    * The length in bytes of the second EC private key.
    */
-  private long privateDataLength;
+  private int privateDataLength;
 
   /**
    * The key for the second EC private key value.
@@ -93,7 +93,7 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    *          The other party's second X9.42 public key value.
    */
   public X942DH2KeyDerivationParameters(long keyDerivationFunction, byte[] sharedData, byte[] publicData,
-                                        long privateDataLength, long privateDataHandle, byte[] publicData2) {
+                                        int privateDataLength, long privateDataHandle, byte[] publicData2) {
     super(keyDerivationFunction, publicData);
     this.otherInfo = sharedData;
     this.privateDataLength = privateDataLength;
@@ -143,7 +143,7 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @return The length in bytes of the second X9.42 private key.
    */
-  public long getPrivateDataLength() {
+  public int getPrivateDataLength() {
     return privateDataLength;
   }
 

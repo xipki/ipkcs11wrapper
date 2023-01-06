@@ -101,7 +101,7 @@ public class KEADeriveParameters implements Parameters {
    *
    * @postconditions (result != null)
    */
-  public Object getPKCS11ParamsObject() {
+  public CK_KEA_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_KEA_DERIVE_PARAMS params = new CK_KEA_DERIVE_PARAMS();
 
     params.isSender = isSender;

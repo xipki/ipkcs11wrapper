@@ -134,7 +134,7 @@ public class ImportCertificate extends TestBase {
       long[] foundKeyObjects = session.findObjects(1);
       if (foundKeyObjects.length > 0) {
         long foundKey = foundKeyObjects[0];
-        objectID = session.getByteArrayAttributeValue(foundKey, CKA_ID);
+        objectID = session.getByteArrayAttrValue(foundKey, CKA_ID);
         LOG.info("found a corresponding key on the token:\n{}", foundKey);
       } else {
         LOG.info("found no corresponding key on the token.");

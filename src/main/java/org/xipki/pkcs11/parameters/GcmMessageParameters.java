@@ -84,7 +84,7 @@ public class GcmMessageParameters implements Parameters, MessageParameters {
      * @return This object as a CK_ECDH1_DERIVE_PARAMS object.
      * @postconditions (result != null)
      */
-    public Object getPKCS11ParamsObject() {
+    public CK_GCM_MESSAGE_PARAMS getPKCS11ParamsObject() {
         CK_GCM_MESSAGE_PARAMS params = new CK_GCM_MESSAGE_PARAMS();
         params.pIv = iv;
         params.ulIvFixedBits = ivFixedBits;
