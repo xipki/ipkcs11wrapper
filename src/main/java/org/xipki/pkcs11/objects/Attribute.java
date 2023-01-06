@@ -155,9 +155,7 @@ public abstract class Attribute {
       byte[] baValue;
       if (value instanceof BigInteger) {
         baValue = ((BigInteger) value).toByteArray();
-        if (baValue[0] == 0) {
-          baValue = Arrays.copyOfRange(baValue, 1, baValue.length);
-        }
+        if (baValue[0] == 0) baValue = Arrays.copyOfRange(baValue, 1, baValue.length);
       } else {
         baValue = (byte[]) value;
       }
@@ -339,16 +337,6 @@ public abstract class Attribute {
     String valueString = (!stateKnown) ? "<Value is not present or sensitive>"
         : present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";
     return sb.append(valueString).toString();
-  }
-
-  /**
-   * Set the PKCS#11 type of this attribute.
-   *
-   * @param type
-   *          The PKCS#11 type of this attribute.
-   */
-  protected void setType(long type) {
-    ckAttribute.type = type;
   }
 
   /**

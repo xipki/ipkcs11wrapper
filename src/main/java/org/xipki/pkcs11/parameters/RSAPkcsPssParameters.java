@@ -68,9 +68,6 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
    *          MessageGenerationFunctionType interface.
    * @param saltLength
    *          The length of the salt value in octets.
-   * @preconditions (hashAlgorithm != null) and (maskGenerationFunction ==
-   *                MessageGenerationFunctionType.Sha1)
-   *
    */
   public RSAPkcsPssParameters(long hashAlgorithm, long maskGenerationFunction, long saltLength) {
     super(hashAlgorithm, maskGenerationFunction);

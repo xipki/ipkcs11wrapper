@@ -62,9 +62,9 @@ public class GetInfo extends TestBase {
   @Test
   public void main() throws TokenException {
     PKCS11Module pkcs11Module = getModule();
-    Info info = pkcs11Module.getInfo();
+    ModuleInfo moduleInfo = pkcs11Module.getInfo();
     LOG.info("##################################################");
-    LOG.info("{}", info);
+    LOG.info("{}", moduleInfo);
     LOG.info("##################################################");
     LOG.info("getting list of all slots");
     Slot[] slots = pkcs11Module.getSlotList(false);

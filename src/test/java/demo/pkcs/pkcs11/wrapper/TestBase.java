@@ -125,7 +125,7 @@ public class TestBase {
 
       speedThreads = Integer.getInteger("speed.threads", 2);
       speedDuration = System.getProperty("speed.duration", "3s");
-      module.initialize(null);
+      module.initialize();
 
       Runtime.getRuntime().addShutdownHook(new Thread() {
         public void run() {

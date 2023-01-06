@@ -96,7 +96,7 @@ public class InitializationVectorParameters implements Parameters {
    * @return A string representation of this object.
    */
   public String toString() {
-    return "  Initialization Vector (hex): " + Functions.toHex(iv);
+    return "Class: " + getClass().getName() + "\n  IV: " + Functions.toHex(iv);
   }
 
 }

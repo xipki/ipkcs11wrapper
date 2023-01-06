@@ -11,13 +11,10 @@
   <groupId>org.xipki</groupId>
   <artifactId>ipkcs11wrapper</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
-  <name>ipkcs11wrapper</name>
   <properties>
     <!--must match the version defined above-->
     <bundle.version>1.0.0.SNAPSHOT</bundle.version>
     <test.excludes>**/*Speed.java</test.excludes>
-    <test.junit.argline></test.junit.argline>
   </properties>
   <licenses>
     <license>
@@ -170,7 +167,7 @@
             <manifestEntries>
               <Export-Package>org.xipki.pkcs11,org.xipki.pkcs11.objects,org.xipki.pkcs11.parameters,iaik.pkcs.pkcs11.wrapper</Export-Package>
               <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-              <Bundle-Name>pkcs11-wrapper</Bundle-Name>
+              <Bundle-Name>ipkcs11wrapper</Bundle-Name>
               <Bundle-SymbolicName>org.xipki.ipkcs11wrapper</Bundle-SymbolicName>
               <Bundle-Version>${bundle.version}</Bundle-Version>
             </manifestEntries>

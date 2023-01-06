@@ -87,10 +87,8 @@ public class PBEParameters implements Parameters {
    *          The number of iterations required for the generation.
    */
   public PBEParameters(char[] iv, char[] password, char[] salt, long iterations) {
-    if ((iv != null) && (iv.length != 8)) {
-      throw new IllegalArgumentException("Argument 'iv' must be null or must have length 8, if it is not null.");
-    }
-    this.iv = iv;
+    this.iv = Functions.requireNonNull("iv", iv);
+    Functions.requireAmong("iv.length", iv.length, 8);
     this.password = Functions.requireNonNull("password", password);
     this.salt = Functions.requireNonNull("salt", salt);
     this.iterations = iterations;

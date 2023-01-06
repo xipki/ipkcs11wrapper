@@ -79,9 +79,7 @@ class VendorCode {
         // For better performance, this line should be in the if-block. But we put
         // it here explicitly to make sure that all vendorcode blocks ar configured correctly.
         VendorCode vendorCode = new VendorCode(block.nameToCodeMap);
-        if (block.matches(modulePath, manufacturerID, libraryDescription, libraryVersion)) {
-          return vendorCode;
-        }
+        if (block.matches(modulePath, manufacturerID, libraryDescription, libraryVersion)) return vendorCode;
       }
     }
 
@@ -111,16 +109,15 @@ class VendorCode {
           if (value.isEmpty()) continue;
 
           String name = line.substring(0, idx).trim();
+          List<String> textList = Arrays.asList(value.toLowerCase(Locale.ROOT).split(":"));
           if (name.equalsIgnoreCase("module.path")) {
-            block.modulePaths = Arrays.asList(value.toLowerCase(Locale.ROOT).split(":"));
+            block.modulePaths = textList;
           } else if (name.equalsIgnoreCase("module.mid")) {
-            block.manufacturerIDs = Arrays.asList(value.toLowerCase(Locale.ROOT).split(":"));
+            block.manufacturerIDs = textList;
           } else if (name.equalsIgnoreCase("module.description")) {
-            block.descriptions = Arrays.asList(value.toLowerCase(Locale.ROOT).split(":"));
+            block.descriptions = textList;
           } else if (name.equalsIgnoreCase("module.version")) {
-            block.versions = Arrays.asList(value.toLowerCase(Locale.ROOT).split(":"));
-          } else {
-            // do nothing
+            block.versions = textList;
           }
         } else if (line.startsWith("CKK_") || line.startsWith("CKM_")) {
           int idx = line.indexOf(' ');

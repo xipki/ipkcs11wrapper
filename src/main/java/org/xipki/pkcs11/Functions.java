@@ -89,9 +89,7 @@ public class Functions {
           boolean first = true;
           while (tokens.hasMoreTokens()) {
             String name = tokens.nextToken();
-            if (!name.startsWith(prefix)) {
-              throw new TokenRuntimeException(name + " does not start with " + prefix);
-            }
+            if (!name.startsWith(prefix)) throw new TokenRuntimeException(name + " does not start with " + prefix);
 
             if (first) {
               codeNameMap.put(code, name);
@@ -188,6 +186,7 @@ public class Functions {
   private static final CodeNameMap ckoCodeNameMap;
   private static final CodeNameMap ckpCodeNameMap;
   private static final CodeNameMap ckrCodeNameMap;
+  private static final CodeNameMap cksCodeNameMap;
   private static final CodeNameMap ckuCodeNameMap;
   private static final CodeNameMap ckzCodeNameMap;
 
@@ -219,6 +218,7 @@ public class Functions {
     ckoCodeNameMap = new CodeNameMap("CKO", prefix + "cko.properties", "object class");
     ckpCodeNameMap = new CodeNameMap("CKP", prefix + "ckp.properties", "pseudo-random function");
     ckrCodeNameMap = new CodeNameMap("CKR", prefix + "ckr.properties", "return value");
+    cksCodeNameMap = new CodeNameMap("CKS", prefix + "cks.properties", "session state");
     ckuCodeNameMap = new CodeNameMap("CKU", prefix + "cku.properties", "user");
     ckzCodeNameMap = new CodeNameMap("CKZ", prefix + "ckz.properties", "salt/encoding parameter source");
   }
@@ -463,6 +463,28 @@ public class Functions {
    */
   public static long ckrNameToCode(String name) {
     return ckrCodeNameMap.stringToCode(name);
+  }
+
+  /**
+   * Converts the long value code of a session state (CKS) to a name.
+   *
+   * @param code
+   *          The code of the session state to be converted to a string.
+   * @return The string representation of the session state.
+   */
+  public static String cksCodeToName(long code) {
+    return cksCodeNameMap.codeToString(code);
+  }
+
+  /**
+   * Converts the session state (CKS) name to code value.
+   *
+   * @param name
+   *          The name of the session state to be converted to a code.
+   * @return The code representation of the session state.
+   */
+  public static long cksNameToCode(String name) {
+    return cksCodeNameMap.stringToCode(name);
   }
 
   /**

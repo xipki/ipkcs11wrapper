@@ -222,7 +222,7 @@ public class Token {
    *              If the session could not be opened.
    */
   public Session openSession(boolean rwSession) throws TokenException {
-    return openSession(rwSession, null, null);
+    return openSession(rwSession, null);
   }
 
   /**
@@ -237,29 +237,14 @@ public class Token {
    * @param application
    *          PKCS11Object to be supplied upon notify callback. May be null.
    *          (Not implemented yet!).
-   * @param notify
-   *          For notifications via callback. may be null.
-   *          (Not implemented yet!)
    * @return The newly opened session.
    * @exception TokenException
    *              If the session could not be opened.
    */
-  public Session openSession(boolean rwSession, Object application, Notify notify) throws TokenException {
+  public Session openSession(boolean rwSession, Object application) throws TokenException {
     long flags = rwSession ? CKF_SERIAL_SESSION | CKF_RW_SESSION : CKF_SERIAL_SESSION;
-    // we need it for the Notify already here
-    final Session newSession = new Session(this, -1);
-    CK_NOTIFY ckNotify = null;
-    if (notify != null) {
-      ckNotify = (hSession, event, pApplication) -> {
-        notify.notify(newSession, event, pApplication);
-      };
-    }
-
-    long sessionHandle = slot.getModule().getPKCS11Module().C_OpenSession(slot.getSlotID(), flags, application, ckNotify);
-    //now we have the session handle available
-    newSession.setSessionHandle(sessionHandle);
-
-    return newSession;
+    long sessionHandle = slot.getModule().getPKCS11Module().C_OpenSession(slot.getSlotID(), flags, application, null);
+    return new Session(this, sessionHandle);
   }
 
   /**

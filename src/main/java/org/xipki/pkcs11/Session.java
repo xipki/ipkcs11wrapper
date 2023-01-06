@@ -52,6 +52,7 @@ import org.xipki.pkcs11.parameters.MessageParameters;
 import org.xipki.pkcs11.parameters.Parameters;
 import org.xipki.pkcs11.parameters.Salsa20Chacha20Poly1305MessageParameters;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -354,7 +355,7 @@ public class Session {
    *              created on the token.
    */
   public long createObject(AttributeVector template) throws TokenException {
-    return pkcs11.C_CreateObject(sessionHandle, toCKAttributes(template), useUtf8);
+    return pkcs11.C_CreateObject(sessionHandle, toOutCKAttributes(template), useUtf8);
   }
 
   /**
@@ -374,7 +375,7 @@ public class Session {
    *              If copying the object fails for some reason.
    */
   public long copyObject(long sourceObjectHandle, AttributeVector template) throws TokenException {
-    return pkcs11.C_CopyObject(sessionHandle, sourceObjectHandle, toCKAttributes(template), useUtf8);
+    return pkcs11.C_CopyObject(sessionHandle, sourceObjectHandle, toOutCKAttributes(template), useUtf8);
   }
 
   /**
@@ -396,7 +397,7 @@ public class Session {
    *
    */
   public void setAttributeValues(long objectToUpdateHandle, AttributeVector template) throws TokenException {
-    pkcs11.C_SetAttributeValue(sessionHandle, objectToUpdateHandle, toCKAttributes(template), useUtf8);
+    pkcs11.C_SetAttributeValue(sessionHandle, objectToUpdateHandle, toOutCKAttributes(template), useUtf8);
   }
 
   /**
@@ -442,7 +443,7 @@ public class Session {
    *              If initializing the find operation fails.
    */
   public void findObjectsInit(AttributeVector template) throws TokenException {
-    pkcs11.C_FindObjectsInit(sessionHandle, toCKAttributes(template), useUtf8);
+    pkcs11.C_FindObjectsInit(sessionHandle, toOutCKAttributes(template), useUtf8);
   }
 
   /**
@@ -501,6 +502,7 @@ public class Session {
   }
 
   private static int copyResToBuffer(byte[] res, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    checkOutParams(out, outOfs, outLen);
     int resLen = res == null ? 0 : res.length;
 
     if (resLen > outLen) {
@@ -535,6 +537,7 @@ public class Session {
    *              If encrypting failed.
    */
   public int encrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+    checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_Encrypt(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
   }
@@ -561,8 +564,8 @@ public class Session {
    * @exception TokenException
    *              If encrypting the data failed.
    */
-  public int encryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen)
-      throws TokenException {
+  public int encryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+    checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_EncryptUpdate(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
   }
@@ -731,6 +734,7 @@ public class Session {
    *              If decrypting failed.
    */
   public int decrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+    checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_Decrypt(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
   }
@@ -758,6 +762,7 @@ public class Session {
    *              If decrypting the data failed.
    */
   public int decryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+    checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_DecryptUpdate(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
   }
@@ -778,6 +783,7 @@ public class Session {
    *              If calculating the final result failed.
    */
   public int decryptFinal(byte[] out, int outOfs, int outLen) throws TokenException {
+    checkOutParams(out, outOfs, outLen);
     byte[] res = pkcs11.C_DecryptFinal(sessionHandle);
     return copyResToBuffer(res, out, outOfs, outLen);
   }
@@ -891,20 +897,20 @@ public class Session {
    *          buffer offset of the to-be-digested data
    * @param inLen
    *          length of the to-be-digested data
-   * @param digest
+   * @param out
    *          buffer for the digested data
-   * @param digestOfs
+   * @param outOfs
    *          buffer offset for the digested data
-   * @param digestLen
+   * @param outLen
    *          buffer size for the digested data
    * @return the length of digested data for this update
    * @exception TokenException
    *              If digesting the data failed.
    */
-  public int digest(byte[] in, int inOfs, int inLen, byte[] digest, int digestOfs, int digestLen)
-      throws TokenException {
+  public int digestSingle(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+    checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_Digest(sessionHandle, copy(in, inOfs, inLen));
-    return copyResToBuffer(res, digest, digestOfs, digestLen);
+    return copyResToBuffer(res, out, outOfs, outLen);
   }
 
   /**
@@ -945,19 +951,20 @@ public class Session {
    * you need not (and shall not) call this method, because digest(byte[]) finalizes the digesting
    * itself.
    *
-   * @param digest
+   * @param out
    *          buffer for the message digest
-   * @param digestOfs
+   * @param outOfs
    *          buffer offset for the message digest
-   * @param digestLen
+   * @param outLen
    *          buffer size for the message digest
    * @return the length of message digest
    * @exception TokenException
    *              If calculating the final message digest failed.
    */
-  public int digestFinal(byte[] digest, int digestOfs, int digestLen) throws TokenException {
+  public int digestFinal(byte[] out, int outOfs, int outLen) throws TokenException {
+    checkOutParams(out, outOfs, outLen);
     byte[] res = pkcs11.C_DigestFinal(sessionHandle);
-    return copyResToBuffer(res, digest, digestOfs, digestLen);
+    return copyResToBuffer(res, out, outOfs, outLen);
   }
 
   /**
@@ -1012,6 +1019,7 @@ public class Session {
    *              If signing the data failed.
    */
   public void signUpdate(byte[] in, int inOfs, int inLen) throws TokenException {
+    checkInParams(in, inOfs, inLen);
     pkcs11.C_SignUpdate(sessionHandle, copy(in, inOfs, inLen));
   }
 
@@ -1073,6 +1081,7 @@ public class Session {
    *              If signing the data failed.
    */
   public int signRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+    checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_SignRecover(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
   }
@@ -1193,6 +1202,7 @@ public class Session {
    *              If verifying (e.g. digesting) the data failed.
    */
   public void verifyUpdate(byte[] in, int inOfs, int inLen) throws TokenException {
+    checkInParams(in, inOfs, inLen);
     pkcs11.C_VerifyUpdate(sessionHandle, copy(in, inOfs, inLen));
   }
 
@@ -1256,6 +1266,7 @@ public class Session {
    *              If signing the data failed.
    */
   public int verifyRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws TokenException {
+    checkParams(in, inOfs, inLen, out, outOfs, outLen);
     byte[] res = pkcs11.C_VerifyRecover(sessionHandle, copy(in, inOfs, inLen));
     return copyResToBuffer(res, out, outOfs, outLen);
   }
@@ -1408,7 +1419,7 @@ public class Session {
    *              If generating a new secret key or domain parameters failed.
    */
   public long generateKey(Mechanism mechanism, AttributeVector template) throws TokenException {
-    return pkcs11.C_GenerateKey(sessionHandle, toCkMechanism(mechanism), toCKAttributes(template), useUtf8);
+    return pkcs11.C_GenerateKey(sessionHandle, toCkMechanism(mechanism), toOutCKAttributes(template), useUtf8);
   }
 
   /**
@@ -1432,7 +1443,7 @@ public class Session {
   public KeyPair generateKeyPair(Mechanism mechanism, AttributeVector publicKeyTemplate,
                                  AttributeVector privateKeyTemplate) throws TokenException {
     long[] objectHandles = pkcs11.C_GenerateKeyPair(sessionHandle, toCkMechanism(mechanism),
-        toCKAttributes(publicKeyTemplate), toCKAttributes(privateKeyTemplate), useUtf8);
+        toOutCKAttributes(publicKeyTemplate), toOutCKAttributes(privateKeyTemplate), useUtf8);
     return new KeyPair(objectHandles[0], objectHandles[1]);
   }
 
@@ -1473,7 +1484,7 @@ public class Session {
   public long unwrapKey(Mechanism mechanism, long unwrappingKeyHandle, byte[] wrappedKey, AttributeVector keyTemplate)
       throws TokenException {
     return pkcs11.C_UnwrapKey(sessionHandle, toCkMechanism(mechanism),
-        unwrappingKeyHandle, wrappedKey, toCKAttributes(keyTemplate), useUtf8);
+        unwrappingKeyHandle, wrappedKey, toOutCKAttributes(keyTemplate), useUtf8);
   }
 
   /**
@@ -1495,7 +1506,7 @@ public class Session {
    */
   public long deriveKey(Mechanism mechanism, long baseKeyHandle, AttributeVector template) throws TokenException {
     return pkcs11.C_DeriveKey(sessionHandle, toCkMechanism(mechanism), baseKeyHandle,
-        toCKAttributes(template), useUtf8);
+        toOutCKAttributes(template), useUtf8);
   }
 
   /**
@@ -1570,9 +1581,7 @@ public class Session {
   private CK_MECHANISM toCkMechanism(Mechanism mechanism) {
     long code = mechanism.getMechanismCode();
     if ((code & CKM_VENDOR_DEFINED) != 0) {
-      if (vendorCode != null) {
-        code = vendorCode.ckmGenericToVendor(code);
-      }
+      if (vendorCode != null) code = vendorCode.ckmGenericToVendor(code);
     }
 
     CK_MECHANISM ret = new CK_MECHANISM();
@@ -1815,7 +1824,7 @@ public class Session {
     }
   }
 
-  private CK_ATTRIBUTE[] toCKAttributes(AttributeVector attributeVector) {
+  private CK_ATTRIBUTE[] toOutCKAttributes(AttributeVector attributeVector) {
     if (attributeVector == null) return null;
 
     CK_ATTRIBUTE[] ret = attributeVector.toCkAttributes();
@@ -1823,9 +1832,7 @@ public class Session {
       for (CK_ATTRIBUTE ckAttr : ret) {
         if (ckAttr.type == CKA_KEY_TYPE && ckAttr.pValue != null) {
           long value = (long) ckAttr.pValue;
-          if ((value & CKK_VENDOR_DEFINED) != 0L) {
-            ckAttr.pValue = vendorCode.ckkGenericToVendor(value);
-          }
+          if ((value & CKK_VENDOR_DEFINED) != 0L) ckAttr.pValue = vendorCode.ckkGenericToVendor(value);
         }
       }
     }
@@ -1836,9 +1843,7 @@ public class Session {
     CK_ATTRIBUTE ckAttr = attr.getCkAttribute();
     if (ckAttr.type == CKA_KEY_TYPE && ckAttr.pValue != null) {
       long value = (long) ckAttr.pValue;
-      if ((value & CKK_VENDOR_DEFINED) != 0L) {
-        ckAttr.pValue = vendorCode.ckkVendorToGeneric(value);
-      }
+      if ((value & CKK_VENDOR_DEFINED) != 0L) ckAttr.pValue = vendorCode.ckkVendorToGeneric(value);
     }
   }
 
@@ -1853,6 +1858,23 @@ public class Session {
       }
       attr.pValue = !allZeros;
     }
+  }
+
+  private static void checkParams(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) {
+    Functions.requireNonNull("in", in);
+    Functions.requireNonNull("out", out);
+    if (in.length < inOfs + inLen) throw new IllegalArgumentException("inOfs + inLen > in.length");
+    if (out.length < outOfs + outLen) throw new IllegalArgumentException("outOfs + outLen > out.length");
+  }
+
+  private static void checkInParams(byte[] in, int inOfs, int inLen) {
+    Functions.requireNonNull("in", in);
+    if (in.length < inOfs + inLen) throw new IllegalArgumentException("inOfs + inLen > in.length");
+  }
+
+  private static void checkOutParams(byte[] out, int outOfs, int outLen) {
+    Functions.requireNonNull("out", out);
+    if (out.length < outOfs + outLen) throw new IllegalArgumentException("outOfs + outLen > out.length");
   }
 
 }

@@ -77,8 +77,8 @@ abstract public class DHKeyDerivationParameters implements Parameters {
    */
   public DHKeyDerivationParameters(long kdf, byte[] publicData) {
     this.publicData = Functions.requireNonNull("publicData", publicData);
-    this.kdf = Functions.requireAmong("kdf", kdf, CKD_NULL, CKD_SHA1_KDF, CKD_SHA1_KDF_ASN1,
-                  CKD_SHA1_KDF_CONCATENATE);
+    this.kdf = Functions.requireAmong("kdf", kdf,
+                  CKD_NULL, CKD_SHA1_KDF, CKD_SHA1_KDF_ASN1, CKD_SHA1_KDF_CONCATENATE);
   }
 
   /**

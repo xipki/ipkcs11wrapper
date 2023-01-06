@@ -66,7 +66,7 @@ public class SessionInfo {
   /**
    * The current session state.
    */
-  private final State state;
+  private final long state;
 
   /**
    * A token specific error-code. The meaning of this value is not defined in
@@ -89,7 +89,7 @@ public class SessionInfo {
   protected SessionInfo(CK_SESSION_INFO ckSessionInfo) {
     Functions.requireNonNull("ckSessionInfo", ckSessionInfo);
     this.slotID = ckSessionInfo.slotID;
-    this.state = new State(ckSessionInfo.state);
+    this.state = ckSessionInfo.state;
     this.deviceError = ckSessionInfo.ulDeviceError;
     this.flags = ckSessionInfo.flags;
   }
@@ -99,7 +99,7 @@ public class SessionInfo {
    *
    * @return The current state of this session.
    */
-  public State getState() {
+  public long getState() {
     return state;
   }
 
@@ -141,7 +141,8 @@ public class SessionInfo {
    * @return The string representation of object
    */
   public String toString() {
-    String text = "State: " + state + "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\nFlags: ";
+    String text = "State: " + Functions.cksCodeToName(state) +
+        "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\nFlags: ";
     return Functions.toStringFlags(text, flags, CKF_RW_SESSION, CKF_SERIAL_SESSION);
   }
 

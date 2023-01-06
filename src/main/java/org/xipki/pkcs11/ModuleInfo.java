@@ -42,50 +42,95 @@
 
 package org.xipki.pkcs11;
 
+import iaik.pkcs.pkcs11.wrapper.CK_INFO;
+
 /**
- * The interface that an object must implement to be a valid parameter for the
- * initialize method of a Module object.
+ * Objects of this class provide information about a PKCS#11 module; i.e. the
+ * driver for a specific token.
  *
  * @author Karl Scheibelhofer
  * @version 1.0
  */
-public interface InitializeArgs {
+public class ModuleInfo {
 
   /**
-   * Returns the object that implements the functionality for
-   * handling mutexes. It returns null, if no handler is set. If this method
-   * returns null, the wrapper does not pass any callback functions to the
-   * underlying module; i.e. is passes null-pointer for the functions.
-   *
-   * @return The handler object for mutex functionality, or null, if there is
-   *         no handler for mutexes.
+   * The module claims to be compliant to this version of PKCS#11.
    */
-  MutexHandler getMutexHandler();
+  private final Version cryptokiVersion;
 
   /**
-   * Check, if application threads which are executing calls to the library
-   * may not use native operating system calls to spawn new threads.
-   *
-   * @return True, if application threads which are executing calls to the
-   *         library may not use native operating system calls to spawn new
-   *         threads. False, if they may.
+   * The identifier for the manufacturer of this module.
    */
-  boolean isLibraryCantCreateOsThreads();
+  private final String manufacturerID;
 
   /**
-   * Check, if the library can use the native operating system threading model
-   * for locking.
-   *
-   * @return True, if the library can use the native operating system
-   *         threading model for locking. False, otherwise.
+   * A description of this module.
    */
-  boolean isOsLockingOk();
+  private final String libraryDescription;
 
   /**
-   * Reserved parameter.
-   *
-   * @return Should be null in this version.
+   * The version number of this module.
    */
-  Object getReserved();
+  private final Version libraryVersion;
+
+  /**
+   * Constructor taking the CK_INFO object of the token.
+   *
+   * @param ckInfo
+   *          The info object as got from PKCS11.C_GetInfo().
+   */
+  public ModuleInfo(CK_INFO ckInfo) {
+    Functions.requireNonNull("ckInfo", ckInfo);
+    cryptokiVersion = new Version(ckInfo.cryptokiVersion);
+    manufacturerID = new String(ckInfo.manufacturerID);
+    libraryDescription = new String(ckInfo.libraryDescription);
+    libraryVersion = new Version(ckInfo.libraryVersion);
+  }
+
+  /**
+   * Get the version of PKCS#11 that this module claims to be compliant to.
+   *
+   * @return The version object.
+   */
+  public Version getCryptokiVersion() {
+    return cryptokiVersion;
+  }
+
+  /**
+   * Get the identifier of the manufacturer.
+   *
+   * @return A string identifying the manufacturer of this module.
+   */
+  public String getManufacturerID() {
+    return manufacturerID;
+  }
+
+  /**
+   * Get a short description of this module.
+   *
+   * @return A string describing the module.
+   */
+  public String getLibraryDescription() {
+    return libraryDescription;
+  }
+
+  /**
+   * Get the version of this PKCS#11 module.
+   *
+   * @return The version of this module.
+   */
+  public Version getLibraryVersion() {
+    return libraryVersion;
+  }
+
+  /**
+   * Returns the string representation of this object.
+   *
+   * @return the string representation of object
+   */
+  public String toString() {
+    return "Cryptoki Version: " + cryptokiVersion + "\nManufacturerID: " + manufacturerID +
+        "\nLibrary Description: " + libraryDescription + "\nLibrary Version: " + libraryVersion;
+  }
 
 }
