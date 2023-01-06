@@ -47,7 +47,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
@@ -63,7 +63,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
 public class WrapUnwrapHmacKey extends TestBase {
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     Session session = openReadWriteSession(token);
     try {
@@ -73,7 +73,7 @@ public class WrapUnwrapHmacKey extends TestBase {
     }
   }
 
-  private void main0(Token token, Session session) throws TokenException {
+  private void main0(Token token, Session session) throws PKCS11Exception {
     LOG.info("##################################################");
     AttributeVector secretMACKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false)
         .sign(true).verify(true).private_(true).sensitive(true).extractable(true);

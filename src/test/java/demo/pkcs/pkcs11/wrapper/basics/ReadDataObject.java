@@ -45,7 +45,7 @@ package demo.pkcs.pkcs11.wrapper.basics;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.TokenInfo;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.Functions;
@@ -59,7 +59,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
 public class ReadDataObject extends TestBase {
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     TokenInfo tokenInfo = token.getTokenInfo();
 
@@ -76,7 +76,7 @@ public class ReadDataObject extends TestBase {
     }
   }
 
-  private void main0(Session session) throws TokenException {
+  private void main0(Session session) throws PKCS11Exception {
     LOG.info("##################################################");
     LOG.info("searching for data object on the card using this search template... ");
 

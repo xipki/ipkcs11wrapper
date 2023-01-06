@@ -22,7 +22,7 @@ import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.Functions;
 import org.slf4j.Logger;
@@ -82,7 +82,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
 
   private final boolean inToken;
 
-  public KeyGenExecutor(long mechanism, int keyLen, Token token, char[] pin, boolean inToken) throws TokenException {
+  public KeyGenExecutor(long mechanism, int keyLen, Token token, char[] pin, boolean inToken) throws PKCS11Exception {
     super(describe(mechanism, keyLen, inToken), token, pin);
     this.mechanism = new Mechanism(mechanism);
     this.inToken = inToken;

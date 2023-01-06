@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
@@ -39,7 +39,7 @@ public class RSAPKCSSignSpeed extends TestBase {
 
   private class MySignExecutor extends SignExecutor {
 
-    public MySignExecutor(Token token, char[] pin) throws TokenException {
+    public MySignExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(signMechanism) + " (2048) Sign Speed",
           Mechanism.get(keypairGenMechanism), token, pin, Mechanism.get(signMechanism), 32);
     }
@@ -58,7 +58,7 @@ public class RSAPKCSSignSpeed extends TestBase {
 
   private class MyVerifyExecutor extends VerifyExecutor {
 
-    public MyVerifyExecutor(Token token, char[] pin) throws TokenException {
+    public MyVerifyExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(signMechanism) + " (2048) Verify Speed",
           Mechanism.get(keypairGenMechanism), token, pin, Mechanism.get(signMechanism), 32);
     }
@@ -88,7 +88,7 @@ public class RSAPKCSSignSpeed extends TestBase {
   }
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, keypairGenMechanism)) {
       System.out.println(Functions.ckmCodeToName(keypairGenMechanism) + " is not supported, skip test");

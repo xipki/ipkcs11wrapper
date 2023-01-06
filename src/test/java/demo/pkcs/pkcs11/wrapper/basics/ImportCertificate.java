@@ -46,7 +46,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.TokenInfo;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
@@ -79,7 +79,7 @@ public class ImportCertificate extends TestBase {
   private static final String resourceFile = "/demo_cert.der";
 
   @Test
-  public void main() throws TokenException, CertificateException, NoSuchAlgorithmException {
+  public void main() throws PKCS11Exception, CertificateException, NoSuchAlgorithmException {
     Token token = getNonNullToken();
     TokenInfo tokenInfo = token.getTokenInfo();
 
@@ -95,7 +95,7 @@ public class ImportCertificate extends TestBase {
     }
   }
 
-  private void main0(Session session) throws TokenException, CertificateException, NoSuchAlgorithmException {
+  private void main0(Session session) throws PKCS11Exception, CertificateException, NoSuchAlgorithmException {
     LOG.info("Reading certificate from resource file: {}", resourceFile);
 
     // parse certificate

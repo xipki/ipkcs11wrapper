@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.junit.Test;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.parameters.CcmParameters;
 
@@ -47,7 +47,7 @@ public class AESCCMEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Test
   @Override
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     if (!Util.supports(getNonNullToken(), CKM_AES_CCM)) {
       System.err.println("AES-CCM unsupported in the HSM, skip");
       return;
@@ -57,12 +57,12 @@ public class AESCCMEncryptDecrypt extends SymmEncryptDecrypt {
   }
 
   @Override
-  protected Mechanism getKeyGenMech(Token token) throws TokenException {
+  protected Mechanism getKeyGenMech(Token token) throws PKCS11Exception {
     return getSupportedMechanism(token, CKM_AES_KEY_GEN);
   }
 
   @Override
-  protected Mechanism getEncryptionMech(Token token) throws TokenException {
+  protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
     Mechanism mech = getSupportedMechanism(token, CKM_AES_CCM);
     CcmParameters params = new CcmParameters(0, iv, aad, 128);
     mech.setParameters(params);

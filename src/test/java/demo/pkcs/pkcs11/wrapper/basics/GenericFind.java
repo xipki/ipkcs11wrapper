@@ -45,11 +45,10 @@ package demo.pkcs.pkcs11.wrapper.basics;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.Attribute;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.objects.ByteArrayAttribute;
-import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import org.junit.Test;
 
 import java.util.*;
@@ -62,7 +61,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
 public class GenericFind extends TestBase {
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     Session session = openReadOnlySession(token);
     try {
@@ -72,7 +71,7 @@ public class GenericFind extends TestBase {
     }
   }
 
-  private void main0(Session session) throws TokenException {
+  private void main0(Session session) throws PKCS11Exception {
     // limit output if required
     int limit = 0, counter = 1;
 

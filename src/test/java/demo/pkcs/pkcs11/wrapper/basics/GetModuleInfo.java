@@ -43,6 +43,7 @@
 package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
+import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
 
@@ -56,7 +57,7 @@ import static org.xipki.pkcs11.PKCS11Constants.CKF_TOKEN_INITIALIZED;
  * only public objects but no private objects; i.e. as defined in PKCS#11 for
  * public read-only sessions.
  */
-public class GetInfo extends TestBase {
+public class GetModuleInfo extends TestBase {
 
   @Test
   public void main() throws PKCS11Exception {

@@ -46,7 +46,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
@@ -68,7 +68,7 @@ public class DeriveKeyDemo extends TestBase {
     }
   }
 
-  private void main0(Token token, Session session) throws TokenException {
+  private void main0(Token token, Session session) throws PKCS11Exception {
     Mechanism keyGenerationMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
 
     AttributeVector baseKeyTemplate = newSecretKey(CKK_AES).valueLen(32).token(false).derive(true)

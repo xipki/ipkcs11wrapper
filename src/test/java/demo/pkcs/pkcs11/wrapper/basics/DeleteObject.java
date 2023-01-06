@@ -46,7 +46,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.SessionInfo;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Test;
 
@@ -58,7 +58,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
 public class DeleteObject extends TestBase {
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     Session session = openReadWriteSession(token);
     try {
@@ -68,7 +68,7 @@ public class DeleteObject extends TestBase {
     }
   }
 
-  private void main0(Session session) throws TokenException {
+  private void main0(Session session) throws PKCS11Exception {
     SessionInfo sessionInfo = session.getSessionInfo();
     LOG.info("using session: {}", sessionInfo);
 

@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.parameters.InitializationVectorParameters;
 import org.xipki.pkcs11.Functions;
@@ -41,7 +41,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
 
   private class MyEncryptExecutor extends EncryptExecutor {
 
-    public MyEncryptExecutor(Token token, char[] pin) throws TokenException {
+    public MyEncryptExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(encryptMechanism) + " (" + keyLen + ") Encrypt Speed",
           getKeyGenMech(token), token, pin,
           getEncryptionMech(token), inputLen);
@@ -56,7 +56,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
 
   private class MyDecryptExecutor extends DecryptExecutor {
 
-    public MyDecryptExecutor(Token token, char[] pin) throws TokenException {
+    public MyDecryptExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(encryptMechanism) + " (" + keyLen + ") Decrypt Speed",
           getKeyGenMech(token), token, pin,
           getEncryptionMech(token), inputLen);
@@ -85,11 +85,11 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
     iv = randomBytes(16);
   }
 
-  private Mechanism getKeyGenMech(Token token) throws TokenException {
+  private Mechanism getKeyGenMech(Token token) throws PKCS11Exception {
     return getSupportedMechanism(token, keyGenMechanism);
   }
 
-  private Mechanism getEncryptionMech(Token token) throws TokenException {
+  private Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
     Mechanism mech = getSupportedMechanism(token, encryptMechanism);
     InitializationVectorParameters encryptIVParameters = new InitializationVectorParameters(iv);
     mech.setParameters(encryptIVParameters);
@@ -101,7 +101,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
   }
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, keyGenMechanism)) {
       System.out.println(Functions.ckmCodeToName(keyGenMechanism) + " is not supported, skip test");

@@ -23,7 +23,7 @@ import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +85,7 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
 
   public EncryptExecutor(String description, Mechanism keyGenMechanism,
       Token token, char[] pin, Mechanism encryptMechanism, int inputLen)
-          throws TokenException {
+          throws PKCS11Exception {
     super(description, token, pin);
     this.encryptMechanism = encryptMechanism;
     this.inputLen = inputLen;

@@ -18,10 +18,7 @@
 package demo.pkcs.pkcs11.wrapper.encryption;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import org.xipki.pkcs11.Mechanism;
-import org.xipki.pkcs11.Session;
-import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.*;
 import org.xipki.pkcs11.objects.KeyPair;
 import org.junit.Assert;
 import org.junit.Test;

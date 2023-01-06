@@ -45,7 +45,7 @@ package demo.pkcs.pkcs11.wrapper.random;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ import org.junit.Test;
 public class GenerateRandom extends TestBase {
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     Session session = openReadOnlySession(token);
     try {
@@ -65,7 +65,7 @@ public class GenerateRandom extends TestBase {
     }
   }
 
-  private void main0(Token token, Session session) throws TokenException {
+  private void main0(Token token, Session session) throws PKCS11Exception {
     final int n = 1057;
     LOG.info("##################################################");
     LOG.info("generating {} bytes of random data... ", n);

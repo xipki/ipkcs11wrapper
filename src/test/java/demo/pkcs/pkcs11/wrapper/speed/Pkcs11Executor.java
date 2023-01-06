@@ -20,7 +20,7 @@ package demo.pkcs.pkcs11.wrapper.speed;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.util.BenchmarkExecutor;
 import org.xipki.util.concurrent.ConcurrentBag;
 
@@ -35,7 +35,7 @@ public abstract class Pkcs11Executor extends BenchmarkExecutor {
 
   private final ConcurrentBag<ConcurrentSessionBagEntry> sessions = new ConcurrentBag<>();
 
-  protected Pkcs11Executor(String description, Token token, char[] pin) throws TokenException {
+  protected Pkcs11Executor(String description, Token token, char[] pin) throws PKCS11Exception {
     super(description);
 
     for (int i = 0; i < 5; i++) {
@@ -73,7 +73,7 @@ public abstract class Pkcs11Executor extends BenchmarkExecutor {
     try {
       session = sessions.borrow(10, TimeUnit.MILLISECONDS);
       session.value().closeSession();
-    } catch (InterruptedException | TokenException ex) {
+    } catch (InterruptedException | PKCS11Exception ex) {
     } finally {
       super.close();
     }

@@ -19,7 +19,7 @@ package demo.pkcs.pkcs11.wrapper.encryption;
 
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.parameters.InitializationVectorParameters;
 
@@ -39,12 +39,12 @@ public class TripleDESPadEncryptDecrypt extends SymmEncryptDecrypt {
   }
 
   @Override
-  protected Mechanism getKeyGenMech(Token token) throws TokenException {
+  protected Mechanism getKeyGenMech(Token token) throws PKCS11Exception {
     return getSupportedMechanism(token, CKM_DES3_KEY_GEN);
   }
 
   @Override
-  protected Mechanism getEncryptionMech(Token token) throws TokenException {
+  protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
     Mechanism mech = getSupportedMechanism(token, CKM_DES3_CBC_PAD);
     InitializationVectorParameters encryptIVParameters = new InitializationVectorParameters(iv);
     mech.setParameters(encryptIVParameters);

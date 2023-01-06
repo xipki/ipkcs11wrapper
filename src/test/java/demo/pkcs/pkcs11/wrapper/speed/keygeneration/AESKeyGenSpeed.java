@@ -20,7 +20,7 @@ package demo.pkcs.pkcs11.wrapper.speed.keygeneration;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
@@ -37,7 +37,7 @@ public abstract class AESKeyGenSpeed extends TestBase {
 
   private class MyExecutor extends KeyGenExecutor {
 
-    public MyExecutor(Token token, char[] pin, boolean inToken) throws TokenException {
+    public MyExecutor(Token token, char[] pin, boolean inToken) throws PKCS11Exception {
       super(mechanism, getKeyByteLen(), token, pin, inToken);
     }
 
@@ -53,7 +53,7 @@ public abstract class AESKeyGenSpeed extends TestBase {
   protected abstract int getKeyByteLen();
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
       System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");

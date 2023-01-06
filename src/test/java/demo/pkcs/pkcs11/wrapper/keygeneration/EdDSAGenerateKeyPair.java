@@ -38,7 +38,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
 public class EdDSAGenerateKeyPair extends TestBase {
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     Session session = openReadWriteSession(token);
     try {
@@ -48,7 +48,7 @@ public class EdDSAGenerateKeyPair extends TestBase {
     }
   }
 
-  private void main0(Token token, Session session) throws TokenException {
+  private void main0(Token token, Session session) throws PKCS11Exception {
     LOG.info("##################################################");
     LOG.info("Generating new EdDSA (curve Ed25519) key-pair... ");
 

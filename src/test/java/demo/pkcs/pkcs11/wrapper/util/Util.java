@@ -42,7 +42,6 @@
 
 package demo.pkcs.pkcs11.wrapper.util;
 
-import iaik.pkcs.pkcs11.wrapper.PKCS11Exception;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERSequence;
@@ -75,10 +74,10 @@ public class Util {
    *          The PKCS#11 module to use.
    * @return The selected token or null, if no token is available or the user
    *         canceled the action.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If listing the tokens failed.
    */
-  public static Token selectToken(PKCS11Module pkcs11Module) throws TokenException {
+  public static Token selectToken(PKCS11Module pkcs11Module) throws PKCS11Exception {
     return selectToken(pkcs11Module, null);
   }
 
@@ -92,10 +91,10 @@ public class Util {
    *          The slot index, beginning with 0.
    * @return The selected token or null, if no token is available or the user
    *         canceled the action.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If listing the tokens failed.
    */
-  public static Token selectToken(PKCS11Module pkcs11Module, Integer slotIndex) throws TokenException {
+  public static Token selectToken(PKCS11Module pkcs11Module, Integer slotIndex) throws PKCS11Exception {
     if (pkcs11Module == null) {
       throw new NullPointerException("Argument pkcs11Module must not be null.");
     }
@@ -140,11 +139,11 @@ public class Util {
    *          PIN.
    * @return The selected token or null, if no token is available or the user
    *         canceled the action.
-   * @exception TokenException
+   * @exception PKCS11Exception
    *              If listing the tokens failed.
    */
   public static Session openAuthorizedSession(Token token, boolean rwSession, char[] pin)
-      throws TokenException {
+      throws PKCS11Exception {
     if (token == null) {
       throw new NullPointerException("Argument 'token' must not be null.");
     }
@@ -224,7 +223,7 @@ public class Util {
     return encoded;
   }
 
-  public static boolean supports(Token token, long mechCode) throws TokenException {
+  public static boolean supports(Token token, long mechCode) throws PKCS11Exception {
     for (long mech : token.getMechanismList()) {
       if (mech == mechCode) {
         return true;

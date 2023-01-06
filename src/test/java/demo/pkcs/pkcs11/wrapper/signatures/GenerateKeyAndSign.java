@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
@@ -37,7 +37,7 @@ import static org.xipki.pkcs11.PKCS11Constants.CKM_RSA_PKCS;
 public class GenerateKeyAndSign extends TestBase {
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     Session session = openReadWriteSession(token);
     try {
@@ -47,7 +47,7 @@ public class GenerateKeyAndSign extends TestBase {
     }
   }
 
-  private void main0(Token token, Session session) throws TokenException {
+  private void main0(Token token, Session session) throws PKCS11Exception {
     LOG.info("##################################################");
     int keySize = 1024;
     LOG.info("Generating new {} bit RSA key-pair...", keySize);

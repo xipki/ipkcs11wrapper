@@ -23,7 +23,7 @@ import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.objects.KeyPair;
 import org.slf4j.Logger;
@@ -81,7 +81,7 @@ public abstract class SignExecutor extends Pkcs11Executor {
 
   public SignExecutor(String description, Mechanism keypairGenMechanism,
       Token token, char[] pin, Mechanism signMechanism, int inputLen)
-          throws TokenException {
+          throws PKCS11Exception {
     super(description, token, pin);
     this.signMechanism = signMechanism;
     this.inputLen = inputLen;

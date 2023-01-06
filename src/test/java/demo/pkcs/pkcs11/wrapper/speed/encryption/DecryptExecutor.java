@@ -23,7 +23,7 @@ import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -87,7 +87,7 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
   protected abstract AttributeVector getMinimalKeyTemplate();
 
   public DecryptExecutor(String description, Mechanism keyGenMechanism,
-      Token token, char[] pin, Mechanism encryptMechanism, int inputLen) throws TokenException {
+      Token token, char[] pin, Mechanism encryptMechanism, int inputLen) throws PKCS11Exception {
     super(description, token, pin);
     this.encryptMechanism = encryptMechanism;
     this.plainData = TestBase.randomBytes(inputLen);

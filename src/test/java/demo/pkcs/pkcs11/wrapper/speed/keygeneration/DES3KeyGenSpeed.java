@@ -20,7 +20,7 @@ package demo.pkcs.pkcs11.wrapper.speed.keygeneration;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.TokenException;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.AttributeVector;
 import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
@@ -38,7 +38,7 @@ public class DES3KeyGenSpeed extends TestBase {
 
   private class MyExecutor extends KeyGenExecutor {
 
-    public MyExecutor(Token token, char[] pin, boolean inToken) throws TokenException {
+    public MyExecutor(Token token, char[] pin, boolean inToken) throws PKCS11Exception {
       super(mechanism, 0, token, pin, inToken);
     }
 
@@ -52,7 +52,7 @@ public class DES3KeyGenSpeed extends TestBase {
   private static final long mechanism = CKM_DES3_KEY_GEN;
 
   @Test
-  public void main() throws TokenException {
+  public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
       System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");

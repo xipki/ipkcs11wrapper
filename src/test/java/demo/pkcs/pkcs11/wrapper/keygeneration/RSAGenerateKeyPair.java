@@ -70,7 +70,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
 public class RSAGenerateKeyPair extends TestBase {
 
   @Test
-  public void main() throws TokenException, NoSuchAlgorithmException, InvalidKeySpecException {
+  public void main() throws PKCS11Exception, NoSuchAlgorithmException, InvalidKeySpecException {
     Token token = getNonNullToken();
     Session session = openReadWriteSession(token);
     try {
@@ -81,7 +81,7 @@ public class RSAGenerateKeyPair extends TestBase {
   }
 
   private void main0(Token token, Session session)
-      throws TokenException, NoSuchAlgorithmException, InvalidKeySpecException {
+      throws PKCS11Exception, NoSuchAlgorithmException, InvalidKeySpecException {
     LOG.info("##################################################");
     LOG.info("Generating new 2048 bit RSA key-pair... ");
 
