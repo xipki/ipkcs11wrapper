@@ -66,7 +66,6 @@ public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParame
    * Get this parameters object as an object of the CK_X9_42_DH2_DERIVE_PARAMS class.
    *
    * @return This object as a CK_X9_42_DH2_DERIVE_PARAMS object.
-   * @postconditions (result ! = null)
    */
   public CK_X9_42_DHMQV_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_X9_42_DHMQV_DERIVE_PARAMS params = new CK_X9_42_DHMQV_DERIVE_PARAMS();

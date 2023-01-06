@@ -71,7 +71,6 @@ public class Salsa20Parameters implements Parameters {
      * Get this parameters object as an object of the CK_SALSA20_PARAMS class.
      *
      * @return This object as a CK_SALSA20_PARAMS object.
-     * @postconditions (result != null)
      */
     public CK_SALSA20_PARAMS getPKCS11ParamsObject() {
         CK_SALSA20_PARAMS params = new CK_SALSA20_PARAMS();

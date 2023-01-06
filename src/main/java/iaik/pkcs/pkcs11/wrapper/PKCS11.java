@@ -67,7 +67,6 @@ public interface PKCS11 {
    * @param useUtf8 use UTF-8 encoding
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pInitArgs == null) or (pInitArgs instanceof CK_C_INITIALIZE_ARGS_PTR)
    *
    */
   void C_Initialize(Object pInitArgs, boolean useUtf8) throws PKCS11Exception;
@@ -79,7 +78,6 @@ public interface PKCS11 {
    *          is reserved. Should be NULL_PTR (PKCS#11 param: CK_VOID_PTR pReserved)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pReserved == null)
    *
    */
   void C_Finalize(Object pReserved) throws PKCS11Exception;
@@ -91,7 +89,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   CK_INFO C_GetInfo() throws PKCS11Exception;
 
@@ -111,7 +108,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   long[] C_GetSlotList(boolean tokenPresent) throws PKCS11Exception;
 
@@ -125,7 +121,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   CK_SLOT_INFO C_GetSlotInfo(long slotID) throws PKCS11Exception;
 
@@ -139,7 +134,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   CK_TOKEN_INFO C_GetTokenInfo(long slotID) throws PKCS11Exception;
 
@@ -154,7 +148,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   long[] C_GetMechanismList(long slotID) throws PKCS11Exception;
 
@@ -170,7 +163,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   CK_MECHANISM_INFO C_GetMechanismInfo(long slotID, long type)
       throws PKCS11Exception;
@@ -275,7 +267,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   CK_SESSION_INFO C_GetSessionInfo(long hSession) throws PKCS11Exception;
 
@@ -289,7 +280,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   void C_SessionCancel(long hSession, long flags) throws PKCS11Exception;
 
@@ -304,7 +294,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   byte[] C_GetOperationState(long hSession) throws PKCS11Exception;
 
@@ -452,8 +441,6 @@ public interface PKCS11 {
    * @param useUtf8 use UTF-8 encoding
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pTemplate != null)
-   * @postconditions (result != null)
    */
   void C_GetAttributeValue(long hSession, long hObject, CK_ATTRIBUTE[] pTemplate, boolean useUtf8)
       throws PKCS11Exception;
@@ -471,7 +458,6 @@ public interface PKCS11 {
    * @param useUtf8 use UTF-8 encoding
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pTemplate != null)
    *
    */
   void C_SetAttributeValue(long hSession, long hObject, CK_ATTRIBUTE[] pTemplate, boolean useUtf8)
@@ -505,7 +491,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   long[] C_FindObjects(long hSession, long ulMaxObjectCount) throws PKCS11Exception;
 
@@ -552,8 +537,6 @@ public interface PKCS11 {
    *         pEncryptedData, CK_ULONG_PTR pulEncryptedDataLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   byte[] C_Encrypt(long hSession, byte[] pData) throws PKCS11Exception;
 
@@ -569,7 +552,6 @@ public interface PKCS11 {
    *         CK_BYTE_PTR pEncryptedPart, CK_ULONG_PTR pulEncryptedPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   byte[] C_EncryptUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -584,7 +566,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   byte[] C_EncryptFinal(long hSession) throws PKCS11Exception;
 
@@ -625,8 +606,6 @@ public interface PKCS11 {
    *         pCiphertext, CK_ULONG_PTR CiphertextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   byte[] C_EncryptMessage(long hSession, Object pParameter, byte[] pAssociatedData, byte[] pPlainText, boolean useUtf8)
       throws PKCS11Exception;
@@ -676,8 +655,6 @@ public interface PKCS11 {
    *         pCiphertext, CK_ULONG_PTR CiphertextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   byte[] C_EncryptMessageNext(long hSession, Object pParameter, byte[] pPlainTextPart, long flags, boolean useUtf8)
       throws PKCS11Exception;
@@ -718,8 +695,6 @@ public interface PKCS11 {
    *         CK_ULONG_PTR pulDataLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pEncryptedPart != null)
-   * @postconditions (result != null)
    */
   byte[] C_Decrypt(long hSession, byte[] pEncryptedData) throws PKCS11Exception;
 
@@ -735,7 +710,6 @@ public interface PKCS11 {
    *         CK_ULONG_PTR pulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pEncryptedPart != null)
    *
    */
   byte[] C_DecryptUpdate(long hSession, byte[] pEncryptedPart) throws PKCS11Exception;
@@ -750,7 +724,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   byte[] C_DecryptFinal(long hSession) throws PKCS11Exception;
 
@@ -791,8 +764,6 @@ public interface PKCS11 {
    *         pPlaintext, CK_ULONG_PTR PlaintextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   byte[] C_DecryptMessage(long hSession, Object pParameter, byte[] pAssociatedData, byte[] pCipherText, boolean useUtf8)
       throws PKCS11Exception;
@@ -842,8 +813,6 @@ public interface PKCS11 {
    *         pPlaintext, CK_ULONG_PTR PlaintextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   byte[] C_DecryptMessageNext(long hSession, Object pParameter, byte[] pCipherTextPart, long flags, boolean useUtf8)
       throws PKCS11Exception;
@@ -888,8 +857,6 @@ public interface PKCS11 {
    *         pDigest, CK_ULONG_PTR pulDigestLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (data != null)
-   * @postconditions (result != null)
    */
   byte[] C_Digest(long hSession, byte[] data) throws PKCS11Exception;
 
@@ -903,7 +870,6 @@ public interface PKCS11 {
    *          CK_ULONG ulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   void C_DigestUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -931,7 +897,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   byte[] C_DigestFinal(long hSession) throws PKCS11Exception;
 
@@ -972,8 +937,6 @@ public interface PKCS11 {
    *         CK_ULONG_PTR pulSignatureLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   byte[] C_Sign(long hSession, byte[] pData) throws PKCS11Exception;
 
@@ -989,7 +952,6 @@ public interface PKCS11 {
    *          CK_ULONG ulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   void C_SignUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1005,7 +967,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   byte[] C_SignFinal(long hSession) throws PKCS11Exception;
 
@@ -1038,8 +999,6 @@ public interface PKCS11 {
    *         CK_ULONG_PTR pulSignatureLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   byte[] C_SignRecover(long hSession, byte[] pData) throws PKCS11Exception;
 
@@ -1154,7 +1113,6 @@ public interface PKCS11 {
    *          pSignature, CK_ULONG ulSignatureLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null) and (pSignature != null)
    *
    */
   void C_Verify(long hSession, byte[] pData, byte[] pSignature) throws PKCS11Exception;
@@ -1171,7 +1129,6 @@ public interface PKCS11 {
    *          pPart, CK_ULONG ulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   void C_VerifyUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1187,7 +1144,6 @@ public interface PKCS11 {
    *          pSignature, CK_ULONG ulSignatureLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pSignature != null)
    *
    */
   void C_VerifyFinal(long hSession, byte[] pSignature) throws PKCS11Exception;
@@ -1221,8 +1177,6 @@ public interface PKCS11 {
    *         CK_ULONG_PTR pulDataLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pSignature != null)
-   * @postconditions (result != null)
    */
   byte[] C_VerifyRecover(long hSession, byte[] pSignature) throws PKCS11Exception;
 
@@ -1311,7 +1265,6 @@ public interface PKCS11 {
    *         CK_BYTE_PTR pEncryptedPart, CK_ULONG_PTR pulEncryptedPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   byte[] C_DigestEncryptUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1329,7 +1282,6 @@ public interface PKCS11 {
    *         CK_BYTE_PTR pPart, CK_ULONG_PTR pulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pEncryptedPart != null)
    *
    */
   byte[] C_DecryptDigestUpdate(long hSession, byte[] pEncryptedPart) throws PKCS11Exception;
@@ -1347,7 +1299,6 @@ public interface PKCS11 {
    *         CK_BYTE_PTR pEncryptedPart, CK_ULONG_PTR pulEncryptedPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   byte[] C_SignEncryptUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1365,7 +1316,6 @@ public interface PKCS11 {
    *         CK_BYTE_PTR pPart, CK_ULONG_PTR pulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pEncryptedPart != null)
    *
    */
   byte[] C_DecryptVerifyUpdate(long hSession, byte[] pEncryptedPart) throws PKCS11Exception;
@@ -1416,8 +1366,6 @@ public interface PKCS11 {
    *         phPublicKey, CK_OBJECT_HANDLE_PTR phPrivateKey)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pMechanism != null)
-   * @postconditions (result != null) and (result.length == 2)
    */
   long[] C_GenerateKeyPair(long hSession, CK_MECHANISM pMechanism, CK_ATTRIBUTE[] pPublicKeyTemplate,
                            CK_ATTRIBUTE[] pPrivateKeyTemplate, boolean useUtf8) throws PKCS11Exception;
@@ -1439,7 +1387,6 @@ public interface PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   byte[] C_WrapKey(long hSession, CK_MECHANISM pMechanism, long hWrappingKey, long hKey, boolean useUtf8)
       throws PKCS11Exception;
@@ -1463,7 +1410,6 @@ public interface PKCS11 {
    * @return the handle of the unwrapped key (PKCS#11 param: CK_OBJECT_HANDLE_PTR phKey)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pWrappedKey != null)
    *
    */
   long C_UnwrapKey(long hSession, CK_MECHANISM pMechanism, long hUnwrappingKey, byte[] pWrappedKey,
@@ -1506,7 +1452,6 @@ public interface PKCS11 {
    *          CK_ULONG ulSeedLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pSeed != null)
    *
    */
   void C_SeedRandom(long hSession, byte[] pSeed) throws PKCS11Exception;
@@ -1521,7 +1466,6 @@ public interface PKCS11 {
    *          be generated (PKCS#11 param: CK_BYTE_PTR pRandomData, CK_ULONG ulRandomLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (randomData != null)
    *
    */
   void C_GenerateRandom(long hSession, byte[] randomData) throws PKCS11Exception;
@@ -1571,7 +1515,6 @@ public interface PKCS11 {
    * @return the slot ID where the event occured (PKCS#11 param: CK_SLOT_ID_PTR pSlot)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pRserved == null)
    *
    */
   long C_WaitForSlotEvent(long flags, Object pReserved) throws PKCS11Exception;

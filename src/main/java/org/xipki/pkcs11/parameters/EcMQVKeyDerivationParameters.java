@@ -103,7 +103,6 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @return This object as a CK_ECDH1_DERIVE_PARAMS object.
    *
-   * @postconditions (result != null)
    */
   public CK_ECMQV_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_ECMQV_DERIVE_PARAMS params = new CK_ECMQV_DERIVE_PARAMS();

@@ -64,7 +64,6 @@ public class KeyDerivationStringDataParameters implements Parameters {
    *
    * @param data
    *          The string data.
-   * @preconditions (data != null)
    *
    */
   public KeyDerivationStringDataParameters(byte[] data) {
@@ -76,7 +75,6 @@ public class KeyDerivationStringDataParameters implements Parameters {
    *
    * @return This object as a byte array.
    *
-   * @postconditions (result != null)
    */
   public CK_KEY_DERIVATION_STRING_DATA getPKCS11ParamsObject() {
     CK_KEY_DERIVATION_STRING_DATA params = new CK_KEY_DERIVATION_STRING_DATA();
@@ -89,7 +87,6 @@ public class KeyDerivationStringDataParameters implements Parameters {
    *
    * @return The string data.
    *
-   * @postconditions (result != null)
    */
   public byte[] getData() {
     return data;

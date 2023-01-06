@@ -55,7 +55,6 @@ import java.io.IOException;
  *
  * @author Karl Scheibelhofer
  * @author Martin Schläffer
- * @invariants (pkcs11ModulePath_ != null)
  */
 public class PKCS11Implementation implements PKCS11 {
 
@@ -88,7 +87,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          the PKCS#11 library path
    * @exception IOException
    *              If linking to the given module failed.
-   * @preconditions (pkcs11ModulePath != null)
    *
    */
   public PKCS11Implementation(String pkcs11ModulePath) throws IOException {
@@ -130,7 +128,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          The PKCS#11 library path.
    * @exception IOException
    *              If cenncting the given module failed.
-   * @preconditions (pkcs11ModulePath != null)
    *
    */
   protected synchronized native void connect(String pkcs11ModulePath) throws IOException;
@@ -170,7 +167,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          is reserved. Should be NULL_PTR (PKCS#11 param: CK_VOID_PTR pReserved)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pReserved == null)
    *
    */
   public native void C_Finalize(Object pReserved) throws PKCS11Exception;
@@ -182,7 +178,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native CK_INFO C_GetInfo() throws PKCS11Exception;
 
@@ -202,7 +197,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native long[] C_GetSlotList(boolean tokenPresent) throws PKCS11Exception;
 
@@ -216,7 +210,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native CK_SLOT_INFO C_GetSlotInfo(long slotID) throws PKCS11Exception;
 
@@ -230,7 +223,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native CK_TOKEN_INFO C_GetTokenInfo(long slotID) throws PKCS11Exception;
 
@@ -245,7 +237,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native long[] C_GetMechanismList(long slotID) throws PKCS11Exception;
 
@@ -261,7 +252,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native CK_MECHANISM_INFO C_GetMechanismInfo(long slotID, long type) throws PKCS11Exception;
 
@@ -363,7 +353,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native CK_SESSION_INFO C_GetSessionInfo(long hSession) throws PKCS11Exception;
 
@@ -377,7 +366,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native void C_SessionCancel(long hSession, long flags) throws PKCS11Exception;
 
@@ -392,7 +380,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native byte[] C_GetOperationState(long hSession) throws PKCS11Exception;
 
@@ -539,8 +526,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          receive the values. (PKCS#11 param: CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pTemplate != null)
-   * @postconditions (result != null)
    */
   public native void C_GetAttributeValue(long hSession, long hObject, CK_ATTRIBUTE[] pTemplate, boolean useUtf8)
       throws PKCS11Exception;
@@ -557,7 +542,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          (PKCS#11 param: CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pTemplate != null)
    *
    */
   public native void C_SetAttributeValue(long hSession, long hObject, CK_ATTRIBUTE[] pTemplate, boolean useUtf8)
@@ -591,7 +575,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native long[] C_FindObjects(long hSession, long ulMaxObjectCount) throws PKCS11Exception;
 
@@ -638,8 +621,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         pEncryptedData, CK_ULONG_PTR pulEncryptedDataLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_Encrypt(long hSession, byte[] pData) throws PKCS11Exception;
 
@@ -655,7 +636,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_BYTE_PTR pEncryptedPart, CK_ULONG_PTR pulEncryptedPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   public native byte[] C_EncryptUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -670,7 +650,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native byte[] C_EncryptFinal(long hSession) throws PKCS11Exception;
 
@@ -710,8 +689,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         pCiphertext, CK_ULONG_PTR CiphertextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_EncryptMessage(long hSession, Object pParameter, byte[] pAssociatedData, byte[] pPlainText,
                                         boolean useUtf8) throws PKCS11Exception;
@@ -759,8 +736,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         pCiphertext, CK_ULONG_PTR CiphertextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_EncryptMessageNext(long hSession, Object pParameter, byte[] pPlainTextPart, long flags,
                                             boolean useUtf8) throws PKCS11Exception;
@@ -801,8 +776,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_ULONG_PTR pulDataLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pEncryptedPart != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_Decrypt(long hSession, byte[] pEncryptedData) throws PKCS11Exception;
 
@@ -818,7 +791,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_ULONG_PTR pulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pEncryptedPart != null)
    *
    */
   public native byte[] C_DecryptUpdate(long hSession, byte[] pEncryptedPart) throws PKCS11Exception;
@@ -833,7 +805,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native byte[] C_DecryptFinal(long hSession) throws PKCS11Exception;
 
@@ -873,8 +844,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         pPlaintext, CK_ULONG_PTR PlaintextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pCiphertext != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_DecryptMessage(long hSession, Object pParameter, byte[] pAssociatedData, byte[] pCipherText,
                                         boolean useUtf8) throws PKCS11Exception;
@@ -922,8 +891,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         pPlaintext, CK_ULONG_PTR PlaintextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_DecryptMessageNext(long hSession, Object pParameter, byte[] pCipherTextPart, long flags,
                                             boolean useUtf8) throws PKCS11Exception;
@@ -967,8 +934,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         pDigest, CK_ULONG_PTR pulDigestLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (data != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_Digest(long hSession, byte[] data) throws PKCS11Exception;
 
@@ -982,7 +947,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          CK_ULONG ulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   public native void C_DigestUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1010,7 +974,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native byte[] C_DigestFinal(long hSession) throws PKCS11Exception;
 
@@ -1051,8 +1014,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_ULONG_PTR pulSignatureLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_Sign(long hSession, byte[] pData) throws PKCS11Exception;
 
@@ -1068,7 +1029,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          CK_ULONG ulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   public native void C_SignUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1084,7 +1044,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native byte[] C_SignFinal(long hSession) throws PKCS11Exception;
 
@@ -1117,8 +1076,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_ULONG_PTR pulSignatureLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_SignRecover(long hSession, byte[] pData) throws PKCS11Exception;
 
@@ -1221,7 +1178,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          pSignature, CK_ULONG ulSignatureLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pData != null) and (pSignature != null)
    *
    */
   public native void C_Verify(long hSession, byte[] pData, byte[] pSignature) throws PKCS11Exception;
@@ -1238,7 +1194,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          pPart, CK_ULONG ulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   public native void C_VerifyUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1254,7 +1209,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          pSignature, CK_ULONG ulSignatureLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pSignature != null)
    *
    */
   public native void C_VerifyFinal(long hSession, byte[] pSignature) throws PKCS11Exception;
@@ -1288,8 +1242,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_ULONG_PTR pulDataLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pSignature != null)
-   * @postconditions (result != null)
    */
   public native byte[] C_VerifyRecover(long hSession, byte[] pSignature) throws PKCS11Exception;
 
@@ -1381,7 +1333,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_BYTE_PTR pEncryptedPart, CK_ULONG_PTR pulEncryptedPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   public native byte[] C_DigestEncryptUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1399,7 +1350,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_BYTE_PTR pPart, CK_ULONG_PTR pulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pEncryptedPart != null)
    *
    */
   public native byte[] C_DecryptDigestUpdate(long hSession, byte[] pEncryptedPart) throws PKCS11Exception;
@@ -1417,7 +1367,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_BYTE_PTR pEncryptedPart, CK_ULONG_PTR pulEncryptedPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pPart != null)
    *
    */
   public native byte[] C_SignEncryptUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
@@ -1435,7 +1384,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         CK_BYTE_PTR pPart, CK_ULONG_PTR pulPartLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pEncryptedPart != null)
    *
    */
   public native byte[] C_DecryptVerifyUpdate(long hSession, byte[] pEncryptedPart) throws PKCS11Exception;
@@ -1484,8 +1432,6 @@ public class PKCS11Implementation implements PKCS11 {
    *         phPublicKey, CK_OBJECT_HANDLE_PTR phPrivateKey)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pMechanism != null)
-   * @postconditions (result != null) and (result.length == 2)
    */
   public native long[] C_GenerateKeyPair(long hSession, CK_MECHANISM pMechanism,
       CK_ATTRIBUTE[] pPublicKeyTemplate, CK_ATTRIBUTE[] pPrivateKeyTemplate, boolean useUtf8)
@@ -1507,7 +1453,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
-   * @postconditions (result != null)
    */
   public native byte[] C_WrapKey(long hSession, CK_MECHANISM pMechanism,
       long hWrappingKey, long hKey, boolean useUtf8) throws PKCS11Exception;
@@ -1530,7 +1475,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @return the handle of the unwrapped key (PKCS#11 param: CK_OBJECT_HANDLE_PTR phKey)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pWrappedKey != null)
    *
    */
   public native long C_UnwrapKey(long hSession, CK_MECHANISM pMechanism,
@@ -1573,7 +1517,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          CK_ULONG ulSeedLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pSeed != null)
    *
    */
   public native void C_SeedRandom(long hSession, byte[] pSeed) throws PKCS11Exception;
@@ -1588,7 +1531,6 @@ public class PKCS11Implementation implements PKCS11 {
    *          be generated (PKCS#11 param: CK_BYTE_PTR pRandomData, CK_ULONG ulRandomLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (randomData != null)
    *
    */
   public native void C_GenerateRandom(long hSession, byte[] randomData) throws PKCS11Exception;
@@ -1638,7 +1580,6 @@ public class PKCS11Implementation implements PKCS11 {
    * @return the slot ID where the event occured (PKCS#11 param: CK_SLOT_ID_PTR pSlot)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
-   * @preconditions (pRserved == null)
    *
    */
   public native long C_WaitForSlotEvent(long flags, Object pReserved) throws PKCS11Exception;

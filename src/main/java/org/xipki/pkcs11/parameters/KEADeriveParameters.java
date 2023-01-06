@@ -99,7 +99,6 @@ public class KEADeriveParameters implements Parameters {
    *
    * @return This object as a CK_KEA_DERIVE_PARAMS object.
    *
-   * @postconditions (result != null)
    */
   public CK_KEA_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_KEA_DERIVE_PARAMS params = new CK_KEA_DERIVE_PARAMS();
@@ -117,7 +116,6 @@ public class KEADeriveParameters implements Parameters {
    *
    * @return The other party's KEA public key value.
    *
-   * @postconditions (result != null)
    */
   public byte[] getPublicData() {
     return publicData;
@@ -128,7 +126,6 @@ public class KEADeriveParameters implements Parameters {
    *
    * @return The random data Ra.
    *
-   * @postconditions (result != null)
    */
   public byte[] getRandomA() {
     return randomA;
@@ -139,7 +136,6 @@ public class KEADeriveParameters implements Parameters {
    *
    * @return The random data Rb.
    *
-   * @postconditions (result != null)
    */
   public byte[] getRandomB() {
     return randomB;

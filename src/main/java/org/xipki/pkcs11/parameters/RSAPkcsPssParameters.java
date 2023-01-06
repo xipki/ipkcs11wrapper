@@ -78,7 +78,6 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
    *
    * @return This object as a CK_RSA_PKCS_PSS_PARAMS object.
    *
-   * @postconditions (result != null)
    */
   public CK_RSA_PKCS_PSS_PARAMS getPKCS11ParamsObject() {
     CK_RSA_PKCS_PSS_PARAMS params = new CK_RSA_PKCS_PSS_PARAMS();

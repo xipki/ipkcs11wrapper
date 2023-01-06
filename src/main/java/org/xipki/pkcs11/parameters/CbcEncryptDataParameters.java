@@ -78,8 +78,6 @@ public abstract class CbcEncryptDataParameters implements Parameters {
    *          The initialization vector which's length must be block size.
    * @param data
    *          The key derivation data which's length must be multiple of the block size.
-   * @preconditions (blockSize &lt; 0) and (iv != null) and (iv.length == blockSize) and (data != null)
-   *                and (data.length%blockSize == 0)
    *
    */
   protected CbcEncryptDataParameters(int blockSize, byte[] iv, byte[] data) {
@@ -108,7 +106,6 @@ public abstract class CbcEncryptDataParameters implements Parameters {
    *
    * @return The initialization vector.
    *
-   * @postconditions (result != null) and (result.length == getBlockSize())
    */
   public byte[] getInitializationVector() {
     return iv;
@@ -119,7 +116,6 @@ public abstract class CbcEncryptDataParameters implements Parameters {
    *
    * @return The data.
    *
-   * @postconditions (result != null) and (result.length%getBlockSize() == 0)
    */
   public byte[] getData() {
     return data;

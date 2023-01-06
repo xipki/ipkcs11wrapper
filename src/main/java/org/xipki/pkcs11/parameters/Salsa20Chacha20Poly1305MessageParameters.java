@@ -73,7 +73,6 @@ public class Salsa20Chacha20Poly1305MessageParameters implements MessageParamete
      * Get this parameters object as an object of the CK_SALSA20_CHACHA20_MSG_POLY1305_PARAMS class.
      *
      * @return This object as a CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS object.
-     * @postconditions (result != null)
      */
     public CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS getPKCS11ParamsObject() {
         CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS params = new CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS();

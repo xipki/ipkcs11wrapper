@@ -71,7 +71,6 @@ public class Chacha20Parameters implements Parameters {
      * Get this parameters object as an object of the CK_CHACHA20_PARAMS class.
      *
      * @return This object as a CK_CHACHA20_PARAMS object.
-     * @postconditions (result != null)
      */
     public CK_CHACHA20_PARAMS getPKCS11ParamsObject() {
         CK_CHACHA20_PARAMS params = new CK_CHACHA20_PARAMS();

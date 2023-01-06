@@ -72,7 +72,6 @@ public class RsaAesKeyWrapParameters implements Parameters {
      * Get this parameters object as an object of the CK_SALSA20_PARAMS class.
      *
      * @return This object as a CK_SALSA20_PARAMS object.
-     * @postconditions (result != null)
      */
     public CK_RSA_AES_KEY_WRAP_PARAMS getPKCS11ParamsObject() {
         CK_RSA_AES_KEY_WRAP_PARAMS params = new CK_RSA_AES_KEY_WRAP_PARAMS();

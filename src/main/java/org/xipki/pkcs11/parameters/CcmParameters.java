@@ -80,7 +80,6 @@ public class CcmParameters implements Parameters {
      * Get this parameters object as an object of the CK_CCM_PARAMS class.
      *
      * @return This object as a CK_CCM_PARAMS object.
-     * @postconditions (result != null)
      */
     public CK_CCM_PARAMS getPKCS11ParamsObject() {
         CK_CCM_PARAMS params = new CK_CCM_PARAMS();

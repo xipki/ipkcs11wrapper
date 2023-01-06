@@ -142,7 +142,6 @@ public class PKCS11Module {
    * @return An instance of Module that is connected to the given PKCS#11 module.
    * @exception IOException
    *              If connecting to the named module fails.
-   * @preconditions (pkcs11ModuleName != null) and (pkcs11ModuleName is a valid PKCS#11 module name)
    *
    */
   public static PKCS11Module getInstance(String pkcs11ModulePath) throws IOException {
@@ -223,7 +222,6 @@ public class PKCS11Module {
    *          Must be null in version 2.x of PKCS#11.
    * @exception PKCS11Exception
    *              If finalization fails.
-   * @preconditions (args == null)
    *
    */
   public void finalize(Object args) throws PKCS11Exception {

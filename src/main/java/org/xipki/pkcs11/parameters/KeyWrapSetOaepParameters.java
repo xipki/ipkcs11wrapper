@@ -81,7 +81,6 @@ public class KeyWrapSetOaepParameters implements Parameters {
    *
    * @return This object as a CK_KEY_WRAP_SET_OAEP_PARAMS object.
    *
-   * @postconditions (result != null)
    */
   public CK_KEY_WRAP_SET_OAEP_PARAMS getPKCS11ParamsObject() {
     CK_KEY_WRAP_SET_OAEP_PARAMS params = new CK_KEY_WRAP_SET_OAEP_PARAMS();

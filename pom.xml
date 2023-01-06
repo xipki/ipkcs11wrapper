@@ -281,25 +281,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <!--tags>
-                <tag>
-                    <name>preconditions</name>
-                    <placement>mc</placement>
-                    <head>Preconditions:</head>
-                </tag>
-                <tag>
-                    <name>postconditions</name>
-                    <placement>mc</placement>
-                    <head>Postconditions:</head>
-                </tag>
-                <tag>
-                    <name>invariants</name>
-                    <placement>t</placement>
-                    <head>Invariants:</head>
-                </tag>
-              </tags-->
-            </configuration>
             <executions>
               <execution>
                 <id>attach-javadocs</id>

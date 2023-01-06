@@ -59,7 +59,6 @@ public class AesCbcEncryptDataParameters extends CbcEncryptDataParameters {
    *          The initialization vector.
    * @param data
    *          The key derivation data.
-   * @preconditions (iv != null) (iv.length == 16) and (data != null) and (data.length%16 == 0)
    *
    */
   public AesCbcEncryptDataParameters(byte[] iv, byte[] data) {
@@ -71,7 +70,6 @@ public class AesCbcEncryptDataParameters extends CbcEncryptDataParameters {
    *
    * @return This object as Long object.
    *
-   * @postconditions (result != null)
    */
   public CK_AES_CBC_ENCRYPT_DATA_PARAMS getPKCS11ParamsObject() {
     CK_AES_CBC_ENCRYPT_DATA_PARAMS params = new CK_AES_CBC_ENCRYPT_DATA_PARAMS();

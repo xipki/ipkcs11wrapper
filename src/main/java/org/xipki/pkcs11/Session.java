@@ -421,7 +421,6 @@ public class Session {
    * @return The object's size bytes.
    * @exception PKCS11Exception
    *              If determining the size fails.
-   * @preconditions (object != null)
    *
    */
   public long getObjectSize(long objectHandle) throws PKCS11Exception {
@@ -603,7 +602,6 @@ public class Session {
    *          The decryption key to use.
    * @exception PKCS11Exception
    *              If initializing this operation failed.
-   * @preconditions (mechansim != null) and (key != null)
    *
    */
   public void messageEncryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
