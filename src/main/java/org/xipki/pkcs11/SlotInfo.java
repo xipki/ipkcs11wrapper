@@ -54,7 +54,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * This is especially important when calling isTokenPresent().
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class SlotInfo {
 

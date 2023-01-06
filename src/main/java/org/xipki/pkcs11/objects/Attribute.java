@@ -65,7 +65,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * be read, e.g. the private exponent of an RSA private key.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public abstract class Attribute {
 

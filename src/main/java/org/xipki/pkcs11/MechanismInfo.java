@@ -51,7 +51,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * token implements.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class MechanismInfo {
 

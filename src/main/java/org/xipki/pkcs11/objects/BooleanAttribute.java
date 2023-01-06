@@ -47,7 +47,7 @@ package org.xipki.pkcs11.objects;
  * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class BooleanAttribute extends Attribute {
 

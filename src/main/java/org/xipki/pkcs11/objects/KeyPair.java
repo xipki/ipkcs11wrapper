@@ -47,7 +47,7 @@ package org.xipki.pkcs11.objects;
  * a private key and a public key.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class KeyPair {
 

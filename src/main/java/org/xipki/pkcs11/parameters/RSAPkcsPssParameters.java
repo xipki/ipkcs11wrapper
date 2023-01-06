@@ -48,8 +48,7 @@ import iaik.pkcs.pkcs11.wrapper.CK_RSA_PKCS_PSS_PARAMS;
  * This class encapsulates parameters for the Mechanism.RSA_PKCS_PSS.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
- *
+ * @author Lijun Liao (xipki)
  */
 public class RSAPkcsPssParameters extends RSAPkcsParameters {
 

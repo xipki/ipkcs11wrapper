@@ -49,7 +49,7 @@ import org.xipki.pkcs11.parameters.Parameters;
  * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class Mechanism {
 

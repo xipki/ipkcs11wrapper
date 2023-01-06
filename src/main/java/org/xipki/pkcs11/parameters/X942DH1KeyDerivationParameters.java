@@ -50,7 +50,7 @@ import org.xipki.pkcs11.Functions;
  * Mechanism.X9_42_DH_DERIVE.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class X942DH1KeyDerivationParameters extends DHKeyDerivationParameters {
 

@@ -49,7 +49,7 @@ import org.xipki.pkcs11.Functions;
  * This class encapsulates parameters for the Mechanism.KEA_KEY_DERIVE.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class KEADeriveParameters implements Parameters {
 

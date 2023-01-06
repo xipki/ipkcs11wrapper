@@ -42,6 +42,10 @@
 
 package org.xipki.pkcs11.parameters;
 
+/**
+ * @author Stiftung SIC
+ * @author Lijun Liao (xipki)
+ */
 public interface MessageParameters extends Parameters{
     void setValuesFromPKCS11Object(Object obj);
 }

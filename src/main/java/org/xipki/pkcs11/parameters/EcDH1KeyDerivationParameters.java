@@ -50,7 +50,7 @@ import org.xipki.pkcs11.Functions;
  * Mechanism.ECDH1_DERIVE and Mechanism.ECDH1_COFACTOR_DERIVE.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class EcDH1KeyDerivationParameters extends DHKeyDerivationParameters {
 

@@ -91,8 +91,7 @@ package org.xipki.pkcs11;
  * </pre>
  *
  * @author Karl Scheibelhofer
- * @author Lijun Liao
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public interface PKCS11Constants {
 

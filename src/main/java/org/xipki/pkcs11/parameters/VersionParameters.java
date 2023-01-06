@@ -49,7 +49,7 @@ import org.xipki.pkcs11.Version;
  * This class is used for the Mechanism.SSL3_PRE_MASTER_KEY_GEN.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  *
  */
 public class VersionParameters extends Version implements Parameters {

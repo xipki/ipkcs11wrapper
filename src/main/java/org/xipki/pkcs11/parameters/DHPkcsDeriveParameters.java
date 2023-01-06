@@ -49,7 +49,7 @@ import org.xipki.pkcs11.Functions;
  * Mechanism.DH_PKCS_DERIVE.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class DHPkcsDeriveParameters implements Parameters {
 

@@ -48,8 +48,7 @@ import iaik.pkcs.pkcs11.wrapper.CK_AES_CBC_ENCRYPT_DATA_PARAMS;
  * This class encapsulates parameters for the algorithm Mechanism.AES_CBC_ENCRYPT_DATA.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
- *
+ * @author Lijun Liao (xipki)
  */
 public class AesCbcEncryptDataParameters extends CbcEncryptDataParameters {
 

@@ -51,7 +51,7 @@ import static org.xipki.pkcs11.PKCS11Constants.CKZ_SALT_SPECIFIED;
  * This class encapsulates parameters for the Mechanism.RSA_PKCS_OAEP.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class RSAPkcsOaepParameters extends RSAPkcsParameters {
 

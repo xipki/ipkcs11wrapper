@@ -49,8 +49,7 @@ import iaik.pkcs.pkcs11.wrapper.CK_VERSION;
  * minor version number.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
- *
+ * @author Lijun Liao (xipki)
  */
 public class Version {
 

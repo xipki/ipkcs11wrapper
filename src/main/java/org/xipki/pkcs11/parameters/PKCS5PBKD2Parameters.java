@@ -52,7 +52,7 @@ import static org.xipki.pkcs11.PKCS11Constants.CKZ_SALT_SPECIFIED;
  * This class encapsulates parameters for the Mechanism.PKCS5_PKKD2 mechanism.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class PKCS5PBKD2Parameters implements Parameters {
 

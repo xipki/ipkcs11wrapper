@@ -104,10 +104,8 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * if the event occurred in the slot of interest and if there is really a token
  * present in the slot.
  *
- * @see ModuleInfo
- * @see Slot
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 
 public class PKCS11Module {

@@ -50,7 +50,7 @@ import org.xipki.pkcs11.Functions;
  * cryptoki version 2.20.
  *
  * @author Birgit Haas
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class MechanismArrayAttribute extends Attribute {
 

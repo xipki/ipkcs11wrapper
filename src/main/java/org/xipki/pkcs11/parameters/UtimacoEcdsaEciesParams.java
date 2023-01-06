@@ -69,6 +69,8 @@ import org.xipki.pkcs11.Functions;
  * macOpt:<br>
  * currently ignored
  *
+ * @author Stiftung SIC
+ *
  */
 public class UtimacoEcdsaEciesParams implements Parameters {
 

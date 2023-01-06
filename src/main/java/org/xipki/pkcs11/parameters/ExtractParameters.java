@@ -46,7 +46,7 @@ package org.xipki.pkcs11.parameters;
  * This class encapsulates parameters for Mechanisms.EXTRACT_KEY_FROM_KEY.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class ExtractParameters implements Parameters {
 

@@ -49,8 +49,7 @@ import org.xipki.pkcs11.Functions;
  * This class encapsulates parameters for the Mechanism.KEY_WRAP_SET_OAEP.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
- *
+ * @author Lijun Liao (xipki)
  */
 public class KeyWrapSetOaepParameters implements Parameters {
 

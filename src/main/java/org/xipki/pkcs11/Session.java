@@ -91,7 +91,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * </pre>
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class Session {
 

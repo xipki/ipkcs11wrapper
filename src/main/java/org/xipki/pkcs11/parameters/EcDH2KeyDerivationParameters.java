@@ -50,7 +50,7 @@ import org.xipki.pkcs11.Functions;
  * CKM_ECMQV_DERIVE.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
 

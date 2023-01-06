@@ -50,8 +50,7 @@ import org.xipki.pkcs11.Functions;
  * parameter.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
- * @invariants (data_ != null)
+ * @author Lijun Liao (xipki)
  */
 public class KeyDerivationStringDataParameters implements Parameters {
 

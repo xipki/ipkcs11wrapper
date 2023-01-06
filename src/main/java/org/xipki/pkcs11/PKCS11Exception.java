@@ -52,7 +52,7 @@ package org.xipki.pkcs11;
  * context in which the error occurs.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class PKCS11Exception extends TokenException {
 

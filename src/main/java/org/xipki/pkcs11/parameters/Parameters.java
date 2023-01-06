@@ -46,7 +46,7 @@ package org.xipki.pkcs11.parameters;
  * Every Parameters-class implements this interface through which the module.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public interface Parameters {
 

@@ -42,6 +42,10 @@
 
 package org.xipki.pkcs11.objects;
 
+/**
+ * @author Karl Scheibelhofer
+ * @author Lijun Liao (xipki)
+ */
 public class OtherAttribute extends Attribute {
 
   /**

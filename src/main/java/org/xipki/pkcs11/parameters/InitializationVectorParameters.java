@@ -51,7 +51,7 @@ import org.xipki.pkcs11.Functions;
  * as parameter.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class InitializationVectorParameters implements Parameters {
 

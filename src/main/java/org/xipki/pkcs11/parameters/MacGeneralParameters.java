@@ -48,7 +48,7 @@ package org.xipki.pkcs11.parameters;
  * CDMF ciphers.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class MacGeneralParameters implements Parameters {
 

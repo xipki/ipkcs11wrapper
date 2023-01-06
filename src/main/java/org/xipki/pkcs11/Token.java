@@ -86,12 +86,8 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * </code></pre>
  * to open a simple read-only session.
  *
- * @see Mechanism
- * @see MechanismInfo
- * @see Session
- * @see TokenInfo
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class Token {
 

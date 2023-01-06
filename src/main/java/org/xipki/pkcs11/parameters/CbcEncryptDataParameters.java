@@ -48,8 +48,7 @@ import org.xipki.pkcs11.Functions;
  * This class encapsulates parameters CBC key derivation algorithms.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
- *
+ * @author Lijun Liao (xipki)
  */
 public abstract class CbcEncryptDataParameters implements Parameters {
 

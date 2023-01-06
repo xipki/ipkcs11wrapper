@@ -51,7 +51,7 @@ import static org.xipki.pkcs11.PKCS11Constants.CK_UNAVAILABLE_INFORMATION;
  * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class MechanismAttribute extends LongAttribute {
 

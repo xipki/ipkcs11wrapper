@@ -49,7 +49,7 @@ import iaik.pkcs.pkcs11.wrapper.CK_INFO;
  * driver for a specific token.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class ModuleInfo {
 

@@ -49,7 +49,7 @@ import org.xipki.pkcs11.Functions;
  * This class encapsulates parameters for the AES-GCM message en/decryption.
  *
  * @author Patrick Schuster
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class CcmMessageParameters implements MessageParameters {
 

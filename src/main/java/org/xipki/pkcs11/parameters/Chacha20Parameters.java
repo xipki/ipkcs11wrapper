@@ -49,7 +49,7 @@ import org.xipki.pkcs11.Functions;
  * This class encapsulates parameters for the Chacha20 en/decryption.
  *
  * @author Patrick Schuster
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class Chacha20Parameters implements Parameters {
 

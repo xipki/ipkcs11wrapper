@@ -56,7 +56,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * token's status at the time this object was created.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class TokenInfo {
 

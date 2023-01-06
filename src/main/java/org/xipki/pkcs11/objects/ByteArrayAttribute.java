@@ -51,7 +51,7 @@ import java.math.BigInteger;
  * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 public class ByteArrayAttribute extends Attribute {
 

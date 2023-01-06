@@ -55,7 +55,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * Mechanism.RSA_PKCS_OAEP and Mechanism.RSA_PKCS_PSS.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 abstract public class RSAPkcsParameters implements Parameters {
 

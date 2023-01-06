@@ -52,7 +52,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * CKM_X9_42_DH_DERIVE, CKM_X9_42_DH_HYBRID_DERIVE and CKM_X9_42_MQV_DERIVE.
  *
  * @author Karl Scheibelhofer
- * @version 1.0
+ * @author Lijun Liao (xipki)
  */
 abstract public class DHKeyDerivationParameters implements Parameters {
 

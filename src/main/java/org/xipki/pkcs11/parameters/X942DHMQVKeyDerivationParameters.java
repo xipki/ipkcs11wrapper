@@ -48,6 +48,8 @@ import org.xipki.pkcs11.Functions;
 /**
  * This abstract class encapsulates parameters for the X9.42 DH mechanisms
  * Mechanism.X9_42_DH_HYBRID_DERIVE and Mechanism.X9_42_MQV_DERIVE.
+ * @author Stiftung SIC
+ * @author Lijun Liao (xipki)
  */
 public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParameters {
 
