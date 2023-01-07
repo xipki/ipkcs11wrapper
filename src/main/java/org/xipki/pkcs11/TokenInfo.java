@@ -364,7 +364,7 @@ public class TokenInfo {
     return hasFlagBit(CKF_LOGIN_REQUIRED);
   }
 
-  protected boolean isTokenInitialized() {
+  public boolean isTokenInitialized() {
     return hasFlagBit(CKF_TOKEN_INITIALIZED);
   }
 
