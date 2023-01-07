@@ -41,20 +41,16 @@ public class AttributeVector {
     }
   }
 
-  public AttributeVector acIssuer(char[] acIssuer) {
+  public AttributeVector acIssuer(String acIssuer) {
     return attr(CKA_AC_ISSUER, acIssuer);
   }
 
-  public AttributeVector alwaysSensitive(char[] alwaysSensitive) {
+  public AttributeVector alwaysSensitive(boolean alwaysSensitive) {
     return attr(CKA_ALWAYS_SENSITIVE, alwaysSensitive);
   }
 
-  public AttributeVector alwaysAuthenticate(char[] alwaysAuthenticate) {
+  public AttributeVector alwaysAuthenticate(boolean alwaysAuthenticate) {
     return attr(CKA_ALWAYS_AUTHENTICATE, alwaysAuthenticate);
-  }
-
-  public AttributeVector application(char[] application) {
-    return attr(CKA_APPLICATION, application);
   }
 
   public AttributeVector application(String application) {
@@ -175,10 +171,6 @@ public class AttributeVector {
 
   public AttributeVector keyType(long keyType) {
     return attr(CKA_KEY_TYPE, keyType);
-  }
-
-  public AttributeVector label(char[] label) {
-    return attr(CKA_LABEL, label);
   }
 
   public AttributeVector label(String label) {
@@ -305,7 +297,7 @@ public class AttributeVector {
     return attr(CKA_TRUSTED, trusted);
   }
 
-  public AttributeVector uniqueId(char[] uniqueId) {
+  public AttributeVector uniqueId(String uniqueId) {
     return attr(CKA_UNIQUE_ID, uniqueId);
   }
 
@@ -403,11 +395,6 @@ public class AttributeVector {
   public Integer getIntAttrValue(long type) {
     Long value = getLongAttrValue(type);
     return value == null ? null : value.intValue();
-  }
-
-  public char[] getCharArrayAttrValue(long type) {
-    Attribute attr = getAttribute(type);
-    return attr == null ? null : ((CharArrayAttribute) attr).getCharArrayValue();
   }
 
   public String getStringAttrValue(long type) {

@@ -163,8 +163,8 @@ public class ImportCertificate extends TestBase {
 
         String subjectCommonName = Util.getCommontName(subjectName);
         String issuerCommonName = Util.getCommontName(issuerName);
-        char[] label = (subjectCommonName + "'s " +
-            ((issuerCommonName != null) ? issuerCommonName + " " : "") + "Certificate").toCharArray();
+        String label = subjectCommonName + "'s " +
+            ((issuerCommonName != null) ? issuerCommonName + " " : "") + "Certificate";
 
         byte[] newObjectID;
         // if we need a new object ID, create one

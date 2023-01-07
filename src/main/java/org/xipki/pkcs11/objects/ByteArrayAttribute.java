@@ -79,6 +79,17 @@ public class ByteArrayAttribute extends Attribute {
   }
 
   /**
+   * Set the big integer value whose byte-array representation is the content of this attribute.
+   * Null, is also valid. A call to this method sets the present flag to true.
+   *
+   * @param value
+   *          The byte-array value to set. May be null.
+   */
+  public ByteArrayAttribute bigIntValue(BigInteger value) {
+    return byteArrayValue(value == null ? null : value.toByteArray());
+  }
+
+  /**
    * Get the byte-array value of this attribute. Null, is also possible.
    *
    * @return The byte-array value of this attribute or null.
@@ -103,10 +114,6 @@ public class ByteArrayAttribute extends Attribute {
   protected String getValueString() {
     return ((ckAttribute != null) && (ckAttribute.pValue != null))
       ? Functions.toHex((byte[]) ckAttribute.pValue) : "<NULL_PTR>";
-  }
-
-  public void setValue(Object value) {
-    byteArrayValue((byte[]) value);
   }
 
 }

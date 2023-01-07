@@ -68,21 +68,28 @@ public class CharArrayAttribute extends Attribute {
    * @param value
    *          The char-array value to set. May be null.
    */
-  public CharArrayAttribute charArrayValue(char[] value) {
+  protected CharArrayAttribute charArrayValue(char[] value) {
     ckAttribute.pValue = value;
     present = true;
     return this;
   }
 
   /**
-   * Get the char-array value of this attribute. Null, is also possible.
+   * Set the char-array value of this attribute. Null, is also valid.
+   * A call to this method sets the present flag to true.
+   *
+   * @param value
+   *          The char-array value to set. May be null.
+   */
+  public CharArrayAttribute stringValue(String value) {
+    return charArrayValue(value == null ? null : value.toCharArray());
+  }
+
+  /**
+   * Get the string value of this attribute. Null, is also possible.
    *
    * @return The char-array value of this attribute or null.
    */
-  public char[] getCharArrayValue() {
-    return (char[]) ckAttribute.pValue;
-  }
-
   public String getStringValue() {
     return ckAttribute.pValue == null ? null : new String((char[]) ckAttribute.pValue);
   }
@@ -94,10 +101,6 @@ public class CharArrayAttribute extends Attribute {
    */
   protected String getValueString() {
     return (ckAttribute != null && ckAttribute.pValue != null) ? new String((char[]) ckAttribute.pValue) : "<NULL_PTR>";
-  }
-
-  public void setValue(Object value) {
-    charArrayValue((char[]) value);
   }
 
 }

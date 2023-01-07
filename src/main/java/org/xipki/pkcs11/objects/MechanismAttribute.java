@@ -100,8 +100,4 @@ public class MechanismAttribute extends LongAttribute {
         ? Functions.ckmCodeToName((long) ckAttribute.pValue) : "<Information unavailable>";
   }
 
-  public void setValue(Object value) {
-    longValue((Long) value);
-  }
-
 }

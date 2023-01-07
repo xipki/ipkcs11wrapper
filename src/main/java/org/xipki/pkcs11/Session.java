@@ -1629,13 +1629,13 @@ public class Session {
     return ret;
   }
 
-  public char[] getCharArrayAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
+  public String getStringAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     CharArrayAttribute attr = new CharArrayAttribute(attributeType);
     getAttrValue(objectHandle, attr);
-    return attr.getCharArrayValue();
+    return attr.getStringValue();
   }
 
-  public char[][] getCharArrayAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+  public String[] getCharArrayAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
     CharArrayAttribute[] attrs = new CharArrayAttribute[attributeTypes.length];
     int idx = 0;
     for (long attrType : attributeTypes) {
@@ -1644,26 +1644,10 @@ public class Session {
 
     getAttrValues(objectHandle, attrs);
 
-    char[][] ret = new char[attributeTypes.length][];
+    String[] ret = new String[attributeTypes.length];
     idx = 0;
     for (CharArrayAttribute attr : attrs) {
-      ret[idx++] = attr.getCharArrayValue();
-    }
-    return ret;
-  }
-
-  public String getStringAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    char[] chars = getCharArrayAttrValue(objectHandle, attributeType);
-    return chars == null ? null : new String(chars);
-  }
-
-  public String[] getStringAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
-    char[][] charsArray = getCharArrayAttrValues(objectHandle, attributeTypes);
-
-    String[] ret = new String[attributeTypes.length];
-    int idx = 0;
-    for (char[] chars : charsArray) {
-      ret[idx++] = chars == null ? null : new String(chars);
+      ret[idx++] = attr.getStringValue();
     }
     return ret;
   }

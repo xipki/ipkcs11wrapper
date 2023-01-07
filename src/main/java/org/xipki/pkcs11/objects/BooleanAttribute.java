@@ -83,8 +83,4 @@ public class BooleanAttribute extends Attribute {
     return (Boolean) ckAttribute.pValue;
   }
 
-  public void setValue(Object value) {
-    booleanValue((Boolean) value);
-  }
-
 }

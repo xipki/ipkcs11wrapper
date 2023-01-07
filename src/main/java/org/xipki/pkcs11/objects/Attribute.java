@@ -152,33 +152,28 @@ public abstract class Attribute {
       return new BooleanAttribute(type).booleanValue((Boolean) value);
     } else if (clazz == ByteArrayAttribute.class) {
       byte[] baValue;
-      if (value instanceof BigInteger) {
+      if (value == null)                baValue = null;
+      else if (value instanceof byte[]) baValue = (byte[]) value;
+      else {
         baValue = ((BigInteger) value).toByteArray();
         if (baValue[0] == 0) baValue = Arrays.copyOfRange(baValue, 1, baValue.length);
-      } else {
-        baValue = (byte[]) value;
       }
       return new ByteArrayAttribute(type).byteArrayValue(baValue);
     } else if (clazz == CharArrayAttribute.class) {
-      char[] thisValue = (value instanceof String) ? ((String) value).toCharArray() : (char[]) value;
-      return new CharArrayAttribute(type).charArrayValue(thisValue);
+      CharArrayAttribute attr = new CharArrayAttribute(type);
+      if (value == null)                return attr.charArrayValue(null);
+      else if (value instanceof char[]) return attr.charArrayValue((char[]) value);
+      else                              return attr.stringValue((String) value);
     } else if (clazz == DateAttribute.class) {
       return new DateAttribute(type).dateValue((Date) value);
-    } else if (clazz == LongAttribute.class) {
-      LongAttribute attr = new LongAttribute(type);
-      setLongAttrValue(attr, value);
-      return attr;
-    } else if (clazz == MechanismAttribute.class) {
-      MechanismAttribute attr = new MechanismAttribute(type);
-      setLongAttrValue(attr, value);
-      return attr;
+    } else if (clazz == LongAttribute.class || clazz == MechanismAttribute.class) {
+      LongAttribute attr = (clazz == LongAttribute.class) ? new LongAttribute(type) : new MechanismAttribute(type);
+      if (value == null)              return attr.longValue(null);
+      else if (value instanceof Long) return attr.longValue((Long) value);
+      else                            return attr.longValue((long) (int) value);
     } else {
       throw new IllegalStateException("unknown class " + clazz); // should not reach here
     }
-  }
-
-  private static void setLongAttrValue(LongAttribute attr, Object value) {
-    attr.longValue((value instanceof Integer) ? (long) (int) value : (Long) value);
   }
 
   /**
@@ -228,21 +223,6 @@ public abstract class Attribute {
     this.sensitive = sensitive;
     return this;
   }
-
-  /**
-   * Redirects the request for setting the attribute value to the implementing
-   * attribute class.
-   *
-   * @param value
-   *          the new value
-   * @throws ClassCastException
-   *           the given value type is not valid for this very
-   *           {@link Attribute}.
-   * @throws UnsupportedOperationException
-   *           the {@link OtherAttribute} implementation does not support
-   *           setting a value directly.
-   */
-  public abstract void setValue(Object value);
 
   /**
    * Set the CK_ATTRIBUTE of this Attribute. Only for internal use.

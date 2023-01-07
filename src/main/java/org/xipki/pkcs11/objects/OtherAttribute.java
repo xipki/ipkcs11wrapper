@@ -57,9 +57,4 @@ public class OtherAttribute extends Attribute {
     super(type);
   }
 
-  public void setValue(Object value) {
-    /* since we do not know this kind of attribute, we just give up */
-    throw new UnsupportedOperationException("message");
-  }
-
 }

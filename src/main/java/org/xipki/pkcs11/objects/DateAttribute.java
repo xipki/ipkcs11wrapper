@@ -44,7 +44,6 @@ package org.xipki.pkcs11.objects;
 
 import iaik.pkcs.pkcs11.wrapper.CK_DATE;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -90,7 +89,7 @@ public class DateAttribute extends Attribute {
       CK_DATE ckDate = new CK_DATE();
       ckAttribute.pValue = ckDate;
 
-      ckDate.year =Integer.toString(year).toCharArray();
+      ckDate.year = Integer.toString(year).toCharArray();
       ckDate.month = (month < 10 ? "0" + month: Integer.toString(month)).toCharArray();
       ckDate.day = (day < 10 ? "0" + day: Integer.toString(day)).toCharArray();
     }
@@ -115,10 +114,6 @@ public class DateAttribute extends Attribute {
     // calendar starts months with 0
     calendar.set(year, Calendar.JANUARY + (month - 1), day);
     return calendar.getTime();
-  }
-
-  public void setValue(Object value) {
-    dateValue((Date) value);
   }
 
 }

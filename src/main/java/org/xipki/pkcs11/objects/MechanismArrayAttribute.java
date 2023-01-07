@@ -106,8 +106,4 @@ public class MechanismArrayAttribute extends Attribute {
     }
   }
 
-  public void setValue(Object value) {
-    mechanismAttributeArrayValue((long[]) value);
-  }
-
 }

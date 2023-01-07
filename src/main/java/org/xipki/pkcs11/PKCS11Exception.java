@@ -73,10 +73,6 @@ public class PKCS11Exception extends TokenException {
     this.errorCode = errorCode;
   }
 
-  public PKCS11Exception(sun.security.pkcs11.wrapper.PKCS11Exception ex) {
-    this(ex.getErrorCode());
-  }
-
   /**
    * Returns the PKCS#11 error code.
    *

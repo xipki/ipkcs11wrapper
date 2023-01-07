@@ -107,8 +107,4 @@ public class LongAttribute extends Attribute {
     return present ? (sensitive ? "<Value is sensitive>" : valueText) : "<Attribute not present>";
   }
 
-  public void setValue(Object value) {
-    longValue((Long) value);
-  }
-
 }

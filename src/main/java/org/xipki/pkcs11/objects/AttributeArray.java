@@ -127,8 +127,4 @@ public class AttributeArray extends Attribute {
     return (template == null) ? "<NULL_PTR>" : template.toString();
   }
 
-  public void setValue(Object value) throws UnsupportedOperationException {
-    attributeArrayValue((AttributeVector) value);
-  }
-
 }
