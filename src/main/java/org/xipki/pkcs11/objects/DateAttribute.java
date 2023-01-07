@@ -102,7 +102,8 @@ public class DateAttribute extends Attribute {
    *
    * @return The date value of this attribute or null.
    */
-  public Date getDateValue() {
+  @Override
+  public Date getValue() {
     if (ckAttribute.pValue == null) return null;
 
     CK_DATE ckDate = (CK_DATE) ckAttribute.pValue;

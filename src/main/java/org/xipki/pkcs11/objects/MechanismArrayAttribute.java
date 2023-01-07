@@ -84,7 +84,8 @@ public class MechanismArrayAttribute extends Attribute {
    *
    * @return The mechanism attribute array value of this attribute or null.
    */
-  public long[] getMechanismAttributeArrayValue() {
+  @Override
+  public long[] getValue() {
     return ckAttribute.pValue == null ? null : ((long[]) ckAttribute.pValue).clone();
   }
 
@@ -94,7 +95,7 @@ public class MechanismArrayAttribute extends Attribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    long[] allowedMechanisms = getMechanismAttributeArrayValue();
+    long[] allowedMechanisms = getValue();
     if (allowedMechanisms != null && allowedMechanisms.length > 0) {
       StringBuilder sb = new StringBuilder(200);
       for (long mech : allowedMechanisms) {

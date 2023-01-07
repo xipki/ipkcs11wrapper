@@ -44,6 +44,7 @@ package org.xipki.pkcs11.objects;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.Functions;
 
 /**
  * Objects of this class represent an attribute array of a PKCS#11 object
@@ -54,7 +55,7 @@ import org.xipki.pkcs11.AttributesTemplate;
  * @author Birgit Haas
  * @author Lijun Liao (xipki)
  */
-public class AttributeArray extends Attribute {
+public class AttributeArrayAttribute extends Attribute {
 
   /**
    * The attributes of this attribute array in their object class
@@ -68,7 +69,7 @@ public class AttributeArray extends Attribute {
    * @param type
    *          The PKCS#11 type of this attribute; e.g. CKA_VALUE.
    */
-  public AttributeArray(long type) {
+  public AttributeArrayAttribute(long type) {
     super(type);
   }
 
@@ -80,7 +81,7 @@ public class AttributeArray extends Attribute {
    * @param value
    *          The AttributeArray value to set. May be null.
    */
-  public AttributeArray attributeArrayValue(AttributesTemplate value) {
+  public AttributeArrayAttribute attributeArrayValue(AttributesTemplate value) {
     template = value;
     ckAttribute.pValue = value.toCkAttributes();
     present = true;
@@ -92,7 +93,8 @@ public class AttributeArray extends Attribute {
    *
    * @return The attribute array value of this attribute or null.
    */
-  public AttributesTemplate getAttributeArrayValue() {
+  @Override
+  public AttributesTemplate getValue() {
     if (template != null) return template;
 
     if (!(ckAttribute.pValue != null && ((CK_ATTRIBUTE[]) ckAttribute.pValue).length > 0)) return null;
@@ -103,10 +105,11 @@ public class AttributeArray extends Attribute {
       long type = ck_attribute.type;
       Class<?> implementation = getAttributeClass(type);
       if (implementation == null) {
-        template.attr(new OtherAttribute(type).ckAttribute(ck_attribute));
+        // ignore
+        System.err.println("Could not create attribute for the attribute type " + Functions.ckaCodeToName(type));
       } else {
         try {
-          Attribute attribute = (Attribute) implementation.getDeclaredConstructor(Attribute.class).newInstance();
+          Attribute attribute = (Attribute) implementation.getDeclaredConstructor(long.class).newInstance(type);
           template.attr(attribute.ckAttribute(ck_attribute).present(true));
         } catch (Exception ex) {
           System.err.println("Error when trying to create a " + implementation
@@ -123,7 +126,7 @@ public class AttributeArray extends Attribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    if (template == null) template = getAttributeArrayValue();
+    if (template == null) template = getValue();
 
     return (template == null) ? "<NULL_PTR>" : template.toString();
   }

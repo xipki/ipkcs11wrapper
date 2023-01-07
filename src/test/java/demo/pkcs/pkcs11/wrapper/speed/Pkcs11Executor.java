@@ -19,9 +19,9 @@ package demo.pkcs.pkcs11.wrapper.speed;
 
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.slf4j.Logger;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.util.BenchmarkExecutor;
 import org.xipki.util.concurrent.ConcurrentBag;
 

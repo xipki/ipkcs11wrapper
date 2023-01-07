@@ -42,6 +42,9 @@
 
 package iaik.pkcs.pkcs11.wrapper;
 
+/**
+ * @author Stiftung SIC
+ */
 public class CK_INTERFACE {
 
     /**

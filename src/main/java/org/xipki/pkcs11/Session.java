@@ -1476,8 +1476,8 @@ public class Session {
    * @exception PKCS11Exception
    *              If unwrapping the key or creating a new key object failed.
    */
-  public long unwrapKey(Mechanism mechanism, long unwrappingKeyHandle, byte[] wrappedKey, AttributesTemplate keyTemplate)
-      throws PKCS11Exception {
+  public long unwrapKey(Mechanism mechanism, long unwrappingKeyHandle, byte[] wrappedKey,
+                        AttributesTemplate keyTemplate) throws PKCS11Exception {
     return pkcs11.C_UnwrapKey(sessionHandle, toCkMechanism(mechanism),
         unwrappingKeyHandle, wrappedKey, toOutCKAttributes(keyTemplate), useUtf8);
   }
@@ -1608,7 +1608,7 @@ public class Session {
   public Long getLongAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     LongAttribute attr = new LongAttribute(attributeType);
     getAttrValue(objectHandle, attr);
-    return attr.getLongValue();
+    return attr.getValue();
   }
 
   public Long[] getLongAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
@@ -1623,7 +1623,7 @@ public class Session {
     Long[] ret = new Long[attributeTypes.length];
     idx = 0;
     for (LongAttribute attr : attrs) {
-      ret[idx++] = attr.getLongValue();
+      ret[idx++] = attr.getValue();
     }
     return ret;
   }
@@ -1631,7 +1631,7 @@ public class Session {
   public String getStringAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     CharArrayAttribute attr = new CharArrayAttribute(attributeType);
     getAttrValue(objectHandle, attr);
-    return attr.getStringValue();
+    return attr.getValue();
   }
 
   public String[] getCharArrayAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
@@ -1646,7 +1646,7 @@ public class Session {
     String[] ret = new String[attributeTypes.length];
     idx = 0;
     for (CharArrayAttribute attr : attrs) {
-      ret[idx++] = attr.getStringValue();
+      ret[idx++] = attr.getValue();
     }
     return ret;
   }
@@ -1669,7 +1669,7 @@ public class Session {
   public byte[] getByteArrayAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     ByteArrayAttribute attr = new ByteArrayAttribute(attributeType);
     getAttrValue(objectHandle, attr);
-    return attr.getByteArrayValue();
+    return attr.getValue();
   }
 
   public byte[][] getByteArrayAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
@@ -1684,7 +1684,7 @@ public class Session {
     byte[][] ret = new byte[attributeTypes.length][];
     idx = 0;
     for (ByteArrayAttribute attr : attrs) {
-      ret[idx++] = attr.getByteArrayValue();
+      ret[idx++] = attr.getValue();
     }
     return ret;
   }
@@ -1692,7 +1692,7 @@ public class Session {
   public Boolean getBooleanAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     BooleanAttribute attr = new BooleanAttribute(attributeType);
     getAttrValue(objectHandle, attr);
-    return attr.getBooleanValue();
+    return attr.getValue();
   }
 
   public Boolean[] getBooleanAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
@@ -1707,7 +1707,7 @@ public class Session {
     Boolean[] ret = new Boolean[attributeTypes.length];
     idx = 0;
     for (BooleanAttribute attr : attrs) {
-      ret[idx++] = attr.getBooleanValue();
+      ret[idx++] = attr.getValue();
     }
     return ret;
   }
@@ -1730,6 +1730,26 @@ public class Session {
 
   public Long getCkaCertificateType(long objectHandle) throws PKCS11Exception {
     return getLongAttrValue(objectHandle, CKA_CERTIFICATE_TYPE);
+  }
+
+  public Object getAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
+    Attribute attr = Attribute.getInstance(attributeType);
+    getAttrValue(objectHandle, attr);
+    return attr.getValue();
+  }
+
+  public Object[] getAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+    final int n = attributeTypes.length;
+    Attribute[] attrs = new Attribute[n];
+    for (int i = 0; i < n; i++) {
+      attrs[i] = Attribute.getInstance(attributeTypes[i]);
+    }
+    getAttrValues(objectHandle, attrs);
+    Object[] attrValues = new Object[n];
+    for (int i = 0; i < n; i++) {
+      attrValues[i] = attrs[i].getValue();
+    }
+    return attrValues;
   }
 
   /**
@@ -1788,7 +1808,7 @@ public class Session {
     delayedEx = null;
     for (Attribute attr : attributes) {
       try {
-        getAttrValue(objectHandle, attr, true);
+        getAttrValue(objectHandle, attr);
       } catch (PKCS11Exception ex) {
         if (delayedEx == null) delayedEx = ex;
       }
@@ -1822,11 +1842,6 @@ public class Session {
    *              If getting the attribute failed.
    */
   public void getAttrValue(long objectHandle, Attribute attribute) throws PKCS11Exception {
-    getAttrValue(objectHandle, attribute, true);
-  }
-
-  public void getAttrValue(long objectHandle, Attribute attribute, boolean ignoreParsableException)
-      throws PKCS11Exception {
     attribute.stateKnown(false).present(false);
 
     try {
@@ -1846,15 +1861,12 @@ public class Session {
         // we can ignore this and proceed; e.g. a v2.01 module won't
         // have the object ID attribute
         attribute.stateKnown(true).present(false).getCkAttribute().pValue = null;
-        if (!ignoreParsableException) throw ex;
       } else if (ec == CKR_ATTRIBUTE_SENSITIVE) {
         // this means, that some requested attributes are missing, but we can ignore this and
         // proceed; e.g. a v2.01 module won't have the object ID attribute
         attribute.stateKnown(true).present(true).sensitive(true).getCkAttribute().pValue = null;
-        if (!ignoreParsableException) throw ex;
       } else if (ec == CKR_ARGUMENTS_BAD || ec == CKR_FUNCTION_FAILED || ec == CKR_FUNCTION_REJECTED) {
         attribute.stateKnown(true).present(false).sensitive(false).getCkAttribute().pValue = null;
-        if (!ignoreParsableException) throw ex;
       } else {
         // there was a different error that we should propagate
         throw ex;

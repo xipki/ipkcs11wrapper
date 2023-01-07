@@ -43,11 +43,11 @@
 package demo.pkcs.pkcs11.wrapper.random;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
+import org.junit.Test;
+import org.xipki.pkcs11.Functions;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.Functions;
-import org.junit.Test;
 
 /**
  * This demo program uses a PKCS#11 module to produce random data.

@@ -47,7 +47,8 @@ import org.xipki.pkcs11.Functions;
 
 /**
  * This class encapsulates parameters for the DH mechanisms Mechanism.ECMQV_DERIVE.
- * @author Stiftung SIC
+ *
+ *  @author Stiftung SIC
  * @author Lijun Liao (xipki)
  */
 public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {

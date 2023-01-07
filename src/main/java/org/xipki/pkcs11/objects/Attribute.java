@@ -43,6 +43,7 @@
 package org.xipki.pkcs11.objects;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.Functions;
 
 import java.math.BigInteger;
@@ -115,7 +116,7 @@ public abstract class Attribute {
             : "Date".equalsIgnoreCase(type) ? DateAttribute.class
             : "Mechanism".equalsIgnoreCase(type) ? MechanismAttribute.class
             : "MechanismArray".equalsIgnoreCase(type) ? MechanismArrayAttribute.class
-            : "AttributeArray".equalsIgnoreCase(type) ? AttributeArray.class : null;
+            : "AttributeArray".equalsIgnoreCase(type) ? AttributeArrayAttribute.class : null;
 
         if (clazz == null) throw new IllegalStateException("unknown type " + type);
 
@@ -130,6 +131,8 @@ public abstract class Attribute {
     }
   }
 
+  public abstract Object getValue();
+
   /**
    * Constructor taking the PKCS#11 type of the attribute.
    *
@@ -142,6 +145,24 @@ public abstract class Attribute {
     stateKnown = true;
     ckAttribute = new CK_ATTRIBUTE();
     ckAttribute.type = type;
+  }
+
+  public static Attribute getInstance(long type) {
+    Class<?> clazz = getAttributeClass(type);
+    if (clazz == null) throw new IllegalArgumentException("Unknown attribute type " + Functions.ckaCodeToName(type));
+    Attribute attr = (clazz == BooleanAttribute.class) ? new BooleanAttribute(type)
+        : (clazz == ByteArrayAttribute.class) ? new ByteArrayAttribute(type)
+        : (clazz == CharArrayAttribute.class) ? new CharArrayAttribute(type)
+        : (clazz == DateAttribute.class)      ? new DateAttribute(type)
+        : (clazz == LongAttribute.class)      ? new LongAttribute(type)
+        : (clazz == MechanismAttribute.class) ? new MechanismAttribute(type)
+        : (clazz == MechanismArrayAttribute.class) ? new MechanismArrayAttribute(type)
+        : (clazz == AttributeArrayAttribute.class) ? new AttributeArrayAttribute(type)
+        : null;
+    if (attr == null) {
+      throw new IllegalStateException("unknown class " + clazz);
+    }
+    return attr;
   }
 
   public static Attribute getInstance(long type, Object value) {
@@ -171,6 +192,10 @@ public abstract class Attribute {
       if (value == null)              return attr.longValue(null);
       else if (value instanceof Long) return attr.longValue((Long) value);
       else                            return attr.longValue((long) (int) value);
+    } else if (clazz == MechanismArrayAttribute.class) {
+      return new MechanismArrayAttribute(type).mechanismAttributeArrayValue((long[]) value);
+    } else if (clazz == AttributeArrayAttribute.class) {
+      return new AttributeArrayAttribute(type).attributeArrayValue((AttributesTemplate) value);
     } else {
       throw new IllegalStateException("unknown class " + clazz); // should not reach here
     }

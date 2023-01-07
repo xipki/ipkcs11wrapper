@@ -53,7 +53,8 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 
-import static org.xipki.pkcs11.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.CKF_DONT_BLOCK;
+import static org.xipki.pkcs11.PKCS11Constants.CKF_OS_LOCKING_OK;
 
 /**
  * <p>

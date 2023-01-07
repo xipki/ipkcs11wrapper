@@ -94,7 +94,8 @@ public class ByteArrayAttribute extends Attribute {
    *
    * @return The byte-array value of this attribute or null.
    */
-  public byte[] getByteArrayValue() {
+  @Override
+  public byte[] getValue() {
     return (byte[]) ckAttribute.pValue;
   }
 

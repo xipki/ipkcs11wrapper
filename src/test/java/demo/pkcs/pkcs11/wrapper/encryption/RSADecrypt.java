@@ -18,10 +18,9 @@
 package demo.pkcs.pkcs11.wrapper.encryption;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.PKCS11KeyPair;
 import org.junit.Assert;
 import org.junit.Test;
+import org.xipki.pkcs11.*;
 
 import java.util.Arrays;
 

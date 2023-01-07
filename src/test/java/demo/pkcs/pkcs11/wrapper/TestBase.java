@@ -44,16 +44,13 @@ package demo.pkcs.pkcs11.wrapper;
 
 import demo.pkcs.pkcs11.wrapper.util.KeyUtil;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.AttributesTemplate;
-import org.xipki.pkcs11.PKCS11KeyPair;
-import org.xipki.pkcs11.Functions;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xipki.pkcs11.*;
 import org.xipki.util.Hex;
 
 import java.io.InputStream;

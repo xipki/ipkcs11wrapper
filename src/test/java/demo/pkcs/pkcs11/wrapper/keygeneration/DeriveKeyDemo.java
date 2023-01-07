@@ -43,14 +43,11 @@
 package demo.pkcs.pkcs11.wrapper.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import org.xipki.pkcs11.Mechanism;
-import org.xipki.pkcs11.Session;
-import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
+import org.xipki.pkcs11.*;
 
-import static org.xipki.pkcs11.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.CKK_AES;
+import static org.xipki.pkcs11.PKCS11Constants.CKM_AES_KEY_GEN;
 
 /**
  * This demo program shows how to derive a DES3 key.

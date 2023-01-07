@@ -18,9 +18,9 @@
 package demo.pkcs.pkcs11.wrapper.signatures;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import org.xipki.pkcs11.Session;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.BeforeClass;
+import org.xipki.pkcs11.Session;
 
 import java.security.PublicKey;
 import java.security.Security;

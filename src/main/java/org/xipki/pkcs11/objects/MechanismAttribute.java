@@ -80,24 +80,15 @@ public class MechanismAttribute extends LongAttribute {
   }
 
   /**
-   * Get the long value of this attribute. Null, is also possible.
-   *
-   * @return The long value of this attribute or null.
-   */
-  public Long getMechanism() {
-    return ((ckAttribute != null) && (ckAttribute.pValue != null)) ? (Long) ckAttribute.pValue : null;
-  }
-
-  /**
    * Get a string representation of the value of this attribute.
    *
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    if ((ckAttribute == null) || (ckAttribute.pValue == null)) return "<NULL_PTR>";
+    Long value = getValue();
+    if (value == null) return "<NULL_PTR>";
 
-    return (((Long) ckAttribute.pValue) != CK_UNAVAILABLE_INFORMATION)
-        ? Functions.ckmCodeToName((long) ckAttribute.pValue) : "<Information unavailable>";
+    return (value != CK_UNAVAILABLE_INFORMATION) ? Functions.ckmCodeToName(value) : "<Information unavailable>";
   }
 
 }

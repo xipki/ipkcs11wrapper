@@ -19,14 +19,10 @@ package demo.pkcs.pkcs11.wrapper.speed.encryption;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import org.xipki.pkcs11.Mechanism;
-import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.AttributesTemplate;
-import org.xipki.pkcs11.parameters.GcmParameters;
-import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
+import org.xipki.pkcs11.*;
+import org.xipki.pkcs11.parameters.GcmParameters;
 import org.xipki.util.BenchmarkExecutor;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;

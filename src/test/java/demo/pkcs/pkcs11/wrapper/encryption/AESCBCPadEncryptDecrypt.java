@@ -17,10 +17,10 @@
 
 package demo.pkcs.pkcs11.wrapper.encryption;
 
-import org.xipki.pkcs11.Mechanism;
-import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.PKCS11Exception;
+import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.parameters.InitializationVectorParameters;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;

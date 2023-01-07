@@ -401,12 +401,12 @@ public class AttributesTemplate {
 
   public Boolean getBooleanAttrValue(long type) {
     Attribute attr = getAttribute(type);
-    return attr == null ? null : ((BooleanAttribute) attr).getBooleanValue();
+    return attr == null ? null : ((BooleanAttribute) attr).getValue();
   }
 
   public Long getLongAttrValue(long type) {
     Attribute attr = getAttribute(type);
-    return attr == null ? null : ((LongAttribute) attr).getLongValue();
+    return attr == null ? null : ((LongAttribute) attr).getValue();
   }
 
   public Integer getIntAttrValue(long type) {
@@ -416,12 +416,12 @@ public class AttributesTemplate {
 
   public String getStringAttrValue(long type) {
     Attribute attr = getAttribute(type);
-    return attr == null ? null : ((CharArrayAttribute) attr).getStringValue();
+    return attr == null ? null : ((CharArrayAttribute) attr).getValue();
   }
 
   public byte[] getByteArrayAttrValue(long type) {
     Attribute attr = getAttribute(type);
-    return attr == null ? null : ((ByteArrayAttribute) attr).getByteArrayValue();
+    return attr == null ? null : ((ByteArrayAttribute) attr).getValue();
   }
 
   public String toString() {

@@ -43,13 +43,13 @@
 package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
+import org.junit.Test;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.Attribute;
-import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.objects.ByteArrayAttribute;
-import org.junit.Test;
 
 import java.util.*;
 

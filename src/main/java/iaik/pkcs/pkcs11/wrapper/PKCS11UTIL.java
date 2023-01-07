@@ -44,6 +44,9 @@ package iaik.pkcs.pkcs11.wrapper;
 
 import java.io.UnsupportedEncodingException;
 
+/**
+ * @author Stiftung SIC
+ */
 public class PKCS11UTIL {
 
   /**

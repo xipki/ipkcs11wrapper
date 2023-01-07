@@ -19,12 +19,12 @@ package demo.pkcs.pkcs11.wrapper.speed.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.AttributesTemplate;
-import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.Functions;
+import org.xipki.pkcs11.PKCS11Exception;
+import org.xipki.pkcs11.Token;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
 

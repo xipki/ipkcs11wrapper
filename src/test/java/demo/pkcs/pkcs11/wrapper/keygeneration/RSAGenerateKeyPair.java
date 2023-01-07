@@ -44,11 +44,8 @@ package demo.pkcs.pkcs11.wrapper.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.AttributesTemplate;
-import org.xipki.pkcs11.PKCS11KeyPair;
-import org.xipki.pkcs11.Functions;
 import org.junit.Test;
+import org.xipki.pkcs11.*;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;

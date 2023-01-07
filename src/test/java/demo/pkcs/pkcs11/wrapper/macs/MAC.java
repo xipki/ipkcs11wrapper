@@ -44,12 +44,8 @@ package demo.pkcs.pkcs11.wrapper.macs;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
-import org.xipki.pkcs11.Mechanism;
-import org.xipki.pkcs11.Session;
-import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
+import org.xipki.pkcs11.*;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

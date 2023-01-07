@@ -90,7 +90,8 @@ public class CharArrayAttribute extends Attribute {
    *
    * @return The char-array value of this attribute or null.
    */
-  public String getStringValue() {
+  @Override
+  public String getValue() {
     return ckAttribute.pValue == null ? null : new String((char[]) ckAttribute.pValue);
   }
 
@@ -100,7 +101,8 @@ public class CharArrayAttribute extends Attribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    return (ckAttribute != null && ckAttribute.pValue != null) ? new String((char[]) ckAttribute.pValue) : "<NULL_PTR>";
+    String value = getValue();
+    return (value != null) ? value : "<NULL_PTR>";
   }
 
 }

@@ -44,11 +44,11 @@ package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
+import org.junit.Test;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.MechanismInfo;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.AttributesTemplate;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;

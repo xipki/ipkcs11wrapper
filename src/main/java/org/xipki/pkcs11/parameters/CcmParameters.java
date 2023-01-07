@@ -66,7 +66,8 @@ public class CcmParameters implements Parameters {
      *                (where L is the size in bytes of the data length's length(2 &lt; L &lt; 8)
      * @param nonce   the nonce
      * @param aad     additional authentication data. This data is authenticated but not encrypted.
-     * @param macLen  length of the MAC (output following cipher text) in bytes. Valid values are (4, 6, 8, 10, 12, 14 and 16)
+     * @param macLen  length of the MAC (output following cipher text) in bytes. Valid values are
+     *                (4, 6, 8, 10, 12, 14 and 16)
      */
     public CcmParameters(int dataLen, byte[] nonce, byte[] aad, int macLen) {
         this.nonce = Functions.requireNonNull("nonce", nonce);

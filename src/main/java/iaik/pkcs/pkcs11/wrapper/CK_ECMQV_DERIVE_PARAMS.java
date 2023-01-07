@@ -61,6 +61,8 @@ package iaik.pkcs.pkcs11.wrapper;
  *   CK_OBJECT_HANDLE publicKey;
  * } CK_ECMQV_DERIVE_PARAMS;
  * </PRE>
+ *
+ * @author Stiftung SIC
  */
 public class CK_ECMQV_DERIVE_PARAMS {
 

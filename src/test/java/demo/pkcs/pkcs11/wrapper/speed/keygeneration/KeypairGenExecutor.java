@@ -19,18 +19,13 @@ package demo.pkcs.pkcs11.wrapper.speed.keygeneration;
 
 import demo.pkcs.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
 import demo.pkcs.pkcs11.wrapper.speed.Pkcs11Executor;
-import org.xipki.pkcs11.Mechanism;
-import org.xipki.pkcs11.Session;
-import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.AttributesTemplate;
-import org.xipki.pkcs11.PKCS11KeyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xipki.pkcs11.*;
 
 import java.util.Random;
 
-import static org.xipki.pkcs11.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.CKA_ID;
 
 /**
  * Keypair generation executor base class.

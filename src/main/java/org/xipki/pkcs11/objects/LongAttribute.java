@@ -79,7 +79,8 @@ public class LongAttribute extends Attribute {
    *
    * @return The long value of this attribute or null.
    */
-  public Long getLongValue() {
+  @Override
+  public Long getValue() {
     return (Long) ckAttribute.pValue;
   }
 

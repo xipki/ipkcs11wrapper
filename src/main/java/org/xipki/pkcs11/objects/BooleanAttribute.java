@@ -79,7 +79,8 @@ public class BooleanAttribute extends Attribute {
    *
    * @return The boolean value of this attribute or null.
    */
-  public Boolean getBooleanValue() {
+  @Override
+  public Boolean getValue() {
     return (Boolean) ckAttribute.pValue;
   }
 

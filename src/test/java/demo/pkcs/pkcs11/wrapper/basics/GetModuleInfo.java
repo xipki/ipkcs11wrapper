@@ -43,7 +43,6 @@
 package demo.pkcs.pkcs11.wrapper.basics;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
-import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
 
