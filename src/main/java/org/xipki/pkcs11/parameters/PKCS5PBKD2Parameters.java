@@ -59,28 +59,28 @@ public class PKCS5PBKD2Parameters implements Parameters {
   /**
    * The source of the salt value.
    */
-  private long saltSource;
+  private final long saltSource;
 
   /**
    * The data used as the input for the salt source.
    */
-  private byte[] saltSourceData;
+  private final byte[] saltSourceData;
 
   /**
    * The number of iterations to perform when generating each block of random
    * data.
    */
-  private int iterations;
+  private final int iterations;
 
   /**
    * The pseudo-random function (PRF) to used to generate the key.
    */
-  private long pseudoRandomFunction;
+  private final long pseudoRandomFunction;
 
   /**
    * The data used as the input for PRF in addition to the salt value.
    */
-  private byte[] pseudoRandomFunctionData;
+  private final byte[] pseudoRandomFunctionData;
 
   /**
    * Create a new PBEDeriveParameters object with the given attributes.

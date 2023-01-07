@@ -54,9 +54,9 @@ import org.xipki.pkcs11.Functions;
 public class CcmParameters implements Parameters {
 
     private int dataLen;
-    private byte[] nonce;
-    private byte[] aad;
-    private int macLen;
+    private final byte[] nonce;
+    private final byte[] aad;
+    private final int macLen;
 
     /**
      * Create a new CCMParameters object with the given attributes.

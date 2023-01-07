@@ -54,7 +54,7 @@ public class ExtractParameters implements Parameters {
    * The bit of the base key that should be used as the first bit of the
    * derived key.
    */
-  private int bitIndex;
+  private final int bitIndex;
 
   /**
    * Create a new ExtractParameters object with the given bit index.

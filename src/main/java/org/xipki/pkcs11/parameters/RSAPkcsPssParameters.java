@@ -55,7 +55,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
   /**
    * The length of the salt value in octets.
    */
-  private int saltLength;
+  private final int saltLength;
 
   /**
    * Create a new RSAPkcsOaepParameters object with the given attributes.

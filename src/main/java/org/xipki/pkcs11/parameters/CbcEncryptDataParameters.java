@@ -75,9 +75,9 @@ public abstract class CbcEncryptDataParameters implements Parameters {
    * @param blockSize
    *          The block size of the cipher.
    * @param iv
-   *          The initialization vector which's length must be block size.
+   *          The initialization vector whose length must be block size.
    * @param data
-   *          The key derivation data which's length must be multiple of the block size.
+   *          The key derivation data whose length must be multiple of the block size.
    *
    */
   protected CbcEncryptDataParameters(int blockSize, byte[] iv, byte[] data) {

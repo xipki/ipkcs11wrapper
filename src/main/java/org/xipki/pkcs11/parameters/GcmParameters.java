@@ -53,9 +53,9 @@ import org.xipki.pkcs11.Functions;
  */
 public class GcmParameters implements Parameters {
 
-    private byte[] iv;
-    private byte[] aad;
-    private int tagBits;
+    private final byte[] iv;
+    private final byte[] aad;
+    private final int tagBits;
 
     /**
      * Create a new GCMParameters object with the given attributes.

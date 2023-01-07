@@ -53,8 +53,8 @@ import org.xipki.pkcs11.Functions;
  */
 public class Salsa20Parameters implements Parameters {
 
-    private byte[] blockCounter;
-    private byte[] nonce;
+    private final byte[] blockCounter;
+    private final byte[] nonce;
 
     /**
      * Create a new Salsa20Parameters object with the given attributes.

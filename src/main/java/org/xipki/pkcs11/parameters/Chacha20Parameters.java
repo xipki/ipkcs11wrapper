@@ -53,8 +53,8 @@ import org.xipki.pkcs11.Functions;
  */
 public class Chacha20Parameters implements Parameters {
 
-    private byte[] blockCounter;
-    private byte[] nonce;
+    private final byte[] blockCounter;
+    private final byte[] nonce;
 
     /**
      * Create a new Chacha20Parameters object with the given attributes.

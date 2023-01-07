@@ -74,13 +74,13 @@ import org.xipki.pkcs11.Functions;
  */
 public class UtimacoEcdsaEciesParams implements Parameters {
 
-    private long hashAlg;
-    private long cryptAlg;
-    private long cryptOpt;
-    private long macAlg;
-    private long macOpt;
-    private byte[] sharedSecret1;
-    private byte[] sharedSecret2;
+    private final long hashAlg;
+    private final long cryptAlg;
+    private final long cryptOpt;
+    private final long macAlg;
+    private final long macOpt;
+    private final byte[] sharedSecret1;
+    private final byte[] sharedSecret2;
 
     public UtimacoEcdsaEciesParams(long hashAlg, long cryptAlg, long cryptOpt, long macAlg, long macOpt) {
         this(hashAlg, cryptAlg, cryptOpt, macAlg, macOpt, null, null);

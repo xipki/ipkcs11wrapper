@@ -57,22 +57,22 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
   /**
    * The data shared between the two parties.
    */
-  private byte[] sharedData;
+  private final byte[] sharedData;
 
   /**
    * The length in bytes of the second EC private key.
    */
-  private int privateDataLength;
+  private final int privateDataLength;
 
   /**
    * The key for the second EC private key value.
    */
-  private long privateDataHandle;
+  private final long privateDataHandle;
 
   /**
    * The other party's second EC public key value.
    */
-  private byte[] publicData2;
+  private final byte[] publicData2;
 
   /**
    * Create a new EcDH1KeyDerivationParameters object with the given

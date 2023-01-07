@@ -57,7 +57,7 @@ public class X942DH1KeyDerivationParameters extends DHKeyDerivationParameters {
   /**
    * The data shared between the two parties.
    */
-  private byte[] otherInfo;
+  private final byte[] otherInfo;
 
   /**
    * Create a new X942DH1KeyDerivationParameters object with the given

@@ -53,7 +53,7 @@ import org.xipki.pkcs11.Functions;
  */
 public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParameters {
 
-  private long publicKeyHandle;
+  private final long publicKeyHandle;
 
   public X942DHMQVKeyDerivationParameters(long keyDerivationFunction, byte[] sharedData,
       byte[] publicData, int privateDataLength, long privateDataHandle, byte[] publicData2, long publicKeyHandle) {

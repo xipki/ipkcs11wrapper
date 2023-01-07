@@ -58,7 +58,7 @@ public class InitializationVectorParameters implements Parameters {
   /**
    * The initialization vector.
    */
-  private byte[] iv;
+  private final byte[] iv;
 
   /**
    * Create a new InitializationVectorParameters object with the given

@@ -141,7 +141,7 @@ public class SessionInfo {
    * @return The string representation of object
    */
   public String toString() {
-    String text = "State: " + Functions.cksCodeToName(state) +
+    String text = "State: " + Functions.cksCodeToName(state) + "\nSlot ID: " + slotID +
         "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\nFlags: ";
     return Functions.toStringFlags(text, flags, CKF_RW_SESSION, CKF_SERIAL_SESSION);
   }

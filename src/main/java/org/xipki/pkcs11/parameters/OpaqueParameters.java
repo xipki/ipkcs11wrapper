@@ -26,7 +26,7 @@ import org.xipki.pkcs11.Functions;
  */
 public class OpaqueParameters implements Parameters {
 
-  private byte[] bytes;
+  private final byte[] bytes;
 
   public OpaqueParameters(byte[] bytes) {
     this.bytes = Functions.requireNonNull("bytes", bytes);

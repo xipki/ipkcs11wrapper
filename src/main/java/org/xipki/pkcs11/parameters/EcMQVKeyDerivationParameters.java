@@ -55,19 +55,19 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
   /**
    * The data shared between the two parties.
    */
-  private byte[] sharedData;
+  private final byte[] sharedData;
 
   /** the length in bytes of the second EC private key. */
-  private int privateDataLen;
+  private final int privateDataLen;
 
   /** key handle for second EC private key value. */
-  private long privateData;
+  private final long privateData;
 
   /** pointer to other party's second EC public key value. */
-  private byte[] publicData2;
+  private final byte[] publicData2;
 
   /** Handle to the first party's ephemeral public key. */
-  private long publicKey;
+  private final long publicKey;
 
   /**
    * Create a new EcMQVKeyDerivationParameters object with the given attributes.

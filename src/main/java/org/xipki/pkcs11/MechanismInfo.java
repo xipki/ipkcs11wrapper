@@ -58,12 +58,12 @@ public class MechanismInfo {
   /**
    * The minimum key length supported by this algorithm.
    */
-  private long minKeySize;
+  private final long minKeySize;
 
   /**
    * The maximum key length supported by this algorithm.
    */
-  private long maxKeySize;
+  private final long maxKeySize;
 
   /**
    * Contains all feature flags of this mechanism info.

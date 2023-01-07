@@ -53,8 +53,8 @@ import org.xipki.pkcs11.Functions;
  */
 public class RsaAesKeyWrapParameters implements Parameters {
 
-    private int AESKeyBits;
-    private RSAPkcsOaepParameters OAEPParams;
+    private final int AESKeyBits;
+    private final RSAPkcsOaepParameters OAEPParams;
 
     /**
      * Create a new RsaAesKeyWrapParameters object with the given attributes.

@@ -56,7 +56,7 @@ public class DHPkcsDeriveParameters implements Parameters {
   /**
    * The initialization vector.
    */
-  private byte[] publicValue;
+  private final byte[] publicValue;
 
   /**
    * Create a new DHPkcsDeriveParameters object with the given public value.
