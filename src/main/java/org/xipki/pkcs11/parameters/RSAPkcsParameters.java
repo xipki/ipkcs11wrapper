@@ -109,26 +109,6 @@ abstract public class RSAPkcsParameters implements Parameters {
   }
 
   /**
-   * Get the message digest algorithm used to calculate the digest of the
-   * encoding parameter.
-   *
-   * @return The message digest algorithm used to calculate the digest of the
-   *         encoding parameter.
-   */
-  public long getHashAlgorithm() {
-    return hashAlg;
-  }
-
-  /**
-   * Get the mask to apply to the encoded block.
-   *
-   * @return The mask to apply to the encoded block.
-   */
-  public long getMaskGenerationFunction() {
-    return mgf;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

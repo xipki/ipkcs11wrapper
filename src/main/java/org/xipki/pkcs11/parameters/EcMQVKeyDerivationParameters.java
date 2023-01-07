@@ -119,51 +119,6 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Get the data shared between the two parties.
-   *
-   * @return The data shared between the two parties.
-   */
-  public byte[] getSharedData() {
-    return sharedData;
-  }
-
-  /**
-   * Get the length in bytes of the second EC private key.
-   *
-   * @return the length in bytes of the second EC private key
-   */
-  public int getPrivateDataLen() {
-    return privateDataLen;
-  }
-
-  /**
-   * Gets the key handle for the second EC private key value.
-   *
-   * @return the key handle for the second EC private key value
-   */
-  public long getPrivateData() {
-    return privateData;
-  }
-
-  /**
-   * Gets the other party's second EC public key value.
-   *
-   * @return the other party's second EC public key value
-   */
-  public byte[] getPublicData2() {
-    return publicData2;
-  }
-
-  /**
-   * Gets the handle to the first party's ephemeral public key .
-   *
-   * @return the Handle to the first party's ephemeral public key
-   */
-  public long getPublicKey() {
-    return publicKey;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from this string, it is for
    * debugging only.
    *

@@ -130,53 +130,6 @@ public class PKCS5PBKD2Parameters implements Parameters {
   }
 
   /**
-   * Get the source of the salt value.
-   *
-   * @return The source of the salt value.
-   */
-  public long getSaltSource() {
-    return saltSource;
-  }
-
-  /**
-   * Get the data used as the input for the salt source.
-   *
-   * @return data used as the input for the salt source.
-   */
-  public byte[] getSaltSourceData() {
-    return saltSourceData;
-  }
-
-  /**
-   * Get the number of iterations to perform when generating each block of
-   * random data.
-   *
-   * @return The number of iterations to perform when generating each block of
-   *         random data.
-   */
-  public int getIterations() {
-    return iterations;
-  }
-
-  /**
-   * Get the pseudo-random function (PRF) to used to generate the key.
-   *
-   * @return The pseudo-random function (PRF) to used to generate the key.
-   */
-  public long getPseudoRandomFunction() {
-    return pseudoRandomFunction;
-  }
-
-  /**
-   * Get the data used as the input for PRF in addition to the salt value.
-   *
-   * @return The data used as the input for PRF in addition to the salt value.
-   */
-  public byte[] getPseudoRandomFunctionData() {
-    return pseudoRandomFunctionData;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

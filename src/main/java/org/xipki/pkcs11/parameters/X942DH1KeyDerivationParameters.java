@@ -93,15 +93,6 @@ public class X942DH1KeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Get the data shared between the two parties.
-   *
-   * @return The data shared between the two parties.
-   */
-  public byte[] getOtherInfo() {
-    return otherInfo;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

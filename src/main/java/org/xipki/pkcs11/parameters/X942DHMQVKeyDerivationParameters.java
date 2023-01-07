@@ -71,11 +71,11 @@ public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParame
     CK_X9_42_DHMQV_DERIVE_PARAMS params = new CK_X9_42_DHMQV_DERIVE_PARAMS();
 
     params.kdf = kdf;
-    params.pOtherInfo = getOtherInfo();
+    params.pOtherInfo = otherInfo;
     params.pPublicData = publicData;
-    params.ulPrivateDataLen = getPrivateDataLength();
-    params.hPrivateData = getPrivateDataHandle();
-    params.pPublicData2 = getPublicData2();
+    params.ulPrivateDataLen = privateDataLength;
+    params.hPrivateData = privateDataHandle;
+    params.pPublicData2 = publicData2;
     params.hPublicKey = publicKeyHandle;
 
     return params;
@@ -88,8 +88,8 @@ public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParame
    * @return A string representation of this object.
    */
   public String toString() {
-    return super.toString() + "\n  Private Data Length (dec): " + "\n  Private Data Handle: "+ getPrivateDataHandle() +
-        "\n  Public Data 2: " + Functions.toHex(getPublicData2()) + "\n Public Key Handle: " + publicKeyHandle;
+    return super.toString() + "\n  Private Data Length (dec): " + "\n  Private Data Handle: "+ privateDataHandle +
+        "\n  Public Data 2: " + Functions.toHex(publicData2) + "\n Public Key Handle: " + publicKeyHandle;
   }
 
 }

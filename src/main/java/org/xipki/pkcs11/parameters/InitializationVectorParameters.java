@@ -81,15 +81,6 @@ public class InitializationVectorParameters implements Parameters {
   }
 
   /**
-   * Get the initialization vector.
-   *
-   * @return The initialization vector.
-   */
-  public byte[] getInitializationVector() {
-    return iv;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

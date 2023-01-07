@@ -82,25 +82,6 @@ abstract public class DHKeyDerivationParameters implements Parameters {
   }
 
   /**
-   * Get the key derivation function used on the shared secret value.
-   *
-   * @return The key derivation function used on the shared secret value.
-   *         One of the values defined in CKD_
-   */
-  public long getKeyDerivationFunction() {
-    return kdf;
-  }
-
-  /**
-   * Get the other party's public key value.
-   *
-   * @return The other party's public key value.
-   */
-  public byte[] getPublicData() {
-    return publicData;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

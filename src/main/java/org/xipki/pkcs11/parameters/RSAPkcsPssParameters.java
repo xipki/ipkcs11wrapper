@@ -90,15 +90,6 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
   }
 
   /**
-   * Get the length of the salt value in octets.
-   *
-   * @return The length of the salt value in octets.
-   */
-  public int getSaltLength() {
-    return saltLength;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from this string, it is for
    * debugging only.
    *

@@ -92,24 +92,6 @@ public class KeyWrapSetOaepParameters implements Parameters {
   }
 
   /**
-   * Get the block contents byte.
-   *
-   * @return The block contents byte.
-   */
-  public byte getBlockContents() {
-    return blockContents;
-  }
-
-  /**
-   * Get the concatenation of hash of plaintext data (if present) and extra data (if present).
-   *
-   * @return The concatenation of hash of plaintext data (if present) and extra data (if present).
-   */
-  public byte[] getX() {
-    return x;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from this string, it is for
    * debugging only.
    *

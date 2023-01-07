@@ -76,15 +76,6 @@ public class ObjectHandleParameters implements Parameters {
   }
 
   /**
-   * Get the PKCS#11 object.
-   *
-   * @return The PKCS#11 object.
-   */
-  public long getObjectHandle() {
-    return objectHandle;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

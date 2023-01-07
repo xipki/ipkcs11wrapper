@@ -79,16 +79,6 @@ public class DHPkcsDeriveParameters implements Parameters {
   }
 
   /**
-   * Get the public value of the other party in the key agreement protocol.
-   *
-   * @return The public value of the other party in the key agreement
-   *         protocol.
-   */
-  public byte[] getPublicValue() {
-    return publicValue;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

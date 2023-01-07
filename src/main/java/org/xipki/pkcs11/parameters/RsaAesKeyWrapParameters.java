@@ -88,8 +88,8 @@ public class RsaAesKeyWrapParameters implements Parameters {
      */
     public String toString() {
       return super.toString() + "\n  AESKeyBits: " + AESKeyBits + "\n  OAEPParams:" +
-          "\n    Source: " + Functions.ckzCodeToName(OAEPParams.getSource()) +
-          "\n    Source Data: " + Functions.toHex(OAEPParams.getSourceData());
+          "\n    Source: " + Functions.ckzCodeToName(OAEPParams.source) +
+          "\n    Source Data: " + Functions.toHex(OAEPParams.sourceData);
     }
 
 }

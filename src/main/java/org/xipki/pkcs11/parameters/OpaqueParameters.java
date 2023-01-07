@@ -41,16 +41,6 @@ public class OpaqueParameters implements Parameters {
     return bytes;
   }
 
-  /**
-   * Get the public value of the other party in the key agreement protocol.
-   *
-   * @return The public value of the other party in the key agreement
-   *         protocol.
-   */
-  public byte[] getBytes() {
-    return bytes;
-  }
-
   public String toString() {
     return "Class: " + getClass().getName() + "\n  Bytes (hex): " + Functions.toHex(bytes);
   }

@@ -119,17 +119,5 @@ public class CcmMessageParameters implements MessageParameters {
             "\n  Nonce: " + Functions.toHex(nonce) + "\n  MAC: " + Functions.toHex(mac);
     }
 
-    public byte[] getMAC() {
-        return mac;
-    }
-
-    public int getDataLen() {
-        return dataLen;
-    }
-
-    public byte[] getNonce() {
-        return nonce;
-    }
-
 }
 

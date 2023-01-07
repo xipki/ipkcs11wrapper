@@ -93,35 +93,6 @@ public abstract class CbcEncryptDataParameters implements Parameters {
   }
 
   /**
-   * Get the block size of the underlying cipher in bytes.
-   *
-   * @return The block size in bytes.
-   */
-  public int getBlockSize() {
-    return blockSize;
-  }
-
-  /**
-   * Get the initialization vector for CBC mode.
-   *
-   * @return The initialization vector.
-   *
-   */
-  public byte[] getInitializationVector() {
-    return iv;
-  }
-
-  /**
-   * Get the data for key derivation.
-   *
-   * @return The data.
-   *
-   */
-  public byte[] getData() {
-    return data;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from this string, it is for
    * debugging only.
    *

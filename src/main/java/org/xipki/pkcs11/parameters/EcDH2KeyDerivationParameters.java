@@ -121,42 +121,6 @@ public class EcDH2KeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Get the data shared between the two parties.
-   *
-   * @return The data shared between the two parties.
-   */
-  public byte[] getSharedData() {
-    return sharedData;
-  }
-
-  /**
-   * Get the key for the second EC private key value.
-   *
-   * @return The key for the second EC private key value.
-   */
-  public long getPrivateDataHandle() {
-    return privateDataHandle;
-  }
-
-  /**
-   * Get the length in bytes of the second EC private key.
-   *
-   * @return The length in bytes of the second EC private key.
-   */
-  public long getPrivateDataLength() {
-    return privateDataLength;
-  }
-
-  /**
-   * Get the other party's second EC public key value.
-   *
-   * @return The other party's second EC public key value.
-   */
-  public byte[] getPublicData2() {
-    return publicData2;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

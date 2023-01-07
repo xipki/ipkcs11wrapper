@@ -77,15 +77,6 @@ public class MacGeneralParameters implements Parameters {
   }
 
   /**
-   * Get the length of the MAC produced, in bytes.
-   *
-   * @return The length of the MAC produced, in bytes.
-   */
-  public int getMacLength() {
-    return macLength;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

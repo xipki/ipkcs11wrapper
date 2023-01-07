@@ -112,46 +112,6 @@ public class KEADeriveParameters implements Parameters {
   }
 
   /**
-   * Get the other party's KEA public key value.
-   *
-   * @return The other party's KEA public key value.
-   *
-   */
-  public byte[] getPublicData() {
-    return publicData;
-  }
-
-  /**
-   * Get the random data Ra.
-   *
-   * @return The random data Ra.
-   *
-   */
-  public byte[] getRandomA() {
-    return randomA;
-  }
-
-  /**
-   * Get the random data Rb.
-   *
-   * @return The random data Rb.
-   *
-   */
-  public byte[] getRandomB() {
-    return randomB;
-  }
-
-  /**
-   * Get the option for generating the key (called a TEK).
-   *
-   * @return True if the sender (originator) generates the TEK, false if the recipient is
-   *         regenerating the TEK.
-   */
-  public boolean isSender() {
-    return isSender;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from this string, it is for
    * debugging only.
    *

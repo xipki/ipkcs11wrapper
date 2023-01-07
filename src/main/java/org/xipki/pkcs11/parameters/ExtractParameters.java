@@ -77,17 +77,6 @@ public class ExtractParameters implements Parameters {
   }
 
   /**
-   * Get the bit of the base key that should be used as the first bit of the
-   * derived key.
-   *
-   * @return The bit of the base key that should be used as the first bit of
-   *         the derived key.
-   */
-  public int getBitIndex() {
-    return bitIndex;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

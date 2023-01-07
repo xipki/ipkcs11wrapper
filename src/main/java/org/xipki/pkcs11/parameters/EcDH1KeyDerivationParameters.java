@@ -91,15 +91,6 @@ public class EcDH1KeyDerivationParameters extends DHKeyDerivationParameters {
   }
 
   /**
-   * Get the data shared between the two parties.
-   *
-   * @return The data shared between the two parties.
-   */
-  public byte[] getSharedData() {
-    return sharedData;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

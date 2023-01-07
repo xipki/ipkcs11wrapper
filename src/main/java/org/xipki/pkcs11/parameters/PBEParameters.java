@@ -111,42 +111,6 @@ public class PBEParameters implements Parameters {
   }
 
   /**
-   * Get the 8-byte initialization vector (IV), if an IV is required.
-   *
-   * @return The 8-byte initialization vector (IV), if an IV is required.
-   */
-  public char[] getInitializationVector() {
-    return iv;
-  }
-
-  /**
-   * Get the password to be used in the PBE key generation.
-   *
-   * @return The password to be used in the PBE key generation.
-   */
-  public char[] getPassword() {
-    return password;
-  }
-
-  /**
-   * Get the salt to be used in the PBE key generation.
-   *
-   * @return The salt to be used in the PBE key generation.
-   */
-  public char[] getSalt() {
-    return salt;
-  }
-
-  /**
-   * Get the number of iterations required for the generation.
-   *
-   * @return The number of iterations required for the generation.
-   */
-  public int getIterations() {
-    return iterations;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from
    * this string, it is for debugging only.
    *

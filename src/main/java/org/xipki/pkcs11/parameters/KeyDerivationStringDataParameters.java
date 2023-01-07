@@ -83,16 +83,6 @@ public class KeyDerivationStringDataParameters implements Parameters {
   }
 
   /**
-   * Get the string data.
-   *
-   * @return The string data.
-   *
-   */
-  public byte[] getData() {
-    return data;
-  }
-
-  /**
    * Returns the string representation of this object. Do not parse data from this string, it is for
    * debugging only.
    *
