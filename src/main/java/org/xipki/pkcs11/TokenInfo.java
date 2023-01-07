@@ -364,6 +364,10 @@ public class TokenInfo {
     return hasFlagBit(CKF_LOGIN_REQUIRED);
   }
 
+  protected boolean isTokenInitialized() {
+    return hasFlagBit(CKF_TOKEN_INITIALIZED);
+  }
+
   /**
    * Returns the string representation of this object.
    *

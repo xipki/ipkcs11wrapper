@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
@@ -62,7 +62,7 @@ public class EdDSASignRawData extends SignatureTestBase {
     // OID: 1.3.101.112 (Ed25519)
     byte[] ecParams = new byte[] {0x06, 0x03, 0x2b, 0x65, 0x70};
 
-    KeyPair generatedKeyPair = generateEdDSAKeypair(token, session, ecParams, inToken);
+    PKCS11KeyPair generatedKeyPair = generateEdDSAKeypair(token, session, ecParams, inToken);
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
 
     LOG.info("##################################################");

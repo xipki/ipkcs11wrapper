@@ -24,8 +24,8 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public abstract class SignExecutor extends Pkcs11Executor {
 
   private final int inputLen;
 
-  private final KeyPair keypair;
+  private final PKCS11KeyPair keypair;
 
   public SignExecutor(String description, Mechanism keypairGenMechanism,
       Token token, char[] pin, Mechanism signMechanism, int inputLen)
@@ -89,9 +89,9 @@ public abstract class SignExecutor extends Pkcs11Executor {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate().token(true).id(id).verify(true);
+    AttributesTemplate publicKeyTemplate = getMinimalPublicKeyTemplate().token(true).id(id).verify(true);
 
-    AttributeVector privateKeyTemplate = getMinimalPrivateKeyTemplate()
+    AttributesTemplate privateKeyTemplate = getMinimalPrivateKeyTemplate()
         .sensitive(true).private_(true).token(true).id(id).sign(true);
 
     // generate keypair on token
@@ -105,9 +105,9 @@ public abstract class SignExecutor extends Pkcs11Executor {
 
   }
 
-  protected abstract AttributeVector getMinimalPrivateKeyTemplate();
+  protected abstract AttributesTemplate getMinimalPrivateKeyTemplate();
 
-  protected abstract AttributeVector getMinimalPublicKeyTemplate();
+  protected abstract AttributesTemplate getMinimalPublicKeyTemplate();
 
   @Override
   protected Runnable getTestor() {

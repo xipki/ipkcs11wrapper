@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -43,12 +43,12 @@ public class RSAKeypairGenSpeed extends TestBase {
     }
 
     @Override
-    protected AttributeVector getMinimalPrivateKeyTemplate() {
+    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
       return newPrivateKey(CKK_RSA);
     }
 
     @Override
-    protected AttributeVector getMinimalPublicKeyTemplate() {
+    protected AttributesTemplate getMinimalPublicKeyTemplate() {
       return newPublicKey(CKK_RSA).attr(CKA_MODULUS_BITS, 2048);
     }
 

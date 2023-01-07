@@ -45,8 +45,8 @@ package demo.pkcs.pkcs11.wrapper;
 import demo.pkcs.pkcs11.wrapper.util.KeyUtil;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.objects.AttributeVector;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
@@ -217,11 +217,11 @@ public class TestBase {
     return Mechanism.get(mechCode);
   }
 
-  protected KeyPair generateRSAKeypair(Token token, Session session, int keysize, boolean inToken)
+  protected PKCS11KeyPair generateRSAKeypair(Token token, Session session, int keysize, boolean inToken)
       throws PKCS11Exception {
     Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_RSA_PKCS_KEY_PAIR_GEN);
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_RSA);
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_RSA);
+    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_RSA);
+    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_RSA);
 
     // set the general attributes for the public key
     byte[] id = new byte[20];
@@ -233,55 +233,55 @@ public class TestBase {
     return session.generateKeyPair(keyPairGenMechanism, publicKeyTemplate, privateKeyTemplate);
   }
 
-  protected KeyPair generateECKeypair(Token token, Session session, byte[] ecParams, boolean inToken)
+  protected PKCS11KeyPair generateECKeypair(Token token, Session session, byte[] ecParams, boolean inToken)
       throws PKCS11Exception {
     return generateECKeypair(CKM_EC_KEY_PAIR_GEN, CKK_EC, token, session, ecParams, inToken);
   }
 
-  protected KeyPair generateEdDSAKeypair(Token token, Session session, byte[] ecParams, boolean inToken)
+  protected PKCS11KeyPair generateEdDSAKeypair(Token token, Session session, byte[] ecParams, boolean inToken)
       throws PKCS11Exception {
     return generateECKeypair(CKM_EC_EDWARDS_KEY_PAIR_GEN, CKK_EC_EDWARDS, token, session, ecParams, inToken);
   }
 
-  private KeyPair generateECKeypair(
+  private PKCS11KeyPair generateECKeypair(
       long keyGenMechanism, long keyType, Token token, Session session, byte[] ecParams, boolean inToken)
       throws PKCS11Exception {
     Mechanism keyPairGenMechanism = getSupportedMechanism(token, keyGenMechanism);
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributeVector publicKeyTemplate  = newPublicKey(keyType) .ecParams(ecParams).token(inToken).id(id).verify(true);
-    AttributeVector privateKeyTemplate = newPrivateKey(keyType).sensitive(true)
+    AttributesTemplate publicKeyTemplate  = newPublicKey(keyType) .ecParams(ecParams).token(inToken).id(id).verify(true);
+    AttributesTemplate privateKeyTemplate = newPrivateKey(keyType).sensitive(true)
         .token(inToken).private_(true).id(id).sign(true);
 
     return session.generateKeyPair(keyPairGenMechanism, publicKeyTemplate, privateKeyTemplate);
   }
 
-  protected KeyPair generateDSAKeypair(Token token, Session session, boolean inToken)
+  protected PKCS11KeyPair generateDSAKeypair(Token token, Session session, boolean inToken)
       throws PKCS11Exception {
     Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_DSA_KEY_PAIR_GEN);
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_DSA).prime(DSA_P).subprime(DSA_Q).base(DSA_G)
+    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_DSA).prime(DSA_P).subprime(DSA_Q).base(DSA_G)
         .token(inToken).id(id).verify(true);
 
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_DSA).sensitive(true).token(inToken).private_(true)
+    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_DSA).sensitive(true).token(inToken).private_(true)
         .id(id).sign(true);
 
     return session.generateKeyPair(keyPairGenMechanism, publicKeyTemplate, privateKeyTemplate);
   }
 
-  protected AttributeVector newSecretKey(long keyType) {
-    return new AttributeVector().attr(CKA_CLASS, CKO_SECRET_KEY).attr(CKA_KEY_TYPE, keyType);
+  protected AttributesTemplate newSecretKey(long keyType) {
+    return new AttributesTemplate().attr(CKA_CLASS, CKO_SECRET_KEY).attr(CKA_KEY_TYPE, keyType);
   }
 
-  protected AttributeVector newPublicKey(long keyTye) {
-    return new AttributeVector().attr(CKA_CLASS, CKO_PUBLIC_KEY).attr(CKA_KEY_TYPE, keyTye);
+  protected AttributesTemplate newPublicKey(long keyTye) {
+    return new AttributesTemplate().attr(CKA_CLASS, CKO_PUBLIC_KEY).attr(CKA_KEY_TYPE, keyTye);
   }
 
-  protected AttributeVector newPrivateKey(long keyType) {
-    return new AttributeVector().attr(CKA_CLASS, CKO_PRIVATE_KEY).attr(CKA_KEY_TYPE, keyType);
+  protected AttributesTemplate newPrivateKey(long keyType) {
+    return new AttributesTemplate().attr(CKA_CLASS, CKO_PRIVATE_KEY).attr(CKA_KEY_TYPE, keyType);
   }
 
   protected static PublicKey generateJCEPublicKey(Session session, long p11Key, Long keyType)

@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 import org.xipki.util.Hex;
@@ -62,7 +62,7 @@ public class RSAPKCSSignRawData extends SignatureTestBase {
     Mechanism signatureMechanism = getSupportedMechanism(token, mechCode);
 
     final boolean inToken = false;
-    KeyPair generatedKeyPair = generateRSAKeypair(token, session, 2048, inToken);
+    PKCS11KeyPair generatedKeyPair = generateRSAKeypair(token, session, 2048, inToken);
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
 
     LOG.info("##################################################");

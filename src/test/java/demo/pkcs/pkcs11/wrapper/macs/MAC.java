@@ -48,7 +48,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -77,7 +77,7 @@ public class MAC extends TestBase {
     LOG.info("##################################################");
     LOG.info("generate secret MAC key");
 
-    AttributeVector macKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).sign(true).token(false);
+    AttributesTemplate macKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).sign(true).token(false);
 
     long secretMACKey;
     int keyBytesLen = 32;

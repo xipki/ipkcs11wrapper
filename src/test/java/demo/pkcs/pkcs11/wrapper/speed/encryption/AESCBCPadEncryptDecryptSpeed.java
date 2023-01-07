@@ -22,7 +22,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.parameters.InitializationVectorParameters;
 import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
@@ -48,7 +48,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
     }
 
     @Override
-    protected AttributeVector getMinimalKeyTemplate() {
+    protected AttributesTemplate getMinimalKeyTemplate() {
       return getMinimalKeyTemplate0();
     }
 
@@ -63,7 +63,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
     }
 
     @Override
-    protected AttributeVector getMinimalKeyTemplate() {
+    protected AttributesTemplate getMinimalKeyTemplate() {
       return getMinimalKeyTemplate0();
     }
 
@@ -96,7 +96,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
     return mech;
   }
 
-  private AttributeVector getMinimalKeyTemplate0() {
+  private AttributesTemplate getMinimalKeyTemplate0() {
     return newSecretKey(CKK_AES).valueLen(keyLen / 8);
   }
 

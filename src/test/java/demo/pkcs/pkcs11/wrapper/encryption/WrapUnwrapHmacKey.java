@@ -48,7 +48,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -75,7 +75,7 @@ public class WrapUnwrapHmacKey extends TestBase {
 
   private void main0(Token token, Session session) throws PKCS11Exception {
     LOG.info("##################################################");
-    AttributeVector secretMACKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false)
+    AttributesTemplate secretMACKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false)
         .sign(true).verify(true).private_(true).sensitive(true).extractable(true);
 
     long hmacKey;
@@ -109,7 +109,7 @@ public class WrapUnwrapHmacKey extends TestBase {
     LOG.info("##################################################");
     LOG.info("generate secret wrapping key");
     Mechanism wrapKeyMechanism = Mechanism.get(CKM_AES_KEY_GEN);
-    AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
+    AttributesTemplate wrapKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).token(false);
 
     long wrappingKey = session.generateKey(wrapKeyMechanism, wrapKeyTemplate);
@@ -120,7 +120,7 @@ public class WrapUnwrapHmacKey extends TestBase {
     byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, hmacKey);
     LOG.info("unwrapping key");
 
-    AttributeVector keyTemplate = newSecretKey(CKK_GENERIC_SECRET).verify(true).token(false);
+    AttributesTemplate keyTemplate = newSecretKey(CKK_GENERIC_SECRET).verify(true).token(false);
 
     long unwrappedKey = session.unwrapKey(wrapMechanism, wrappingKey, wrappedKey, keyTemplate);
 

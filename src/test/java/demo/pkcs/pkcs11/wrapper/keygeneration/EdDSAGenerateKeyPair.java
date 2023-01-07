@@ -20,8 +20,8 @@ package demo.pkcs.pkcs11.wrapper.keygeneration;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.objects.AttributeVector;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
@@ -70,8 +70,8 @@ public class EdDSAGenerateKeyPair extends TestBase {
 
     Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
 
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_EC_EDWARDS);
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_EC_EDWARDS);
+    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_EC_EDWARDS);
+    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_EC_EDWARDS);
 
     // set the general attributes for the public key
     // OID: 1.3.101.112 (Ed25519)
@@ -104,7 +104,7 @@ public class EdDSAGenerateKeyPair extends TestBase {
       publicKeyTemplate.attr(CKA_VERIFY, true).attr(CKA_ENCRYPT, true);
     }
 
-    KeyPair generatedKeyPair = session.generateKeyPair(
+    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(
         keyPairGenerationMechanism, publicKeyTemplate, privateKeyTemplate);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
@@ -127,7 +127,7 @@ public class EdDSAGenerateKeyPair extends TestBase {
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
           Functions.toHex(id));
       // set the search template for the public key
-      AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_EC_EDWARDS).attr(CKA_ID, id);
+      AttributesTemplate exportPublicKeyTemplate = newPublicKey(CKK_EC_EDWARDS).attr(CKA_ID, id);
 
       session.findObjectsInit(exportPublicKeyTemplate);
       long[] foundPublicKeys = session.findObjects(1);

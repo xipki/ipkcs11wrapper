@@ -23,8 +23,8 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,9 +51,9 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
       while (!stop()) {
         try {
           // generate keypair on token
-          AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate().token(inToken).verify(true);
+          AttributesTemplate publicKeyTemplate = getMinimalPublicKeyTemplate().token(inToken).verify(true);
 
-          AttributeVector privateKeyTemplate = getMinimalPrivateKeyTemplate().sensitive(true)
+          AttributesTemplate privateKeyTemplate = getMinimalPrivateKeyTemplate().sensitive(true)
                   .private_(true).token(inToken).sign(true);
 
           if (inToken) {
@@ -64,12 +64,12 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
           }
 
           ConcurrentSessionBagEntry sessionBag = borrowSession();
-          KeyPair keypair;
+          PKCS11KeyPair keypair;
           try {
             Session session = sessionBag.value();
             keypair = session.generateKeyPair(mechanism, publicKeyTemplate, privateKeyTemplate);
-            session.destroyObject(keypair.getPrivateKey());
-            session.destroyObject(keypair.getPublicKey());
+            destroyObject(LOG, session, keypair.getPrivateKey());
+            destroyObject(LOG, session, keypair.getPublicKey());
           } finally {
             requiteSession(sessionBag);
           }
@@ -96,9 +96,9 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
     this.inToken = inToken;
   }
 
-  protected abstract AttributeVector getMinimalPrivateKeyTemplate();
+  protected abstract AttributesTemplate getMinimalPrivateKeyTemplate();
 
-  protected abstract AttributeVector getMinimalPublicKeyTemplate();
+  protected abstract AttributesTemplate getMinimalPublicKeyTemplate();
 
   @Override
   protected Runnable getTestor() {

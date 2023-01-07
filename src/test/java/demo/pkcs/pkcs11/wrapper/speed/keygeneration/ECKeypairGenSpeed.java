@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -43,12 +43,12 @@ public class ECKeypairGenSpeed extends TestBase {
     }
 
     @Override
-    protected AttributeVector getMinimalPrivateKeyTemplate() {
+    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
       return newPrivateKey(CKK_EC);
     }
 
     @Override
-    protected AttributeVector getMinimalPublicKeyTemplate() {
+    protected AttributesTemplate getMinimalPublicKeyTemplate() {
       // set the general attributes for the public key
       // OID: 1.2.840.10045.3.1.7 (secp256r1, alias NIST P-256)
       byte[] encodedCurveOid = new byte[] {0x06, 0x08, 0x2a, (byte) 0x86, 0x48, (byte) 0xce, 0x3d, 0x03, 0x01, 0x07};

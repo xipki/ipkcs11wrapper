@@ -47,7 +47,7 @@ import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.TokenInfo;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
@@ -83,13 +83,13 @@ public class ReadDataObject extends TestBase {
     String label = "pkcs11demo-data-" + System.currentTimeMillis();
 
     // Create a new PKCS#11 object first
-    AttributeVector newDataTemplate = new AttributeVector().class_(CKO_DATA).label(label)
+    AttributesTemplate newDataTemplate = new AttributesTemplate().class_(CKO_DATA).label(label)
         .value("hello world".getBytes());
     long newDataHandle = session.createObject(newDataTemplate);
 
     try {
       // create certificate object template
-      AttributeVector dataObjectTemplate = new AttributeVector();
+      AttributesTemplate dataObjectTemplate = new AttributesTemplate();
 
       // we could also set the name that manages this data object
       // dataObjectTemplate.getApplication().setCharArrayValue("Application Name");

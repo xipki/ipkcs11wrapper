@@ -48,7 +48,7 @@ import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.TokenInfo;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
 
 import javax.crypto.interfaces.DHPublicKey;
@@ -114,7 +114,7 @@ public class ImportCertificate extends TestBase {
 
     PublicKey publicKey = x509Certificate.getPublicKey();
 
-    AttributeVector searchTemplate = new AttributeVector();
+    AttributesTemplate searchTemplate = new AttributesTemplate();
     if (publicKey.getAlgorithm().equalsIgnoreCase("RSA")) {
       RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
       searchTemplate.class_(CKO_PRIVATE_KEY).keyType(CKK_RSA).modulus(rsaPublicKey.getModulus());
@@ -188,7 +188,7 @@ public class ImportCertificate extends TestBase {
 
         byte[] encodedAsn1serialNumber = Util.encodedAsn1Integer(currentCertificate.getSerialNumber());
 
-        AttributeVector pkcs11X509PublicKeyCertificate = new AttributeVector().class_(CKO_CERTIFICATE)
+        AttributesTemplate pkcs11X509PublicKeyCertificate = new AttributesTemplate().class_(CKO_CERTIFICATE)
             .certificateType(CKC_X_509).token(true).private_(false).label(label).id(newObjectID).issuer(encodedIssuer)
             .subject(encodedSubject).serialNumber(encodedAsn1serialNumber).value(currentCertificate.getEncoded());
 

@@ -24,8 +24,8 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
 
   private final Mechanism signMechanism;
 
-  private final KeyPair keypair;
+  private final PKCS11KeyPair keypair;
 
   private final byte[] dataToVerify;
 
@@ -90,9 +90,9 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate().token(true).id(id).verify(true);
+    AttributesTemplate publicKeyTemplate = getMinimalPublicKeyTemplate().token(true).id(id).verify(true);
 
-    AttributeVector privateKeyTemplate = getMinimalPrivateKeyTemplate()
+    AttributesTemplate privateKeyTemplate = getMinimalPrivateKeyTemplate()
         .sensitive(true).private_(true).token(true).id(id).sign(true);
 
     ConcurrentSessionBagEntry sessionBag = borrowSession();
@@ -111,9 +111,9 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
 
   }
 
-  protected abstract AttributeVector getMinimalPrivateKeyTemplate();
+  protected abstract AttributesTemplate getMinimalPrivateKeyTemplate();
 
-  protected abstract AttributeVector getMinimalPublicKeyTemplate();
+  protected abstract AttributesTemplate getMinimalPublicKeyTemplate();
 
   @Override
   protected Runnable getTestor() {

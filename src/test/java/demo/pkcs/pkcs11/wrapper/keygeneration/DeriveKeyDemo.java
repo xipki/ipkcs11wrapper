@@ -47,7 +47,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -71,7 +71,7 @@ public class DeriveKeyDemo extends TestBase {
   private void main0(Token token, Session session) throws PKCS11Exception {
     Mechanism keyGenerationMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
 
-    AttributeVector baseKeyTemplate = newSecretKey(CKK_AES).valueLen(32).token(false).derive(true)
+    AttributesTemplate baseKeyTemplate = newSecretKey(CKK_AES).valueLen(32).token(false).derive(true)
         .token(false) // we only have a read-only session, thus we only create a session object
         .sensitive(true).extractable(true);
 
@@ -80,7 +80,7 @@ public class DeriveKeyDemo extends TestBase {
     LOG.info("Base key " + baseKey);
     LOG.info("derive key");
 
-    AttributeVector derivedKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
+    AttributesTemplate derivedKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
         .token(false).sensitive(true).extractable(true);
 
     /*

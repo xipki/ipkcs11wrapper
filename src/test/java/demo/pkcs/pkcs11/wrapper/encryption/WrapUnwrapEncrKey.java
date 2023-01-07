@@ -47,7 +47,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.parameters.InitializationVectorParameters;
 import org.junit.Assert;
 import org.junit.Test;
@@ -78,7 +78,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("generate secret encryption/decryption key");
     Mechanism keyMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
 
-    AttributeVector secretEncryptionKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
+    AttributesTemplate secretEncryptionKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true);
 
     long encryptionKey = session.generateKey(keyMechanism, secretEncryptionKeyTemplate);
@@ -104,7 +104,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("generate secret wrapping key");
 
     Mechanism wrapKeyMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
-    AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
+    AttributesTemplate wrapKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).unwrap(true);
 
     long wrappingKey = session.generateKey(wrapKeyMechanism, wrapKeyTemplate);
@@ -112,7 +112,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("wrapping key");
 
     byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, encryptionKey);
-    AttributeVector keyTemplate = newSecretKey(CKK_AES).decrypt(true).token(false);
+    AttributesTemplate keyTemplate = newSecretKey(CKK_AES).decrypt(true).token(false);
 
     LOG.info("unwrapping key");
 

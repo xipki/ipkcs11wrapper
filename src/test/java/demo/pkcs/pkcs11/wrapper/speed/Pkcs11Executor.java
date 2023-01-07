@@ -18,6 +18,7 @@
 package demo.pkcs.pkcs11.wrapper.speed;
 
 import demo.pkcs.pkcs11.wrapper.util.Util;
+import org.slf4j.Logger;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
@@ -76,6 +77,14 @@ public abstract class Pkcs11Executor extends BenchmarkExecutor {
     } catch (InterruptedException | PKCS11Exception ex) {
     } finally {
       super.close();
+    }
+  }
+
+  protected static void destroyObject(Logger logger, Session session, long objectHandle) {
+    try {
+      session.destroyObject(objectHandle);
+    } catch (PKCS11Exception ex) {
+      logger.error("could not destroy key " + objectHandle);
     }
   }
 

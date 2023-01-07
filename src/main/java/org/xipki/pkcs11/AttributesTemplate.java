@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.xipki.pkcs11.objects;
+package org.xipki.pkcs11;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
+import org.xipki.pkcs11.objects.*;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -26,14 +27,14 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
 /**
  * @author Lijun Liao (xipki)
  */
-public class AttributeVector {
+public class AttributesTemplate {
 
   private final List<Attribute> attributes = new LinkedList<>();
 
-  public AttributeVector() {
+  public AttributesTemplate() {
   }
 
-  public AttributeVector(Attribute... attributes) {
+  public AttributesTemplate(Attribute... attributes) {
     if (attributes != null) {
       for (Attribute attr : attributes) {
         if (attr != null) attr(attr);
@@ -41,311 +42,311 @@ public class AttributeVector {
     }
   }
 
-  public AttributeVector acIssuer(String acIssuer) {
+  public AttributesTemplate acIssuer(String acIssuer) {
     return attr(CKA_AC_ISSUER, acIssuer);
   }
 
-  public AttributeVector alwaysSensitive(Boolean alwaysSensitive) {
+  public AttributesTemplate alwaysSensitive(Boolean alwaysSensitive) {
     return attr(CKA_ALWAYS_SENSITIVE, alwaysSensitive);
   }
 
-  public AttributeVector alwaysAuthenticate(Boolean alwaysAuthenticate) {
+  public AttributesTemplate alwaysAuthenticate(Boolean alwaysAuthenticate) {
     return attr(CKA_ALWAYS_AUTHENTICATE, alwaysAuthenticate);
   }
 
-  public AttributeVector application(String application) {
+  public AttributesTemplate application(String application) {
     return attr(CKA_APPLICATION, application);
   }
 
-  public AttributeVector attrTypes(byte[] attrTypes) {
+  public AttributesTemplate attrTypes(byte[] attrTypes) {
     return attr(CKA_ATTR_TYPES, attrTypes);
   }
 
-  public AttributeVector base(BigInteger base) {
+  public AttributesTemplate base(BigInteger base) {
     return attr(CKA_BASE, base);
   }
 
-  public AttributeVector certificateCategory(Long certificateCategory) {
+  public AttributesTemplate certificateCategory(Long certificateCategory) {
     return attr(CKA_CERTIFICATE_CATEGORY, certificateCategory);
   }
 
-  public AttributeVector certificateType(Long certificateType) {
+  public AttributesTemplate certificateType(Long certificateType) {
     return attr(CKA_CERTIFICATE_TYPE, certificateType);
   }
 
-  public AttributeVector checkValue(byte[] checkValue) {
+  public AttributesTemplate checkValue(byte[] checkValue) {
     return attr(CKA_CHECK_VALUE, checkValue);
   }
 
-  public AttributeVector class_(Long class_) {
+  public AttributesTemplate class_(Long class_) {
     return attr(CKA_CLASS, class_);
   }
 
-  public AttributeVector coefficient(BigInteger coefficient) {
+  public AttributesTemplate coefficient(BigInteger coefficient) {
     return attr(CKA_COEFFICIENT, coefficient);
   }
 
-  public AttributeVector copyable(Boolean copyable) {
+  public AttributesTemplate copyable(Boolean copyable) {
     return attr(CKA_COPYABLE, copyable);
   }
 
-  public AttributeVector decrypt(Boolean decrypt) {
+  public AttributesTemplate decrypt(Boolean decrypt) {
     return attr(CKA_DECRYPT, decrypt);
   }
 
-  public AttributeVector defaultCmsAttributes(Boolean defaultCmsAttributes) {
+  public AttributesTemplate defaultCmsAttributes(Boolean defaultCmsAttributes) {
     return attr(CKA_DEFAULT_CMS_ATTRIBUTES, defaultCmsAttributes);
   }
 
-  public AttributeVector derive(Boolean derive) {
+  public AttributesTemplate derive(Boolean derive) {
     return attr(CKA_DERIVE, derive);
   }
 
-  public AttributeVector deriveTemplate(AttributeVector deriveTemplate) {
+  public AttributesTemplate deriveTemplate(AttributesTemplate deriveTemplate) {
     return attr(CKA_DERIVE_TEMPLATE, deriveTemplate);
   }
 
-  public AttributeVector destroyable(Boolean destroyable) {
+  public AttributesTemplate destroyable(Boolean destroyable) {
     return attr(CKA_DESTROYABLE, destroyable);
   }
 
-  public AttributeVector ecParams(byte[] ecParams) {
+  public AttributesTemplate ecParams(byte[] ecParams) {
     return attr(CKA_EC_PARAMS, ecParams);
   }
 
-  public AttributeVector ecPoint(byte[] ecParams) {
+  public AttributesTemplate ecPoint(byte[] ecParams) {
     return attr(CKA_EC_PARAMS, ecParams);
   }
 
-  public AttributeVector endDate(Date endDate) {
+  public AttributesTemplate endDate(Date endDate) {
     return attr(CKA_END_DATE, endDate);
   }
 
-  public AttributeVector encrypt(Boolean encrypt) {
+  public AttributesTemplate encrypt(Boolean encrypt) {
     return attr(CKA_ENCRYPT, encrypt);
   }
 
-  public AttributeVector exponent1(BigInteger exponent1) {
+  public AttributesTemplate exponent1(BigInteger exponent1) {
     return attr(CKA_EXPONENT_1, exponent1);
   }
 
-  public AttributeVector exponent2(BigInteger exponent2) {
+  public AttributesTemplate exponent2(BigInteger exponent2) {
     return attr(CKA_EXPONENT_2, exponent2);
   }
 
-  public AttributeVector extractable(Boolean extractable) {
+  public AttributesTemplate extractable(Boolean extractable) {
     return attr(CKA_EXTRACTABLE, extractable);
   }
 
-  public AttributeVector gost28417Params(byte[] gost28417Params) {
+  public AttributesTemplate gost28417Params(byte[] gost28417Params) {
     return attr(CKA_GOST28147_PARAMS, gost28417Params);
   }
 
-  public AttributeVector gostr3410Params(byte[] gostr3410Params) {
+  public AttributesTemplate gostr3410Params(byte[] gostr3410Params) {
     return attr(CKA_GOSTR3410_PARAMS, gostr3410Params);
   }
 
-  public AttributeVector gostr3411Params(byte[] gostr3411Params) {
+  public AttributesTemplate gostr3411Params(byte[] gostr3411Params) {
     return attr(CKA_GOSTR3411_PARAMS, gostr3411Params);
   }
 
-  public AttributeVector hwFeatureType(Long hwFeatureType) {
+  public AttributesTemplate hwFeatureType(Long hwFeatureType) {
     return attr(CKA_HW_FEATURE_TYPE, hwFeatureType);
   }
 
-  public AttributeVector hashOfIssuerPublicKey(byte[] hashOfIssuerPublicKey) {
+  public AttributesTemplate hashOfIssuerPublicKey(byte[] hashOfIssuerPublicKey) {
     return attr(CKA_HASH_OF_ISSUER_PUBLIC_KEY, hashOfIssuerPublicKey);
   }
 
-  public AttributeVector hashOfSubjectPublicKey(byte[] hashOfSubjectPublicKey) {
+  public AttributesTemplate hashOfSubjectPublicKey(byte[] hashOfSubjectPublicKey) {
     return attr(CKA_HASH_OF_SUBJECT_PUBLIC_KEY, hashOfSubjectPublicKey);
   }
 
-  public AttributeVector id(byte[] id) {
+  public AttributesTemplate id(byte[] id) {
     return attr(CKA_ID, id);
   }
 
-  public AttributeVector issuer(byte[] issuer) {
+  public AttributesTemplate issuer(byte[] issuer) {
     return attr(CKA_ISSUER, issuer);
   }
 
-  public AttributeVector keyType(Long keyType) {
+  public AttributesTemplate keyType(Long keyType) {
     return attr(CKA_KEY_TYPE, keyType);
   }
 
-  public AttributeVector label(String label) {
+  public AttributesTemplate label(String label) {
     return attr(CKA_LABEL, label);
   }
 
-  public AttributeVector local(Boolean local) {
+  public AttributesTemplate local(Boolean local) {
     return attr(CKA_LOCAL, local);
   }
 
-  public AttributeVector mechanismType(Long mechanismType) {
+  public AttributesTemplate mechanismType(Long mechanismType) {
     return attr(CKA_MECHANISM_TYPE, mechanismType);
   }
 
-  public AttributeVector modifiable(Boolean modifiable) {
+  public AttributesTemplate modifiable(Boolean modifiable) {
     return attr(CKA_MODIFIABLE, modifiable);
   }
 
-  public AttributeVector modulusBits(Integer modulusBits) {
+  public AttributesTemplate modulusBits(Integer modulusBits) {
     return attr(CKA_MODULUS_BITS, modulusBits);
   }
 
-  public AttributeVector modulus(BigInteger modulus) {
+  public AttributesTemplate modulus(BigInteger modulus) {
     return attr(CKA_MODULUS, modulus);
   }
 
-  public AttributeVector nameHashAlgorithm(Long nameHashAlgorithm) {
+  public AttributesTemplate nameHashAlgorithm(Long nameHashAlgorithm) {
     return attr(CKA_NAME_HASH_ALGORITHM, nameHashAlgorithm);
   }
 
-  public AttributeVector neverExtractable(Boolean neverExtractable) {
+  public AttributesTemplate neverExtractable(Boolean neverExtractable) {
     return attr(CKA_NEVER_EXTRACTABLE, neverExtractable);
   }
 
-  public AttributeVector objectId(byte[] objectId) {
+  public AttributesTemplate objectId(byte[] objectId) {
     return attr(CKA_OBJECT_ID, objectId);
   }
 
-  public AttributeVector owner(byte[] owner) {
+  public AttributesTemplate owner(byte[] owner) {
     return attr(CKA_OWNER, owner);
   }
 
-  public AttributeVector private_(Boolean private_) {
+  public AttributesTemplate private_(Boolean private_) {
     return attr(CKA_PRIVATE, private_);
   }
 
-  public AttributeVector prime(BigInteger prime) {
+  public AttributesTemplate prime(BigInteger prime) {
     return attr(CKA_PRIME, prime);
   }
 
-  public AttributeVector prime1(BigInteger prime1) {
+  public AttributesTemplate prime1(BigInteger prime1) {
     return attr(CKA_PRIME_1, prime1);
   }
 
-  public AttributeVector prime2(BigInteger prime2) {
+  public AttributesTemplate prime2(BigInteger prime2) {
     return attr(CKA_PRIME_2, prime2);
   }
 
-  public AttributeVector primeBits(Integer primeBits) {
+  public AttributesTemplate primeBits(Integer primeBits) {
     return attr(CKA_PRIME_BITS, primeBits);
   }
 
-  public AttributeVector privateExponent(BigInteger privateExponent) {
+  public AttributesTemplate privateExponent(BigInteger privateExponent) {
     return attr(CKA_PRIVATE_EXPONENT, privateExponent);
   }
 
-  public AttributeVector profileId(Long profileId) {
+  public AttributesTemplate profileId(Long profileId) {
     return attr(CKA_PROFILE_ID, profileId);
   }
 
-  public AttributeVector publicExponent(BigInteger publicExponent) {
+  public AttributesTemplate publicExponent(BigInteger publicExponent) {
     return attr(CKA_PUBLIC_EXPONENT, publicExponent);
   }
 
-  public AttributeVector publicKeyInfo(byte[] publicKeyInfo) {
+  public AttributesTemplate publicKeyInfo(byte[] publicKeyInfo) {
     return attr(CKA_PUBLIC_KEY_INFO, publicKeyInfo);
   }
 
-  public AttributeVector requiredCmsAttributes(Boolean requiredCmsAttributes) {
+  public AttributesTemplate requiredCmsAttributes(Boolean requiredCmsAttributes) {
     return attr(CKA_REQUIRED_CMS_ATTRIBUTES, requiredCmsAttributes);
   }
 
-  public AttributeVector sensitive(Boolean sensitive) {
+  public AttributesTemplate sensitive(Boolean sensitive) {
     return attr(CKA_SENSITIVE, sensitive);
   }
 
-  public AttributeVector serialNumber(byte[] serialNumber) {
+  public AttributesTemplate serialNumber(byte[] serialNumber) {
     return attr(CKA_SERIAL_NUMBER, serialNumber);
   }
 
-  public AttributeVector sign(Boolean sign) {
+  public AttributesTemplate sign(Boolean sign) {
     return attr(CKA_SIGN, sign);
   }
 
-  public AttributeVector signRecover(Boolean signRecover) {
+  public AttributesTemplate signRecover(Boolean signRecover) {
     return attr(CKA_SIGN_RECOVER, signRecover);
   }
 
-  public AttributeVector startDate(Date startDate) {
+  public AttributesTemplate startDate(Date startDate) {
     return attr(CKA_START_DATE, startDate);
   }
 
-  public AttributeVector subject(byte[] subject) {
+  public AttributesTemplate subject(byte[] subject) {
     return attr(CKA_SUBJECT, subject);
   }
 
-  public AttributeVector subprime(BigInteger subprime) {
+  public AttributesTemplate subprime(BigInteger subprime) {
     return attr(CKA_SUBPRIME, subprime);
   }
 
-  public AttributeVector subprimeBits(Integer subprimeBits) {
+  public AttributesTemplate subprimeBits(Integer subprimeBits) {
     return attr(CKA_SUBPRIME_BITS, subprimeBits);
   }
 
-  public AttributeVector supportedCmsAttributes(Boolean supportedCmsAttributes) {
+  public AttributesTemplate supportedCmsAttributes(Boolean supportedCmsAttributes) {
     return attr(CKA_SUPPORTED_CMS_ATTRIBUTES, supportedCmsAttributes);
   }
 
-  public AttributeVector token(Boolean token) {
+  public AttributesTemplate token(Boolean token) {
     return attr(CKA_TOKEN, token);
   }
 
-  public AttributeVector trusted(Boolean trusted) {
+  public AttributesTemplate trusted(Boolean trusted) {
     return attr(CKA_TRUSTED, trusted);
   }
 
-  public AttributeVector uniqueId(String uniqueId) {
+  public AttributesTemplate uniqueId(String uniqueId) {
     return attr(CKA_UNIQUE_ID, uniqueId);
   }
 
-  public AttributeVector unwrap(Boolean unwrap) {
+  public AttributesTemplate unwrap(Boolean unwrap) {
     return attr(CKA_UNWRAP, unwrap);
   }
 
-  public AttributeVector unwrapTemplate(AttributeVector unwrapTemplate) {
+  public AttributesTemplate unwrapTemplate(AttributesTemplate unwrapTemplate) {
     return attr(CKA_UNWRAP_TEMPLATE, unwrapTemplate);
   }
 
-  public AttributeVector value(byte[] value) {
+  public AttributesTemplate value(byte[] value) {
     return attr(CKA_VALUE, value);
   }
 
-  public AttributeVector valueBits(Integer valueBits) {
+  public AttributesTemplate valueBits(Integer valueBits) {
     return attr(CKA_VALUE_BITS, valueBits);
   }
 
-  public AttributeVector valueLen(Integer valueLen) {
+  public AttributesTemplate valueLen(Integer valueLen) {
     return attr(CKA_VALUE_LEN, valueLen);
   }
 
-  public AttributeVector verify(Boolean verify) {
+  public AttributesTemplate verify(Boolean verify) {
     return attr(CKA_VERIFY, verify);
   }
 
-  public AttributeVector verifyRecover(Boolean verifyRecover) {
+  public AttributesTemplate verifyRecover(Boolean verifyRecover) {
     return attr(CKA_VERIFY_RECOVER, verifyRecover);
   }
 
-  public AttributeVector wrap(Boolean wrap) {
+  public AttributesTemplate wrap(Boolean wrap) {
     return attr(CKA_WRAP, wrap);
   }
 
-  public AttributeVector wrapTemplate(AttributeVector wrapTemplate) {
+  public AttributesTemplate wrapTemplate(AttributesTemplate wrapTemplate) {
     return attr(CKA_WRAP_TEMPLATE, wrapTemplate);
   }
 
-  public AttributeVector wrapWithTrusted(Boolean wrapWithTrusted) {
+  public AttributesTemplate wrapWithTrusted(Boolean wrapWithTrusted) {
     return attr(CKA_WRAP_WITH_TRUSTED, wrapWithTrusted);
   }
 
-  public AttributeVector attr(long attrType, Object attrValue) {
+  public AttributesTemplate attr(long attrType, Object attrValue) {
     return attr(Attribute.getInstance(attrType, attrValue));
   }
 
-  public AttributeVector attr(Attribute attr) {
+  public AttributesTemplate attr(Attribute attr) {
     if (!attributes.isEmpty()) {
       long type = attr.getType();
       int oldAttrIdx = -1;
@@ -370,7 +371,7 @@ public class AttributeVector {
   public CK_ATTRIBUTE[] toCkAttributes() {
     List<CK_ATTRIBUTE> attributeList = new ArrayList<>();
     for (Attribute attribute : attributes) {
-      if (attribute.present) attributeList.add(attribute.getCkAttribute());
+      if (attribute.isPresent()) attributeList.add(attribute.getCkAttribute());
     }
     return attributeList.toArray(new CK_ATTRIBUTE[0]);
   }

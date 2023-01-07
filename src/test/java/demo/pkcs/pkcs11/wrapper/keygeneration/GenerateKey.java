@@ -22,7 +22,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -50,7 +50,7 @@ public class GenerateKey extends TestBase {
     LOG.info("##################################################");
     LOG.info("Generating generic secret key");
 
-    AttributeVector secretKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false).valueLen(16);
+    AttributesTemplate secretKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false).valueLen(16);
     long secretKey = session.generateKey(mech, secretKeyTemplate);
 
     LOG.info("the secret key is {}", secretKey);

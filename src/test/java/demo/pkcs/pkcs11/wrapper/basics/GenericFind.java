@@ -47,7 +47,7 @@ import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.objects.Attribute;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.objects.ByteArrayAttribute;
 import org.junit.Test;
 
@@ -77,7 +77,7 @@ public class GenericFind extends TestBase {
 
     LOG.info("##################################################");
     LOG.info("Find all signature private keys.");
-    AttributeVector signatureKeyTemplate = new AttributeVector()
+    AttributesTemplate signatureKeyTemplate = new AttributesTemplate()
         .attr(CKA_CLASS, CKO_PRIVATE_KEY)
         .attr(CKA_SIGN, true);
 
@@ -119,7 +119,7 @@ public class GenericFind extends TestBase {
     for (long privateSignatureKeyHandle : privateSignatureKeys) {
       byte[] id = session.getByteArrayAttrValue(privateSignatureKeyHandle, CKA_ID);
       ByteArrayAttribute idAttr = (ByteArrayAttribute) Attribute.getInstance(CKA_ID, id);
-      AttributeVector certificateSearchTemplate = new AttributeVector(idAttr);
+      AttributesTemplate certificateSearchTemplate = new AttributesTemplate(idAttr);
       session.findObjectsInit(certificateSearchTemplate);
 
       long[] foundCertificateObjects;

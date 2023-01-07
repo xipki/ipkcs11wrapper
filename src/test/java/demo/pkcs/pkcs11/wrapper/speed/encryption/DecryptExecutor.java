@@ -24,7 +24,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,7 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
 
   private final long key;
 
-  protected abstract AttributeVector getMinimalKeyTemplate();
+  protected abstract AttributesTemplate getMinimalKeyTemplate();
 
   public DecryptExecutor(String description, Mechanism keyGenMechanism,
       Token token, char[] pin, Mechanism encryptMechanism, int inputLen) throws PKCS11Exception {
@@ -95,7 +95,7 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
     // generate keypair on token
-    AttributeVector keyTemplate = getMinimalKeyTemplate().sensitive(true).token(true)
+    AttributesTemplate keyTemplate = getMinimalKeyTemplate().sensitive(true).token(true)
         .id(id).encrypt(true).decrypt(true);
 
     ConcurrentSessionBagEntry sessionBag = borrowSession();

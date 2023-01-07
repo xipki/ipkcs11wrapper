@@ -47,7 +47,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.MechanismInfo;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -176,7 +176,7 @@ public class UploadPrivateKey extends TestBase {
       newObjectID = certificateFingerprint;
     }
 
-    AttributeVector p11RsaPrivateKey = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true)
+    AttributesTemplate p11RsaPrivateKey = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true)
         .label(keyLabel).id(newObjectID).subject(userCertificate.getSubjectX500Principal().getEncoded());
 
     if (keyUsage != null) {
@@ -240,7 +240,7 @@ public class UploadPrivateKey extends TestBase {
       LOG.info("creating certificate object on the card... ");
 
       // create certificate object template
-      AttributeVector certTemp = new AttributeVector().class_(CKO_CERTIFICATE).certificateType(CKC_X_509)
+      AttributesTemplate certTemp = new AttributesTemplate().class_(CKO_CERTIFICATE).certificateType(CKC_X_509)
           .token(true).private_(false).id(newObjectID).label(keyLabel)
           .subject(userCertificate.getSubjectX500Principal().getEncoded())
           .issuer(userCertificate.getIssuerX500Principal().getEncoded())

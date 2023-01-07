@@ -19,7 +19,7 @@ package demo.pkcs.pkcs11.wrapper.encryption;
 
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -58,7 +58,7 @@ public class RSADecrypt extends TestBase {
 
     final boolean inToken = false;
     final int keysize = 2048;
-    KeyPair keypair = generateRSAKeypair(token, session, keysize, inToken);
+    PKCS11KeyPair keypair = generateRSAKeypair(token, session, keysize, inToken);
     long privKey = keypair.getPrivateKey();
     long pubKey = keypair.getPublicKey();
 

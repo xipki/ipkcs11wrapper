@@ -22,7 +22,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
@@ -53,7 +53,7 @@ public class GenerateKeyAndSign extends TestBase {
     LOG.info("Generating new {} bit RSA key-pair...", keySize);
 
     final boolean inToken = false;
-    KeyPair generatedKeyPair = generateRSAKeypair(token, session, keySize, inToken);
+    PKCS11KeyPair generatedKeyPair = generateRSAKeypair(token, session, keySize, inToken);
     long generatedRSAPublicKey = generatedKeyPair.getPublicKey();
     long generatedRSAPrivateKey = generatedKeyPair.getPrivateKey();
     // no we may work with the keys...

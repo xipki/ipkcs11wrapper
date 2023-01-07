@@ -45,8 +45,8 @@ package demo.pkcs.pkcs11.wrapper.keygeneration;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.objects.AttributeVector;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
@@ -113,8 +113,8 @@ public class RSAGenerateKeyPair extends TestBase {
     new Random().nextBytes(id);
 
     // set the general attributes for the public key
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_RSA).modulusBits(2048).token(true).id(id);
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true).id(id);
+    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_RSA).modulusBits(2048).token(true).id(id);
+    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true).id(id);
 
     // set the attributes in a way netscape does, this should work with most
     // tokens
@@ -138,7 +138,7 @@ public class RSAGenerateKeyPair extends TestBase {
       publicKeyTemplate.verify(true).encrypt(true);
     }
 
-    KeyPair generatedKeyPair = session.generateKeyPair(
+    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(
         keyPairGenerationMechanism, publicKeyTemplate, privateKeyTemplate);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
@@ -165,7 +165,7 @@ public class RSAGenerateKeyPair extends TestBase {
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
           Functions.toHex(id));
       // set the search template for the public key
-      AttributeVector exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).id(id);
+      AttributesTemplate exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).id(id);
 
       session.findObjectsInit(exportRsaPublicKeyTemplate);
       long[] foundPublicKeys = session.findObjects(1);

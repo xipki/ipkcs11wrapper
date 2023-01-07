@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
@@ -64,7 +64,7 @@ public class ECDSASignRawData extends SignatureTestBase {
     // OID: 1.2.840.10045.3.1.7 (secp256r1, alias NIST P-256)
     final byte[] ecParams = new byte[] {0x06, 0x08, 0x2a, (byte) 0x86, 0x48, (byte) 0xce, 0x3d, 0x03, 0x01, 0x07};
 
-    KeyPair generatedKeyPair = generateECKeypair(token, session, ecParams, inToken);
+    PKCS11KeyPair generatedKeyPair = generateECKeypair(token, session, ecParams, inToken);
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
 
     LOG.info("##################################################");

@@ -46,7 +46,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -77,7 +77,7 @@ public class WriteDataObjects extends TestBase {
     String label = "dummy-label-" + System.currentTimeMillis();
 
     // create certificate object template
-    AttributeVector dataObjectTemplate = new AttributeVector().class_(CKO_DATA)
+    AttributesTemplate dataObjectTemplate = new AttributesTemplate().class_(CKO_DATA)
         // we could also set the name that manages this data object
         //.application("Application Name")
         .label(label).value(data).token(true);

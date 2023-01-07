@@ -23,7 +23,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.Functions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
       while (!stop()) {
         try {
           // generate key on token
-          AttributeVector secretKeyTemplate = getMinimalKeyTemplate()
+          AttributesTemplate secretKeyTemplate = getMinimalKeyTemplate()
               .token(inToken).sensitive(true).encrypt(true).decrypt(true);
           if (inToken) {
             byte[] id = new byte[20];
@@ -62,7 +62,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
           try {
             Session session = sessionBag.value();
             key = session.generateKey(mechanism, secretKeyTemplate);
-            session.destroyObject(key);
+            destroyObject(LOG, session, key);
           } finally {
             requiteSession(sessionBag);
           }
@@ -88,7 +88,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
     this.inToken = inToken;
   }
 
-  protected abstract AttributeVector getMinimalKeyTemplate();
+  protected abstract AttributesTemplate getMinimalKeyTemplate();
 
   @Override
   protected Runnable getTestor() {

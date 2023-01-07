@@ -47,7 +47,7 @@ import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.SessionInfo;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Test;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -73,7 +73,7 @@ public class DeleteObject extends TestBase {
     LOG.info("using session: {}", sessionInfo);
 
     // create a new object to be deleted later
-    AttributeVector secKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(true).value(new byte[32]);
+    AttributesTemplate secKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(true).value(new byte[32]);
 
     long secKeyHandle = session.createObject(secKeyTemplate);
     session.destroyObject(secKeyHandle);

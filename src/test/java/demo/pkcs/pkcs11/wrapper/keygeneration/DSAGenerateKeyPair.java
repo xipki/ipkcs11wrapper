@@ -20,8 +20,8 @@ package demo.pkcs.pkcs11.wrapper.keygeneration;
 import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.objects.AttributeVector;
-import org.xipki.pkcs11.objects.KeyPair;
+import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Functions;
 import org.junit.Test;
 
@@ -73,10 +73,10 @@ public class DSAGenerateKeyPair extends TestBase {
 
     Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
 
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_DSA).token(true).id(id)
+    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_DSA).token(true).id(id)
         .prime(DSA_P).subprime(DSA_Q).base(DSA_G);
 
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_DSA).id(id).sensitive(true).token(true).private_(true);
+    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_DSA).id(id).sensitive(true).token(true).private_(true);
 
     // set the attributes in a way netscape does, this should work with most tokens
     if (signatureMechanismInfo != null) {
@@ -98,7 +98,7 @@ public class DSAGenerateKeyPair extends TestBase {
       publicKeyTemplate.verify(true).encrypt(true);
     }
 
-    KeyPair generatedKeyPair = session.generateKeyPair(
+    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(
         keyPairGenerationMechanism, publicKeyTemplate, privateKeyTemplate);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
@@ -119,7 +119,7 @@ public class DSAGenerateKeyPair extends TestBase {
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
           Functions.toHex(id));
       // set the search template for the public key
-      AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_DSA).attr(CKA_ID, id);
+      AttributesTemplate exportPublicKeyTemplate = newPublicKey(CKK_DSA).attr(CKA_ID, id);
 
       session.findObjectsInit(exportPublicKeyTemplate);
       long[] foundPublicKeys = session.findObjects(1);

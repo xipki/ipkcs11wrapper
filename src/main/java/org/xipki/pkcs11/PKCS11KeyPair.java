@@ -40,7 +40,7 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11.objects;
+package org.xipki.pkcs11;
 
 /**
  * This class does not correspond to any PKCS#11 object. It is only a pair of
@@ -49,7 +49,7 @@ package org.xipki.pkcs11.objects;
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
  */
-public class KeyPair {
+public class PKCS11KeyPair {
 
   /**
    * The public key of this key-pair.
@@ -69,7 +69,7 @@ public class KeyPair {
    * @param privateKey
    *          The private key of the key-pair.
    */
-  public KeyPair(long publicKey, long privateKey) {
+  public PKCS11KeyPair(long publicKey, long privateKey) {
     this.publicKey = publicKey;
     this.privateKey = privateKey;
   }

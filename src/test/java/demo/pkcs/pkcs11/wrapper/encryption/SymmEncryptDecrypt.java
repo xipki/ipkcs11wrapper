@@ -22,7 +22,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.parameters.CcmParameters;
@@ -40,7 +40,7 @@ public abstract class SymmEncryptDecrypt extends TestBase {
 
   protected abstract Mechanism getKeyGenMech(Token token) throws PKCS11Exception;
 
-  protected abstract AttributeVector getKeyTemplate();
+  protected abstract AttributesTemplate getKeyTemplate();
 
   protected abstract Mechanism getEncryptionMech(Token token) throws PKCS11Exception;
 
@@ -61,7 +61,7 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     LOG.info("generate secret encryption/decryption key");
     Mechanism keyMechanism = getKeyGenMech(token);
 
-    AttributeVector keyTemplate = getKeyTemplate().token(false);
+    AttributesTemplate keyTemplate = getKeyTemplate().token(false);
 
     long encryptionKey = session.generateKey(keyMechanism, keyTemplate);
     LOG.info("##################################################");

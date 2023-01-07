@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.parameters.CcmParameters;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -70,7 +70,7 @@ public class AESCCMEncryptDecrypt extends SymmEncryptDecrypt {
   }
 
   @Override
-  protected AttributeVector getKeyTemplate() {
+  protected AttributesTemplate getKeyTemplate() {
     return newSecretKey(CKK_AES).encrypt(true).decrypt(true).valueLen(16);
   }
 

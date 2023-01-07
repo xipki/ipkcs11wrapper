@@ -22,7 +22,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.PKCS11Exception;
-import org.xipki.pkcs11.objects.AttributeVector;
+import org.xipki.pkcs11.AttributesTemplate;
 import org.xipki.pkcs11.Functions;
 import junit.framework.Assert;
 import org.junit.Test;
@@ -45,12 +45,12 @@ public class EDDSASignVerifySpeed extends TestBase {
     }
 
     @Override
-    protected AttributeVector getMinimalPrivateKeyTemplate() {
+    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
       return getMinimalPrivateKeyTemplate0();
     }
 
     @Override
-    protected AttributeVector getMinimalPublicKeyTemplate() {
+    protected AttributesTemplate getMinimalPublicKeyTemplate() {
       return getMinimalPublicKeyTemplate0();
     }
 
@@ -64,12 +64,12 @@ public class EDDSASignVerifySpeed extends TestBase {
     }
 
     @Override
-    protected AttributeVector getMinimalPrivateKeyTemplate() {
+    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
       return getMinimalPrivateKeyTemplate0();
     }
 
     @Override
-    protected AttributeVector getMinimalPublicKeyTemplate() {
+    protected AttributesTemplate getMinimalPublicKeyTemplate() {
       return getMinimalPublicKeyTemplate0();
     }
 
@@ -79,11 +79,11 @@ public class EDDSASignVerifySpeed extends TestBase {
 
   private static final long signMechanism = CKM_EDDSA;
 
-  private AttributeVector getMinimalPrivateKeyTemplate0() {
+  private AttributesTemplate getMinimalPrivateKeyTemplate0() {
     return newPrivateKey(CKK_EC_EDWARDS);
   }
 
-  private AttributeVector getMinimalPublicKeyTemplate0() {
+  private AttributesTemplate getMinimalPublicKeyTemplate0() {
     // set the general attributes for the public key
     // OID: 1.3.101.112 (Ed25519)
     byte[] encodedCurveOid = new byte[] {0x06, 0x03, 0x2b, 0x65, 0x70};
