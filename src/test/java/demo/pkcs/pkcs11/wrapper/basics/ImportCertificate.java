@@ -188,8 +188,8 @@ public class ImportCertificate extends TestBase {
 
         byte[] encodedAsn1serialNumber = Util.encodedAsn1Integer(currentCertificate.getSerialNumber());
 
-        AttributesTemplate pkcs11X509PublicKeyCertificate = new AttributesTemplate().class_(CKO_CERTIFICATE)
-            .certificateType(CKC_X_509).token(true).private_(false).label(label).id(newObjectID).issuer(encodedIssuer)
+        AttributesTemplate pkcs11X509PublicKeyCertificate = AttributesTemplate.newCertificate(CKC_X_509)
+            .token(true).private_(false).label(label).id(newObjectID).issuer(encodedIssuer)
             .subject(encodedSubject).serialNumber(encodedAsn1serialNumber).value(currentCertificate.getEncoded());
 
         LOG.info("{}", pkcs11X509PublicKeyCertificate);

@@ -42,6 +42,22 @@ public class AttributesTemplate {
     }
   }
 
+  public static AttributesTemplate newSecretKey(long keyType) {
+    return new AttributesTemplate().class_(CKO_SECRET_KEY).keyType(keyType);
+  }
+
+  public static AttributesTemplate newPrivateKey(long keyType) {
+    return new AttributesTemplate().class_(CKO_PRIVATE_KEY).keyType(keyType);
+  }
+
+  public static AttributesTemplate newPublicKey(long keyType) {
+    return new AttributesTemplate().class_(CKO_PUBLIC_KEY).keyType(keyType);
+  }
+
+  public static AttributesTemplate newCertificate(long certificateType) {
+    return new AttributesTemplate().class_(CKO_CERTIFICATE).certificateType(certificateType);
+  }
+
   public AttributesTemplate acIssuer(String acIssuer) {
     return attr(CKA_AC_ISSUER, acIssuer);
   }

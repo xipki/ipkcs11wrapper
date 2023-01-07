@@ -273,15 +273,15 @@ public class TestBase {
   }
 
   protected AttributesTemplate newSecretKey(long keyType) {
-    return new AttributesTemplate().attr(CKA_CLASS, CKO_SECRET_KEY).attr(CKA_KEY_TYPE, keyType);
+    return AttributesTemplate.newSecretKey(keyType);
   }
 
   protected AttributesTemplate newPublicKey(long keyTye) {
-    return new AttributesTemplate().attr(CKA_CLASS, CKO_PUBLIC_KEY).attr(CKA_KEY_TYPE, keyTye);
+    return AttributesTemplate.newPublicKey(keyTye);
   }
 
   protected AttributesTemplate newPrivateKey(long keyType) {
-    return new AttributesTemplate().attr(CKA_CLASS, CKO_PRIVATE_KEY).attr(CKA_KEY_TYPE, keyType);
+    return AttributesTemplate.newPrivateKey(keyType);
   }
 
   protected static PublicKey generateJCEPublicKey(Session session, long p11Key, Long keyType)
