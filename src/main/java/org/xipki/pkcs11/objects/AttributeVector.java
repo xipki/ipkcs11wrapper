@@ -45,11 +45,11 @@ public class AttributeVector {
     return attr(CKA_AC_ISSUER, acIssuer);
   }
 
-  public AttributeVector alwaysSensitive(boolean alwaysSensitive) {
+  public AttributeVector alwaysSensitive(Boolean alwaysSensitive) {
     return attr(CKA_ALWAYS_SENSITIVE, alwaysSensitive);
   }
 
-  public AttributeVector alwaysAuthenticate(boolean alwaysAuthenticate) {
+  public AttributeVector alwaysAuthenticate(Boolean alwaysAuthenticate) {
     return attr(CKA_ALWAYS_AUTHENTICATE, alwaysAuthenticate);
   }
 
@@ -65,11 +65,11 @@ public class AttributeVector {
     return attr(CKA_BASE, base);
   }
 
-  public AttributeVector certificateCategory(long certificateCategory) {
+  public AttributeVector certificateCategory(Long certificateCategory) {
     return attr(CKA_CERTIFICATE_CATEGORY, certificateCategory);
   }
 
-  public AttributeVector certificateType(long certificateType) {
+  public AttributeVector certificateType(Long certificateType) {
     return attr(CKA_CERTIFICATE_TYPE, certificateType);
   }
 
@@ -77,7 +77,7 @@ public class AttributeVector {
     return attr(CKA_CHECK_VALUE, checkValue);
   }
 
-  public AttributeVector class_(long class_) {
+  public AttributeVector class_(Long class_) {
     return attr(CKA_CLASS, class_);
   }
 
@@ -85,19 +85,19 @@ public class AttributeVector {
     return attr(CKA_COEFFICIENT, coefficient);
   }
 
-  public AttributeVector copyable(boolean copyable) {
+  public AttributeVector copyable(Boolean copyable) {
     return attr(CKA_COPYABLE, copyable);
   }
 
-  public AttributeVector decrypt(boolean decrypt) {
+  public AttributeVector decrypt(Boolean decrypt) {
     return attr(CKA_DECRYPT, decrypt);
   }
 
-  public AttributeVector defaultCmsAttributes(boolean defaultCmsAttributes) {
+  public AttributeVector defaultCmsAttributes(Boolean defaultCmsAttributes) {
     return attr(CKA_DEFAULT_CMS_ATTRIBUTES, defaultCmsAttributes);
   }
 
-  public AttributeVector derive(boolean derive) {
+  public AttributeVector derive(Boolean derive) {
     return attr(CKA_DERIVE, derive);
   }
 
@@ -105,7 +105,7 @@ public class AttributeVector {
     return attr(CKA_DERIVE_TEMPLATE, deriveTemplate);
   }
 
-  public AttributeVector destroyable(boolean destroyable) {
+  public AttributeVector destroyable(Boolean destroyable) {
     return attr(CKA_DESTROYABLE, destroyable);
   }
 
@@ -121,7 +121,7 @@ public class AttributeVector {
     return attr(CKA_END_DATE, endDate);
   }
 
-  public AttributeVector encrypt(boolean encrypt) {
+  public AttributeVector encrypt(Boolean encrypt) {
     return attr(CKA_ENCRYPT, encrypt);
   }
 
@@ -133,7 +133,7 @@ public class AttributeVector {
     return attr(CKA_EXPONENT_2, exponent2);
   }
 
-  public AttributeVector extractable(boolean extractable) {
+  public AttributeVector extractable(Boolean extractable) {
     return attr(CKA_EXTRACTABLE, extractable);
   }
 
@@ -149,7 +149,7 @@ public class AttributeVector {
     return attr(CKA_GOSTR3411_PARAMS, gostr3411Params);
   }
 
-  public AttributeVector hwFeatureType(long hwFeatureType) {
+  public AttributeVector hwFeatureType(Long hwFeatureType) {
     return attr(CKA_HW_FEATURE_TYPE, hwFeatureType);
   }
 
@@ -169,7 +169,7 @@ public class AttributeVector {
     return attr(CKA_ISSUER, issuer);
   }
 
-  public AttributeVector keyType(long keyType) {
+  public AttributeVector keyType(Long keyType) {
     return attr(CKA_KEY_TYPE, keyType);
   }
 
@@ -177,19 +177,19 @@ public class AttributeVector {
     return attr(CKA_LABEL, label);
   }
 
-  public AttributeVector local(boolean local) {
+  public AttributeVector local(Boolean local) {
     return attr(CKA_LOCAL, local);
   }
 
-  public AttributeVector mechanismType(long mechanismType) {
+  public AttributeVector mechanismType(Long mechanismType) {
     return attr(CKA_MECHANISM_TYPE, mechanismType);
   }
 
-  public AttributeVector modifiable(boolean modifiable) {
+  public AttributeVector modifiable(Boolean modifiable) {
     return attr(CKA_MODIFIABLE, modifiable);
   }
 
-  public AttributeVector modulusBits(int modulusBits) {
+  public AttributeVector modulusBits(Integer modulusBits) {
     return attr(CKA_MODULUS_BITS, modulusBits);
   }
 
@@ -197,11 +197,11 @@ public class AttributeVector {
     return attr(CKA_MODULUS, modulus);
   }
 
-  public AttributeVector nameHashAlgorithm(long nameHashAlgorithm) {
+  public AttributeVector nameHashAlgorithm(Long nameHashAlgorithm) {
     return attr(CKA_NAME_HASH_ALGORITHM, nameHashAlgorithm);
   }
 
-  public AttributeVector neverExtractable(boolean neverExtractable) {
+  public AttributeVector neverExtractable(Boolean neverExtractable) {
     return attr(CKA_NEVER_EXTRACTABLE, neverExtractable);
   }
 
@@ -213,7 +213,7 @@ public class AttributeVector {
     return attr(CKA_OWNER, owner);
   }
 
-  public AttributeVector private_(boolean private_) {
+  public AttributeVector private_(Boolean private_) {
     return attr(CKA_PRIVATE, private_);
   }
 
@@ -229,7 +229,7 @@ public class AttributeVector {
     return attr(CKA_PRIME_2, prime2);
   }
 
-  public AttributeVector primeBits(int primeBits) {
+  public AttributeVector primeBits(Integer primeBits) {
     return attr(CKA_PRIME_BITS, primeBits);
   }
 
@@ -237,7 +237,7 @@ public class AttributeVector {
     return attr(CKA_PRIVATE_EXPONENT, privateExponent);
   }
 
-  public AttributeVector profileId(long profileId) {
+  public AttributeVector profileId(Long profileId) {
     return attr(CKA_PROFILE_ID, profileId);
   }
 
@@ -249,11 +249,11 @@ public class AttributeVector {
     return attr(CKA_PUBLIC_KEY_INFO, publicKeyInfo);
   }
 
-  public AttributeVector requiredCmsAttributes(boolean requiredCmsAttributes) {
+  public AttributeVector requiredCmsAttributes(Boolean requiredCmsAttributes) {
     return attr(CKA_REQUIRED_CMS_ATTRIBUTES, requiredCmsAttributes);
   }
 
-  public AttributeVector sensitive(boolean sensitive) {
+  public AttributeVector sensitive(Boolean sensitive) {
     return attr(CKA_SENSITIVE, sensitive);
   }
 
@@ -261,11 +261,11 @@ public class AttributeVector {
     return attr(CKA_SERIAL_NUMBER, serialNumber);
   }
 
-  public AttributeVector sign(boolean sign) {
+  public AttributeVector sign(Boolean sign) {
     return attr(CKA_SIGN, sign);
   }
 
-  public AttributeVector signRecover(boolean signRecover) {
+  public AttributeVector signRecover(Boolean signRecover) {
     return attr(CKA_SIGN_RECOVER, signRecover);
   }
 
@@ -281,19 +281,19 @@ public class AttributeVector {
     return attr(CKA_SUBPRIME, subprime);
   }
 
-  public AttributeVector subprimeBits(int subprimeBits) {
+  public AttributeVector subprimeBits(Integer subprimeBits) {
     return attr(CKA_SUBPRIME_BITS, subprimeBits);
   }
 
-  public AttributeVector supportedCmsAttributes(boolean supportedCmsAttributes) {
+  public AttributeVector supportedCmsAttributes(Boolean supportedCmsAttributes) {
     return attr(CKA_SUPPORTED_CMS_ATTRIBUTES, supportedCmsAttributes);
   }
 
-  public AttributeVector token(boolean token) {
+  public AttributeVector token(Boolean token) {
     return attr(CKA_TOKEN, token);
   }
 
-  public AttributeVector trusted(boolean trusted) {
+  public AttributeVector trusted(Boolean trusted) {
     return attr(CKA_TRUSTED, trusted);
   }
 
@@ -301,7 +301,7 @@ public class AttributeVector {
     return attr(CKA_UNIQUE_ID, uniqueId);
   }
 
-  public AttributeVector unwrap(boolean unwrap) {
+  public AttributeVector unwrap(Boolean unwrap) {
     return attr(CKA_UNWRAP, unwrap);
   }
 
@@ -313,23 +313,23 @@ public class AttributeVector {
     return attr(CKA_VALUE, value);
   }
 
-  public AttributeVector valueBits(int valueBits) {
+  public AttributeVector valueBits(Integer valueBits) {
     return attr(CKA_VALUE_BITS, valueBits);
   }
 
-  public AttributeVector valueLen(int valueLen) {
+  public AttributeVector valueLen(Integer valueLen) {
     return attr(CKA_VALUE_LEN, valueLen);
   }
 
-  public AttributeVector verify(boolean verify) {
+  public AttributeVector verify(Boolean verify) {
     return attr(CKA_VERIFY, verify);
   }
 
-  public AttributeVector verifyRecover(boolean verifyRecover) {
+  public AttributeVector verifyRecover(Boolean verifyRecover) {
     return attr(CKA_VERIFY_RECOVER, verifyRecover);
   }
 
-  public AttributeVector wrap(boolean wrap) {
+  public AttributeVector wrap(Boolean wrap) {
     return attr(CKA_WRAP, wrap);
   }
 
@@ -337,7 +337,7 @@ public class AttributeVector {
     return attr(CKA_WRAP_TEMPLATE, wrapTemplate);
   }
 
-  public AttributeVector wrapWithTrusted(boolean wrapWithTrusted) {
+  public AttributeVector wrapWithTrusted(Boolean wrapWithTrusted) {
     return attr(CKA_WRAP_WITH_TRUSTED, wrapWithTrusted);
   }
 
