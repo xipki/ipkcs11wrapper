@@ -130,10 +130,8 @@ public class Session {
   /**
    * Constructor taking the token and the session handle.
    *
-   * @param token
-   *          The token this session operates with.
-   * @param sessionHandle
-   *          The session handle to perform the operations with.
+   * @param token         The token this session operates with.
+   * @param sessionHandle The session handle to perform the operations with.
    */
   protected Session(Token token, long sessionHandle) {
     this.token = Functions.requireNonNull("token", token);
@@ -148,12 +146,10 @@ public class Session {
    * Initializes the user-PIN. Can only be called from a read-write security officer session. May be
    * used to set a new user-PIN if the user-PIN is locked.
    *
-   * @param pin
-   *          The new user-PIN. This parameter may be null, if the token has a protected
-   *          authentication path. Refer to the PKCS#11 standard for details.
-   * @exception PKCS11Exception
-   *              If the session has not the right to set the PIN of if the operation fails for some
-   *              other reason.
+   * @param pin The new user-PIN. This parameter may be null, if the token has a protected
+   *            authentication path. Refer to the PKCS#11 standard for details.
+   * @throws PKCS11Exception If the session has not the right to set the PIN of if the operation fails for some
+   *                         other reason.
    */
   public void initPIN(char[] pin) throws PKCS11Exception {
     pkcs11.C_InitPIN(sessionHandle, pin, useUtf8);
@@ -162,12 +158,9 @@ public class Session {
   /**
    * Set the user-PIN to a new value. Can only be called from a read-write sessions.
    *
-   * @param oldPin
-   *          The old (current) user-PIN.
-   * @param newPin
-   *          The new value for the user-PIN.
-   * @exception PKCS11Exception
-   *              If setting the new PIN fails.
+   * @param oldPin The old (current) user-PIN.
+   * @param newPin The new value for the user-PIN.
+   * @throws PKCS11Exception If setting the new PIN fails.
    */
   public void setPIN(char[] oldPin, char[] newPin) throws PKCS11Exception {
     pkcs11.C_SetPIN(sessionHandle, oldPin, newPin, useUtf8);
@@ -176,8 +169,7 @@ public class Session {
   /**
    * Closes this session.
    *
-   * @exception PKCS11Exception
-   *              If closing the session failed.
+   * @throws PKCS11Exception If closing the session failed.
    */
   public void closeSession() throws PKCS11Exception {
     pkcs11.C_CloseSession(sessionHandle);
@@ -196,8 +188,7 @@ public class Session {
    * Get information about this session.
    *
    * @return An object providing information about this session.
-   * @exception PKCS11Exception
-   *              If getting the information failed.
+   * @throws PKCS11Exception If getting the information failed.
    */
   public SessionInfo getSessionInfo() throws PKCS11Exception {
     return new SessionInfo(pkcs11.C_GetSessionInfo(sessionHandle));
@@ -206,8 +197,7 @@ public class Session {
   /**
    * terminates active session based operations.
    *
-   * @exception PKCS11Exception
-   *              If terminiating operations failed
+   * @throws PKCS11Exception If terminiating operations failed
    */
   public void sessionCancel() throws PKCS11Exception {
     long flags = 0L; //Add Flags?
@@ -237,8 +227,7 @@ public class Session {
    * exactly this state.
    *
    * @return The current operation state as a byte array.
-   * @exception PKCS11Exception
-   *              If saving the state fails or is not possible.
+   * @throws PKCS11Exception If saving the state fails or is not possible.
    */
   public byte[] getOperationState() throws PKCS11Exception {
     return pkcs11.C_GetOperationState(sessionHandle);
@@ -249,16 +238,12 @@ public class Session {
    * key used during the saved operation to continue, because it may not be possible to save a key
    * into the state's byte array. Refer to the PKCS#11 standard for details on this function.
    *
-   * @param operationState
-   *          The previously saved state as returned by getOperationState().
-   * @param encryptionKeyHandle
-   *          An encryption or decryption key handle, if an encryption or decryption operation was saved
-   *          which should be continued, but the keys could not be saved.
-   * @param authenticationKeyHandle
-   *          A signing, verification of MAC key handle, if a signing, verification or MAC operation needs
-   *          to be restored that could not save the key.
-   * @exception PKCS11Exception
-   *              If restoring the state fails.
+   * @param operationState          The previously saved state as returned by getOperationState().
+   * @param encryptionKeyHandle     An encryption or decryption key handle, if an encryption or decryption operation was saved
+   *                                which should be continued, but the keys could not be saved.
+   * @param authenticationKeyHandle A signing, verification of MAC key handle, if a signing, verification or MAC operation needs
+   *                                to be restored that could not save the key.
+   * @throws PKCS11Exception If restoring the state fails.
    */
   public void setOperationState(byte[] operationState, long encryptionKeyHandle, long authenticationKeyHandle)
       throws PKCS11Exception {
@@ -283,12 +268,9 @@ public class Session {
    * have the same login state; i.e. if you login the user to one session all other open sessions of
    * this token get user rights.
    *
-   * @param userType
-   *          CKU_SO for the security officer or CKU_USER to login the user.
-   * @param pin
-   *          The PIN. The security officer-PIN or the user-PIN depending on the userType parameter.
-   * @exception PKCS11Exception
-   *              If login fails.
+   * @param userType CKU_SO for the security officer or CKU_USER to login the user.
+   * @param pin      The PIN. The security officer-PIN or the user-PIN depending on the userType parameter.
+   * @throws PKCS11Exception If login fails.
    */
   public void login(long userType, char[] pin) throws PKCS11Exception {
     pkcs11.C_Login(sessionHandle, userType, pin, useUtf8);
@@ -299,14 +281,10 @@ public class Session {
    * have the same login state; i.e. if you log in the user to one session all other open sessions of
    * this token get user rights.
    *
-   * @param userType
-   *          CKU_SO for the security officer or CKU_USER to log in the user.
-   * @param pin
-   *          The PIN. The security officer-PIN or the user-PIN depending on the userType parameter.
-   * @param username
-   *          The username of the user.
-   * @exception PKCS11Exception
-   *              If login fails.
+   * @param userType CKU_SO for the security officer or CKU_USER to log in the user.
+   * @param pin      The PIN. The security officer-PIN or the user-PIN depending on the userType parameter.
+   * @param username The username of the user.
+   * @throws PKCS11Exception If login fails.
    */
   public void loginUser(long userType, char[] pin, char[] username) throws PKCS11Exception {
     pkcs11.C_LoginUser(sessionHandle, userType, pin, username, useUtf8);
@@ -315,8 +293,7 @@ public class Session {
   /**
    * Logs out this session.
    *
-   * @exception PKCS11Exception
-   *              If logging out the session fails.
+   * @throws PKCS11Exception If logging out the session fails.
    */
   public void logout() throws PKCS11Exception {
     pkcs11.C_Logout(sessionHandle);
@@ -329,27 +306,25 @@ public class Session {
    * serve as a template. The application must set all attributes of this new object which are
    * required for the creation of such an object on the token. Then it passes this DESSecretKey
    * object to this method to create the object on the token. Example: <code>
-   *   AttributesTemplate desKeyTemplate = AttributesTemplate.newSecretKey(CKK_DES3);
-   *   // the key type is set by the DESSecretKey's constructor, so you need not do it
-   *   desKeyTemplate.value(myDesKeyValueAs8BytesLongByteArray)
-   *     .token(true)
-   *     .private(true);
-   *     .encrypt(true);
-   *     .decrypt(true);
-   *   ...
-   *   long theCreatedDESKeyObjectHandle = userSession.createObject(desKeyTemplate);
+   * AttributesTemplate desKeyTemplate = AttributesTemplate.newSecretKey(CKK_DES3);
+   * // the key type is set by the DESSecretKey's constructor, so you need not do it
+   * desKeyTemplate.value(myDesKeyValueAs8BytesLongByteArray)
+   * .token(true)
+   * .private(true);
+   * .encrypt(true);
+   * .decrypt(true);
+   * ...
+   * long theCreatedDESKeyObjectHandle = userSession.createObject(desKeyTemplate);
    * </code> Refer to the PKCS#11 standard to find out what attributes must be set for certain types
    * of objects to create them on the token.
    *
-   * @param template
-   *          The template object that holds all values that the new object on the token should
-   *          contain.
+   * @param template The template object that holds all values that the new object on the token should
+   *                 contain.
    * @return A new PKCS#11 Object that serves holds all the
-   *         (readable) attributes of the object on the token. In contrast to the templateObject,
-   *         this object might have certain attributes set to token-dependent default-values.
-   * @exception PKCS11Exception
-   *              If the creation of the new object fails. If it fails, the no new object was
-   *              created on the token.
+   * (readable) attributes of the object on the token. In contrast to the templateObject,
+   * this object might have certain attributes set to token-dependent default-values.
+   * @throws PKCS11Exception If the creation of the new object fails. If it fails, the no new object was
+   *                         created on the token.
    */
   public long createObject(AttributesTemplate template) throws PKCS11Exception {
     return pkcs11.C_CreateObject(sessionHandle, toOutCKAttributes(template), useUtf8);
@@ -360,16 +335,13 @@ public class Session {
    * the template object will override the corresponding value from the source object, when the new
    * object is created. See the PKCS#11 standard for details.
    *
-   * @param sourceObjectHandle
-   *          The source object of the copy operation.
-   * @param template
-   *          A template object whose attribute values are used for the new object; i.e. they have
-   *          higher priority than the attribute values from the source object. May be null; in that
-   *          case the new object is just a one-to-one copy of the sourceObject.
+   * @param sourceObjectHandle The source object of the copy operation.
+   * @param template           A template object whose attribute values are used for the new object; i.e. they have
+   *                           higher priority than the attribute values from the source object. May be null; in that
+   *                           case the new object is just a one-to-one copy of the sourceObject.
    * @return The new object that is created by copying the source object and setting attributes to
-   *         the values given by the template.
-   * @exception PKCS11Exception
-   *              If copying the object fails for some reason.
+   * the values given by the template.
+   * @throws PKCS11Exception If copying the object fails for some reason.
    */
   public long copyObject(long sourceObjectHandle, AttributesTemplate template) throws PKCS11Exception {
     return pkcs11.C_CopyObject(sessionHandle, sourceObjectHandle, toOutCKAttributes(template), useUtf8);
@@ -384,14 +356,10 @@ public class Session {
    * method passing this object as both parameters. This will update the object on the token to the
    * values as modified in the Java object.
    *
-   * @param objectToUpdateHandle
-   *          The attributes of this object get updated.
-   * @param template
-   *          This methods gets all present attributes of this template object and set this
-   *          attributes at the objectToUpdate.
-   * @exception PKCS11Exception
-   *              If updateing the attributes fails. All or no attributes are updated.
-   *
+   * @param objectToUpdateHandle The attributes of this object get updated.
+   * @param template             This methods gets all present attributes of this template object and set this
+   *                             attributes at the objectToUpdate.
+   * @throws PKCS11Exception If updateing the attributes fails. All or no attributes are updated.
    */
   public void setAttributeValues(long objectToUpdateHandle, AttributesTemplate template) throws PKCS11Exception {
     pkcs11.C_SetAttributeValue(sessionHandle, objectToUpdateHandle, toOutCKAttributes(template), useUtf8);
@@ -402,10 +370,8 @@ public class Session {
    * destroy. This method uses only the internal object handle of the given object to identify the
    * object.
    *
-   * @param objectHandle
-   *          The object handle that should be destroyed.
-   * @exception PKCS11Exception
-   *              If the object could not be destroyed.
+   * @param objectHandle The object handle that should be destroyed.
+   * @throws PKCS11Exception If the object could not be destroyed.
    */
   public void destroyObject(long objectHandle) throws PKCS11Exception {
     pkcs11.C_DestroyObject(sessionHandle, objectHandle);
@@ -415,12 +381,9 @@ public class Session {
    * Get the size of the specified object in bytes. This size specifies how much memory the object
    * takes up on the token.
    *
-   * @param objectHandle
-   *          The object to get the size for.
+   * @param objectHandle The object to get the size for.
    * @return The object's size bytes.
-   * @exception PKCS11Exception
-   *              If determining the size fails.
-   *
+   * @throws PKCS11Exception If determining the size fails.
    */
   public long getObjectSize(long objectHandle) throws PKCS11Exception {
     return pkcs11.C_GetObjectSize(sessionHandle, objectHandle);
@@ -431,12 +394,10 @@ public class Session {
    * This method get all set attributes of the template object ans searches for all objects on the
    * token that match with these attributes.
    *
-   * @param template
-   *          The object that serves as a template for searching. If this object is null, the find
-   *          operation will find all objects that this session can see. Notice, that only a user
-   *          session will see private objects.
-   * @exception PKCS11Exception
-   *              If initializing the find operation fails.
+   * @param template The object that serves as a template for searching. If this object is null, the find
+   *                 operation will find all objects that this session can see. Notice, that only a user
+   *                 session will see private objects.
+   * @throws PKCS11Exception If initializing the find operation fails.
    */
   public void findObjectsInit(AttributesTemplate template) throws PKCS11Exception {
     pkcs11.C_FindObjectsInit(sessionHandle, toOutCKAttributes(template), useUtf8);
@@ -449,14 +410,12 @@ public class Session {
    * susequent calls to this method like maxObjectCount(1) until it receives an empty array (this
    * method never returns null!).
    *
-   * @param maxObjectCount
-   *          Specifies how many objects to return with this call.
+   * @param maxObjectCount Specifies how many objects to return with this call.
    * @return An array of found objects. The maximum size of this array is maxObjectCount, the
-   *         minimum length is 0. Never returns null.
-   * @exception PKCS11Exception
-   *              A plain PKCS11Exception if something during PKCS11 FindObject went wrong, a
-   *              PKCS11Exception with a nested PKCS11Exception if the Exception is raised during
-   *              object parsing.
+   * minimum length is 0. Never returns null.
+   * @throws PKCS11Exception A plain PKCS11Exception if something during PKCS11 FindObject went wrong, a
+   *                         PKCS11Exception with a nested PKCS11Exception if the Exception is raised during
+   *                         object parsing.
    */
   public long[] findObjects(int maxObjectCount) throws PKCS11Exception {
     return pkcs11.C_FindObjects(sessionHandle, maxObjectCount);
@@ -466,8 +425,7 @@ public class Session {
    * Finalizes a find operation. The application must call this method to finalize a find operation
    * before attempting to start any other operation.
    *
-   * @exception PKCS11Exception
-   *              If finalizing the current find operation was not possible.
+   * @throws PKCS11Exception If finalizing the current find operation was not possible.
    */
   public void findObjectsFinal() throws PKCS11Exception {
     pkcs11.C_FindObjectsFinal(sessionHandle);
@@ -482,12 +440,9 @@ public class Session {
    * mechanism the application may use a constant defined in the Mechanism class. Notice that the
    * key and the mechanism must be compatible; i.e. you cannot use a DES key with the RSA mechanism.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.DES_CBC.
-   * @param keyHandle
-   *          The decryption key to use.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
+   * @param mechanism The mechanism to use; e.g. Mechanism.DES_CBC.
+   * @param keyHandle The decryption key to use.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void encryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_EncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
@@ -511,26 +466,36 @@ public class Session {
   }
 
   /**
-   * Encrypts the given data with the key and mechansim given to the encryptInit method. This method
+   * Encrypts the given data with the key and mechanism given to the encryptInit method. This method
    * finalizes the current encryption operation; i.e. the application need (and should) not call
    * encryptFinal() after this call. For encrypting multiple pices of data use encryptUpdate and
    * encryptFinal.
    *
-   * @param in
-   *          buffer containing the to-be-encrypted data
-   * @param inOfs
-   *          buffer offset of the to-be-encrypted data
-   * @param inLen
-   *          length of the to-be-encrypted data
-   * @param out
-   *          buffer for the encrypted data
-   * @param outOfs
-   *          buffer offset for the encrypted data
-   * @param outLen
-   *          buffer size for the encrypted data
+   * @param in     the to-be-encrypted data
+   * @param out    buffer for the encrypted data
+   * @param outOfs buffer offset for the encrypted data
+   * @param outLen buffer size for the encrypted data
    * @return the length of encrypted data
-   * @exception PKCS11Exception
-   *              If encrypting failed.
+   * @throws PKCS11Exception If encrypting failed.
+   */
+  public int encrypt(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    return encrypt(in, 0, in.length, out, outOfs, outLen);
+  }
+
+  /**
+   * Encrypts the given data with the key and mechanism given to the encryptInit method. This method
+   * finalizes the current encryption operation; i.e. the application need (and should) not call
+   * encryptFinal() after this call. For encrypting multiple pices of data use encryptUpdate and
+   * encryptFinal.
+   *
+   * @param in     buffer containing the to-be-encrypted data
+   * @param inOfs  buffer offset of the to-be-encrypted data
+   * @param inLen  length of the to-be-encrypted data
+   * @param out    buffer for the encrypted data
+   * @param outOfs buffer offset for the encrypted data
+   * @param outLen buffer size for the encrypted data
+   * @return the length of encrypted data
+   * @throws PKCS11Exception If encrypting failed.
    */
   public int encrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
@@ -540,25 +505,35 @@ public class Session {
 
   /**
    * This method can be used to encrypt multiple pieces of data; e.g. buffer-size pieces when
-   * reading the data from a stream. Encrypts the given data with the key and mechansim given to the
+   * reading the data from a stream. Encrypts the given data with the key and mechanism given to the
    * encryptInit method. The application must call encryptFinal to get the final result of the
    * encryption after feeding in all data using this method.
    *
-   * @param in
-   *          buffer containing the to-be-encrypted data
-   * @param inOfs
-   *          buffer offset of the to-be-encrypted data
-   * @param inLen
-   *          length of the to-be-encrypted data
-   * @param out
-   *          buffer for the encrypted data
-   * @param outOfs
-   *          buffer offset for the encrypted data
-   * @param outLen
-   *          buffer size for the encrypted data
+   * @param in     the to-be-encrypted data
+   * @param out    buffer for the encrypted data
+   * @param outOfs buffer offset for the encrypted data
+   * @param outLen buffer size for the encrypted data
    * @return the length of encrypted data for this update
-   * @exception PKCS11Exception
-   *              If encrypting the data failed.
+   * @throws PKCS11Exception If encrypting the data failed.
+   */
+  public int encryptUpdate(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    return encryptUpdate(in, 0, in.length, out, outOfs, outLen);
+  }
+
+  /**
+   * This method can be used to encrypt multiple pieces of data; e.g. buffer-size pieces when
+   * reading the data from a stream. Encrypts the given data with the key and mechanism given to the
+   * encryptInit method. The application must call encryptFinal to get the final result of the
+   * encryption after feeding in all data using this method.
+   *
+   * @param in     buffer containing the to-be-encrypted data
+   * @param inOfs  buffer offset of the to-be-encrypted data
+   * @param inLen  length of the to-be-encrypted data
+   * @param out    buffer for the encrypted data
+   * @param outOfs buffer offset for the encrypted data
+   * @param outLen buffer size for the encrypted data
+   * @return the length of encrypted data for this update
+   * @throws PKCS11Exception If encrypting the data failed.
    */
   public int encryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
@@ -571,15 +546,11 @@ public class Session {
    * you fed in the data using encryptUpdate. If you used the encrypt(byte[]) method, you need not
    * (and shall not) call this method, because encrypt(byte[]) finalizes the encryption itself.
    *
-   * @param out
-   *          buffer for the encrypted data
-   * @param outOfs
-   *          buffer offset for the encrypted data
-   * @param outLen
-   *          buffer size for the encrypted data
+   * @param out    buffer for the encrypted data
+   * @param outOfs buffer offset for the encrypted data
+   * @param outLen buffer size for the encrypted data
    * @return the length of the last part of the encrypted data
-   * @exception PKCS11Exception
-   *              If calculating the final result failed.
+   * @throws PKCS11Exception If calculating the final result failed.
    */
   public int encryptFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     byte[] res = pkcs11.C_EncryptFinal(sessionHandle);
@@ -595,13 +566,9 @@ public class Session {
    * mechanism the application may use a constant defined in the Mechanism class. Notice that the
    * key and the mechanism must be compatible; i.e. you cannot use a DES key with the RSA mechanism.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.DES_CBC.
-   * @param keyHandle
-   *          The decryption key to use.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
-   *
+   * @param mechanism The mechanism to use; e.g. Mechanism.DES_CBC.
+   * @param keyHandle The decryption key to use.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void messageEncryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_MessageEncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
@@ -612,26 +579,21 @@ public class Session {
    * Contrary to the encrypt-Function, the encryptMessage-Function can be called any number of times and does
    * not finalize the encryption-operation
    *
-   * @param parameter
-   *         The parameter object
-   * @param associatedData
-   *          The associated Data for AEAS Mechanisms
-   * @param plaintext
-   *          The plaintext getting encrypted
-   *
+   * @param parameter      The parameter object
+   * @param associatedData The associated Data for AEAS Mechanisms
+   * @param plaintext      The plaintext getting encrypted
    * @return The ciphertext
-   * @exception PKCS11Exception
-   *              If encrypting failed.
+   * @throws PKCS11Exception If encrypting failed.
    */
   public byte[] encryptMessage(Parameters parameter, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
     Object paramObject = toCkParameters(parameter);
     byte[] rv = pkcs11.C_EncryptMessage(sessionHandle, paramObject, associatedData, plaintext, useUtf8);
 
-    if(parameter instanceof MessageParameters) {
+    if (parameter instanceof MessageParameters) {
       ((MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
-    } else if(parameter instanceof CcmMessageParameters) {
+    } else if (parameter instanceof CcmMessageParameters) {
       ((CcmMessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
-    } else if(parameter instanceof Salsa20Chacha20Poly1305MessageParameters) {
+    } else if (parameter instanceof Salsa20Chacha20Poly1305MessageParameters) {
       ((Salsa20Chacha20Poly1305MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
     }
 
@@ -642,10 +604,8 @@ public class Session {
    * Starts a multi-part message-encryption operation. Can only be called when an encryption operation has been
    * initialized before.
    *
-   * @param parameter
-   *            The IV or nonce
-   * @param associatedData
-   *            The associated Data for AEAS Mechanisms
+   * @param parameter      The IV or nonce
+   * @param associatedData The associated Data for AEAS Mechanisms
    * @throws PKCS11Exception in case of error.
    */
   public void encryptMessageBegin(Parameters parameter, byte[] associatedData) throws PKCS11Exception {
@@ -657,23 +617,20 @@ public class Session {
    * with encryptMessageBegin before calling this function. If the isLastOperation is set, the multi-part operation
    * finishes and if present the TAG or MAC is returned in the parameters.
    *
-   * @param parameter
-   *            The parameter object
-   * @param plaintext
-   *           The associated Data for AEAS Mechanisms
-   * @param isLastOperation
-   *          If this is the last part of the multi-part message encryption, this should be true
+   * @param parameter       The parameter object
+   * @param plaintext       The associated Data for AEAS Mechanisms
+   * @param isLastOperation If this is the last part of the multi-part message encryption, this should be true
    * @return The encrypted message part
    * @throws PKCS11Exception in case of error.
    */
   public byte[] encryptMessageNext(Parameters parameter, byte[] plaintext, boolean isLastOperation)
       throws PKCS11Exception {
     Object paramObject = toCkParameters(parameter);
-    if(parameter instanceof MessageParameters) {
+    if (parameter instanceof MessageParameters) {
       ((MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
     }
     return pkcs11.C_EncryptMessageNext(sessionHandle, paramObject, plaintext,
-              isLastOperation ? CKF_END_OF_MESSAGE : 0, useUtf8);
+        isLastOperation ? CKF_END_OF_MESSAGE : 0, useUtf8);
   }
 
   /**
@@ -694,13 +651,9 @@ public class Session {
    * mechanism the application may use a constant defined in the Mechanism class. Notice that the
    * key and the mechanism must be compatible; i.e. you cannot use a DES key with the RSA mechanism.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.DES_CBC.
-   * @param keyHandle
-   *          The decryption key to use.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
-   *
+   * @param mechanism The mechanism to use; e.g. Mechanism.DES_CBC.
+   * @param keyHandle The decryption key to use.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void decryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_DecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
@@ -712,21 +665,31 @@ public class Session {
    * decryptFinal() after this call. For decrypting multiple pieces of data use decryptUpdate and
    * decryptFinal.
    *
-   * @param in
-   *          buffer containing the to-be-decrypted data
-   * @param inOfs
-   *          buffer offset of the to-be-decrypted data
-   * @param inLen
-   *          length of the to-be-decrypted data
-   * @param out
-   *          buffer for the decrypted data
-   * @param outOfs
-   *          buffer offset for the decrypted data
-   * @param outLen
-   *          buffer size for the decrypted data
+   * @param in     the to-be-decrypted data
+   * @param out    buffer for the decrypted data
+   * @param outOfs buffer offset for the decrypted data
+   * @param outLen buffer size for the decrypted data
    * @return the length of decrypted data
-   * @exception PKCS11Exception
-   *              If decrypting failed.
+   * @throws PKCS11Exception If decrypting failed.
+   */
+  public int decrypt(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    return decrypt(in, 0, in.length, out, outOfs, outLen);
+  }
+
+  /**
+   * Decrypts the given data with the key and mechanism given to the decryptInit method. This method
+   * finalizes the current decryption operation; i.e. the application need (and should) not call
+   * decryptFinal() after this call. For decrypting multiple pieces of data use decryptUpdate and
+   * decryptFinal.
+   *
+   * @param in     buffer containing the to-be-decrypted data
+   * @param inOfs  buffer offset of the to-be-decrypted data
+   * @param inLen  length of the to-be-decrypted data
+   * @param out    buffer for the decrypted data
+   * @param outOfs buffer offset for the decrypted data
+   * @param outLen buffer size for the decrypted data
+   * @return the length of decrypted data
+   * @throws PKCS11Exception If decrypting failed.
    */
   public int decrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
@@ -736,25 +699,35 @@ public class Session {
 
   /**
    * This method can be used to decrypt multiple pieces of data; e.g. buffer-size pieces when
-   * reading the data from a stream. Decrypts the given data with the key and mechansim given to the
+   * reading the data from a stream. Decrypts the given data with the key and mechanism given to the
    * decryptInit method. The application must call decryptFinal to get the final result of the
    * encryption after feeding in all data using this method.
    *
-   * @param in
-   *          buffer containing the to-be-decrypted data
-   * @param inOfs
-   *          buffer offset of the to-be-decrypted data
-   * @param inLen
-   *          length of the to-be-decrypted data
-   * @param out
-   *          buffer for the decrypted data
-   * @param outOfs
-   *          buffer offset for the decrypted data
-   * @param outLen
-   *          buffer size for the decrypted data
+   * @param in     the to-be-decrypted data
+   * @param out    buffer for the decrypted data
+   * @param outOfs buffer offset for the decrypted data
+   * @param outLen buffer size for the decrypted data
    * @return the length of decrypted data for this update
-   * @exception PKCS11Exception
-   *              If decrypting the data failed.
+   * @throws PKCS11Exception If decrypting the data failed.
+   */
+  public int decryptUpdate(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    return decryptUpdate(in, 0, in.length, out, outOfs, outLen);
+  }
+
+  /**
+   * This method can be used to decrypt multiple pieces of data; e.g. buffer-size pieces when
+   * reading the data from a stream. Decrypts the given data with the key and mechanism given to the
+   * decryptInit method. The application must call decryptFinal to get the final result of the
+   * encryption after feeding in all data using this method.
+   *
+   * @param in     buffer containing the to-be-decrypted data
+   * @param inOfs  buffer offset of the to-be-decrypted data
+   * @param inLen  length of the to-be-decrypted data
+   * @param out    buffer for the decrypted data
+   * @param outOfs buffer offset for the decrypted data
+   * @param outLen buffer size for the decrypted data
+   * @return the length of decrypted data for this update
+   * @throws PKCS11Exception If decrypting the data failed.
    */
   public int decryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
@@ -767,15 +740,11 @@ public class Session {
    * you fed in the data using decryptUpdate. If you used the decrypt(byte[]) method, you need not
    * (and shall not) call this method, because decrypt(byte[]) finalizes the decryption itself.
    *
-   * @param out
-   *          buffer for the decrypted data
-   * @param outOfs
-   *          buffer offset for the decrypted data
-   * @param outLen
-   *          buffer size for the decrypted data
+   * @param out    buffer for the decrypted data
+   * @param outOfs buffer offset for the decrypted data
+   * @param outLen buffer size for the decrypted data
    * @return the length of this last part of decrypted data
-   * @exception PKCS11Exception
-   *              If calculating the final result failed.
+   * @throws PKCS11Exception If calculating the final result failed.
    */
   public int decryptFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkOutParams(out, outOfs, outLen);
@@ -792,12 +761,9 @@ public class Session {
    * mechanism the application may use a constant defined in the Mechanism class. Notice that the
    * key and the mechanism must be compatible; i.e. you cannot use a DES key with the RSA mechanism.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.DES_CBC.
-   * @param keyHandle
-   *          The decryption key to use.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
+   * @param mechanism The mechanism to use; e.g. Mechanism.DES_CBC.
+   * @param keyHandle The decryption key to use.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void messageDecryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_MessageDecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
@@ -808,16 +774,11 @@ public class Session {
    * Contrary to the decrypt-Function, the decryptMessage-Function can be called any number of times and does
    * not finalize the decryption-operation
    *
-   * @param parameter
-   *          The parameter object
-   * @param associatedData
-   *          The associated Data for AEAS Mechanisms
-   * @param plaintext
-   *          The plaintext getting encrypted
-   *
+   * @param parameter      The parameter object
+   * @param associatedData The associated Data for AEAS Mechanisms
+   * @param plaintext      The plaintext getting encrypted
    * @return The ciphertext
-   * @exception PKCS11Exception
-   *              If encrypting failed.
+   * @throws PKCS11Exception If encrypting failed.
    */
   public byte[] decryptMessage(Parameters parameter, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
     return pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(parameter), associatedData, plaintext, useUtf8);
@@ -825,10 +786,9 @@ public class Session {
 
   /**
    * Starts a multi-part message-decryption operation.
-   * @param parameter
-   *          The parameter object
-   * @param associatedData
-   *            The associated Data for AEAS Mechanisms
+   *
+   * @param parameter      The parameter object
+   * @param associatedData The associated Data for AEAS Mechanisms
    * @throws PKCS11Exception in case of error.
    */
   public void decryptMessageBegin(Parameters parameter, byte[] associatedData) throws PKCS11Exception {
@@ -840,12 +800,9 @@ public class Session {
    * with decryptMessageBegin before calling this function. If the isLastOperation is set, the multi-part operation
    * finishes.
    *
-   * @param parameter
-   *          The parameter object
-   * @param ciphertext
-   *           The ciphertext getting decrypted
-   * @param isLastOperation
-   *          If this is the last part of the multi-part message encryption, this should be true
+   * @param parameter       The parameter object
+   * @param ciphertext      The ciphertext getting decrypted
+   * @param isLastOperation If this is the last part of the multi-part message encryption, this should be true
    * @return the decrypted message part
    * @throws PKCS11Exception in case of error.
    */
@@ -872,10 +829,8 @@ public class Session {
    * digesting for this operation. For the mechanism the application may use a constant defined in
    * the Mechanism class.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.SHA_1.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
+   * @param mechanism The mechanism to use; e.g. Mechanism.SHA_1.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void digestInit(Mechanism mechanism) throws PKCS11Exception {
     pkcs11.C_DigestInit(sessionHandle, toCkMechanism(mechanism), useUtf8);
@@ -886,21 +841,30 @@ public class Session {
    * the current digesting operation; i.e. the application need (and should) not call digestFinal()
    * after this call. For digesting multiple pieces of data use digestUpdate and digestFinal.
    *
-   * @param in
-   *          buffer containing the to-be-digested data
-   * @param inOfs
-   *          buffer offset of the to-be-digested data
-   * @param inLen
-   *          length of the to-be-digested data
-   * @param out
-   *          buffer for the digested data
-   * @param outOfs
-   *          buffer offset for the digested data
-   * @param outLen
-   *          buffer size for the digested data
+   * @param in     the to-be-digested data
+   * @param out    buffer for the digested data
+   * @param outOfs buffer offset for the digested data
+   * @param outLen buffer size for the digested data
    * @return the length of digested data for this update
-   * @exception PKCS11Exception
-   *              If digesting the data failed.
+   * @throws PKCS11Exception If digesting the data failed.
+   */
+  public int digest(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    return digest(in, 0, in.length, out, outOfs, outLen);
+  }
+
+  /**
+   * Digests the given data with the mechanism given to the digestInit method. This method finalizes
+   * the current digesting operation; i.e. the application need (and should) not call digestFinal()
+   * after this call. For digesting multiple pieces of data use digestUpdate and digestFinal.
+   *
+   * @param in     buffer containing the to-be-digested data
+   * @param inOfs  buffer offset of the to-be-digested data
+   * @param inLen  length of the to-be-digested data
+   * @param out    buffer for the digested data
+   * @param outOfs buffer offset for the digested data
+   * @param outLen buffer size for the digested data
+   * @return the length of digested data for this update
+   * @throws PKCS11Exception If digesting the data failed.
    */
   public int digest(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
@@ -910,31 +874,26 @@ public class Session {
 
   /**
    * This method can be used to digest multiple pieces of data; e.g. buffer-size pieces when reading
-   * the data from a stream. Digests the given data with the mechansim given to the digestInit
+   * the data from a stream. Digests the given data with the mechanism given to the digestInit
    * method. The application must call digestFinal to get the final result of the digesting after
    * feeding in all data using this method.
    *
-   * @param part
-   *          buffer containing the to-be-digested data
-   * @param partOfs
-   *          buffer offset of the to-be-digested data
-   * @param partLen
-   *          length of the to-be-digested data
-   * @exception PKCS11Exception
-   *              If digesting the data failed.
+   * @param in    buffer containing the to-be-digested data
+   * @param inOfs buffer offset of the to-be-digested data
+   * @param inLen length of the to-be-digested data
+   * @throws PKCS11Exception If digesting the data failed.
    */
-  public void digestUpdate(byte[] part, int partOfs, int partLen) throws PKCS11Exception {
-    pkcs11.C_DigestUpdate(sessionHandle, part);
+  public void digestUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
+    checkInParams(in, inOfs, inLen);
+    pkcs11.C_DigestUpdate(sessionHandle, copy(in, inOfs, inLen));
   }
 
   /**
    * This method is similar to digestUpdate and can be combined with it during one digesting
    * operation. This method digests the value of the given secret key.
    *
-   * @param keyHandle
-   *          The key to digest the value of.
-   * @exception PKCS11Exception
-   *              If digesting the key failed.
+   * @param keyHandle The key to digest the value of.
+   * @throws PKCS11Exception If digesting the key failed.
    */
   public void digestKey(long keyHandle) throws PKCS11Exception {
     pkcs11.C_DigestKey(sessionHandle, keyHandle);
@@ -946,15 +905,11 @@ public class Session {
    * you need not (and shall not) call this method, because digest(byte[]) finalizes the digesting
    * itself.
    *
-   * @param out
-   *          buffer for the message digest
-   * @param outOfs
-   *          buffer offset for the message digest
-   * @param outLen
-   *          buffer size for the message digest
+   * @param out    buffer for the message digest
+   * @param outOfs buffer offset for the message digest
+   * @param outLen buffer size for the message digest
    * @return the length of message digest
-   * @exception PKCS11Exception
-   *              If calculating the final message digest failed.
+   * @throws PKCS11Exception If calculating the final message digest failed.
    */
   public int digestFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkOutParams(out, outOfs, outLen);
@@ -972,27 +927,22 @@ public class Session {
    * Notice that the key and the mechanism must be compatible; i.e. you cannot use a DES key with
    * the RSA mechanism.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.RSA_PKCS.
-   * @param keyHandle
-   *          The signing key to use.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
+   * @param mechanism The mechanism to use; e.g. Mechanism.RSA_PKCS.
+   * @param keyHandle The signing key to use.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void signInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
   /**
-   * Signs the given data with the key and mechansim given to the signInit method. This method
+   * Signs the given data with the key and mechanism given to the signInit method. This method
    * finalizes the current signing operation; i.e. the application need (and should) not call
    * signFinal() after this call. For signing multiple pices of data use signUpdate and signFinal.
    *
-   * @param data
-   *          The data to sign.
+   * @param data The data to sign.
    * @return The signed data.
-   * @exception PKCS11Exception
-   *              If signing the data failed.
+   * @throws PKCS11Exception If signing the data failed.
    */
   public byte[] sign(byte[] data) throws PKCS11Exception {
     return pkcs11.C_Sign(sessionHandle, data);
@@ -1000,18 +950,27 @@ public class Session {
 
   /**
    * This method can be used to sign multiple pieces of data; e.g. buffer-size pieces when reading
-   * the data from a stream. Signs the given data with the mechansim given to the signInit method.
+   * the data from a stream. Signs the given data with the mechanism given to the signInit method.
    * The application must call signFinal to get the final result of the signing after feeding in all
    * data using this method.
    *
-   * @param in
-   *          buffer containing the to-be-signed data
-   * @param inOfs
-   *          buffer offset of the to-be-signed data
-   * @param inLen
-   *          length of the to-be-signed data
-   * @exception PKCS11Exception
-   *              If signing the data failed.
+   * @param in the to-be-signed data
+   * @throws PKCS11Exception If signing the data failed.
+   */
+  public void signUpdate(byte[] in) throws PKCS11Exception {
+    signUpdate(in, 0, in.length);
+  }
+
+  /**
+   * This method can be used to sign multiple pieces of data; e.g. buffer-size pieces when reading
+   * the data from a stream. Signs the given data with the mechanism given to the signInit method.
+   * The application must call signFinal to get the final result of the signing after feeding in all
+   * data using this method.
+   *
+   * @param in    buffer containing the to-be-signed data
+   * @param inOfs buffer offset of the to-be-signed data
+   * @param inLen length of the to-be-signed data
+   * @throws PKCS11Exception If signing the data failed.
    */
   public void signUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
     checkInParams(in, inOfs, inLen);
@@ -1023,12 +982,10 @@ public class Session {
    * fed in the data using signUpdate. If you used the sign(byte[]) method, you need not (and shall
    * not) call this method, because sign(byte[]) finalizes the signing operation itself.
    *
-   * @param expectedLen
-   *          expected length of the signature value.
+   * @param expectedLen expected length of the signature value.
    * @return The final result of the signing operation; i.e. the signature
-   *         value.
-   * @exception PKCS11Exception
-   *              If calculating the final signature value failed.
+   * value.
+   * @throws PKCS11Exception If calculating the final signature value failed.
    */
   public byte[] signFinal(int expectedLen) throws PKCS11Exception {
     return pkcs11.C_SignFinal(sessionHandle);
@@ -1043,12 +1000,9 @@ public class Session {
    * the application may use a constant defined in the Mechanism class. Notice that the key and the
    * mechanism must be compatible; i.e. you cannot use a DES key with the RSA mechanism.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.RSA_9796.
-   * @param keyHandle
-   *          The signing key to use.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
+   * @param mechanism The mechanism to use; e.g. Mechanism.RSA_9796.
+   * @param keyHandle The signing key to use.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void signRecoverInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_SignRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
@@ -1059,21 +1013,30 @@ public class Session {
    * method finalizes the current sign-recover operation; there is no equivalent method to
    * signUpdate for signing with recovery.
    *
-   * @param in
-   *          buffer containing the to-be-signed data
-   * @param inOfs
-   *          buffer offset of the to-be-signed data
-   * @param inLen
-   *          length of the to-be-signed data
-   * @param out
-   *          buffer for the signed data
-   * @param outOfs
-   *          buffer offset for the signed data
-   * @param outLen
-   *          buffer size for the signed data
+   * @param in     the to-be-signed data
+   * @param out    buffer for the signed data
+   * @param outOfs buffer offset for the signed data
+   * @param outLen buffer size for the signed data
    * @return the length of signed data
-   * @exception PKCS11Exception
-   *              If signing the data failed.
+   * @throws PKCS11Exception If signing the data failed.
+   */
+  public int signRecover(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    return signRecover(in, 0, in.length, out, outOfs, outLen);
+  }
+
+  /**
+   * Signs the given data with the key and mechanism given to the signRecoverInit method. This
+   * method finalizes the current sign-recover operation; there is no equivalent method to
+   * signUpdate for signing with recovery.
+   *
+   * @param in     buffer containing the to-be-signed data
+   * @param inOfs  buffer offset of the to-be-signed data
+   * @param inLen  length of the to-be-signed data
+   * @param out    buffer for the signed data
+   * @param outOfs buffer offset for the signed data
+   * @param outLen buffer size for the signed data
+   * @return the length of signed data
+   * @throws PKCS11Exception If signing the data failed.
    */
   public int signRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     checkParams(in, inOfs, inLen, out, outOfs, outLen);
@@ -1082,11 +1045,8 @@ public class Session {
   }
 
   /**
-   *
-   * @param mechanism
-   *          the mechanism parameter to use
-   * @param keyHandle
-   *          the key to sign the data with
+   * @param mechanism the mechanism parameter to use
+   * @param keyHandle the key to sign the data with
    * @throws PKCS11Exception in case of error.
    */
   public void messageSignInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
@@ -1094,11 +1054,10 @@ public class Session {
   }
 
   /**
-   *
    * @param parameter the mechanism parameter to use
-   * @param data the data to sign
-   * @throws PKCS11Exception if signing failed.
+   * @param data      the data to sign
    * @return the signature
+   * @throws PKCS11Exception if signing failed.
    */
   public byte[] signMessage(Parameters parameter, byte[] data) throws PKCS11Exception {
     return pkcs11.C_SignMessage(sessionHandle, toCkParameters(parameter), data, useUtf8);
@@ -1108,11 +1067,10 @@ public class Session {
    * SignMessageBegin begins a multiple-part message signature operation, where the signature is an
    * appendix to the message.
    *
-   * @param parameter
-   *          the mechanism parameter to use
+   * @param parameter the mechanism parameter to use
    * @throws PKCS11Exception in case of error.
    */
-  public void signMessageBegin(Parameters parameter) throws PKCS11Exception{
+  public void signMessageBegin(Parameters parameter) throws PKCS11Exception {
     pkcs11.C_SignMessageBegin(sessionHandle, toCkParameters(parameter), useUtf8);
   }
 
@@ -1120,10 +1078,8 @@ public class Session {
    * SignMessageNext continues a multiple-part message signature operation, processing another data
    * part, or finishes a multiple-part message signature operation, returning the signature.
    *
-   * @param parameter
-   *          the mechanism parameter to use
-   * @param data
-   *          the message to sign
+   * @param parameter       the mechanism parameter to use
+   * @param data            the message to sign
    * @param isLastOperation specifies if this is the last part of this messsage.
    * @return the signature
    * @throws PKCS11Exception in case of error.
@@ -1152,31 +1108,25 @@ public class Session {
    * constant defined in the Mechanism class. Notice that the key and the mechanism must be
    * compatible; i.e. you cannot use a DES key with the RSA mechanism.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.RSA_PKCS.
-   * @param keyHandle
-   *          The verification key to use.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
+   * @param mechanism The mechanism to use; e.g. Mechanism.RSA_PKCS.
+   * @param keyHandle The verification key to use.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void verifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_VerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
   /**
-   * Verifies the given signature against the given data with the key and mechansim given to the
+   * Verifies the given signature against the given data with the key and mechanism given to the
    * verifyInit method. This method finalizes the current verification operation; i.e. the
    * application need (and should) not call verifyFinal() after this call. For verifying with
    * multiple pices of data use verifyUpdate and verifyFinal. This method throws an exception, if
    * the verification of the signature fails.
    *
-   * @param data
-   *          The data that was signed.
-   * @param signature
-   *          The signature or MAC to verify.
-   * @exception PKCS11Exception
-   *              If verifying the signature fails. This is also the case, if the signature is
-   *              forged.
+   * @param data      The data that was signed.
+   * @param signature The signature or MAC to verify.
+   * @throws PKCS11Exception If verifying the signature fails. This is also the case, if the signature is
+   *                         forged.
    */
   public void verify(byte[] data, byte[] signature) throws PKCS11Exception {
     pkcs11.C_Verify(sessionHandle, data, signature);
@@ -1187,14 +1137,22 @@ public class Session {
    * pieces when reading the data from a stream. To verify the signature or MAC call verifyFinal
    * after feeding in all data using this method.
    *
-   * @param in
-   *          buffer containing the to-be-verified data
-   * @param inOfs
-   *          buffer offset of the to-be-verified data
-   * @param inLen
-   *          length of the to-be-verified data
-   * @exception PKCS11Exception
-   *              If verifying (e.g. digesting) the data failed.
+   * @param in the to-be-verified data
+   * @throws PKCS11Exception If verifying (e.g. digesting) the data failed.
+   */
+  public void verifyUpdate(byte[] in) throws PKCS11Exception {
+    verifyUpdate(in, 0, in.length);
+  }
+
+  /**
+   * This method can be used to verify a signature with multiple pieces of data; e.g. buffer-size
+   * pieces when reading the data from a stream. To verify the signature or MAC call verifyFinal
+   * after feeding in all data using this method.
+   *
+   * @param in    buffer containing the to-be-verified data
+   * @param inOfs buffer offset of the to-be-verified data
+   * @param inLen length of the to-be-verified data
+   * @throws PKCS11Exception If verifying (e.g. digesting) the data failed.
    */
   public void verifyUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
     checkInParams(in, inOfs, inLen);
@@ -1209,11 +1167,9 @@ public class Session {
    * fails, e.g. if the signature was forged or the data was modified, this method throws an
    * exception.
    *
-   * @param signature
-   *          The signature value.
-   * @exception PKCS11Exception
-   *              If verifying the signature fails. This is also the case, if the signature is
-   *              forged.
+   * @param signature The signature value.
+   * @throws PKCS11Exception If verifying the signature fails. This is also the case, if the signature is
+   *                         forged.
    */
   public void verifyFinal(byte[] signature) throws PKCS11Exception {
     pkcs11.C_VerifyFinal(sessionHandle, signature);
@@ -1223,24 +1179,42 @@ public class Session {
    * Initializes a new verification operation for verification with data recovery. The application
    * must call this method before calling verifyRecover. Before initializing a new operation, any
    * currently pending operation must be finalized using the appropriate *Final method (e.g.
-   * digestFinal()). This method requires the mechansim to use for verification and the key for this
+   * digestFinal()). This method requires the mechanism to use for verification and the key for this
    * oepration. The key must have set its verify-recover flag. For the mechanism the application may
    * use a constant defined in the Mechanism class. Notice that the key and the mechanism must be
    * compatible; i.e. you cannot use a DES key with the RSA mechanism.
    *
-   * @param mechanism
-   *          The mechanism to use; e.g. Mechanism.RSA_9796.
-   * @param keyHandle
-   *          The verification key to use.
-   * @exception PKCS11Exception
-   *              If initializing this operation failed.
+   * @param mechanism The mechanism to use; e.g. Mechanism.RSA_9796.
+   * @param keyHandle The verification key to use.
+   * @throws PKCS11Exception If initializing this operation failed.
    */
   public void verifyRecoverInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     pkcs11.C_VerifyRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
   /**
-   * Verifies the given data with the key and mechansim given to the verifyRecoverInit method. This
+   * Verifies the given data with the key and mechanism given to the verifyRecoverInit method. This
+   * method finalizes the current verify-recover operation; there is no equivalent method to
+   * verifyUpdate for signing with recovery.
+   *
+   * @param in
+   *          the to-be-verified data
+   * @param out
+   *          buffer for the verified data
+   * @param outOfs
+   *          buffer offset for the verified data
+   * @param outLen
+   *          buffer size for the verified data
+   * @return the length of verified data
+   * @exception PKCS11Exception
+   *              If signing the data failed.
+   */
+  public int verifyRecover(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    return verifyRecover(in, 0, in.length, out, outOfs, outLen);
+  }
+
+  /**
+   * Verifies the given data with the key and mechanism given to the verifyRecoverInit method. This
    * method finalizes the current verify-recover operation; there is no equivalent method to
    * verifyUpdate for signing with recovery.
    *
@@ -1634,7 +1608,7 @@ public class Session {
     return attr.getValue();
   }
 
-  public String[] getCharArrayAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+  public String[] getStringAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
     CharArrayAttribute[] attrs = new CharArrayAttribute[attributeTypes.length];
     int idx = 0;
     for (long attrType : attributeTypes) {

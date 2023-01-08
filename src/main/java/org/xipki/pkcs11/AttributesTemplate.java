@@ -46,16 +46,40 @@ public class AttributesTemplate {
     return new AttributesTemplate().class_(CKO_SECRET_KEY).keyType(keyType);
   }
 
+  public static AttributesTemplate newAESSecretKey() {
+    return new AttributesTemplate().class_(CKO_SECRET_KEY).keyType(CKK_AES);
+  }
+
   public static AttributesTemplate newPrivateKey(long keyType) {
     return new AttributesTemplate().class_(CKO_PRIVATE_KEY).keyType(keyType);
+  }
+
+  public static AttributesTemplate newRSAPrivateKey() {
+    return new AttributesTemplate().class_(CKO_PRIVATE_KEY).keyType(CKK_RSA);
+  }
+
+  public static AttributesTemplate newECPrivateKey() {
+    return new AttributesTemplate().class_(CKO_PRIVATE_KEY).keyType(CKK_EC);
   }
 
   public static AttributesTemplate newPublicKey(long keyType) {
     return new AttributesTemplate().class_(CKO_PUBLIC_KEY).keyType(keyType);
   }
 
+  public static AttributesTemplate newRSAPublicKey() {
+    return new AttributesTemplate().class_(CKO_PUBLIC_KEY).keyType(CKK_RSA);
+  }
+
+  public static AttributesTemplate newECPublicKey() {
+    return new AttributesTemplate().class_(CKO_PUBLIC_KEY).keyType(CKK_EC);
+  }
+
   public static AttributesTemplate newCertificate(long certificateType) {
     return new AttributesTemplate().class_(CKO_CERTIFICATE).certificateType(certificateType);
+  }
+
+  public static AttributesTemplate newX509Certificate() {
+    return new AttributesTemplate().class_(CKO_CERTIFICATE).certificateType(CKC_X_509);
   }
 
   public AttributesTemplate acIssuer(String acIssuer) {
