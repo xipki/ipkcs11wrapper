@@ -101,7 +101,7 @@ public class Salsa20Chacha20Poly1305Parameters implements Parameters {
      */
     public String toString() {
       return "Class: " + getClass().getName() +
-          "\n  Nonce: " + Functions.toHex(nonce) + "\n  AAD: " + Functions.toHex(aad);
+          "\n  Nonce: " + Functions.toHex(nonce) + "\n  AAD: " + (aad == null ? " " : Functions.toHex(aad));
     }
 
 }
