@@ -51,6 +51,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xipki.pkcs11.*;
+import org.xipki.pkcs11.parameters.Parameters;
 import org.xipki.util.Hex;
 
 import java.io.InputStream;
@@ -200,9 +201,7 @@ public class TestBase {
   }
 
   protected void assertSupport(Token token, long mechCode) throws PKCS11Exception {
-    if (Util.supports(token, mechCode)) {
-      return;
-    } else {
+    if (!Util.supports(token, mechCode)) {
       String msg = "Mechanism " + Functions.ckmCodeToName(mechCode) + " is not supported";
       LOG.error(msg);
       throw new PKCS11Exception(CKR_MECHANISM_INVALID);
@@ -211,7 +210,12 @@ public class TestBase {
 
   protected Mechanism getSupportedMechanism(Token token, long mechCode) throws PKCS11Exception {
     assertSupport(token, mechCode);
-    return Mechanism.get(mechCode);
+    return new Mechanism(mechCode);
+  }
+
+  protected Mechanism getSupportedMechanism(Token token, long mechCode, Parameters parameters) throws PKCS11Exception {
+    assertSupport(token, mechCode);
+    return new Mechanism(mechCode, parameters);
   }
 
   protected PKCS11KeyPair generateRSAKeypair(Token token, Session session, int keysize, boolean inToken)

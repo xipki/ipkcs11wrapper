@@ -62,7 +62,7 @@ public class Mechanism {
   /**
    * The parameters of the mechanism. Not all mechanisms use these parameters.
    */
-  private Parameters parameters;
+  private final Parameters parameters;
 
   /**
    * Constructor taking just the mechanism code as defined in PKCS11Constants.
@@ -71,19 +71,18 @@ public class Mechanism {
    *          The mechanism code.
    */
   public Mechanism(long pkcs11MechanismCode) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
+    this(pkcs11MechanismCode, null);
   }
 
   /**
-   * Gets the mechanism specified by the given mechanism code. Helper
-   * {@link PKCS11Constants} is available.
+   * Constructor taking just the mechanism code as defined in PKCS11Constants.
    *
-   * @param pkcs11MechanismCode
-   *          the pkcs11 mechanism code
-   * @return the mechanism
+   * @param pkcs11MechanismCode The mechanism code.
+   * @param parameters The mechanism parameters.
    */
-  public static Mechanism get(long pkcs11MechanismCode) {
-    return new Mechanism(pkcs11MechanismCode);
+  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
+    this.pkcs11MechanismCode = pkcs11MechanismCode;
+    this.parameters = parameters;
   }
 
   /**
@@ -93,16 +92,6 @@ public class Mechanism {
    */
   public Parameters getParameters() {
     return parameters;
-  }
-
-  /**
-   * Set the parameters for this mechanism.
-   *
-   * @param parameters
-   *          The mechanism parameters to set.
-   */
-  public void setParameters(Parameters parameters) {
-    this.parameters = parameters;
   }
 
   /**

@@ -45,10 +45,7 @@ public class TripleDESPadEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    Mechanism mech = getSupportedMechanism(token, CKM_DES3_CBC_PAD);
-    InitializationVectorParameters encryptIVParameters = new InitializationVectorParameters(iv);
-    mech.setParameters(encryptIVParameters);
-    return mech;
+    return getSupportedMechanism(token, CKM_DES3_CBC_PAD, new InitializationVectorParameters(iv));
   }
 
   @Override

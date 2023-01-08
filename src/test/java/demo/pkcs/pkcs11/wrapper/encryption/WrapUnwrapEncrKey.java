@@ -82,12 +82,11 @@ public class WrapUnwrapEncrKey extends TestBase {
     byte[] rawData = randomBytes(1517);
 
     // be sure that your token can process the specified mechanism
-    Mechanism encryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD);
     Mechanism wrapMechanism = getSupportedMechanism(token, CKM_AES_KEY_WRAP);
 
     byte[] encryptIV = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    InitializationVectorParameters encryptIVParameters = new InitializationVectorParameters(encryptIV);
-    encryptionMechanism.setParameters(encryptIVParameters);
+    Mechanism encryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD,
+        new InitializationVectorParameters(encryptIV));
 
     // initialize for encryption
     session.encryptInit(encryptionMechanism, encryptionKey);
@@ -117,10 +116,9 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("##################################################");
     LOG.info("trying to decrypt");
 
-    Mechanism decryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD);
     byte[] decryptIV = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    InitializationVectorParameters decryptIVParameters = new InitializationVectorParameters(decryptIV);
-    decryptionMechanism.setParameters(decryptIVParameters);
+    Mechanism decryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD,
+        new InitializationVectorParameters(decryptIV));
 
     // initialize for decryption
     session.decryptInit(decryptionMechanism, unwrappedKey);

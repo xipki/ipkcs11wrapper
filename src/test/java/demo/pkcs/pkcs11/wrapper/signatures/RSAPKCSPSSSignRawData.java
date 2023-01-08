@@ -55,7 +55,8 @@ public class RSAPKCSPSSSignRawData extends SignatureTestBase {
       return;
     }
     // be sure that your token can process the specified mechanism
-    Mechanism signatureMechanism = getSupportedMechanism(token, mechCode);
+    RSAPkcsPssParameters pssParams = new RSAPkcsPssParameters(CKM_SHA256, CKG_MGF1_SHA256, 32);
+    Mechanism signatureMechanism = getSupportedMechanism(token, mechCode, pssParams);
 
     final boolean inToken = false;
     PKCS11KeyPair generatedKeyPair = generateRSAKeypair(token, session, 2048, inToken);
@@ -66,9 +67,6 @@ public class RSAPKCSPSSSignRawData extends SignatureTestBase {
     byte[] dataToBeSigned = randomBytes(1057); // hash value
     MessageDigest md = MessageDigest.getInstance("SHA-256");
     byte[] hashValue = md.digest(dataToBeSigned);
-
-    RSAPkcsPssParameters pssParams = new RSAPkcsPssParameters(CKM_SHA256, CKG_MGF1_SHA256, 32);
-    signatureMechanism.setParameters(pssParams);
 
     // initialize for signing
     session.signInit(signatureMechanism, generatedPrivateKey);

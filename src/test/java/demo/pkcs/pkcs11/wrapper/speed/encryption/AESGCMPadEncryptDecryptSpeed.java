@@ -89,10 +89,7 @@ public class AESGCMPadEncryptDecryptSpeed extends TestBase {
   }
 
   private Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    Mechanism mech = getSupportedMechanism(token, encryptMechanism);
-    GcmParameters params = new GcmParameters(iv, aad, 128);
-    mech.setParameters(params);
-    return mech;
+    return getSupportedMechanism(token, encryptMechanism, new GcmParameters(iv, aad, 128));
   }
 
   private AttributesTemplate getMinimalKeyTemplate0() {

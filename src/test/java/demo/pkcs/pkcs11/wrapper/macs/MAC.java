@@ -77,7 +77,7 @@ public class MAC extends TestBase {
 
     long secretMACKey;
     int keyBytesLen = 32;
-    Mechanism keyMechanism = Mechanism.get(CKM_GENERIC_SECRET_KEY_GEN);
+    Mechanism keyMechanism = new Mechanism(CKM_GENERIC_SECRET_KEY_GEN);
     if (Util.supports(token, keyMechanism.getMechanismCode())) {
       LOG.info("generate secret MAC key");
       macKeyTemplate.attr(CKA_VALUE_LEN, keyBytesLen);

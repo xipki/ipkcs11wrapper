@@ -63,10 +63,7 @@ public class AESCCMEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    Mechanism mech = getSupportedMechanism(token, CKM_AES_CCM);
-    CcmParameters params = new CcmParameters(0, iv, aad, 128);
-    mech.setParameters(params);
-    return mech;
+    return getSupportedMechanism(token, CKM_AES_CCM, new CcmParameters(0, iv, aad, 128));
   }
 
   @Override

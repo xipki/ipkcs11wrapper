@@ -86,10 +86,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
   }
 
   private Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    Mechanism mech = getSupportedMechanism(token, encryptMechanism);
-    InitializationVectorParameters encryptIVParameters = new InitializationVectorParameters(iv);
-    mech.setParameters(encryptIVParameters);
-    return mech;
+    return getSupportedMechanism(token, encryptMechanism, new InitializationVectorParameters(iv));
   }
 
   private AttributesTemplate getMinimalKeyTemplate0() {

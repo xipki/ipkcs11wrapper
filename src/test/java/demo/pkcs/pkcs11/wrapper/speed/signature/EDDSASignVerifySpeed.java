@@ -37,7 +37,7 @@ public class EDDSASignVerifySpeed extends TestBase {
 
     public MySignExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(signMechanism) + " (Ed25519) Sign Speed",
-          Mechanism.get(keypairGenMechanism), token, pin, Mechanism.get(signMechanism), 107);
+          new Mechanism(keypairGenMechanism), token, pin, new Mechanism(signMechanism), 107);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class EDDSASignVerifySpeed extends TestBase {
 
     public MyVerifyExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(signMechanism) + " (Ed25519) Verify Speed",
-          Mechanism.get(keypairGenMechanism), token, pin, Mechanism.get(signMechanism), 107);
+          new Mechanism(keypairGenMechanism), token, pin, new Mechanism(signMechanism), 107);
     }
 
     @Override

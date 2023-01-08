@@ -37,7 +37,7 @@ public class RSAPKCSSignSpeed extends TestBase {
 
     public MySignExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(signMechanism) + " (2048) Sign Speed",
-          Mechanism.get(keypairGenMechanism), token, pin, Mechanism.get(signMechanism), 32);
+          new Mechanism(keypairGenMechanism), token, pin, new Mechanism(signMechanism), 32);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class RSAPKCSSignSpeed extends TestBase {
 
     public MyVerifyExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(signMechanism) + " (2048) Verify Speed",
-          Mechanism.get(keypairGenMechanism), token, pin, Mechanism.get(signMechanism), 32);
+          new Mechanism(keypairGenMechanism), token, pin, new Mechanism(signMechanism), 32);
     }
 
     @Override

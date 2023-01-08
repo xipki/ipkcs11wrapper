@@ -39,7 +39,7 @@ public class RSAPSSSignSpeed extends TestBase {
 
     public MySignExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(signMechanism) + " (2048) Sign Speed",
-          Mechanism.get(keypairGenMechanism), token, pin, signMechanism2, 32);
+          new Mechanism(keypairGenMechanism), token, pin, signMechanism2, 32);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RSAPSSSignSpeed extends TestBase {
 
     public MyVerifyExecutor(Token token, char[] pin) throws PKCS11Exception {
       super(Functions.ckmCodeToName(signMechanism) + " (2048) Verify Speed",
-          Mechanism.get(keypairGenMechanism), token, pin, signMechanism2, 32);
+          new Mechanism(keypairGenMechanism), token, pin, signMechanism2, 32);
     }
 
     @Override
@@ -88,9 +88,7 @@ public class RSAPSSSignSpeed extends TestBase {
   }
 
   public RSAPSSSignSpeed() {
-    signMechanism2 = Mechanism.get(CKM_RSA_PKCS_PSS);
-    RSAPkcsPssParameters parameters = new RSAPkcsPssParameters(CKM_SHA256, CKG_MGF1_SHA256, 32);
-    signMechanism2.setParameters(parameters);
+    signMechanism2 = new Mechanism(CKM_RSA_PKCS_PSS, new RSAPkcsPssParameters(CKM_SHA256, CKG_MGF1_SHA256, 32));
   }
 
   @Test

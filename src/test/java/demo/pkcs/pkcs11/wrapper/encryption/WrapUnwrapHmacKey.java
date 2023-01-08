@@ -76,7 +76,7 @@ public class WrapUnwrapHmacKey extends TestBase {
 
     long hmacKey;
     int keyBytesLen = 32;
-    Mechanism keyMechanism = Mechanism.get(CKM_GENERIC_SECRET_KEY_GEN);
+    Mechanism keyMechanism = new Mechanism(CKM_GENERIC_SECRET_KEY_GEN);
     if (Util.supports(token, keyMechanism.getMechanismCode())) {
       LOG.info("generate secret MAC key");
       secretMACKeyTemplate.valueLen(keyBytesLen);
@@ -104,7 +104,7 @@ public class WrapUnwrapHmacKey extends TestBase {
     LOG.info("The MAC value is: " + new BigInteger(1, macValue).toString(16));
     LOG.info("##################################################");
     LOG.info("generate secret wrapping key");
-    Mechanism wrapKeyMechanism = Mechanism.get(CKM_AES_KEY_GEN);
+    Mechanism wrapKeyMechanism = new Mechanism(CKM_AES_KEY_GEN);
     AttributesTemplate wrapKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).token(false);
 
@@ -112,7 +112,7 @@ public class WrapUnwrapHmacKey extends TestBase {
 
     LOG.info("wrapping key");
 
-    Mechanism wrapMechanism = Mechanism.get(CKM_AES_KEY_WRAP);
+    Mechanism wrapMechanism = new Mechanism(CKM_AES_KEY_WRAP);
     byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, hmacKey);
     LOG.info("unwrapping key");
 
