@@ -41,12 +41,12 @@ public class DSASignVerifySpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
+    protected AttributeVector getMinimalPrivateKeyTemplate() {
       return getMinimalPrivateKeyTemplate0();
     }
 
     @Override
-    protected AttributesTemplate getMinimalPublicKeyTemplate() {
+    protected AttributeVector getMinimalPublicKeyTemplate() {
       return getMinimalPublicKeyTemplate0();
     }
 
@@ -60,12 +60,12 @@ public class DSASignVerifySpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
+    protected AttributeVector getMinimalPrivateKeyTemplate() {
       return getMinimalPrivateKeyTemplate0();
     }
 
     @Override
-    protected AttributesTemplate getMinimalPublicKeyTemplate() {
+    protected AttributeVector getMinimalPublicKeyTemplate() {
       return getMinimalPublicKeyTemplate0();
     }
 
@@ -75,11 +75,11 @@ public class DSASignVerifySpeed extends TestBase {
 
   private static final long signMechanism = CKM_DSA;
 
-  private AttributesTemplate getMinimalPrivateKeyTemplate0() {
+  private AttributeVector getMinimalPrivateKeyTemplate0() {
     return newPrivateKey(CKK_DSA);
   }
 
-  private AttributesTemplate getMinimalPublicKeyTemplate0() {
+  private AttributeVector getMinimalPublicKeyTemplate0() {
     return newPublicKey(CKK_DSA).prime(DSA_P).subprime(DSA_Q).base(DSA_G).token(false);
   }
 

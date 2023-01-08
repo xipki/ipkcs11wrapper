@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import junit.framework.Assert;
 import org.junit.Test;
-import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Functions;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
@@ -43,7 +43,7 @@ public abstract class AESKeyGenSpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalKeyTemplate() {
+    protected AttributeVector getMinimalKeyTemplate() {
       return newSecretKey(CKK_AES).valueLen(getKeyByteLen());
     }
 

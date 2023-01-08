@@ -18,7 +18,7 @@
 package demo.pkcs.pkcs11.wrapper.encryption;
 
 import org.junit.Test;
-import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
@@ -61,7 +61,7 @@ public class AESGCMEncryptDecrypt extends SymmEncryptDecrypt {
   }
 
   @Override
-  protected AttributesTemplate getKeyTemplate() {
+  protected AttributeVector getKeyTemplate() {
     return newSecretKey(CKK_AES).encrypt(true).decrypt(true).valueLen(16);
   }
 

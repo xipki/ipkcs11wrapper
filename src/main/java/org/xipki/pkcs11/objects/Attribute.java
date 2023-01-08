@@ -43,7 +43,7 @@
 package org.xipki.pkcs11.objects;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
-import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Functions;
 
 import java.math.BigInteger;
@@ -195,7 +195,7 @@ public abstract class Attribute {
     } else if (clazz == MechanismArrayAttribute.class) {
       return new MechanismArrayAttribute(type).mechanismAttributeArrayValue((long[]) value);
     } else if (clazz == AttributeArrayAttribute.class) {
-      return new AttributeArrayAttribute(type).attributeArrayValue((AttributesTemplate) value);
+      return new AttributeArrayAttribute(type).attributeArrayValue((AttributeVector) value);
     } else {
       throw new IllegalStateException("unknown class " + clazz); // should not reach here
     }

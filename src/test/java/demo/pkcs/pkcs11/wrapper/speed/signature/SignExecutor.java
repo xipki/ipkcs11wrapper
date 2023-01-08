@@ -84,9 +84,9 @@ public abstract class SignExecutor extends Pkcs11Executor {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributesTemplate publicKeyTemplate = getMinimalPublicKeyTemplate().token(true).id(id).verify(true);
+    AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate().token(true).id(id).verify(true);
 
-    AttributesTemplate privateKeyTemplate = getMinimalPrivateKeyTemplate()
+    AttributeVector privateKeyTemplate = getMinimalPrivateKeyTemplate()
         .sensitive(true).private_(true).token(true).id(id).sign(true);
 
     // generate keypair on token
@@ -100,9 +100,9 @@ public abstract class SignExecutor extends Pkcs11Executor {
 
   }
 
-  protected abstract AttributesTemplate getMinimalPrivateKeyTemplate();
+  protected abstract AttributeVector getMinimalPrivateKeyTemplate();
 
-  protected abstract AttributesTemplate getMinimalPublicKeyTemplate();
+  protected abstract AttributeVector getMinimalPublicKeyTemplate();
 
   @Override
   protected Runnable getTestor() {

@@ -110,7 +110,7 @@ public class ImportCertificate extends TestBase {
 
     PublicKey publicKey = x509Certificate.getPublicKey();
 
-    AttributesTemplate searchTemplate = new AttributesTemplate();
+    AttributeVector searchTemplate = new AttributeVector();
     if (publicKey.getAlgorithm().equalsIgnoreCase("RSA")) {
       RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
       searchTemplate.class_(CKO_PRIVATE_KEY).keyType(CKK_RSA).modulus(rsaPublicKey.getModulus());
@@ -184,7 +184,7 @@ public class ImportCertificate extends TestBase {
 
         byte[] encodedAsn1serialNumber = Util.encodedAsn1Integer(currentCertificate.getSerialNumber());
 
-        AttributesTemplate pkcs11X509PublicKeyCertificate = AttributesTemplate.newCertificate(CKC_X_509)
+        AttributeVector pkcs11X509PublicKeyCertificate = AttributeVector.newCertificate(CKC_X_509)
             .token(true).private_(false).label(label).id(newObjectID).issuer(encodedIssuer)
             .subject(encodedSubject).serialNumber(encodedAsn1serialNumber).value(currentCertificate.getEncoded());
 

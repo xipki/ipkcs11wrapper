@@ -47,7 +47,7 @@ public class GenerateKey extends TestBase {
     LOG.info("##################################################");
     LOG.info("Generating generic secret key");
 
-    AttributesTemplate secretKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false).valueLen(16);
+    AttributeVector secretKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false).valueLen(16);
     long secretKey = session.generateKey(mech, secretKeyTemplate);
 
     LOG.info("the secret key is {}", secretKey);

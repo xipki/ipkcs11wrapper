@@ -66,8 +66,8 @@ public class ECGenerateKeyPair extends TestBase {
     }
 
     Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
-    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_EC);
-    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_EC);
+    AttributeVector publicKeyTemplate = newPublicKey(CKK_EC);
+    AttributeVector privateKeyTemplate = newPrivateKey(CKK_EC);
 
     byte[] id = new byte[20];
     new Random().nextBytes(id);
@@ -125,7 +125,7 @@ public class ECGenerateKeyPair extends TestBase {
       LOG.info("Trying to search for the public key of the generated key-pair"
           + " by ID: {}", Functions.toHex(id));
       // set the search template for the public key
-      AttributesTemplate exportPublicKeyTemplate = newPublicKey(CKK_EC).attr(CKA_ID, id);
+      AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_EC).attr(CKA_ID, id);
 
       session.findObjectsInit(exportPublicKeyTemplate);
       long[] foundPublicKeys = session.findObjects(1);

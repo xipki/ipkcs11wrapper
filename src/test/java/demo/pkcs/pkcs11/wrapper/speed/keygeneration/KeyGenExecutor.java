@@ -44,7 +44,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
       while (!stop()) {
         try {
           // generate key on token
-          AttributesTemplate secretKeyTemplate = getMinimalKeyTemplate()
+          AttributeVector secretKeyTemplate = getMinimalKeyTemplate()
               .token(inToken).sensitive(true).encrypt(true).decrypt(true);
           if (inToken) {
             byte[] id = new byte[20];
@@ -83,7 +83,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
     this.inToken = inToken;
   }
 
-  protected abstract AttributesTemplate getMinimalKeyTemplate();
+  protected abstract AttributeVector getMinimalKeyTemplate();
 
   @Override
   protected Runnable getTestor() {

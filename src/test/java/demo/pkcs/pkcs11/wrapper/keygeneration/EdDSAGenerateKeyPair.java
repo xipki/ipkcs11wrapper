@@ -67,8 +67,8 @@ public class EdDSAGenerateKeyPair extends TestBase {
 
     Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
 
-    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_EC_EDWARDS);
-    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_EC_EDWARDS);
+    AttributeVector publicKeyTemplate = newPublicKey(CKK_EC_EDWARDS);
+    AttributeVector privateKeyTemplate = newPrivateKey(CKK_EC_EDWARDS);
 
     // set the general attributes for the public key
     // OID: 1.3.101.112 (Ed25519)
@@ -124,7 +124,7 @@ public class EdDSAGenerateKeyPair extends TestBase {
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
           Functions.toHex(id));
       // set the search template for the public key
-      AttributesTemplate exportPublicKeyTemplate = newPublicKey(CKK_EC_EDWARDS).attr(CKA_ID, id);
+      AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_EC_EDWARDS).attr(CKA_ID, id);
 
       session.findObjectsInit(exportPublicKeyTemplate);
       long[] foundPublicKeys = session.findObjects(1);

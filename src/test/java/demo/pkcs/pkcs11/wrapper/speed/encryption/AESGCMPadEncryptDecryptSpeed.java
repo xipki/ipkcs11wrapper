@@ -44,7 +44,7 @@ public class AESGCMPadEncryptDecryptSpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalKeyTemplate() {
+    protected AttributeVector getMinimalKeyTemplate() {
       return getMinimalKeyTemplate0();
     }
 
@@ -59,7 +59,7 @@ public class AESGCMPadEncryptDecryptSpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalKeyTemplate() {
+    protected AttributeVector getMinimalKeyTemplate() {
       return getMinimalKeyTemplate0();
     }
 
@@ -92,7 +92,7 @@ public class AESGCMPadEncryptDecryptSpeed extends TestBase {
     return getSupportedMechanism(token, encryptMechanism, new GcmParameters(iv, aad, 128));
   }
 
-  private AttributesTemplate getMinimalKeyTemplate0() {
+  private AttributeVector getMinimalKeyTemplate0() {
     return newSecretKey(CKK_AES).valueLen(keyLen / 8);
   }
 

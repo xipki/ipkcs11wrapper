@@ -43,7 +43,7 @@
 package org.xipki.pkcs11.objects;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
-import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Functions;
 
 /**
@@ -61,7 +61,7 @@ public class AttributeArrayAttribute extends Attribute {
    * The attributes of this attribute array in their object class
    * representation. Needed for printing and comparing this attribute array.
    */
-  private AttributesTemplate template;
+  private AttributeVector template;
 
   /**
    * Constructor taking the PKCS#11 type of the attribute.
@@ -81,7 +81,7 @@ public class AttributeArrayAttribute extends Attribute {
    * @param value
    *          The AttributeArray value to set. May be null.
    */
-  public AttributeArrayAttribute attributeArrayValue(AttributesTemplate value) {
+  public AttributeArrayAttribute attributeArrayValue(AttributeVector value) {
     template = value;
     ckAttribute.pValue = value.toCkAttributes();
     present = true;
@@ -94,13 +94,13 @@ public class AttributeArrayAttribute extends Attribute {
    * @return The attribute array value of this attribute or null.
    */
   @Override
-  public AttributesTemplate getValue() {
+  public AttributeVector getValue() {
     if (template != null) return template;
 
     if (!(ckAttribute.pValue != null && ((CK_ATTRIBUTE[]) ckAttribute.pValue).length > 0)) return null;
 
     CK_ATTRIBUTE[] attributesArray = (CK_ATTRIBUTE[]) ckAttribute.pValue;
-    AttributesTemplate template = new AttributesTemplate();
+    AttributeVector template = new AttributeVector();
     for (CK_ATTRIBUTE ck_attribute : attributesArray) {
       long type = ck_attribute.type;
       Class<?> implementation = getAttributeClass(type);

@@ -38,7 +38,7 @@ public abstract class MultipleStepsSymmEncryptDecrypt extends TestBase {
 
   protected abstract Mechanism getKeyGenMech(Token token) throws PKCS11Exception;
 
-  protected abstract AttributesTemplate getKeyTemplate();
+  protected abstract AttributeVector getKeyTemplate();
 
   protected abstract Mechanism getEncryptionMech(Token token) throws PKCS11Exception;
 
@@ -59,7 +59,7 @@ public abstract class MultipleStepsSymmEncryptDecrypt extends TestBase {
     LOG.info("generate secret encryption/decryption key");
     Mechanism keyMechanism = getKeyGenMech(token);
 
-    AttributesTemplate keyTemplate = getKeyTemplate().attr(CKA_TOKEN, false);
+    AttributeVector keyTemplate = getKeyTemplate().attr(CKA_TOKEN, false);
 
     long encryptionKey = session.generateKey(keyMechanism, keyTemplate);
     LOG.info("##################################################");

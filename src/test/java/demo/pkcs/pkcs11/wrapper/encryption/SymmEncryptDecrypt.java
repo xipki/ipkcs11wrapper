@@ -36,7 +36,7 @@ public abstract class SymmEncryptDecrypt extends TestBase {
 
   protected abstract Mechanism getKeyGenMech(Token token) throws PKCS11Exception;
 
-  protected abstract AttributesTemplate getKeyTemplate();
+  protected abstract AttributeVector getKeyTemplate();
 
   protected abstract Mechanism getEncryptionMech(Token token) throws PKCS11Exception;
 
@@ -57,7 +57,7 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     LOG.info("generate secret encryption/decryption key");
     Mechanism keyMechanism = getKeyGenMech(token);
 
-    AttributesTemplate keyTemplate = getKeyTemplate().token(false);
+    AttributeVector keyTemplate = getKeyTemplate().token(false);
 
     long encryptionKey = session.generateKey(keyMechanism, keyTemplate);
     LOG.info("##################################################");

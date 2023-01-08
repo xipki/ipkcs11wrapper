@@ -21,7 +21,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import junit.framework.Assert;
 import org.junit.Test;
-import org.xipki.pkcs11.AttributesTemplate;
+import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Functions;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
@@ -44,12 +44,12 @@ public class EdDSAKeypairGenSpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
+    protected AttributeVector getMinimalPrivateKeyTemplate() {
       return newPrivateKey(CKK_EC_EDWARDS);
     }
 
     @Override
-    protected AttributesTemplate getMinimalPublicKeyTemplate() {
+    protected AttributeVector getMinimalPublicKeyTemplate() {
       // set the general attributes for the public key
       // OID: 1.3.101.112 (Ed25519)
       byte[] encodedCurveOid = new byte[] {0x06, 0x03, 0x2b, 0x65, 0x70};

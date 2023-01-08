@@ -77,7 +77,7 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
 
   private final long key;
 
-  protected abstract AttributesTemplate getMinimalKeyTemplate();
+  protected abstract AttributeVector getMinimalKeyTemplate();
 
   public EncryptExecutor(String description, Mechanism keyGenMechanism,
       Token token, char[] pin, Mechanism encryptMechanism, int inputLen)
@@ -90,7 +90,7 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
     new Random().nextBytes(id);
 
     // generate keypair on token
-    AttributesTemplate keyTemplate = getMinimalKeyTemplate()
+    AttributeVector keyTemplate = getMinimalKeyTemplate()
         .sensitive(true).token(true).id(id).encrypt(true).decrypt(true);
 
     ConcurrentSessionBagEntry sessionBag = borrowSession();

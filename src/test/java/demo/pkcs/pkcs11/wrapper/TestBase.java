@@ -221,8 +221,8 @@ public class TestBase {
   protected PKCS11KeyPair generateRSAKeypair(Token token, Session session, int keysize, boolean inToken)
       throws PKCS11Exception {
     Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_RSA_PKCS_KEY_PAIR_GEN);
-    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_RSA);
-    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_RSA);
+    AttributeVector publicKeyTemplate = newPublicKey(CKK_RSA);
+    AttributeVector privateKeyTemplate = newPrivateKey(CKK_RSA);
 
     // set the general attributes for the public key
     byte[] id = new byte[20];
@@ -251,8 +251,8 @@ public class TestBase {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributesTemplate publicKeyTemplate  = newPublicKey(keyType) .ecParams(ecParams).token(inToken).id(id).verify(true);
-    AttributesTemplate privateKeyTemplate = newPrivateKey(keyType).sensitive(true)
+    AttributeVector publicKeyTemplate  = newPublicKey(keyType) .ecParams(ecParams).token(inToken).id(id).verify(true);
+    AttributeVector privateKeyTemplate = newPrivateKey(keyType).sensitive(true)
         .token(inToken).private_(true).id(id).sign(true);
 
     return session.generateKeyPair(keyPairGenMechanism, publicKeyTemplate, privateKeyTemplate);
@@ -264,25 +264,25 @@ public class TestBase {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_DSA).prime(DSA_P).subprime(DSA_Q).base(DSA_G)
+    AttributeVector publicKeyTemplate = newPublicKey(CKK_DSA).prime(DSA_P).subprime(DSA_Q).base(DSA_G)
         .token(inToken).id(id).verify(true);
 
-    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_DSA).sensitive(true).token(inToken).private_(true)
+    AttributeVector privateKeyTemplate = newPrivateKey(CKK_DSA).sensitive(true).token(inToken).private_(true)
         .id(id).sign(true);
 
     return session.generateKeyPair(keyPairGenMechanism, publicKeyTemplate, privateKeyTemplate);
   }
 
-  protected AttributesTemplate newSecretKey(long keyType) {
-    return AttributesTemplate.newSecretKey(keyType);
+  protected AttributeVector newSecretKey(long keyType) {
+    return AttributeVector.newSecretKey(keyType);
   }
 
-  protected AttributesTemplate newPublicKey(long keyTye) {
-    return AttributesTemplate.newPublicKey(keyTye);
+  protected AttributeVector newPublicKey(long keyTye) {
+    return AttributeVector.newPublicKey(keyTye);
   }
 
-  protected AttributesTemplate newPrivateKey(long keyType) {
-    return AttributesTemplate.newPrivateKey(keyType);
+  protected AttributeVector newPrivateKey(long keyType) {
+    return AttributeVector.newPrivateKey(keyType);
   }
 
   protected static PublicKey generateJCEPublicKey(Session session, long p11Key, Long keyType)

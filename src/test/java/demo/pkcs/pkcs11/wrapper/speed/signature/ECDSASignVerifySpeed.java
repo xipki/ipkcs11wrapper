@@ -41,12 +41,12 @@ public class ECDSASignVerifySpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
+    protected AttributeVector getMinimalPrivateKeyTemplate() {
       return getMinimalPrivateKeyTemplate0();
     }
 
     @Override
-    protected AttributesTemplate getMinimalPublicKeyTemplate() {
+    protected AttributeVector getMinimalPublicKeyTemplate() {
       return getMinimalPublicKeyTemplate0();
     }
 
@@ -60,12 +60,12 @@ public class ECDSASignVerifySpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
+    protected AttributeVector getMinimalPrivateKeyTemplate() {
       return getMinimalPrivateKeyTemplate0();
     }
 
     @Override
-    protected AttributesTemplate getMinimalPublicKeyTemplate() {
+    protected AttributeVector getMinimalPublicKeyTemplate() {
       return getMinimalPublicKeyTemplate0();
     }
 
@@ -75,11 +75,11 @@ public class ECDSASignVerifySpeed extends TestBase {
 
   private static final long signMechanism = CKM_ECDSA;
 
-  private AttributesTemplate getMinimalPrivateKeyTemplate0() {
+  private AttributeVector getMinimalPrivateKeyTemplate0() {
     return newPrivateKey(CKK_EC);
   }
 
-  private AttributesTemplate getMinimalPublicKeyTemplate0() {
+  private AttributeVector getMinimalPublicKeyTemplate0() {
     // set the general attributes for the public key
     // OID: 1.2.840.10045.3.1.7 (secp256r1, alias NIST P-256)
     byte[] encodedCurveOid = new byte[] {0x06, 0x08, 0x2a, (byte) 0x86, 0x48, (byte) 0xce, 0x3d, 0x03, 0x01, 0x07};

@@ -70,10 +70,10 @@ public class DSAGenerateKeyPair extends TestBase {
 
     Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
 
-    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_DSA).token(true).id(id)
+    AttributeVector publicKeyTemplate = newPublicKey(CKK_DSA).token(true).id(id)
         .prime(DSA_P).subprime(DSA_Q).base(DSA_G);
 
-    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_DSA).id(id).sensitive(true).token(true).private_(true);
+    AttributeVector privateKeyTemplate = newPrivateKey(CKK_DSA).id(id).sensitive(true).token(true).private_(true);
 
     // set the attributes in a way netscape does, this should work with most tokens
     if (signatureMechanismInfo != null) {
@@ -116,7 +116,7 @@ public class DSAGenerateKeyPair extends TestBase {
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
           Functions.toHex(id));
       // set the search template for the public key
-      AttributesTemplate exportPublicKeyTemplate = newPublicKey(CKK_DSA).attr(CKA_ID, id);
+      AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_DSA).attr(CKA_ID, id);
 
       session.findObjectsInit(exportPublicKeyTemplate);
       long[] foundPublicKeys = session.findObjects(1);

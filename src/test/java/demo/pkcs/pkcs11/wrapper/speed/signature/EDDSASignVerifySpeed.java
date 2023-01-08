@@ -41,12 +41,12 @@ public class EDDSASignVerifySpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
+    protected AttributeVector getMinimalPrivateKeyTemplate() {
       return getMinimalPrivateKeyTemplate0();
     }
 
     @Override
-    protected AttributesTemplate getMinimalPublicKeyTemplate() {
+    protected AttributeVector getMinimalPublicKeyTemplate() {
       return getMinimalPublicKeyTemplate0();
     }
 
@@ -60,12 +60,12 @@ public class EDDSASignVerifySpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalPrivateKeyTemplate() {
+    protected AttributeVector getMinimalPrivateKeyTemplate() {
       return getMinimalPrivateKeyTemplate0();
     }
 
     @Override
-    protected AttributesTemplate getMinimalPublicKeyTemplate() {
+    protected AttributeVector getMinimalPublicKeyTemplate() {
       return getMinimalPublicKeyTemplate0();
     }
 
@@ -75,11 +75,11 @@ public class EDDSASignVerifySpeed extends TestBase {
 
   private static final long signMechanism = CKM_EDDSA;
 
-  private AttributesTemplate getMinimalPrivateKeyTemplate0() {
+  private AttributeVector getMinimalPrivateKeyTemplate0() {
     return newPrivateKey(CKK_EC_EDWARDS);
   }
 
-  private AttributesTemplate getMinimalPublicKeyTemplate0() {
+  private AttributeVector getMinimalPublicKeyTemplate0() {
     // set the general attributes for the public key
     // OID: 1.3.101.112 (Ed25519)
     byte[] encodedCurveOid = new byte[] {0x06, 0x03, 0x2b, 0x65, 0x70};

@@ -110,8 +110,8 @@ public class RSAGenerateKeyPair extends TestBase {
     new Random().nextBytes(id);
 
     // set the general attributes for the public key
-    AttributesTemplate publicKeyTemplate = newPublicKey(CKK_RSA).modulusBits(2048).token(true).id(id);
-    AttributesTemplate privateKeyTemplate = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true).id(id);
+    AttributeVector publicKeyTemplate = newPublicKey(CKK_RSA).modulusBits(2048).token(true).id(id);
+    AttributeVector privateKeyTemplate = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true).id(id);
 
     // set the attributes in a way netscape does, this should work with most
     // tokens
@@ -162,7 +162,7 @@ public class RSAGenerateKeyPair extends TestBase {
       LOG.info("Trying to search for the public key of the generated key-pair" + " by ID: {}",
           Functions.toHex(id));
       // set the search template for the public key
-      AttributesTemplate exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).id(id);
+      AttributeVector exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).id(id);
 
       session.findObjectsInit(exportRsaPublicKeyTemplate);
       long[] foundPublicKeys = session.findObjects(1);

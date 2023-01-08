@@ -69,7 +69,7 @@ public class DeleteObject extends TestBase {
     LOG.info("using session: {}", sessionInfo);
 
     // create a new object to be deleted later
-    AttributesTemplate secKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(true).value(new byte[32]);
+    AttributeVector secKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(true).value(new byte[32]);
 
     long secKeyHandle = session.createObject(secKeyTemplate);
     session.destroyObject(secKeyHandle);

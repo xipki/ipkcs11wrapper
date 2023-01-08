@@ -44,7 +44,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalKeyTemplate() {
+    protected AttributeVector getMinimalKeyTemplate() {
       return getMinimalKeyTemplate0();
     }
 
@@ -59,7 +59,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
     }
 
     @Override
-    protected AttributesTemplate getMinimalKeyTemplate() {
+    protected AttributeVector getMinimalKeyTemplate() {
       return getMinimalKeyTemplate0();
     }
 
@@ -89,7 +89,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
     return getSupportedMechanism(token, encryptMechanism, new InitializationVectorParameters(iv));
   }
 
-  private AttributesTemplate getMinimalKeyTemplate0() {
+  private AttributeVector getMinimalKeyTemplate0() {
     return newSecretKey(CKK_AES).valueLen(keyLen / 8);
   }
 

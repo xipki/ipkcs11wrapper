@@ -71,7 +71,7 @@ public class WrapUnwrapHmacKey extends TestBase {
 
   private void main0(Token token, Session session) throws PKCS11Exception {
     LOG.info("##################################################");
-    AttributesTemplate secretMACKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false)
+    AttributeVector secretMACKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false)
         .sign(true).verify(true).private_(true).sensitive(true).extractable(true);
 
     long hmacKey;
@@ -105,7 +105,7 @@ public class WrapUnwrapHmacKey extends TestBase {
     LOG.info("##################################################");
     LOG.info("generate secret wrapping key");
     Mechanism wrapKeyMechanism = new Mechanism(CKM_AES_KEY_GEN);
-    AttributesTemplate wrapKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
+    AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).token(false);
 
     long wrappingKey = session.generateKey(wrapKeyMechanism, wrapKeyTemplate);
@@ -116,7 +116,7 @@ public class WrapUnwrapHmacKey extends TestBase {
     byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, hmacKey);
     LOG.info("unwrapping key");
 
-    AttributesTemplate keyTemplate = newSecretKey(CKK_GENERIC_SECRET).verify(true).token(false);
+    AttributeVector keyTemplate = newSecretKey(CKK_GENERIC_SECRET).verify(true).token(false);
 
     long unwrappedKey = session.unwrapKey(wrapMechanism, wrappingKey, wrappedKey, keyTemplate);
 

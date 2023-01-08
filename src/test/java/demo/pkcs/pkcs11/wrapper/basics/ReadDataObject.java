@@ -78,13 +78,13 @@ public class ReadDataObject extends TestBase {
     String label = "pkcs11demo-data-" + System.currentTimeMillis();
 
     // Create a new PKCS#11 object first
-    AttributesTemplate newDataTemplate = new AttributesTemplate().class_(CKO_DATA).label(label)
+    AttributeVector newDataTemplate = new AttributeVector().class_(CKO_DATA).label(label)
         .value("hello world".getBytes());
     long newDataHandle = session.createObject(newDataTemplate);
 
     try {
       // create certificate object template
-      AttributesTemplate dataObjectTemplate = new AttributesTemplate();
+      AttributeVector dataObjectTemplate = new AttributeVector();
 
       // we could also set the name that manages this data object
       // dataObjectTemplate.getApplication().setCharArrayValue("Application Name");

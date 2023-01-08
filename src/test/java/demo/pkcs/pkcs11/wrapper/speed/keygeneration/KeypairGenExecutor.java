@@ -46,9 +46,9 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
       while (!stop()) {
         try {
           // generate keypair on token
-          AttributesTemplate publicKeyTemplate = getMinimalPublicKeyTemplate().token(inToken).verify(true);
+          AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate().token(inToken).verify(true);
 
-          AttributesTemplate privateKeyTemplate = getMinimalPrivateKeyTemplate().sensitive(true)
+          AttributeVector privateKeyTemplate = getMinimalPrivateKeyTemplate().sensitive(true)
                   .private_(true).token(inToken).sign(true);
 
           if (inToken) {
@@ -91,9 +91,9 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
     this.inToken = inToken;
   }
 
-  protected abstract AttributesTemplate getMinimalPrivateKeyTemplate();
+  protected abstract AttributeVector getMinimalPrivateKeyTemplate();
 
-  protected abstract AttributesTemplate getMinimalPublicKeyTemplate();
+  protected abstract AttributeVector getMinimalPublicKeyTemplate();
 
   @Override
   protected Runnable getTestor() {

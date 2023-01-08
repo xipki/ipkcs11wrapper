@@ -68,7 +68,7 @@ public class DeriveKeyDemo extends TestBase {
   private void main0(Token token, Session session) throws PKCS11Exception {
     Mechanism keyGenerationMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
 
-    AttributesTemplate baseKeyTemplate = newSecretKey(CKK_AES).valueLen(32).token(false).derive(true)
+    AttributeVector baseKeyTemplate = newSecretKey(CKK_AES).valueLen(32).token(false).derive(true)
         .token(false) // we only have a read-only session, thus we only create a session object
         .sensitive(true).extractable(true);
 
@@ -77,7 +77,7 @@ public class DeriveKeyDemo extends TestBase {
     LOG.info("Base key " + baseKey);
     LOG.info("derive key");
 
-    AttributesTemplate derivedKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
+    AttributeVector derivedKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
         .token(false).sensitive(true).extractable(true);
 
     /*

@@ -74,7 +74,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("generate secret encryption/decryption key");
     Mechanism keyMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
 
-    AttributesTemplate secretEncryptionKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
+    AttributeVector secretEncryptionKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true);
 
     long encryptionKey = session.generateKey(keyMechanism, secretEncryptionKeyTemplate);
@@ -99,7 +99,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("generate secret wrapping key");
 
     Mechanism wrapKeyMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
-    AttributesTemplate wrapKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
+    AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).unwrap(true);
 
     long wrappingKey = session.generateKey(wrapKeyMechanism, wrapKeyTemplate);
@@ -107,7 +107,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("wrapping key");
 
     byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, encryptionKey);
-    AttributesTemplate keyTemplate = newSecretKey(CKK_AES).decrypt(true).token(false);
+    AttributeVector keyTemplate = newSecretKey(CKK_AES).decrypt(true).token(false);
 
     LOG.info("unwrapping key");
 

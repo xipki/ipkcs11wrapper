@@ -73,7 +73,7 @@ public class MAC extends TestBase {
     LOG.info("##################################################");
     LOG.info("generate secret MAC key");
 
-    AttributesTemplate macKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).sign(true).token(false);
+    AttributeVector macKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).sign(true).token(false);
 
     long secretMACKey;
     int keyBytesLen = 32;
