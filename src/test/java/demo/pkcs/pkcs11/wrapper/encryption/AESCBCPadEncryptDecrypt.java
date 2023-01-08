@@ -46,8 +46,7 @@ public class AESCBCPadEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    Mechanism mech = getSupportedMechanism(token, CKM_AES_CBC_PAD, new InitializationVectorParameters(iv));
-    return mech;
+    return getSupportedMechanism(token, CKM_AES_CBC_PAD, new InitializationVectorParameters(iv));
   }
 
   @Override

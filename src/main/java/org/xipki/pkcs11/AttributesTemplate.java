@@ -155,7 +155,7 @@ public class AttributesTemplate {
   }
 
   public AttributesTemplate ecPoint(byte[] ecParams) {
-    return attr(CKA_EC_PARAMS, ecParams);
+    return attr(CKA_EC_POINT, ecParams);
   }
 
   public AttributesTemplate endDate(Date endDate) {
