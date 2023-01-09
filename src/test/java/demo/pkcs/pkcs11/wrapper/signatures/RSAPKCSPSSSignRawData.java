@@ -19,7 +19,10 @@ package demo.pkcs.pkcs11.wrapper.signatures;
 
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.junit.Test;
-import org.xipki.pkcs11.*;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.PKCS11KeyPair;
+import org.xipki.pkcs11.Session;
+import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.parameters.RSAPkcsPssParameters;
 
 import java.math.BigInteger;
@@ -51,7 +54,7 @@ public class RSAPKCSPSSSignRawData extends SignatureTestBase {
 
     final long mechCode = CKM_RSA_PKCS_PSS;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
+      System.out.println("Unsupported mechanism " + codeToName(Category.CKM, mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism

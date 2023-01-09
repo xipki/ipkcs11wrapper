@@ -44,6 +44,7 @@ package org.xipki.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.wrapper.CK_RSA_AES_KEY_WRAP_PARAMS;
 import org.xipki.pkcs11.Functions;
+import org.xipki.pkcs11.PKCS11Constants;
 
 /**
  * This class encapsulates parameters for the RSA AES Key Wrapping.
@@ -88,7 +89,7 @@ public class RsaAesKeyWrapParameters implements Parameters {
      */
     public String toString() {
       return super.toString() + "\n  AESKeyBits: " + AESKeyBits + "\n  OAEPParams:" +
-          "\n    Source: " + Functions.ckzCodeToName(OAEPParams.source) +
+          "\n    Source: " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, OAEPParams.source) +
           "\n    Source Data: " + Functions.toHex(OAEPParams.sourceData);
     }
 

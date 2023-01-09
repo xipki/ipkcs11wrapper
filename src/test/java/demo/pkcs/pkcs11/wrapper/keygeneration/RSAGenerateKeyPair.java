@@ -47,7 +47,6 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
 
-import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
@@ -100,7 +99,7 @@ public class RSAGenerateKeyPair extends TestBase {
 
     final long mechCode = CKM_RSA_PKCS_KEY_PAIR_GEN;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
+      System.out.println("Unsupported mechanism " + codeToName(Category.CKM, mechCode));
       return;
     }
 
@@ -148,9 +147,8 @@ public class RSAGenerateKeyPair extends TestBase {
       LOG.info("__________________________________________________");
 
       LOG.info("##################################################");
-      BigInteger[] attrValues = session.getBigIntAttrValues(generatedPublicKey,
-          CKA_MODULUS, CKA_PUBLIC_EXPONENT);
-      RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(attrValues[0], attrValues[1]);
+      AttributeVector attrValues = session.getAttrValues(generatedPublicKey, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+      RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(attrValues.modulus(), attrValues.publicExponent());
 
       KeyFactory keyFactory = KeyFactory.getInstance("RSA");
       RSAPublicKey javaRsaPublicKey = (RSAPublicKey) keyFactory.generatePublic(rsaPublicKeySpec);

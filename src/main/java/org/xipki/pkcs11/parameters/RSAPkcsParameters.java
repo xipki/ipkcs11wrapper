@@ -42,8 +42,6 @@
 
 package org.xipki.pkcs11.parameters;
 
-import org.xipki.pkcs11.Functions;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,7 +99,7 @@ abstract public class RSAPkcsParameters implements Parameters {
    */
   protected RSAPkcsParameters(long hashAlg, long mgf) {
     if (!mgf2HashAlgMap.containsKey(mgf)) {
-      throw new IllegalArgumentException("Illegal value for argument 'mgf': " + Functions.ckgCodeToName(mgf));
+      throw new IllegalArgumentException("Illegal value for argument 'mgf': " + codeToName(Category.CKG_MGF, mgf));
     }
 
     this.hashAlg = hashAlg;
@@ -115,8 +113,8 @@ abstract public class RSAPkcsParameters implements Parameters {
    * @return A string representation of this object.
    */
   public String toString() {
-    return "Class: " + getClass().getName() + "\n  Hash Algorithm: " + Functions.ckmCodeToName(hashAlg) +
-        "\n  Mask Generation Function: " + Functions.ckgCodeToName(mgf);
+    return "Class: " + getClass().getName() + "\n  Hash Algorithm: " + codeToName(Category.CKM, hashAlg) +
+        "\n  Mask Generation Function: " + codeToName(Category.CKG_MGF, mgf);
   }
 
 }

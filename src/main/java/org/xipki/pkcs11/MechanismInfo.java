@@ -167,9 +167,15 @@ public class MechanismInfo {
   public String toString() {
     String text = "  Minimum Key-Size: " + minKeySize + "\n  Maximum Key-Size: " + maxKeySize + "\n  Flags: ";
 
-    return Functions.toStringFlags(text, flags, CKF_HW, CKF_ENCRYPT, CKF_DECRYPT, CKF_DIGEST, CKF_SIGN, CKF_VERIFY,
-        CKF_SIGN_RECOVER, CKF_VERIFY_RECOVER, CKF_GENERATE_KEY_PAIR, CKF_GENERATE, CKF_WRAP, CKF_UNWRAP, CKF_DERIVE,
-        CKF_EXTENSION, CKF_EC_F_P, CKF_EC_F_2M, CKF_EC_ECPARAMETERS, CKF_EC_OID, CKF_EC_COMPRESS, CKF_EC_UNCOMPRESS);
+    return Functions.toStringFlags(Category.CKF_MECHANISM, text, flags,
+        CKF_HW,             CKF_MESSAGE_ENCRYPT, CKF_MESSAGE_DECRYPT, CKF_MESSAGE_SIGN,
+        CKF_MESSAGE_VERIFY, CKF_MULTI_MESSAGE,   CKF_FIND_OBJECTS,
+
+        CKF_ENCRYPT,  CKF_DECRYPT,  CKF_DIGEST,  CKF_SIGN,  CKF_SIGN_RECOVER,  CKF_VERIFY,  CKF_VERIFY_RECOVER,
+        CKF_GENERATE, CKF_GENERATE_KEY_PAIR,     CKF_WRAP,  CKF_UNWRAP,        CKF_DERIVE,
+
+        CKF_EC_F_P,        CKF_EC_F_2M,      CKF_EC_ECPARAMETERS,    CKF_EC_OID,
+        CKF_EC_UNCOMPRESS, CKF_EC_COMPRESS,  CKF_EC_CURVENAME);
   }
 
 }

@@ -42,7 +42,7 @@
 
 package org.xipki.pkcs11.objects;
 
-import org.xipki.pkcs11.Functions;
+import org.xipki.pkcs11.PKCS11Constants;
 
 import static org.xipki.pkcs11.PKCS11Constants.CK_UNAVAILABLE_INFORMATION;
 
@@ -88,7 +88,8 @@ public class MechanismAttribute extends LongAttribute {
     Long value = getValue();
     if (value == null) return "<NULL_PTR>";
 
-    return (value != CK_UNAVAILABLE_INFORMATION) ? Functions.ckmCodeToName(value) : "<Information unavailable>";
+    return (value != CK_UNAVAILABLE_INFORMATION) ? PKCS11Constants.codeToName(PKCS11Constants.Category.CKM, value)
+            : "<Information unavailable>";
   }
 
 }

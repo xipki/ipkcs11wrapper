@@ -22,12 +22,10 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.AttributeVector;
-import org.xipki.pkcs11.Functions;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKK_DES3;
-import static org.xipki.pkcs11.PKCS11Constants.CKM_DES3_KEY_GEN;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * TripleDES speed test.
@@ -55,7 +53,7 @@ public class DES3KeyGenSpeed extends TestBase {
   public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
-      System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");
+      System.out.println(codeToName(Category.CKM, mechanism) + " is not supported, skip test");
       return;
     }
 

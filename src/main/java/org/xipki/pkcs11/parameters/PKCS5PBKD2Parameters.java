@@ -45,8 +45,7 @@ package org.xipki.pkcs11.parameters;
 import iaik.pkcs.pkcs11.wrapper.CK_PKCS5_PBKD2_PARAMS;
 import org.xipki.pkcs11.Functions;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKP_PKCS5_PBKD2_HMAC_SHA1;
-import static org.xipki.pkcs11.PKCS11Constants.CKZ_SALT_SPECIFIED;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This class encapsulates parameters for the Mechanism.PKCS5_PKKD2 mechanism.
@@ -136,9 +135,9 @@ public class PKCS5PBKD2Parameters implements Parameters {
    * @return A string representation of this object.
    */
   public String toString() {
-    return "Class: " + getClass().getName() + "\n  Salt Source: " + Functions.ckzCodeToName(saltSource) +
+    return "Class: " + getClass().getName() + "\n  Salt Source: " + codeToName(Category.CKZ, saltSource) +
         "\n  Salt Source Data (hex): " + Functions.toHex(saltSourceData) + "\n  Iterations (dec): " + iterations +
-        "\n  Pseudo-Random Function: " + Functions.ckpCodeToName(pseudoRandomFunction) +
+        "\n  Pseudo-Random Function: " + codeToName(Category.CKP_PRF, pseudoRandomFunction) +
         "\n  Pseudo-Random Function Data: " + Functions.toHex(pseudoRandomFunctionData);
   }
 

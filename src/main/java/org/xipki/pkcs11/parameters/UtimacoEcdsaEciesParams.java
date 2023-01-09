@@ -43,7 +43,9 @@
 package org.xipki.pkcs11.parameters;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ECDSA_ECIES_PARAMS;
-import org.xipki.pkcs11.Functions;
+
+import static org.xipki.pkcs11.PKCS11Constants.Category;
+import static org.xipki.pkcs11.PKCS11Constants.codeToName;
 
 /**
  * Parameter class for the utimaco vendor defined ECIES encryption operation.
@@ -111,9 +113,9 @@ public class UtimacoEcdsaEciesParams implements Parameters {
     }
 
     public String toString() {
-        String ret = "Class: " + getClass().getName() + "\n  hash algorithm:   " + Functions.ckmCodeToName(hashAlg) +
-            "\n  crypto algorithm: " + Functions.ckmCodeToName(cryptAlg) + "\n  crypto options:   " + cryptOpt +
-            "\n  mac algorithm:    " + Functions.ckmCodeToName(macAlg) + "\n  mac options:      " + macOpt;
+        String ret = "Class: " + getClass().getName() + "\n  hash algorithm:   " + codeToName(Category.CKM, hashAlg) +
+            "\n  crypto algorithm: " + codeToName(Category.CKM, cryptAlg) + "\n  crypto options:   " + cryptOpt +
+            "\n  mac algorithm:    " + codeToName(Category.CKM, macAlg) + "\n  mac options:      " + macOpt;
 
         if (sharedSecret1 != null) ret += "\n  shared secret1 (len): " + sharedSecret1.length;
         if (sharedSecret2 != null) ret += "\n  shared secret2 (len): " + sharedSecret2.length;

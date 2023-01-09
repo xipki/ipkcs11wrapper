@@ -21,8 +21,7 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKK_EC_EDWARDS;
-import static org.xipki.pkcs11.PKCS11Constants.CKM_EDDSA;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * Signs some raw data on the token using CKM_RSA_PKCS.
@@ -48,7 +47,7 @@ public class EdDSASignRawData extends SignatureTestBase {
 
     final long mechCode = CKM_EDDSA;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + Functions.ckmCodeToName(mechCode));
+      System.out.println("Unsupported mechanism " + codeToName(Category.CKM, mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism

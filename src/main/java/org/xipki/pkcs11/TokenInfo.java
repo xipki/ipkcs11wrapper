@@ -384,11 +384,13 @@ public class TokenInfo {
         "\nHardware Version:     " + hardwareVersion        + "\nFirmware Version:     " + firmwareVersion +
         "\nTime:                 " + time                   + "\nFlags:                ";
 
-    return Functions.toStringFlags(text, flags, CKF_RNG, CKF_WRITE_PROTECTED, CKF_LOGIN_REQUIRED,
-        CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN, CKF_PROTECTED_AUTHENTICATION_PATH, CKF_DUAL_CRYPTO_OPERATIONS,
-        CKF_TOKEN_INITIALIZED, CKF_SECONDARY_AUTHENTICATION, CKF_USER_PIN_INITIALIZED, CKF_USER_PIN_COUNT_LOW,
-        CKF_USER_PIN_FINAL_TRY, CKF_USER_PIN_LOCKED, CKF_USER_PIN_TO_BE_CHANGED, CKF_SO_PIN_COUNT_LOW,
-        CKF_SO_PIN_FINAL_TRY, CKF_SO_PIN_LOCKED, CKF_SO_PIN_TO_BE_CHANGED);
+    return Functions.toStringFlags(Category.CKF_TOKEN, text, flags,
+        CKF_RNG,                    CKF_WRITE_PROTECTED,        CKF_LOGIN_REQUIRED,
+        CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN,         CKF_PROTECTED_AUTHENTICATION_PATH,
+        CKF_DUAL_CRYPTO_OPERATIONS, CKF_TOKEN_INITIALIZED,      CKF_SECONDARY_AUTHENTICATION,
+        CKF_USER_PIN_INITIALIZED,   CKF_USER_PIN_COUNT_LOW,     CKF_USER_PIN_FINAL_TRY,
+        CKF_USER_PIN_LOCKED,        CKF_USER_PIN_TO_BE_CHANGED, CKF_SO_PIN_COUNT_LOW,
+        CKF_SO_PIN_FINAL_TRY,       CKF_SO_PIN_LOCKED,          CKF_SO_PIN_TO_BE_CHANGED);
   }
 
   private static String mct(long count) {

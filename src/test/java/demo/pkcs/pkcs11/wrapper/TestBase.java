@@ -202,7 +202,7 @@ public class TestBase {
 
   protected void assertSupport(Token token, long mechCode) throws PKCS11Exception {
     if (!Util.supports(token, mechCode)) {
-      String msg = "Mechanism " + Functions.ckmCodeToName(mechCode) + " is not supported";
+      String msg = "Mechanism " + codeToName(Category.CKM, mechCode) + " is not supported";
       LOG.error(msg);
       throw new PKCS11Exception(CKR_MECHANISM_INVALID);
     }
@@ -292,13 +292,14 @@ public class TestBase {
     }
 
     if (keyType == CKK_RSA) {
-      BigInteger[] attrValues = session.getBigIntAttrValues(p11Key, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
-      return KeyUtil.generateRSAPublicKey(new RSAPublicKeySpec(attrValues[0], attrValues[1]));
+      AttributeVector attrValues = session.getAttrValues(p11Key, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+      return KeyUtil.generateRSAPublicKey(new RSAPublicKeySpec(attrValues.modulus(), attrValues.publicExponent()));
     } else if (keyType == CKK_DSA) {
-      BigInteger[] attrValues = session.getBigIntAttrValues(p11Key,
+      AttributeVector attrValues = session.getAttrValues(p11Key,
           CKA_VALUE, CKA_PRIME, CKA_SUBPRIME, CKA_BASE); // y, p, q, g
 
-      DSAPublicKeySpec keySpec = new DSAPublicKeySpec(attrValues[0], attrValues[1], attrValues[2], attrValues[3]);
+      DSAPublicKeySpec keySpec = new DSAPublicKeySpec(new BigInteger(1, attrValues.value()),
+          attrValues.prime(), attrValues.subprime(), attrValues.base());
       return KeyUtil.generateDSAPublicKey(keySpec);
     } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS
         || keyType == CKK_EC_MONTGOMERY || keyType == CKK_VENDOR_SM2) {
@@ -325,7 +326,7 @@ public class TestBase {
         return KeyUtil.createECPublicKey(ecParams, encodedPoint);
       }
     } else {
-      throw new InvalidKeySpecException("unknown publicKey type " + Functions.ckkCodeToName(keyType));
+      throw new InvalidKeySpecException("unknown publicKey type " + codeToName(Category.CKK, keyType));
     }
   } // method generatePublicKey
 

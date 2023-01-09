@@ -127,6 +127,8 @@ public class Session {
    */
   private Boolean rwSession = null;
 
+  private boolean isEcdsaSign;
+
   /**
    * Constructor taking the token and the session handle.
    *
@@ -239,10 +241,12 @@ public class Session {
    * into the state's byte array. Refer to the PKCS#11 standard for details on this function.
    *
    * @param operationState          The previously saved state as returned by getOperationState().
-   * @param encryptionKeyHandle     An encryption or decryption key handle, if an encryption or decryption operation was saved
-   *                                which should be continued, but the keys could not be saved.
-   * @param authenticationKeyHandle A signing, verification of MAC key handle, if a signing, verification or MAC operation needs
-   *                                to be restored that could not save the key.
+   * @param encryptionKeyHandle     An encryption or decryption key handle, if an encryption or
+   *                                decryption operation was saved  which should be continued, but
+   *                                the keys could not be saved.
+   * @param authenticationKeyHandle A signing, verification of MAC key handle, if a signing,
+   *                                verification or MAC operation needs to be restored that could
+   *                                not save the key.
    * @throws PKCS11Exception If restoring the state fails.
    */
   public void setOperationState(byte[] operationState, long encryptionKeyHandle, long authenticationKeyHandle)
@@ -932,6 +936,12 @@ public class Session {
    * @throws PKCS11Exception If initializing this operation failed.
    */
   public void signInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
+    long code = mechanism.getMechanismCode();
+    isEcdsaSign = code == CKM_ECDSA   || code == CKM_ECDSA_SHA1     || code == CKM_ECDSA_SHA224
+        || code == CKM_ECDSA_SHA256   || code == CKM_ECDSA_SHA384   || code == CKM_ECDSA_SHA512
+        || code == CKM_VENDOR_SM2     || code == CKM_VENDOR_SM2_SM3 || code == CKM_ECDSA_SHA3_224
+        || code == CKM_ECDSA_SHA3_256 || code == CKM_ECDSA_SHA3_384 || code == CKM_ECDSA_SHA3_512;
+
     pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -945,7 +955,8 @@ public class Session {
    * @throws PKCS11Exception If signing the data failed.
    */
   public byte[] sign(byte[] data) throws PKCS11Exception {
-    return pkcs11.C_Sign(sessionHandle, data);
+    byte[] sigValue = pkcs11.C_Sign(sessionHandle, data);
+    return isEcdsaSign ? Functions.fixECDSASignature(sigValue) : sigValue;
   }
 
   /**
@@ -982,13 +993,13 @@ public class Session {
    * fed in the data using signUpdate. If you used the sign(byte[]) method, you need not (and shall
    * not) call this method, because sign(byte[]) finalizes the signing operation itself.
    *
-   * @param expectedLen expected length of the signature value.
    * @return The final result of the signing operation; i.e. the signature
    * value.
    * @throws PKCS11Exception If calculating the final signature value failed.
    */
-  public byte[] signFinal(int expectedLen) throws PKCS11Exception {
-    return pkcs11.C_SignFinal(sessionHandle);
+  public byte[] signFinal() throws PKCS11Exception {
+    byte[] sigValue = pkcs11.C_SignFinal(sessionHandle);
+    return isEcdsaSign ? Functions.fixECDSASignature(sigValue) : sigValue;
   }
 
   /**
@@ -1568,38 +1579,10 @@ public class Session {
     return value == null ? null : value.intValue();
   }
 
-  public Integer[] getIntAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
-    Long[] value = getLongAttrValues(objectHandle, attributeTypes);
-    if (value == null) return null;
-
-    Integer[] ret = new Integer[value.length];
-    for (int i = 0; i < value.length; i++) {
-      if (value[i] != null) ret[i] = value[i].intValue();
-    }
-    return ret;
-  }
-
   public Long getLongAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     LongAttribute attr = new LongAttribute(attributeType);
     getAttrValue(objectHandle, attr);
     return attr.getValue();
-  }
-
-  public Long[] getLongAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
-    LongAttribute[] attrs = new LongAttribute[attributeTypes.length];
-    int idx = 0;
-    for (long attrType : attributeTypes) {
-      attrs[idx++] = new LongAttribute(attrType);
-    }
-
-    getAttrValues(objectHandle, attrs);
-
-    Long[] ret = new Long[attributeTypes.length];
-    idx = 0;
-    for (LongAttribute attr : attrs) {
-      ret[idx++] = attr.getValue();
-    }
-    return ret;
   }
 
   public String getStringAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
@@ -1608,36 +1591,9 @@ public class Session {
     return attr.getValue();
   }
 
-  public String[] getStringAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
-    CharArrayAttribute[] attrs = new CharArrayAttribute[attributeTypes.length];
-    int idx = 0;
-    for (long attrType : attributeTypes) {
-      attrs[idx++] = new CharArrayAttribute(attrType);
-    }
-
-    getAttrValues(objectHandle, attrs);
-
-    String[] ret = new String[attributeTypes.length];
-    idx = 0;
-    for (CharArrayAttribute attr : attrs) {
-      ret[idx++] = attr.getValue();
-    }
-    return ret;
-  }
-
   public BigInteger getBigIntAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     byte[] value = getByteArrayAttrValue(objectHandle, attributeType);
     return value == null ? null : new BigInteger(1, value);
-  }
-
-  public BigInteger[] getBigIntAttrValues(long objectHandle, long... attributeTypes)
-      throws PKCS11Exception {
-    byte[][] values = getByteArrayAttrValues(objectHandle, attributeTypes);
-    BigInteger[] ret = new BigInteger[attributeTypes.length];
-    for (int i = 0; i < values.length; i++) {
-      ret[i] = new BigInteger(1, values[i]);
-    }
-    return ret;
   }
 
   public byte[] getByteArrayAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
@@ -1646,44 +1602,10 @@ public class Session {
     return attr.getValue();
   }
 
-  public byte[][] getByteArrayAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
-    ByteArrayAttribute[] attrs = new ByteArrayAttribute[attributeTypes.length];
-    int idx = 0;
-    for (long attrType : attributeTypes) {
-      attrs[idx++] = new ByteArrayAttribute(attrType);
-    }
-
-    getAttrValues(objectHandle, attrs);
-
-    byte[][] ret = new byte[attributeTypes.length][];
-    idx = 0;
-    for (ByteArrayAttribute attr : attrs) {
-      ret[idx++] = attr.getValue();
-    }
-    return ret;
-  }
-
   public Boolean getBooleanAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     BooleanAttribute attr = new BooleanAttribute(attributeType);
     getAttrValue(objectHandle, attr);
     return attr.getValue();
-  }
-
-  public Boolean[] getBooleanAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
-    BooleanAttribute[] attrs = new BooleanAttribute[attributeTypes.length];
-    int idx = 0;
-    for (long attrType : attributeTypes) {
-      attrs[idx++] = new BooleanAttribute(attrType);
-    }
-
-    getAttrValues(objectHandle, attrs);
-
-    Boolean[] ret = new Boolean[attributeTypes.length];
-    idx = 0;
-    for (BooleanAttribute attr : attrs) {
-      ret[idx++] = attr.getValue();
-    }
-    return ret;
   }
 
   public String getCkaLabel(long objectHandle) throws PKCS11Exception {
@@ -1712,18 +1634,14 @@ public class Session {
     return attr.getValue();
   }
 
-  public Object[] getAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
+  public AttributeVector getAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
     final int n = attributeTypes.length;
     Attribute[] attrs = new Attribute[n];
     for (int i = 0; i < n; i++) {
       attrs[i] = Attribute.getInstance(attributeTypes[i]);
     }
     getAttrValues(objectHandle, attrs);
-    Object[] attrValues = new Object[n];
-    for (int i = 0; i < n; i++) {
-      attrValues[i] = attrs[i].getValue();
-    }
-    return attrValues;
+    return new AttributeVector(attrs);
   }
 
   /**

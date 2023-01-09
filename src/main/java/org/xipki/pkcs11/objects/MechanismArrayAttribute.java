@@ -42,7 +42,7 @@
 
 package org.xipki.pkcs11.objects;
 
-import org.xipki.pkcs11.Functions;
+import org.xipki.pkcs11.PKCS11Constants;
 
 /**
  * Objects of this class represent a mechanism array attribute of a PKCS#11
@@ -99,7 +99,7 @@ public class MechanismArrayAttribute extends Attribute {
     if (allowedMechanisms != null && allowedMechanisms.length > 0) {
       StringBuilder sb = new StringBuilder(200);
       for (long mech : allowedMechanisms) {
-        sb.append("\n      ").append(Functions.ckmCodeToName(mech));
+        sb.append("\n      ").append(PKCS11Constants.codeToName(PKCS11Constants.Category.CKM, mech));
       }
       return sb.toString();
     } else {

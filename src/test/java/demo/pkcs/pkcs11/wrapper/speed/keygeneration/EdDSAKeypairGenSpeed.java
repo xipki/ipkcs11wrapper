@@ -22,12 +22,10 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.AttributeVector;
-import org.xipki.pkcs11.Functions;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKK_EC_EDWARDS;
-import static org.xipki.pkcs11.PKCS11Constants.CKM_EC_EDWARDS_KEY_PAIR_GEN;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * EDDSA Keypair Generation Speed Test
@@ -39,7 +37,7 @@ public class EdDSAKeypairGenSpeed extends TestBase {
   private class MyExecutor extends KeypairGenExecutor {
 
     public MyExecutor(Token token, char[] pin, boolean inToken) throws PKCS11Exception {
-      super(Functions.ckmCodeToName(mechanism) + " (Ed25519, inToken: " + inToken + ") Speed",
+      super(codeToName(Category.CKM, mechanism) + " (Ed25519, inToken: " + inToken + ") Speed",
           mechanism, token, pin, inToken);
     }
 
@@ -64,7 +62,7 @@ public class EdDSAKeypairGenSpeed extends TestBase {
   public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
-      System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");
+      System.out.println(codeToName(Category.CKM, mechanism) + " is not supported, skip test");
       return;
     }
 

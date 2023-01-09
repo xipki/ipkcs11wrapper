@@ -44,7 +44,7 @@ package org.xipki.pkcs11.objects;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.AttributeVector;
-import org.xipki.pkcs11.Functions;
+import org.xipki.pkcs11.PKCS11Constants;
 
 /**
  * Objects of this class represent an attribute array of a PKCS#11 object
@@ -106,7 +106,8 @@ public class AttributeArrayAttribute extends Attribute {
       Class<?> implementation = getAttributeClass(type);
       if (implementation == null) {
         // ignore
-        System.err.println("Could not create attribute for the attribute type " + Functions.ckaCodeToName(type));
+        System.err.println("Could not create attribute for the attribute type " +
+            PKCS11Constants.codeToName(PKCS11Constants.Category.CKA, type));
       } else {
         try {
           Attribute attribute = (Attribute) implementation.getDeclaredConstructor(long.class).newInstance(type);

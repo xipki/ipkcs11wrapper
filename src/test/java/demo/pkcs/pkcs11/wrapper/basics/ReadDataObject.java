@@ -105,8 +105,7 @@ public class ReadDataObject extends TestBase {
         dataObjectHandle = foundDataObjects[0];
         LOG.info("___________________________________________________");
         LOG.info("found this data object with handle: {}", dataObjectHandle);
-        LOG.info("  Class: {}",
-            Functions.ckoCodeToName(session.getLongAttrValue(dataObjectHandle, CKA_CLASS)));
+        LOG.info("  Class: {}", codeToName(Category.CKO, session.getLongAttrValue(dataObjectHandle, CKA_CLASS)));
         LOG.info("  Label: {}", session.getStringAttrValue(dataObjectHandle, CKA_LABEL));
         LOG.info("___________________________________________________");
         // FIXME, there may be more than one that matches the given template,

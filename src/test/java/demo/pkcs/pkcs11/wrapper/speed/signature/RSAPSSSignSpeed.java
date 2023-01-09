@@ -21,7 +21,10 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import demo.pkcs.pkcs11.wrapper.util.Util;
 import junit.framework.Assert;
 import org.junit.Test;
-import org.xipki.pkcs11.*;
+import org.xipki.pkcs11.AttributeVector;
+import org.xipki.pkcs11.Mechanism;
+import org.xipki.pkcs11.PKCS11Exception;
+import org.xipki.pkcs11.Token;
 import org.xipki.pkcs11.parameters.RSAPkcsPssParameters;
 import org.xipki.util.BenchmarkExecutor;
 
@@ -38,7 +41,7 @@ public class RSAPSSSignSpeed extends TestBase {
   private class MySignExecutor extends SignExecutor {
 
     public MySignExecutor(Token token, char[] pin) throws PKCS11Exception {
-      super(Functions.ckmCodeToName(signMechanism) + " (2048) Sign Speed",
+      super(codeToName(Category.CKM, signMechanism) + " (2048) Sign Speed",
           new Mechanism(keypairGenMechanism), token, pin, signMechanism2, 32);
     }
 
@@ -57,7 +60,7 @@ public class RSAPSSSignSpeed extends TestBase {
   private class MyVerifyExecutor extends VerifyExecutor {
 
     public MyVerifyExecutor(Token token, char[] pin) throws PKCS11Exception {
-      super(Functions.ckmCodeToName(signMechanism) + " (2048) Verify Speed",
+      super(codeToName(Category.CKM, signMechanism) + " (2048) Verify Speed",
           new Mechanism(keypairGenMechanism), token, pin, signMechanism2, 32);
     }
 
@@ -95,12 +98,12 @@ public class RSAPSSSignSpeed extends TestBase {
   public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, keypairGenMechanism)) {
-      System.out.println(Functions.ckmCodeToName(keypairGenMechanism) + " is not supported, skip test");
+      System.out.println(codeToName(Category.CKM, keypairGenMechanism) + " is not supported, skip test");
       return;
     }
 
     if (!Util.supports(token, signMechanism)) {
-      System.out.println(Functions.ckmCodeToName(signMechanism) + " is not supported, skip test");
+      System.out.println(codeToName(Category.CKM, signMechanism) + " is not supported, skip test");
       return;
     }
 

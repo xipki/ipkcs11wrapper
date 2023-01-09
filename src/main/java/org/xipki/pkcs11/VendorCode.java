@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.xipki.pkcs11;
 
 import java.io.BufferedReader;
@@ -166,12 +167,12 @@ class VendorCode {
       long vendorCode = hex ? Long.parseLong(valueStr.substring(2), 16) : Long.parseLong(valueStr);
 
       if (name.startsWith("CKK_VENDOR_")) {
-        long genericCode = Functions.ckkNameToCode(name);
+        long genericCode = PKCS11Constants.nameToCode(PKCS11Constants.Category.CKK, name);
         if (genericCode == -1) throw new IllegalStateException("unknown name in vendorcode block: " + name);
 
         ckkGenericToVendorMap.put(genericCode, vendorCode);
       } else if (name.startsWith("CKM_VENDOR_")) {
-        long genericCode = Functions.ckmNameToCode(name);
+        long genericCode = PKCS11Constants.nameToCode(PKCS11Constants.Category.CKM, name);
         if (genericCode == -1) throw new IllegalStateException("unknown name in vendorcode block: " + name);
 
         ckmGenericToVendorMap.put(genericCode, vendorCode);

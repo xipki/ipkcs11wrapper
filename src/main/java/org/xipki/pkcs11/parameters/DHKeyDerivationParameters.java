@@ -88,7 +88,7 @@ abstract public class DHKeyDerivationParameters implements Parameters {
    * @return A string representation of this object.
    */
   public String toString() {
-    return "Class: " + getClass().getName() + "\n  Key Derivation Function: " + Functions.ckdCodeToName(kdf) +
+    return "Class: " + getClass().getName() + "\n  Key Derivation Function: " + codeToName(Category.CKD, kdf) +
         "\n  Public Data: " + Functions.toHex(publicData);
   }
 

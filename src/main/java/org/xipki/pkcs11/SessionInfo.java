@@ -44,8 +44,7 @@ package org.xipki.pkcs11;
 
 import iaik.pkcs.pkcs11.wrapper.CK_SESSION_INFO;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKF_RW_SESSION;
-import static org.xipki.pkcs11.PKCS11Constants.CKF_SERIAL_SESSION;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * An object of this class provides information about a session. The information
@@ -141,9 +140,9 @@ public class SessionInfo {
    * @return The string representation of object
    */
   public String toString() {
-    String text = "State: " + Functions.cksCodeToName(state) + "\nSlot ID: " + slotID +
+    String text = "State: " + codeToName(Category.CKS, state) + "\nSlot ID: " + slotID +
         "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\nFlags: ";
-    return Functions.toStringFlags(text, flags, CKF_RW_SESSION, CKF_SERIAL_SESSION);
+    return Functions.toStringFlags(Category.CKF_SESSION, text, flags, CKF_RW_SESSION, CKF_SERIAL_SESSION);
   }
 
 }

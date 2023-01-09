@@ -95,14 +95,14 @@ public abstract class Attribute {
 
   static {
     attributeClasses = new HashMap<>(130);
-    String propFile = "org/xipki/pkcs11/cka-type.properties";
+    String propFile = "org/xipki/pkcs11/type-CKA.properties";
     Properties props = new Properties();
     try {
       props.load(Functions.class.getClassLoader().getResourceAsStream(propFile));
       for (String name : props.stringPropertyNames()) {
         name = name.trim();
         String type = props.getProperty(name).trim();
-        long code = Functions.ckaNameToCode(name);
+        long code = nameToCode(Category.CKA, name);
         if (code == -1) throw new IllegalStateException("unknown CKA: " + name);
 
         if (attributeClasses.containsKey(code)) {
@@ -149,7 +149,9 @@ public abstract class Attribute {
 
   public static Attribute getInstance(long type) {
     Class<?> clazz = getAttributeClass(type);
-    if (clazz == null) throw new IllegalArgumentException("Unknown attribute type " + Functions.ckaCodeToName(type));
+    if (clazz == null) {
+      throw new IllegalArgumentException("Unknown attribute type " + codeToName(Category.CKA, type));
+    }
     Attribute attr = (clazz == BooleanAttribute.class) ? new BooleanAttribute(type)
         : (clazz == ByteArrayAttribute.class) ? new ByteArrayAttribute(type)
         : (clazz == CharArrayAttribute.class) ? new CharArrayAttribute(type)
@@ -167,7 +169,9 @@ public abstract class Attribute {
 
   public static Attribute getInstance(long type, Object value) {
     Class<?> clazz = getAttributeClass(type);
-    if (clazz == null) throw new IllegalArgumentException("Unknown attribute type " + Functions.ckaCodeToName(type));
+    if (clazz == null) {
+      throw new IllegalArgumentException("Unknown attribute type " + codeToName(Category.CKA, type));
+    }
 
     if (clazz == BooleanAttribute.class) {
       return new BooleanAttribute(type).booleanValue((Boolean) value);
@@ -304,10 +308,10 @@ public abstract class Attribute {
    */
   protected String getValueString() {
     return (ckAttribute == null || ckAttribute.pValue == null) ? "<NULL_PTR>"
-        : (ckAttribute.type == CKA_CLASS)            ? Functions.ckoCodeToName((long) ckAttribute.pValue)
-        : (ckAttribute.type == CKA_KEY_TYPE)         ? Functions.ckkCodeToName((long) ckAttribute.pValue)
-        : (ckAttribute.type == CKA_CERTIFICATE_TYPE) ? Functions.ckcCodeToName((long) ckAttribute.pValue)
-        : (ckAttribute.type == CKA_HW_FEATURE_TYPE)  ? Functions.ckhCodeToName((long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_CLASS)            ? codeToName(Category.CKO, (long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_KEY_TYPE)         ? codeToName(Category.CKK, (long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_CERTIFICATE_TYPE) ? codeToName(Category.CKC, (long) ckAttribute.pValue)
+        : (ckAttribute.type == CKA_HW_FEATURE_TYPE)  ? codeToName(Category.CKH, (long) ckAttribute.pValue)
         : ckAttribute.pValue.toString();
   }
 
@@ -336,7 +340,7 @@ public abstract class Attribute {
   public String toString(boolean withName, String indent) {
     StringBuilder sb = new StringBuilder(32).append(indent);
 
-    if (withName) sb.append(Functions.ckaCodeToName(ckAttribute.type)).append(": ");
+    if (withName) sb.append(codeToName(Category.CKA, ckAttribute.type)).append(": ");
 
     String valueString = (!stateKnown) ? "<Value is not present or sensitive>"
         : present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";

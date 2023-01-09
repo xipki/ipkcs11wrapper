@@ -22,12 +22,10 @@ import demo.pkcs.pkcs11.wrapper.util.Util;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.AttributeVector;
-import org.xipki.pkcs11.Functions;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKK_AES;
-import static org.xipki.pkcs11.PKCS11Constants.CKM_AES_KEY_GEN;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * AES speed test base class.
@@ -57,7 +55,7 @@ public abstract class AESKeyGenSpeed extends TestBase {
   public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, mechanism)) {
-      System.out.println(Functions.ckmCodeToName(mechanism) + " is not supported, skip test");
+      System.out.println(codeToName(Category.CKM, mechanism) + " is not supported, skip test");
       return;
     }
 

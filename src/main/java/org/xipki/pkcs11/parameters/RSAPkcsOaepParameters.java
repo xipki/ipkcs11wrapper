@@ -45,7 +45,7 @@ package org.xipki.pkcs11.parameters;
 import iaik.pkcs.pkcs11.wrapper.CK_RSA_PKCS_OAEP_PARAMS;
 import org.xipki.pkcs11.Functions;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKZ_SALT_SPECIFIED;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This class encapsulates parameters for the Mechanism.RSA_PKCS_OAEP.
@@ -110,7 +110,7 @@ public class RSAPkcsOaepParameters extends RSAPkcsParameters {
    * @return A string representation of this object.
    */
   public String toString() {
-    return super.toString() + "\n  Source: " + Functions.ckzCodeToName(source)
+    return super.toString() + "\n  Source: " + codeToName(Category.CKZ, source)
         + "\n  Source Data (hex): " + Functions.toHex(sourceData);
   }
 
