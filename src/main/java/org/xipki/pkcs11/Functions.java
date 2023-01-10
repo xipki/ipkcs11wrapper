@@ -17,8 +17,6 @@
 package org.xipki.pkcs11;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
 
@@ -74,27 +72,6 @@ public class Functions {
       return out;
     }
 
-  }
-
-  private static final Map<Long, String> hashMechCodeToHashNames;
-
-  static {
-    hashMechCodeToHashNames = new HashMap<>();
-    hashMechCodeToHashNames.put(CKM_SHA_1, "SHA1");
-    hashMechCodeToHashNames.put(CKM_SHA224, "SHA224");
-    hashMechCodeToHashNames.put(CKM_SHA256, "SHA256");
-    hashMechCodeToHashNames.put(CKM_SHA384, "SHA384");
-    hashMechCodeToHashNames.put(CKM_SHA512, "SHA512");
-    hashMechCodeToHashNames.put(CKM_SHA512_224, "SHA512/224");
-    hashMechCodeToHashNames.put(CKM_SHA512_256, "SHA512/256");
-    hashMechCodeToHashNames.put(CKM_SHA3_224, "SHA3-224");
-    hashMechCodeToHashNames.put(CKM_SHA3_256, "SHA3-256");
-    hashMechCodeToHashNames.put(CKM_SHA3_384, "SHA3-384");
-    hashMechCodeToHashNames.put(CKM_SHA3_512, "SHA3-512");
-  }
-
-  public static String getHashAlgName(long hashMechanism) {
-    return hashMechCodeToHashNames.get(hashMechanism);
   }
 
   /**

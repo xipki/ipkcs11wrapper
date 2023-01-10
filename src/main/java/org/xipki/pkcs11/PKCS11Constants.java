@@ -1458,9 +1458,9 @@ public final class PKCS11Constants {
     CKU("CKU", "user"),
     CKZ("CKZ", "salt/encoding parameter source");
 
-    final String prefix;
+    private final String prefix;
 
-    final String description;
+    private final String description;
 
     Category(String prefix, String description) {
       this.prefix = prefix;
