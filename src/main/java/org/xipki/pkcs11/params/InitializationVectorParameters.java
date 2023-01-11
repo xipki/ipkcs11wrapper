@@ -40,86 +40,54 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
+package org.xipki.pkcs11.params;
 
-import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.Functions;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * This class encapsulates parameters for general block ciphers in CBC mode.
+ * Those are all Mechanism.*_CBC and Mechanism.*_CBC_PAD mechanisms. This class
+ * also applies to other mechanisms which require just an initialization vector
+ * as parameter.
  *
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
  */
-public class Mechanism {
+public class InitializationVectorParameters implements Parameters {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
+   * The initialization vector.
    */
-  private final long pkcs11MechanismCode;
+  private final byte[] iv;
 
   /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
-   */
-  private final Parameters parameters;
-
-  /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Create a new InitializationVectorParameters object with the given
+   * initialization vector.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param iv
+   *          The initialization vector.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public InitializationVectorParameters(byte[] iv) {
+    this.iv = Functions.requireNonNull("iv", iv);
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Get this parameters object as a byte array.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
+   * @return This object as a byte array.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
+  public byte[] getPKCS11ParamsObject() {
+    return iv;
   }
 
   /**
-   * Get the parameters object of this mechanism.
+   * Returns the string representation of this object. Do not parse data from
+   * this string, it is for debugging only.
    *
-   * @return The parameters of this mechanism. May be null.
-   */
-  public Parameters getParameters() {
-    return parameters;
-  }
-
-  /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
-   *
-   * @return The code of this mechanism.
-   */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
-  }
-
-  /**
-   * Get the name of this mechanism.
-   *
-   * @return The name of this mechanism.
-   */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
+   * @return A string representation of this object.
    */
   public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+    return "Class: " + getClass().getName() + "\n  IV: " + Functions.toHex(iv);
   }
 
 }

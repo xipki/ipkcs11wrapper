@@ -45,11 +45,11 @@ package org.xipki.pkcs11;
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM;
 import iaik.pkcs.pkcs11.wrapper.PKCS11;
-import org.xipki.pkcs11.objects.*;
-import org.xipki.pkcs11.parameters.CcmMessageParameters;
-import org.xipki.pkcs11.parameters.MessageParameters;
-import org.xipki.pkcs11.parameters.Parameters;
-import org.xipki.pkcs11.parameters.Salsa20Chacha20Poly1305MessageParameters;
+import org.xipki.pkcs11.attrs.*;
+import org.xipki.pkcs11.params.CcmMessageParameters;
+import org.xipki.pkcs11.params.MessageParameters;
+import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.params.Salsa20Chacha20Poly1305MessageParameters;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -1658,7 +1658,7 @@ public class Session {
    * @exception PKCS11Exception
    *              If getting the attributes failed.
    */
-  public void getAttrValues(long objectHandle, Attribute... attributes) throws PKCS11Exception {
+  private void getAttrValues(long objectHandle, Attribute... attributes) throws PKCS11Exception {
     Functions.requireNonNull("attributes", attributes);
 
     CK_ATTRIBUTE[] attributeTemplateList = new CK_ATTRIBUTE[attributes.length];
@@ -1733,7 +1733,7 @@ public class Session {
    * @exception PKCS11Exception
    *              If getting the attribute failed.
    */
-  public void getAttrValue(long objectHandle, Attribute attribute) throws PKCS11Exception {
+  private void getAttrValue(long objectHandle, Attribute attribute) throws PKCS11Exception {
     attribute.stateKnown(false).present(false);
 
     try {

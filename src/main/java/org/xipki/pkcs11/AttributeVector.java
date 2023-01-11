@@ -17,7 +17,7 @@
 package org.xipki.pkcs11;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
-import org.xipki.pkcs11.objects.*;
+import org.xipki.pkcs11.attrs.*;
 
 import java.math.BigInteger;
 import java.util.*;

@@ -40,86 +40,78 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
+package org.xipki.pkcs11.params;
 
-import org.xipki.pkcs11.params.Parameters;
+import iaik.pkcs.pkcs11.wrapper.CK_RSA_PKCS_OAEP_PARAMS;
+import org.xipki.pkcs11.Functions;
+
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * This class encapsulates parameters for the Mechanism.RSA_PKCS_OAEP.
  *
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
  */
-public class Mechanism {
+public class RSAPkcsOaepParameters extends RSAPkcsParameters {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
+   * The source of the encoding parameter.
    */
-  private final long pkcs11MechanismCode;
+  protected long source;
 
   /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
+   * The data used as the input for the encoding parameter source.
    */
-  private final Parameters parameters;
+  protected byte[] sourceData;
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Create a new RSAPkcsOaepParameters object with the given attributes.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param hashAlgorithm
+   *          The message digest algorithm used to calculate the digest of the
+   *          encoding parameter.
+   * @param maskGenerationFunction
+   *          The mask to apply to the encoded block. One of the constants
+   *          defined in the MessageGenerationFunctionType interface.
+   * @param source
+   *          The source of the encoding parameter. One of the constants
+   *          defined in the SourceType interface.
+   * @param sourceData
+   *          The data used as the input for the encoding parameter source.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public RSAPkcsOaepParameters(long hashAlgorithm, long maskGenerationFunction, long source, byte[] sourceData) {
+    super(hashAlgorithm, maskGenerationFunction);
+    this.source = Functions.requireAmong("source", source, 0, CKZ_SALT_SPECIFIED);
+    this.sourceData = sourceData;
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Get this parameters object as an object of the CK_RSA_PKCS_OAEP_PARAMS
+   * class.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
+   * @return This object as a CK_RSA_PKCS_OAEP_PARAMS object.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
+  public CK_RSA_PKCS_OAEP_PARAMS getPKCS11ParamsObject() {
+    CK_RSA_PKCS_OAEP_PARAMS params = new CK_RSA_PKCS_OAEP_PARAMS();
+
+    params.hashAlg = hashAlg;
+    params.mgf = mgf;
+    params.source = source;
+    params.pSourceData = sourceData;
+
+    return params;
   }
 
   /**
-   * Get the parameters object of this mechanism.
+   * Returns the string representation of this object. Do not parse data from
+   * this string, it is for debugging only.
    *
-   * @return The parameters of this mechanism. May be null.
-   */
-  public Parameters getParameters() {
-    return parameters;
-  }
-
-  /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
-   *
-   * @return The code of this mechanism.
-   */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
-  }
-
-  /**
-   * Get the name of this mechanism.
-   *
-   * @return The name of this mechanism.
-   */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
+   * @return A string representation of this object.
    */
   public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+    return super.toString() + "\n  Source: " + codeToName(Category.CKZ, source)
+        + "\n  Source Data (hex): " + Functions.toHex(sourceData);
   }
 
 }

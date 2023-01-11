@@ -23,7 +23,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.parameters.RSAPkcsPssParameters;
+import org.xipki.pkcs11.params.RSAPkcsPssParameters;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

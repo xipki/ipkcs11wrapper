@@ -46,7 +46,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.parameters.InitializationVectorParameters;
+import org.xipki.pkcs11.params.InitializationVectorParameters;
 
 import java.util.Arrays;
 

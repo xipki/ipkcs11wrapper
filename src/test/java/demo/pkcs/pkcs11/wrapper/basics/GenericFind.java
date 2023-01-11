@@ -48,8 +48,8 @@ import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.objects.Attribute;
-import org.xipki.pkcs11.objects.ByteArrayAttribute;
+import org.xipki.pkcs11.attrs.Attribute;
+import org.xipki.pkcs11.attrs.ByteArrayAttribute;
 
 import java.util.*;
 

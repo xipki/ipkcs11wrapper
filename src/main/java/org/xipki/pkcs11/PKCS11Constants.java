@@ -1411,6 +1411,31 @@ public final class PKCS11Constants {
     return map.stringToCode(name);
   }
 
+
+  public static String ckaCodeToName(long code) {
+    return codeToName(Category.CKA, code);
+  }
+
+  public static long ckaNameToCode(String name) {
+    return nameToCode(Category.CKA, name);
+  }
+
+  public static String ckmCodeToName(long code) {
+    return codeToName(Category.CKM, code);
+  }
+
+  public static long ckmNameToCode(String name) {
+    return nameToCode(Category.CKM, name);
+  }
+
+  public static String ckrCodeToName(long code) {
+    return codeToName(Category.CKM, code);
+  }
+
+  public static long ckrNameToCode(String name) {
+    return nameToCode(Category.CKM, name);
+  }
+
   private static final Map<Category, CodeNameMap> codeNameMaps = new HashMap<>(20);
   private static final Map<Long, String> hashMechCodeToHashNames;
   public static String getHashAlgName(long hashMechanism) {

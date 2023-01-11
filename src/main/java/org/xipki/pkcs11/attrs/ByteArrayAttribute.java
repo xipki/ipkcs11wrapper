@@ -40,86 +40,81 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
+package org.xipki.pkcs11.attrs;
 
-import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.Functions;
+
+import java.math.BigInteger;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * Objects of this class represent a byte-array attribute of a PKCS#11 object
+ * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
  */
-public class Mechanism {
+public class ByteArrayAttribute extends Attribute {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
-   */
-  private final long pkcs11MechanismCode;
-
-  /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
-   */
-  private final Parameters parameters;
-
-  /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param type
+   *          The PKCS#11 type of this attribute; e.g. CKA_VALUE.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public ByteArrayAttribute(long type) {
+    super(type);
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Set the byte-array value of this attribute. Null, is also valid.
+   * A call to this method sets the present flag to true.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
+   * @param value
+   *          The byte-array value to set. May be null.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
+  public ByteArrayAttribute byteArrayValue(byte[] value) {
+    ckAttribute.pValue = value;
+    present = true;
+    return this;
   }
 
   /**
-   * Get the parameters object of this mechanism.
+   * Set the big integer value whose byte-array representation is the content of this attribute.
+   * Null, is also valid. A call to this method sets the present flag to true.
    *
-   * @return The parameters of this mechanism. May be null.
+   * @param value
+   *          The byte-array value to set. May be null.
    */
-  public Parameters getParameters() {
-    return parameters;
+  public ByteArrayAttribute bigIntValue(BigInteger value) {
+    return byteArrayValue(value == null ? null : value.toByteArray());
   }
 
   /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
+   * Get the byte-array value of this attribute. Null, is also possible.
    *
-   * @return The code of this mechanism.
+   * @return The byte-array value of this attribute or null.
    */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
+  @Override
+  public byte[] getValue() {
+    return (byte[]) ckAttribute.pValue;
+  }
+
+  public BigInteger getBigIntValue() {
+    return new BigInteger(1, (byte[]) ckAttribute.pValue);
+  }
+
+  public BigInteger getSignedBigIntValue() {
+    return new BigInteger((byte[]) ckAttribute.pValue);
   }
 
   /**
-   * Get the name of this mechanism.
+   * Get a string representation of the value of this attribute.
    *
-   * @return The name of this mechanism.
+   * @return A string representation of the value of this attribute.
    */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
-   */
-  public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+  protected String getValueString() {
+    return ((ckAttribute != null) && (ckAttribute.pValue != null))
+      ? Functions.toHex((byte[]) ckAttribute.pValue) : "<NULL_PTR>";
   }
 
 }

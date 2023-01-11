@@ -40,86 +40,71 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
+package org.xipki.pkcs11.attrs;
 
-import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.PKCS11Constants;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * Objects of this class represent a mechanism array attribute of a PKCS#11
+ * object as specified by PKCS#11. This attribute is available since
+ * cryptoki version 2.20.
  *
- * @author Karl Scheibelhofer
+ * @author Birgit Haas
  * @author Lijun Liao (xipki)
  */
-public class Mechanism {
+public class MechanismArrayAttribute extends Attribute {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
-   */
-  private final long pkcs11MechanismCode;
-
-  /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
-   */
-  private final Parameters parameters;
-
-  /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param type
+   *          The PKCS#11 type of this attribute; e.g. CKA_VALUE.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public MechanismArrayAttribute(long type) {
+    super(type);
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Set the attributes of this mechanism attribute array by specifying a
+   * Mechanism[]. Null, is also valid.
+   * A call to this method sets the present flag to true.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
+   * @param value
+   *          The MechanismArrayAttribute value to set. May be null.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
+  public MechanismArrayAttribute mechanismAttributeArrayValue(long[] value) {
+    ckAttribute.pValue = value.clone();
+    present = true;
+    return this;
   }
 
   /**
-   * Get the parameters object of this mechanism.
+   * Get the mechanism attribute array value of this attribute as Mechanism[].
+   * Null, is also possible.
    *
-   * @return The parameters of this mechanism. May be null.
+   * @return The mechanism attribute array value of this attribute or null.
    */
-  public Parameters getParameters() {
-    return parameters;
+  @Override
+  public long[] getValue() {
+    return ckAttribute.pValue == null ? null : ((long[]) ckAttribute.pValue).clone();
   }
 
   /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
+   * Get a string representation of the value of this attribute.
    *
-   * @return The code of this mechanism.
+   * @return A string representation of the value of this attribute.
    */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
-  }
-
-  /**
-   * Get the name of this mechanism.
-   *
-   * @return The name of this mechanism.
-   */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
-   */
-  public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+  protected String getValueString() {
+    long[] allowedMechanisms = getValue();
+    if (allowedMechanisms != null && allowedMechanisms.length > 0) {
+      StringBuilder sb = new StringBuilder(200);
+      for (long mech : allowedMechanisms) {
+        sb.append("\n      ").append(PKCS11Constants.codeToName(PKCS11Constants.Category.CKM, mech));
+      }
+      return sb.toString();
+    } else {
+      return "<NULL_PTR>";
+    }
   }
 
 }

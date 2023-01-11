@@ -51,7 +51,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.parameters.Parameters;
+import org.xipki.pkcs11.params.Parameters;
 import org.xipki.util.Hex;
 
 import java.io.InputStream;

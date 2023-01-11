@@ -21,8 +21,8 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.parameters.CcmParameters;
-import org.xipki.pkcs11.parameters.Parameters;
+import org.xipki.pkcs11.params.CcmParameters;
+import org.xipki.pkcs11.params.Parameters;
 
 import java.util.Arrays;
 

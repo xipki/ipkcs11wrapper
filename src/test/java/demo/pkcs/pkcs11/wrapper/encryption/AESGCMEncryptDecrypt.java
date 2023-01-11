@@ -22,7 +22,7 @@ import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.parameters.GcmParameters;
+import org.xipki.pkcs11.params.GcmParameters;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
 

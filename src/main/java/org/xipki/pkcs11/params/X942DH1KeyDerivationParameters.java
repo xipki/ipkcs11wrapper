@@ -40,86 +40,66 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
+package org.xipki.pkcs11.params;
 
-import org.xipki.pkcs11.params.Parameters;
+import iaik.pkcs.pkcs11.wrapper.CK_X9_42_DH1_DERIVE_PARAMS;
+import org.xipki.pkcs11.Functions;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * This abstract class encapsulates parameters for the X9.42 DH
+ * Mechanism.X9_42_DH_DERIVE.
  *
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
  */
-public class Mechanism {
+public class X942DH1KeyDerivationParameters extends DHKeyDerivationParameters {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
+   * The data shared between the two parties.
    */
-  private final long pkcs11MechanismCode;
+  private final byte[] otherInfo;
 
   /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
-   */
-  private final Parameters parameters;
-
-  /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Create a new X942DH1KeyDerivationParameters object with the given
+   * attributes.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param keyDerivationFunction
+   *          The key derivation function used on the shared secret value.
+   *          One of the values defined in KeyDerivationFunctionType.
+   * @param otherInfo
+   *          The data shared between the two parties.
+   * @param publicData
+   *          The other party's public key value.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public X942DH1KeyDerivationParameters(long keyDerivationFunction, byte[] otherInfo, byte[] publicData) {
+    super(keyDerivationFunction, publicData);
+    this.otherInfo = otherInfo;
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Get this parameters object as an object of the CK_X9_42_DH1_DERIVE_PARAMS
+   * class.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
+   * @return This object as a CK_X9_42_DH1_DERIVE_PARAMS object.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
+  public CK_X9_42_DH1_DERIVE_PARAMS getPKCS11ParamsObject() {
+    CK_X9_42_DH1_DERIVE_PARAMS params = new CK_X9_42_DH1_DERIVE_PARAMS();
+
+    params.kdf = kdf;
+    params.pOtherInfo = otherInfo;
+    params.pPublicData = publicData;
+
+    return params;
   }
 
   /**
-   * Get the parameters object of this mechanism.
+   * Returns the string representation of this object. Do not parse data from
+   * this string, it is for debugging only.
    *
-   * @return The parameters of this mechanism. May be null.
-   */
-  public Parameters getParameters() {
-    return parameters;
-  }
-
-  /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
-   *
-   * @return The code of this mechanism.
-   */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
-  }
-
-  /**
-   * Get the name of this mechanism.
-   *
-   * @return The name of this mechanism.
-   */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
+   * @return A string representation of this object.
    */
   public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+    return super.toString() + "\n  Other Info: " + Functions.toHex(otherInfo);
   }
 
 }

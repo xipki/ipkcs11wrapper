@@ -40,86 +40,43 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
+package org.xipki.pkcs11.params;
 
-import org.xipki.pkcs11.params.Parameters;
+import iaik.pkcs.pkcs11.wrapper.CK_VERSION;
+import org.xipki.pkcs11.Version;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * This class is used for the Mechanism.SSL3_PRE_MASTER_KEY_GEN.
  *
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
+ *
  */
-public class Mechanism {
+public class VersionParameters extends Version implements Parameters {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
-   */
-  private final long pkcs11MechanismCode;
-
-  /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
-   */
-  private final Parameters parameters;
-
-  /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Create a new VersionParameters object with the given major and minor
+   * version.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param major
+   *          The major version number.
+   * @param minor
+   *          The minor version number.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public VersionParameters(byte major, byte minor) {
+    super(major, minor);
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Get this parameters object as a CK_VERSION object.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
+   * @return This object as a CK_VERSION object.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
-  }
-
-  /**
-   * Get the parameters object of this mechanism.
-   *
-   * @return The parameters of this mechanism. May be null.
-   */
-  public Parameters getParameters() {
-    return parameters;
-  }
-
-  /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
-   *
-   * @return The code of this mechanism.
-   */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
-  }
-
-  /**
-   * Get the name of this mechanism.
-   *
-   * @return The name of this mechanism.
-   */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
-   */
-  public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+  public CK_VERSION getPKCS11ParamsObject() {
+    CK_VERSION ret = new CK_VERSION();
+    ret.major = getMajor();
+    ret.minor = getMinor();
+    return ret;
   }
 
 }

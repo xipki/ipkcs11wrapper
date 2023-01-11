@@ -40,86 +40,56 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
+package org.xipki.pkcs11.params;
 
-import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.Functions;
+
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * This abstract class encapsulates parameters for the DH mechanisms
+ * CKM_ECDH1_DERIVE, CKM_CDH1_COFACTOR_DERIVE, CKM_ECMQV_DERIVE,
+ * CKM_X9_42_DH_DERIVE, CKM_X9_42_DH_HYBRID_DERIVE and CKM_X9_42_MQV_DERIVE.
  *
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
  */
-public class Mechanism {
+abstract public class DHKeyDerivationParameters implements Parameters {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
+   * The key derivation function used on the shared secret value.
    */
-  private final long pkcs11MechanismCode;
+  protected long kdf;
 
   /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
+   * The other party's public key value.
    */
-  private final Parameters parameters;
+  protected byte[] publicData;
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Create a new DHKeyDerivationParameters object with the given attributes.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param kdf
+   *          The key derivation function used on the shared secret value.
+   *          One of the values defined in CKD_
+   * @param publicData
+   *          The other party's public key value.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public DHKeyDerivationParameters(long kdf, byte[] publicData) {
+    this.publicData = Functions.requireNonNull("publicData", publicData);
+    this.kdf = Functions.requireAmong("kdf", kdf,
+                  CKD_NULL, CKD_SHA1_KDF, CKD_SHA1_KDF_ASN1, CKD_SHA1_KDF_CONCATENATE);
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Returns the string representation of this object. Do not parse data from
+   * this string, it is for debugging only.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
-   */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
-  }
-
-  /**
-   * Get the parameters object of this mechanism.
-   *
-   * @return The parameters of this mechanism. May be null.
-   */
-  public Parameters getParameters() {
-    return parameters;
-  }
-
-  /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
-   *
-   * @return The code of this mechanism.
-   */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
-  }
-
-  /**
-   * Get the name of this mechanism.
-   *
-   * @return The name of this mechanism.
-   */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
+   * @return A string representation of this object.
    */
   public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+    return "Class: " + getClass().getName() + "\n  Key Derivation Function: " + codeToName(Category.CKD, kdf) +
+        "\n  Public Data: " + Functions.toHex(publicData);
   }
 
 }

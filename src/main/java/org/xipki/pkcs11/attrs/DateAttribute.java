@@ -40,86 +40,81 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
+package org.xipki.pkcs11.attrs;
 
-import org.xipki.pkcs11.params.Parameters;
+import iaik.pkcs.pkcs11.wrapper.CK_DATE;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * Objects of this class represent a date attribute of a PKCS#11 object
+ * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
  */
-public class Mechanism {
+public class DateAttribute extends Attribute {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
-   */
-  private final long pkcs11MechanismCode;
-
-  /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
-   */
-  private final Parameters parameters;
-
-  /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param type
+   *          The PKCS#11 type of this attribute; e.g. CKA_START_DATE.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public DateAttribute(long type) {
+    super(type);
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Set the date value of this attribute. Null, is also valid.
+   * A call to this method sets the present flag to true.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
+   * @param value
+   *          The date value to set. May be null.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
+  public DateAttribute dateValue(Date value) {
+    if (value == null) {
+      ckAttribute.pValue = null;
+    } else {
+      //poor memory/performance behavior, consider alternatives
+      Calendar calendar = new GregorianCalendar();
+      calendar.setTime(value);
+      int year = calendar.get(Calendar.YEAR);
+      // month counting starts with zero
+      int month = calendar.get(Calendar.MONTH) + 1;
+      int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+      CK_DATE ckDate = new CK_DATE();
+      ckAttribute.pValue = ckDate;
+
+      ckDate.year = Integer.toString(year).toCharArray();
+      ckDate.month = (month < 10 ? "0" + month: Integer.toString(month)).toCharArray();
+      ckDate.day = (day < 10 ? "0" + day: Integer.toString(day)).toCharArray();
+    }
+    present = true;
+    return this;
   }
 
   /**
-   * Get the parameters object of this mechanism.
+   * Get the date value of this attribute. Null, is also possible.
    *
-   * @return The parameters of this mechanism. May be null.
+   * @return The date value of this attribute or null.
    */
-  public Parameters getParameters() {
-    return parameters;
-  }
+  @Override
+  public Date getValue() {
+    if (ckAttribute.pValue == null) return null;
 
-  /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
-   *
-   * @return The code of this mechanism.
-   */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
-  }
-
-  /**
-   * Get the name of this mechanism.
-   *
-   * @return The name of this mechanism.
-   */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
-   */
-  public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+    CK_DATE ckDate = (CK_DATE) ckAttribute.pValue;
+    int year = Integer.parseInt(new String(ckDate.year));
+    int month = Integer.parseInt(new String(ckDate.month));
+    int day = Integer.parseInt(new String(ckDate.day));
+    // poor performance, consider alternatives
+    Calendar calendar = new GregorianCalendar();
+    // calendar starts months with 0
+    calendar.set(year, Calendar.JANUARY + (month - 1), day);
+    return calendar.getTime();
   }
 
 }

@@ -40,86 +40,48 @@
 // OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-package org.xipki.pkcs11;
-
-import org.xipki.pkcs11.params.Parameters;
+package org.xipki.pkcs11.attrs;
 
 /**
- * Objects of this class represent a mechanism as defined in PKCS#11. There are
- * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
+ * Objects of this class represent a boolean attribute of a PKCS#11 object
+ * as specified by PKCS#11.
  *
  * @author Karl Scheibelhofer
  * @author Lijun Liao (xipki)
  */
-public class Mechanism {
+public class BooleanAttribute extends Attribute {
 
   /**
-   * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
-   * likewise).
-   */
-  private final long pkcs11MechanismCode;
-
-  /**
-   * The parameters of the mechanism. Not all mechanisms use these parameters.
-   */
-  private final Parameters parameters;
-
-  /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Constructor taking the PKCS#11 type of the attribute.
    *
-   * @param pkcs11MechanismCode
-   *          The mechanism code.
+   * @param type
+   *          The PKCS#11 type of this attribute; e.g. CKA_PRIVATE.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public BooleanAttribute(long type) {
+    super(type);
   }
 
   /**
-   * Constructor taking just the mechanism code as defined in PKCS11Constants.
+   * Set the boolean value of this attribute. Null, is also valid.
+   * A call to this method sets the present flag to true.
    *
-   * @param pkcs11MechanismCode The mechanism code.
-   * @param parameters The mechanism parameters.
+   * @param value
+   *          The boolean value to set. May be null.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
-    this.parameters = parameters;
+  public BooleanAttribute booleanValue(Boolean value) {
+    ckAttribute.pValue = value;
+    present = true;
+    return this;
   }
 
   /**
-   * Get the parameters object of this mechanism.
+   * Get the boolean value of this attribute. Null, is also possible.
    *
-   * @return The parameters of this mechanism. May be null.
+   * @return The boolean value of this attribute or null.
    */
-  public Parameters getParameters() {
-    return parameters;
-  }
-
-  /**
-   * Get the code of this mechanism as defined in PKCS11Constants (of
-   * pkcs11t.h likewise).
-   *
-   * @return The code of this mechanism.
-   */
-  public long getMechanismCode() {
-    return pkcs11MechanismCode;
-  }
-
-  /**
-   * Get the name of this mechanism.
-   *
-   * @return The name of this mechanism.
-   */
-  public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
-  }
-
-  /**
-   * Returns the string representation of this object.
-   *
-   * @return the string representation of this object
-   */
-  public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+  @Override
+  public Boolean getValue() {
+    return (Boolean) ckAttribute.pValue;
   }
 
 }
