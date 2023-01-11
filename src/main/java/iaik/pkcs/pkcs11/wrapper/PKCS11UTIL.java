@@ -43,6 +43,7 @@
 package iaik.pkcs.pkcs11.wrapper;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Stiftung SIC
@@ -59,7 +60,7 @@ public class PKCS11UTIL {
    *           if UTF8 encoding is not supported
    */
   public static byte[] utf8Encoder(char[] charArray) throws UnsupportedEncodingException {
-    return new String(charArray).getBytes("UTF8");
+    return new String(charArray).getBytes(StandardCharsets.UTF_8);
   }
 
   /**
@@ -72,7 +73,7 @@ public class PKCS11UTIL {
    *           if UTF8 encoding is not supported
    */
   public static char[] utf8Decoder(byte[] byteArray) throws UnsupportedEncodingException {
-    return new String(byteArray, "UTF8").toCharArray();
+    return new String(byteArray, StandardCharsets.UTF_8).toCharArray();
   }
 
 }

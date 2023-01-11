@@ -58,7 +58,7 @@ package iaik.pkcs.pkcs11.wrapper;
  * @author Karl Scheibelhofer
  * @author Martin Schläffer
  */
-public class CK_ATTRIBUTE implements Cloneable {
+public class CK_ATTRIBUTE {
 
   /**
    * <B>PKCS#11:</B>

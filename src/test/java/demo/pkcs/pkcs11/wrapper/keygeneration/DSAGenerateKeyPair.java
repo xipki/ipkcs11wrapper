@@ -61,7 +61,7 @@ public class DSAGenerateKeyPair extends TestBase {
 
     final long mechCode = CKM_DSA_KEY_PAIR_GEN;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + codeToName(Category.CKM, mechCode));
+      System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
 

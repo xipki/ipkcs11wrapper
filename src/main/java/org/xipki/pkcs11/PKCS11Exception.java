@@ -69,7 +69,7 @@ public class PKCS11Exception extends TokenException {
    *          The PKCS#11 error code (return value).
    */
   public PKCS11Exception(long errorCode) {
-    super(PKCS11Constants.codeToName(PKCS11Constants.Category.CKR, errorCode));
+    super(PKCS11Constants.ckrCodeToName(errorCode));
     this.errorCode = errorCode;
   }
 

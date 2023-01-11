@@ -1411,7 +1411,6 @@ public final class PKCS11Constants {
     return map.stringToCode(name);
   }
 
-
   public static String ckaCodeToName(long code) {
     return codeToName(Category.CKA, code);
   }

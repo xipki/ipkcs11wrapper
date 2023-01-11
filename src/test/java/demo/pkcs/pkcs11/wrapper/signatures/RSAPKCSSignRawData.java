@@ -53,7 +53,7 @@ public class RSAPKCSSignRawData extends SignatureTestBase {
     LOG.info("generate signature key pair");
     final long mechCode = CKM_RSA_PKCS;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + codeToName(Category.CKM, mechCode));
+      System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism

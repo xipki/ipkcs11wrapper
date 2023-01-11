@@ -47,7 +47,7 @@ public class EdDSASignRawData extends SignatureTestBase {
 
     final long mechCode = CKM_EDDSA;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + codeToName(Category.CKM, mechCode));
+      System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism

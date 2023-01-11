@@ -58,7 +58,7 @@ package iaik.pkcs.pkcs11.wrapper;
  * @author Karl Scheibelhofer
  * @author Martin Schläffer
  */
-public class CK_DATE implements Cloneable {
+public class CK_DATE {
 
   /**
    * <B>PKCS#11:</B>

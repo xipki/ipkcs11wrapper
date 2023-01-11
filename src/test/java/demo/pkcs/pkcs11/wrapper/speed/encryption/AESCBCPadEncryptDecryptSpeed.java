@@ -41,7 +41,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
   private class MyEncryptExecutor extends EncryptExecutor {
 
     public MyEncryptExecutor(Token token, char[] pin) throws PKCS11Exception {
-      super(codeToName(Category.CKM, encryptMechanism) + " (" + keyLen + ") Encrypt Speed",
+      super(ckmCodeToName(encryptMechanism) + " (" + keyLen + ") Encrypt Speed",
           getKeyGenMech(token), token, pin,
           getEncryptionMech(token), inputLen);
     }
@@ -56,7 +56,7 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
   private class MyDecryptExecutor extends DecryptExecutor {
 
     public MyDecryptExecutor(Token token, char[] pin) throws PKCS11Exception {
-      super(codeToName(Category.CKM, encryptMechanism) + " (" + keyLen + ") Decrypt Speed",
+      super(ckmCodeToName(encryptMechanism) + " (" + keyLen + ") Decrypt Speed",
           getKeyGenMech(token), token, pin,
           getEncryptionMech(token), inputLen);
     }
@@ -100,12 +100,12 @@ public class AESCBCPadEncryptDecryptSpeed extends TestBase {
   public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, keyGenMechanism)) {
-      System.out.println(codeToName(Category.CKM, keyGenMechanism) + " is not supported, skip test");
+      System.out.println(ckmCodeToName(keyGenMechanism) + " is not supported, skip test");
       return;
     }
 
     if (!Util.supports(token, encryptMechanism)) {
-      System.out.println(codeToName(Category.CKM, encryptMechanism) + " is not supported, skip test");
+      System.out.println(ckmCodeToName(encryptMechanism) + " is not supported, skip test");
       return;
     }
 

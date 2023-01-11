@@ -110,7 +110,7 @@ public class Mechanism {
    * @return The name of this mechanism.
    */
   public String getName() {
-    return PKCS11Constants.codeToName(PKCS11Constants.Category.CKK, pkcs11MechanismCode);
+    return PKCS11Constants.ckmCodeToName(pkcs11MechanismCode);
   }
 
   /**

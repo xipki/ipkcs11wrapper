@@ -41,7 +41,7 @@ public class RSAPSSSignSpeed extends TestBase {
   private class MySignExecutor extends SignExecutor {
 
     public MySignExecutor(Token token, char[] pin) throws PKCS11Exception {
-      super(codeToName(Category.CKM, signMechanism) + " (2048) Sign Speed",
+      super(ckmCodeToName(signMechanism) + " (2048) Sign Speed",
           new Mechanism(keypairGenMechanism), token, pin, signMechanism2, 32);
     }
 
@@ -60,7 +60,7 @@ public class RSAPSSSignSpeed extends TestBase {
   private class MyVerifyExecutor extends VerifyExecutor {
 
     public MyVerifyExecutor(Token token, char[] pin) throws PKCS11Exception {
-      super(codeToName(Category.CKM, signMechanism) + " (2048) Verify Speed",
+      super(ckmCodeToName(signMechanism) + " (2048) Verify Speed",
           new Mechanism(keypairGenMechanism), token, pin, signMechanism2, 32);
     }
 
@@ -98,12 +98,12 @@ public class RSAPSSSignSpeed extends TestBase {
   public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, keypairGenMechanism)) {
-      System.out.println(codeToName(Category.CKM, keypairGenMechanism) + " is not supported, skip test");
+      System.out.println(ckmCodeToName(keypairGenMechanism) + " is not supported, skip test");
       return;
     }
 
     if (!Util.supports(token, signMechanism)) {
-      System.out.println(codeToName(Category.CKM, signMechanism) + " is not supported, skip test");
+      System.out.println(ckmCodeToName(signMechanism) + " is not supported, skip test");
       return;
     }
 

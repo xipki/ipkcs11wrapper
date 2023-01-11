@@ -202,7 +202,7 @@ public class TestBase {
 
   protected void assertSupport(Token token, long mechCode) throws PKCS11Exception {
     if (!Util.supports(token, mechCode)) {
-      String msg = "Mechanism " + codeToName(Category.CKM, mechCode) + " is not supported";
+      String msg = "Mechanism " + ckmCodeToName(mechCode) + " is not supported";
       LOG.error(msg);
       throw new PKCS11Exception(CKR_MECHANISM_INVALID);
     }

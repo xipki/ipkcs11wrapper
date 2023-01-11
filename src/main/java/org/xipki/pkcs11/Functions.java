@@ -16,6 +16,7 @@
  */
 package org.xipki.pkcs11;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -72,6 +73,11 @@ public class Functions {
       return out;
     }
 
+  }
+
+  public static byte[] asUnsignedByteArray(BigInteger bn) {
+    byte[] bytes = bn.toByteArray();
+    return bytes[0] != 0 ? bytes : Arrays.copyOfRange(bytes, 1, bytes.length);
   }
 
   /**

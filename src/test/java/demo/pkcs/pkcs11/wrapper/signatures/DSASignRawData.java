@@ -49,7 +49,7 @@ public class DSASignRawData extends SignatureTestBase {
 
     final long mechCode = CKM_DSA;
     if (!Util.supports(token, mechCode)) {
-      System.out.println("Unsupported mechanism " + codeToName(Category.CKM, mechCode));
+      System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism
@@ -58,7 +58,6 @@ public class DSASignRawData extends SignatureTestBase {
     final boolean inToken = false;
 
     PKCS11KeyPair generatedKeyPair = generateDSAKeypair(token, session, inToken);
-    long generatedPrivateKey = generatedKeyPair.getPrivateKey();
 
     LOG.info("##################################################");
     LOG.info("signing data");
@@ -67,21 +66,20 @@ public class DSASignRawData extends SignatureTestBase {
     byte[] hashValue = md.digest(dataToBeSigned);
 
     // initialize for signing
-    session.signInit(signatureMechanism, generatedPrivateKey);
+    session.signInit(signatureMechanism, generatedKeyPair.getPrivateKey());
 
     // This signing operation is implemented in most of the drivers
     byte[] signatureValue = session.sign(hashValue);
-    LOG.info("The signature value is: {}", Functions.toHex(signatureValue));
-
-    // verify with PKCS#11
-    long generatedPublicKey = generatedKeyPair.getPublicKey();
-    session.verifyInit(signatureMechanism, generatedPublicKey);
-    // error will be thrown if signature is invalid
-    session.verify(hashValue, signatureValue);
+    LOG.info("The signature value is : (len={}) {}", signatureValue.length, Functions.toHex(signatureValue));
 
     // verify with JCE
-    jceVerifySignature("SHA256withDSA", session, generatedPublicKey, CKK_DSA,
+    jceVerifySignature("SHA256withDSA", session, generatedKeyPair.getPublicKey(), CKK_DSA,
         dataToBeSigned, Util.dsaSigPlainToX962(signatureValue));
+
+    // verify with PKCS#11
+    session.verifyInit(signatureMechanism, generatedKeyPair.getPublicKey());
+    // error will be thrown if signature is invalid
+    session.verify(hashValue, signatureValue);
 
     LOG.info("##################################################");
   }

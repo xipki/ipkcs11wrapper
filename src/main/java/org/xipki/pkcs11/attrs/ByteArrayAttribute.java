@@ -86,7 +86,7 @@ public class ByteArrayAttribute extends Attribute {
    *          The byte-array value to set. May be null.
    */
   public ByteArrayAttribute bigIntValue(BigInteger value) {
-    return byteArrayValue(value == null ? null : value.toByteArray());
+    return byteArrayValue(value == null ? null : Functions.asUnsignedByteArray(value));
   }
 
   /**

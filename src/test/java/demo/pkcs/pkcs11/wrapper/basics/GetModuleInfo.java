@@ -94,7 +94,7 @@ public class GetModuleInfo extends TestBase {
       long[] supportedMechanisms = tokens[i].getMechanismList();
       for (long supportedMechanism : supportedMechanisms) {
         LOG.info("--------------------------------------------------");
-        LOG.info("Mechanism Name: {}", codeToName(Category.CKM, supportedMechanism));
+        LOG.info("Mechanism Name: {}", ckmCodeToName(supportedMechanism));
         MechanismInfo mechanismInfo = tokens[i].getMechanismInfo(supportedMechanism);
         LOG.info("{}", mechanismInfo);
         LOG.info("--------------------------------------------------");

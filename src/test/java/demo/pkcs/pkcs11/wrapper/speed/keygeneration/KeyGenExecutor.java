@@ -25,8 +25,7 @@ import org.xipki.pkcs11.*;
 
 import java.util.Random;
 
-import static org.xipki.pkcs11.PKCS11Constants.Category;
-import static org.xipki.pkcs11.PKCS11Constants.codeToName;
+import static org.xipki.pkcs11.PKCS11Constants.ckmCodeToName;
 
 /**
  * Secret key generation executor base class.
@@ -95,7 +94,7 @@ public abstract class KeyGenExecutor extends Pkcs11Executor {
 
   private static String describe(long mechanism, int keyLen, boolean inToken) {
     StringBuilder sb = new StringBuilder(100)
-      .append(codeToName(Category.CKM, mechanism)).append(" (");
+      .append(ckmCodeToName(mechanism)).append(" (");
     if (keyLen > 0) {
       sb.append(keyLen * 8).append(" bits, ");
     }

@@ -70,7 +70,18 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  */
 public abstract class Attribute {
 
-  private static final Map<Long, Class<?>> attributeClasses;
+  private enum AttrType {
+    ATTRIBUTEARRAY,
+    BOOLEAN,
+    BYTEARRAY,
+    CHARARRAY,
+    DATE,
+    LONG,
+    MECHANISM,
+    MECHANISMARRAY
+  }
+
+  private static final Map<Long, AttrType> attributeTypes;
 
   /**
    * True, if the object really possesses this attribute.
@@ -94,7 +105,7 @@ public abstract class Attribute {
   protected CK_ATTRIBUTE ckAttribute;
 
   static {
-    attributeClasses = new HashMap<>(130);
+    attributeTypes = new HashMap<>(130);
     String propFile = "org/xipki/pkcs11/type-CKA.properties";
     Properties props = new Properties();
     try {
@@ -105,28 +116,19 @@ public abstract class Attribute {
         long code = nameToCode(Category.CKA, name);
         if (code == -1) throw new IllegalStateException("unknown CKA: " + name);
 
-        if (attributeClasses.containsKey(code)) {
+        if (attributeTypes.containsKey(code)) {
           throw new IllegalStateException("duplicated definition of CKA: " + name);
         }
 
-        Class<?> clazz = "Boolean".equalsIgnoreCase(type) ? BooleanAttribute.class
-            : "Long".equalsIgnoreCase(type) ? LongAttribute.class
-            : "CharArray".equalsIgnoreCase(type) ? CharArrayAttribute.class
-            : "ByteArray".equalsIgnoreCase(type) ? ByteArrayAttribute.class
-            : "Date".equalsIgnoreCase(type) ? DateAttribute.class
-            : "Mechanism".equalsIgnoreCase(type) ? MechanismAttribute.class
-            : "MechanismArray".equalsIgnoreCase(type) ? MechanismArrayAttribute.class
-            : "AttributeArray".equalsIgnoreCase(type) ? AttributeArrayAttribute.class : null;
+        AttrType attrType = AttrType.valueOf(type.toUpperCase(Locale.ROOT));
 
-        if (clazz == null) throw new IllegalStateException("unknown type " + type);
-
-        attributeClasses.put(code, clazz);
+        attributeTypes.put(code, attrType);
       }
     } catch (Throwable t) {
       throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
     }
 
-    if (attributeClasses.isEmpty()) {
+    if (attributeTypes.isEmpty()) {
       throw new IllegalStateException("no code to name map is defined properties file " + propFile);
     }
   }
@@ -148,80 +150,51 @@ public abstract class Attribute {
   }
 
   public static Attribute getInstance(long type) {
-    Class<?> clazz = getAttributeClass(type);
-    if (clazz == null) {
-      throw new IllegalArgumentException("Unknown attribute type " + codeToName(Category.CKA, type));
-    }
-    Attribute attr = (clazz == BooleanAttribute.class) ? new BooleanAttribute(type)
-        : (clazz == ByteArrayAttribute.class) ? new ByteArrayAttribute(type)
-        : (clazz == CharArrayAttribute.class) ? new CharArrayAttribute(type)
-        : (clazz == DateAttribute.class)      ? new DateAttribute(type)
-        : (clazz == LongAttribute.class)      ? new LongAttribute(type)
-        : (clazz == MechanismAttribute.class) ? new MechanismAttribute(type)
-        : (clazz == MechanismArrayAttribute.class) ? new MechanismArrayAttribute(type)
-        : (clazz == AttributeArrayAttribute.class) ? new AttributeArrayAttribute(type)
-        : null;
-    if (attr == null) {
-      throw new IllegalStateException("unknown class " + clazz);
-    }
+    Attribute attr = getInstance0(type);
+    if (attr == null) throw new IllegalArgumentException("Unknown attribute type " + ckaCodeToName(type));
+
     return attr;
   }
 
-  public static Attribute getInstance(long type, Object value) {
-    Class<?> clazz = getAttributeClass(type);
-    if (clazz == null) {
-      throw new IllegalArgumentException("Unknown attribute type " + codeToName(Category.CKA, type));
-    }
-
-    if (clazz == BooleanAttribute.class) {
-      return new BooleanAttribute(type).booleanValue((Boolean) value);
-    } else if (clazz == ByteArrayAttribute.class) {
-      byte[] baValue;
-      if (value == null)                baValue = null;
-      else if (value instanceof byte[]) baValue = (byte[]) value;
-      else {
-        baValue = ((BigInteger) value).toByteArray();
-        if (baValue[0] == 0) baValue = Arrays.copyOfRange(baValue, 1, baValue.length);
-      }
-      return new ByteArrayAttribute(type).byteArrayValue(baValue);
-    } else if (clazz == CharArrayAttribute.class) {
-      CharArrayAttribute attr = new CharArrayAttribute(type);
-      if (value == null)                return attr.charArrayValue(null);
-      else if (value instanceof char[]) return attr.charArrayValue((char[]) value);
-      else                              return attr.stringValue((String) value);
-    } else if (clazz == DateAttribute.class) {
-      return new DateAttribute(type).dateValue((Date) value);
-    } else if (clazz == LongAttribute.class || clazz == MechanismAttribute.class) {
-      LongAttribute attr = (clazz == LongAttribute.class) ? new LongAttribute(type) : new MechanismAttribute(type);
-      if (value == null)              return attr.longValue(null);
-      else if (value instanceof Long) return attr.longValue((Long) value);
-      else                            return attr.longValue((long) (int) value);
-    } else if (clazz == MechanismArrayAttribute.class) {
-      return new MechanismArrayAttribute(type).mechanismAttributeArrayValue((long[]) value);
-    } else if (clazz == AttributeArrayAttribute.class) {
-      return new AttributeArrayAttribute(type).attributeArrayValue((AttributeVector) value);
-    } else {
-      throw new IllegalStateException("unknown class " + clazz); // should not reach here
-    }
+  static Attribute getInstance0(long type) {
+    AttrType attrType = attributeTypes.get(type);
+    return (attrType == AttrType.BOOLEAN)  ? new BooleanAttribute(type)
+        : (attrType == AttrType.BYTEARRAY) ? new ByteArrayAttribute(type)
+        : (attrType == AttrType.CHARARRAY) ? new CharArrayAttribute(type)
+        : (attrType == AttrType.DATE)      ? new DateAttribute(type)
+        : (attrType == AttrType.LONG)      ? new LongAttribute(type)
+        : (attrType == AttrType.MECHANISM) ? new MechanismAttribute(type)
+        : (attrType == AttrType.MECHANISMARRAY) ? new MechanismArrayAttribute(type)
+        : (attrType == AttrType.ATTRIBUTEARRAY) ? new AttributeArrayAttribute(type)
+        : null;
   }
 
-  /**
-   * Get the class of the given attribute type.
-   * Current existing Attribute classes are:
-   *           AttributeArray
-   *           BooleanAttribute
-   *           ByteArrayAttribute
-   *           CharArrayAttribute
-   *           DateAttribute
-   *           LongAttribute
-   *           MechanismAttribute
-   *           MechanismArrayAttribute
-   * @param type
-   *          The attribute type.
-   * @return The class of the attribute type, or null if there is no such type.
-   */
-  protected static Class<?> getAttributeClass(long type) {
-    return attributeClasses.get(type);
+  public static Attribute getInstance(long type, Object value) {
+    AttrType attrType = attributeTypes.get(type);
+
+    if (attrType == AttrType.BOOLEAN) {
+      return new BooleanAttribute(type).booleanValue((Boolean) value);
+    } else if (attrType == AttrType.BYTEARRAY) {
+      return (value == null || value instanceof byte[])
+          ? new ByteArrayAttribute(type).byteArrayValue((byte[]) value)
+          : new ByteArrayAttribute(type).bigIntValue((BigInteger) value);
+    } else if (attrType == AttrType.CHARARRAY) {
+      return (value == null || value instanceof char[])
+          ? new CharArrayAttribute(type).charArrayValue((char[]) value)
+          : new CharArrayAttribute(type).stringValue((String) value);
+    } else if (attrType == AttrType.DATE) {
+      return new DateAttribute(type).dateValue((Date) value);
+    } else if (attrType == AttrType.LONG || attrType == AttrType.MECHANISM) {
+      LongAttribute attr = (attrType == AttrType.LONG) ? new LongAttribute(type) : new MechanismAttribute(type);
+      return (value == null || value instanceof Long)
+          ? attr.longValue((Long) value) : attr.longValue((long) (int) value);
+    } else if (attrType == AttrType.MECHANISMARRAY) {
+      return new MechanismArrayAttribute(type).mechanismAttributeArrayValue((long[]) value);
+    } else if (attrType == AttrType.ATTRIBUTEARRAY) {
+      return new AttributeArrayAttribute(type).attributeArrayValue((AttributeVector) value);
+    } else {
+      throw new IllegalStateException("unknown attribute type " + ckaCodeToName(type));
+    }
   }
 
   public Attribute stateKnown(boolean stateKnown) {
@@ -340,7 +313,7 @@ public abstract class Attribute {
   public String toString(boolean withName, String indent) {
     StringBuilder sb = new StringBuilder(32).append(indent);
 
-    if (withName) sb.append(codeToName(Category.CKA, ckAttribute.type)).append(": ");
+    if (withName) sb.append(ckaCodeToName(ckAttribute.type)).append(": ");
 
     String valueString = (!stateKnown) ? "<Value is not present or sensitive>"
         : present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";

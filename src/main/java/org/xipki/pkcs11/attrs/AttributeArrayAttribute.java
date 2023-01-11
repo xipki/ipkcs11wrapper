@@ -103,19 +103,12 @@ public class AttributeArrayAttribute extends Attribute {
     AttributeVector template = new AttributeVector();
     for (CK_ATTRIBUTE ck_attribute : attributesArray) {
       long type = ck_attribute.type;
-      Class<?> implementation = getAttributeClass(type);
-      if (implementation == null) {
+      Attribute attr = Attribute.getInstance0(type);
+      if (attr == null) {
         // ignore
-        System.err.println("Could not create attribute for the attribute type " +
-            PKCS11Constants.codeToName(PKCS11Constants.Category.CKA, type));
+        System.err.println("Could not create attribute for the attribute type " + PKCS11Constants.ckaCodeToName(type));
       } else {
-        try {
-          Attribute attribute = (Attribute) implementation.getDeclaredConstructor(long.class).newInstance(type);
-          template.attr(attribute.ckAttribute(ck_attribute).present(true));
-        } catch (Exception ex) {
-          System.err.println("Error when trying to create a " + implementation
-              + " instance for " + type + ": " + ex.getMessage());
-        }
+        template.attr(attr.ckAttribute(ck_attribute).present(true));
       }
     }
     return template;

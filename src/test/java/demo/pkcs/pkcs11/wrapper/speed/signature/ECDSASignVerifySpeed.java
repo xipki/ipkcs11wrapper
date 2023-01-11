@@ -39,7 +39,7 @@ public class ECDSASignVerifySpeed extends TestBase {
   private class MySignExecutor extends SignExecutor {
 
     public MySignExecutor(Token token, char[] pin) throws PKCS11Exception {
-      super(codeToName(Category.CKM, signMechanism) + " (NIST P-256) Sign Speed",
+      super(ckmCodeToName(signMechanism) + " (NIST P-256) Sign Speed",
           new Mechanism(keypairGenMechanism), token, pin, new Mechanism(signMechanism), 32);
     }
 
@@ -58,7 +58,7 @@ public class ECDSASignVerifySpeed extends TestBase {
   private class MyVerifyExecutor extends VerifyExecutor {
 
     public MyVerifyExecutor(Token token, char[] pin) throws PKCS11Exception {
-      super(codeToName(Category.CKM, signMechanism) + " (NIST P-256) Verify Speed",
+      super(ckmCodeToName(signMechanism) + " (NIST P-256) Verify Speed",
           new Mechanism(keypairGenMechanism), token, pin, new Mechanism(signMechanism), 32);
     }
 
@@ -93,12 +93,12 @@ public class ECDSASignVerifySpeed extends TestBase {
   public void main() throws PKCS11Exception {
     Token token = getNonNullToken();
     if (!Util.supports(token, keypairGenMechanism)) {
-      System.out.println(codeToName(Category.CKM, keypairGenMechanism) + " is not supported, skip test");
+      System.out.println(ckmCodeToName(keypairGenMechanism) + " is not supported, skip test");
       return;
     }
 
     if (!Util.supports(token, signMechanism)) {
-      System.out.println(codeToName(Category.CKM, signMechanism) + " is not supported, skip test");
+      System.out.println(ckmCodeToName(signMechanism) + " is not supported, skip test");
       return;
     }
 
