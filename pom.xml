@@ -131,7 +131,6 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
           <configuration>
-            <argLine>${test.junit.argline}</argLine>
             <!-- as workaround of bug https://issues.apache.org/jira/browse/SUREFIRE-1588 -->
             <useSystemClassLoader>false</useSystemClassLoader>
             <includes>

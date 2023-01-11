@@ -19,7 +19,8 @@ package org.xipki.pkcs11;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import static org.xipki.pkcs11.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.Category;
+import static org.xipki.pkcs11.PKCS11Constants.codeToName;
 
 /**
  * This class contains only static methods. It is the place for all functions

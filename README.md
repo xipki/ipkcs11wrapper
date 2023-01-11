@@ -20,7 +20,7 @@ Use ipkcs11wrapper in your project
 
 JUnit tests
 =====
-- Configure the library and PIN of your HSM module in the file `example/data/pkcs11.properties`.
+- Configure the library and PIN of your HSM module in the file `src/test/resources/pkcs11.properties`.
 - `mvn test`  
    - To activate the speed tests use `-PspeedTests`
    - By default, the speed test will run with 2 threads, you can change the

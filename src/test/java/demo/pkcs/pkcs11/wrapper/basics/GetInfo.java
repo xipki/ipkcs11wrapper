@@ -46,7 +46,8 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
 
-import static org.xipki.pkcs11.PKCS11Constants.*;
+import static org.xipki.pkcs11.PKCS11Constants.CKF_TOKEN_INITIALIZED;
+import static org.xipki.pkcs11.PKCS11Constants.ckmCodeToName;
 
 /**
  * This demo program lists information about a library, the available slots, the
