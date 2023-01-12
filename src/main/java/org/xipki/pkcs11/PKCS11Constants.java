@@ -1286,22 +1286,6 @@ public final class PKCS11Constants {
   public static final long CKM_VENDOR_SM4_MAC_GENERAL      = 0xFFFFF009L;
   public static final long CKM_VENDOR_SM4_MAC              = 0xFFFFF00AL;
 
-  public static void main(String[] args) {
-    Category[] categories = new Category[]{
-        Category.CKA, Category.CKK, Category.CKM, Category.CKR};
-    for (Category c : categories) {
-      CodeNameMap m = codeNameMaps.get(c);
-      List<Long> codes = new ArrayList<>(m.codes());
-      Collections.sort(codes);
-
-      for (Long code : codes) {
-        String name = m.codeToString(code);
-        String text = "    test" + c.name() + "(" + name + ", \"" + name + "\");";
-        System.out.println(text);
-      }
-    }
-  }
-
   private PKCS11Constants() {
   }
   private static class CodeNameMap {

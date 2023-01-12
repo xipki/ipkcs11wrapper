@@ -79,6 +79,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
    * @return This object as a CK_RSA_PKCS_PSS_PARAMS object.
    *
    */
+  @Override
   public CK_RSA_PKCS_PSS_PARAMS getPKCS11ParamsObject() {
     CK_RSA_PKCS_PSS_PARAMS params = new CK_RSA_PKCS_PSS_PARAMS();
 
@@ -95,6 +96,7 @@ public class RSAPkcsPssParameters extends RSAPkcsParameters {
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return super.toString() + "\n  Salt Length (octets, dec): " + saltLength;
   }

@@ -107,6 +107,7 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @return This object as a CK_X9_42_DH2_DERIVE_PARAMS object.
    */
+  @Override
   public Object getPKCS11ParamsObject() {
     CK_X9_42_DH2_DERIVE_PARAMS params = new CK_X9_42_DH2_DERIVE_PARAMS();
 
@@ -126,6 +127,7 @@ public class X942DH2KeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return super.toString() +
         "\n  Other Info: "+ Functions.toHex(otherInfo)  + "\n  Private Data Length (dec): " + privateDataLength +

@@ -593,13 +593,7 @@ public class Session {
     Object paramObject = toCkParameters(parameter);
     byte[] rv = pkcs11.C_EncryptMessage(sessionHandle, paramObject, associatedData, plaintext, useUtf8);
 
-    if (parameter instanceof MessageParameters) {
-      ((MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
-    } else if (parameter instanceof CcmMessageParameters) {
-      ((CcmMessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
-    } else if (parameter instanceof Salsa20Chacha20Poly1305MessageParameters) {
-      ((Salsa20Chacha20Poly1305MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
-    }
+    if (parameter instanceof MessageParameters) ((MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
 
     return rv;
   }
@@ -1554,6 +1548,7 @@ public class Session {
    *
    * @return the string representation of this object
    */
+  @Override
   public String toString() {
     return "Session Handle: 0x" + Long.toHexString(sessionHandle) +  "\nToken: " + token;
   }

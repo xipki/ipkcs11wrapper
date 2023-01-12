@@ -164,6 +164,7 @@ public class MechanismInfo {
    *
    * @return the string representation of this object
    */
+  @Override
   public String toString() {
     String text = "  Minimum Key-Size: " + minKeySize + "\n  Maximum Key-Size: " + maxKeySize + "\n  Flags: ";
 

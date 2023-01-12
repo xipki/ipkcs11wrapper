@@ -67,6 +67,7 @@ public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParame
    *
    * @return This object as a CK_X9_42_DH2_DERIVE_PARAMS object.
    */
+  @Override
   public CK_X9_42_DHMQV_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_X9_42_DHMQV_DERIVE_PARAMS params = new CK_X9_42_DHMQV_DERIVE_PARAMS();
 
@@ -87,6 +88,7 @@ public class X942DHMQVKeyDerivationParameters extends X942DH2KeyDerivationParame
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return super.toString() + "\n  Private Data Length (dec): " + "\n  Private Data Handle: "+ privateDataHandle +
         "\n  Public Data 2: " + Functions.toHex(publicData2) + "\n Public Key Handle: " + publicKeyHandle;

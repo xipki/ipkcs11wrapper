@@ -99,6 +99,7 @@ public class PBEParameters implements Parameters {
    *
    * @return This object as a CK_PBE_PARAMS object.
    */
+  @Override
   public CK_PBE_PARAMS getPKCS11ParamsObject() {
     CK_PBE_PARAMS params = new CK_PBE_PARAMS();
 
@@ -116,6 +117,7 @@ public class PBEParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  IV: " + (iv != null ? new String(iv) : null) +
         "\n  Password: " + (password != null ? new String(password) : null) +

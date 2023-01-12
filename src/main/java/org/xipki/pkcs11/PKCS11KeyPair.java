@@ -99,6 +99,7 @@ public class PKCS11KeyPair {
    *
    * @return A string presentation of this object for debugging output.
    */
+  @Override
   public String toString() {
     return "  public key: " + publicKey + "\n  private key: " + privateKey;
   }

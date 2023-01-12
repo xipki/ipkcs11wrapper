@@ -74,6 +74,7 @@ public class DHPkcsDeriveParameters implements Parameters {
    *
    * @return This object as a byte array.
    */
+  @Override
   public byte[] getPKCS11ParamsObject() {
     return publicValue;
   }
@@ -84,6 +85,7 @@ public class DHPkcsDeriveParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  Public Value: " + Functions.toHex(publicValue);
   }

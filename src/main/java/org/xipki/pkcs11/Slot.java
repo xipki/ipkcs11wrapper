@@ -155,6 +155,7 @@ public class Slot {
    *
    * @return the string representation of this object
    */
+  @Override
   public String toString() {
     return "Slot ID: 0x" + Long.toHexString(slotID) + "\nModule: " + module;
   }

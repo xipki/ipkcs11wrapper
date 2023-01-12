@@ -106,6 +106,7 @@ public class Version {
    *
    * @return the string representation of this object
    */
+  @Override
   public String toString() {
     return (major & 0xff) + "." + (minor & 0xff);
   }

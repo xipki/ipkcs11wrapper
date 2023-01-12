@@ -139,6 +139,7 @@ public class SessionInfo {
    *
    * @return The string representation of object
    */
+  @Override
   public String toString() {
     String text = "State: " + codeToName(Category.CKS, state) + "\nSlot ID: " + slotID +
         "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\nFlags: ";

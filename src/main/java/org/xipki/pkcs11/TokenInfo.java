@@ -373,6 +373,7 @@ public class TokenInfo {
    *
    * @return the string representation of object
    */
+  @Override
   public String toString() {
     String text = "Manufacturer ID:      " + manufacturerID         +
         "\nModel:                " + model                  + "\nSerial Number:        " + serialNumber +

@@ -296,6 +296,7 @@ public abstract class Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
+  @Override
   public String toString() {
     return toString(true, "");
   }

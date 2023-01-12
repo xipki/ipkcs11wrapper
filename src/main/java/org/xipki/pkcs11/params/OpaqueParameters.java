@@ -37,10 +37,12 @@ public class OpaqueParameters implements Parameters {
    *
    * @return This object as a byte array.
    */
+  @Override
   public byte[] getPKCS11ParamsObject() {
     return bytes;
   }
 
+  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  Bytes (hex): " + Functions.toHex(bytes);
   }

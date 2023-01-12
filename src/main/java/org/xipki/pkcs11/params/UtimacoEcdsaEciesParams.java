@@ -75,51 +75,53 @@ import static org.xipki.pkcs11.PKCS11Constants.ckmCodeToName;
  */
 public class UtimacoEcdsaEciesParams implements Parameters {
 
-    private final long hashAlg;
-    private final long cryptAlg;
-    private final long cryptOpt;
-    private final long macAlg;
-    private final long macOpt;
-    private final byte[] sharedSecret1;
-    private final byte[] sharedSecret2;
+  private final long hashAlg;
+  private final long cryptAlg;
+  private final long cryptOpt;
+  private final long macAlg;
+  private final long macOpt;
+  private final byte[] sharedSecret1;
+  private final byte[] sharedSecret2;
 
-    public UtimacoEcdsaEciesParams(long hashAlg, long cryptAlg, long cryptOpt, long macAlg, long macOpt) {
-        this(hashAlg, cryptAlg, cryptOpt, macAlg, macOpt, null, null);
-    }
+  public UtimacoEcdsaEciesParams(long hashAlg, long cryptAlg, long cryptOpt, long macAlg, long macOpt) {
+    this(hashAlg, cryptAlg, cryptOpt, macAlg, macOpt, null, null);
+  }
 
-    public UtimacoEcdsaEciesParams(long hashAlg, long cryptAlg, long cryptOpt, long macAlg, long macOpt,
-                                   byte[] sharedSecret1, byte[] sharedSecret2) {
-        this.hashAlg = hashAlg;
-        this.cryptAlg = cryptAlg;
-        this.cryptOpt = cryptOpt;
-        this.macAlg = macAlg;
-        this.macOpt = macOpt;
-        this.sharedSecret1 = sharedSecret1 == null ? null : sharedSecret1.clone();
-        this.sharedSecret2 = sharedSecret2 == null ? null : sharedSecret2.clone();
-    }
+  public UtimacoEcdsaEciesParams(long hashAlg, long cryptAlg, long cryptOpt, long macAlg, long macOpt,
+                                 byte[] sharedSecret1, byte[] sharedSecret2) {
+    this.hashAlg = hashAlg;
+    this.cryptAlg = cryptAlg;
+    this.cryptOpt = cryptOpt;
+    this.macAlg = macAlg;
+    this.macOpt = macOpt;
+    this.sharedSecret1 = sharedSecret1 == null ? null : sharedSecret1.clone();
+    this.sharedSecret2 = sharedSecret2 == null ? null : sharedSecret2.clone();
+  }
 
-    public CK_ECDSA_ECIES_PARAMS getPKCS11ParamsObject() {
-        CK_ECDSA_ECIES_PARAMS pkcs11Params = new CK_ECDSA_ECIES_PARAMS();
-        pkcs11Params.hashAlg = hashAlg;
-        pkcs11Params.cryptAlg = cryptAlg;
-        pkcs11Params.cryptOpt = cryptOpt;
-        pkcs11Params.macAlg = macAlg;
-        pkcs11Params.macOpt = macOpt;
-        pkcs11Params.pSharedSecret1 = sharedSecret1 == null ? null : sharedSecret1.clone();
-        pkcs11Params.pSharedSecret2 = sharedSecret2 == null ? null : sharedSecret2.clone();
+  @Override
+  public CK_ECDSA_ECIES_PARAMS getPKCS11ParamsObject() {
+    CK_ECDSA_ECIES_PARAMS pkcs11Params = new CK_ECDSA_ECIES_PARAMS();
+    pkcs11Params.hashAlg = hashAlg;
+    pkcs11Params.cryptAlg = cryptAlg;
+    pkcs11Params.cryptOpt = cryptOpt;
+    pkcs11Params.macAlg = macAlg;
+    pkcs11Params.macOpt = macOpt;
+    pkcs11Params.pSharedSecret1 = sharedSecret1 == null ? null : sharedSecret1.clone();
+    pkcs11Params.pSharedSecret2 = sharedSecret2 == null ? null : sharedSecret2.clone();
 
-        return pkcs11Params;
-    }
+    return pkcs11Params;
+  }
 
-    public String toString() {
-        String ret = "Class: " + getClass().getName() + "\n  hash algorithm:   " + ckmCodeToName(hashAlg) +
-            "\n  crypto algorithm: " + ckmCodeToName(cryptAlg) + "\n  crypto options:   " + cryptOpt +
-            "\n  mac algorithm:    " + ckmCodeToName(macAlg) + "\n  mac options:      " + macOpt;
+  @Override
+  public String toString() {
+    String ret = "Class: " + getClass().getName() + "\n  hash algorithm:   " + ckmCodeToName(hashAlg) +
+        "\n  crypto algorithm: " + ckmCodeToName(cryptAlg) + "\n  crypto options:   " + cryptOpt +
+        "\n  mac algorithm:    " + ckmCodeToName(macAlg) + "\n  mac options:      " + macOpt;
 
-        if (sharedSecret1 != null) ret += "\n  shared secret1 (len): " + sharedSecret1.length;
-        if (sharedSecret2 != null) ret += "\n  shared secret2 (len): " + sharedSecret2.length;
+    if (sharedSecret1 != null) ret += "\n  shared secret1 (len): " + sharedSecret1.length;
+    if (sharedSecret2 != null) ret += "\n  shared secret2 (len): " + sharedSecret2.length;
 
-        return ret;
-    }
+    return ret;
+  }
 
 }

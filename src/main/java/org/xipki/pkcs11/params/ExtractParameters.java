@@ -72,6 +72,7 @@ public class ExtractParameters implements Parameters {
    *
    * @return This object as a Long object.
    */
+  @Override
   public Long getPKCS11ParamsObject() {
     return (long) bitIndex;
   }
@@ -82,6 +83,7 @@ public class ExtractParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  Bit Index (dec): " + bitIndex;
   }

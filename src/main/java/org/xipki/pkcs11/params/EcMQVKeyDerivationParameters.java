@@ -105,6 +105,7 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
    * @return This object as a CK_ECDH1_DERIVE_PARAMS object.
    *
    */
+  @Override
   public CK_ECMQV_DERIVE_PARAMS getPKCS11ParamsObject() {
     CK_ECMQV_DERIVE_PARAMS params = new CK_ECMQV_DERIVE_PARAMS();
 
@@ -125,6 +126,7 @@ public class EcMQVKeyDerivationParameters extends DHKeyDerivationParameters {
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return super.toString() + "\n  Shared Data: " + Functions.toHex(sharedData) +
         "\n  Private Data Handle: " + privateData + "\n  Public Data 2: " + Functions.toHex(publicData2) +

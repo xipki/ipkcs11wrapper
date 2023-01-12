@@ -53,41 +53,43 @@ import org.xipki.pkcs11.Functions;
  */
 public class Salsa20Parameters implements Parameters {
 
-    private final byte[] blockCounter;
-    private final byte[] nonce;
-
-    /**
-     * Create a new Salsa20Parameters object with the given attributes.
-     *
-     * @param blockCounter the Blockcounter
-     * @param nonce    the nonce
-     */
-    public Salsa20Parameters(byte[] blockCounter, byte[] nonce) {
-        this.blockCounter = blockCounter;
-        this.nonce = nonce;
-    }
+  private final byte[] blockCounter;
+  private final byte[] nonce;
 
   /**
-     * Get this parameters object as an object of the CK_SALSA20_PARAMS class.
-     *
-     * @return This object as a CK_SALSA20_PARAMS object.
-     */
-    public CK_SALSA20_PARAMS getPKCS11ParamsObject() {
-        CK_SALSA20_PARAMS params = new CK_SALSA20_PARAMS();
-        params.pBlockCounter = blockCounter;
-        params.pNonce = nonce;
-        return params;
-    }
+   * Create a new Salsa20Parameters object with the given attributes.
+   *
+   * @param blockCounter the Blockcounter
+   * @param nonce    the nonce
+   */
+  public Salsa20Parameters(byte[] blockCounter, byte[] nonce) {
+    this.blockCounter = blockCounter;
+    this.nonce = nonce;
+  }
 
-    /**
-     * Returns the string representation of this object. Do not parse data from this string, it is for
-     * debugging only.
-     *
-     * @return A string representation of this object.
-     */
-    public String toString() {
-      return "Class: " + getClass().getName() + "\n  Nonce: " + Functions.toHex(nonce);
-    }
+  /**
+   * Get this parameters object as an object of the CK_SALSA20_PARAMS class.
+   *
+   * @return This object as a CK_SALSA20_PARAMS object.
+   */
+  @Override
+  public CK_SALSA20_PARAMS getPKCS11ParamsObject() {
+    CK_SALSA20_PARAMS params = new CK_SALSA20_PARAMS();
+    params.pBlockCounter = blockCounter;
+    params.pNonce = nonce;
+    return params;
+  }
+
+  /**
+   * Returns the string representation of this object. Do not parse data from this string, it is for
+   * debugging only.
+   *
+   * @return A string representation of this object.
+   */
+  @Override
+  public String toString() {
+    return "Class: " + getClass().getName() + "\n  Nonce: " + Functions.toHex(nonce);
+  }
 
 }
 

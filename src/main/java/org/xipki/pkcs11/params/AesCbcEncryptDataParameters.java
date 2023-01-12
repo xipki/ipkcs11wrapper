@@ -71,6 +71,7 @@ public class AesCbcEncryptDataParameters extends CbcEncryptDataParameters {
    * @return This object as Long object.
    *
    */
+  @Override
   public CK_AES_CBC_ENCRYPT_DATA_PARAMS getPKCS11ParamsObject() {
     CK_AES_CBC_ENCRYPT_DATA_PARAMS params = new CK_AES_CBC_ENCRYPT_DATA_PARAMS();
 

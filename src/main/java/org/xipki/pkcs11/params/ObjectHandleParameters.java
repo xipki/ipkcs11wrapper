@@ -71,6 +71,7 @@ public class ObjectHandleParameters implements Parameters {
    *
    * @return This object as a Long object.
    */
+  @Override
   public Long getPKCS11ParamsObject() {
     return objectHandle;
   }
@@ -81,6 +82,7 @@ public class ObjectHandleParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  PKCS11Object: " + objectHandle;
   }

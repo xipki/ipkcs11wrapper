@@ -283,6 +283,7 @@ public class PKCS11Module {
    *
    * @return The string representation of object
    */
+  @Override
   public String toString() {
     return (pkcs11 != null) ? pkcs11.toString() : "null";
   }

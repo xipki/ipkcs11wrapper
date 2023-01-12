@@ -78,7 +78,7 @@ abstract public class DHKeyDerivationParameters implements Parameters {
   public DHKeyDerivationParameters(long kdf, byte[] publicData) {
     this.publicData = Functions.requireNonNull("publicData", publicData);
     this.kdf = Functions.requireAmong("kdf", kdf,
-                  CKD_NULL, CKD_SHA1_KDF, CKD_SHA1_KDF_ASN1, CKD_SHA1_KDF_CONCATENATE);
+        CKD_NULL, CKD_SHA1_KDF, CKD_SHA1_KDF_ASN1, CKD_SHA1_KDF_CONCATENATE);
   }
 
   /**
@@ -87,6 +87,7 @@ abstract public class DHKeyDerivationParameters implements Parameters {
    *
    * @return A string representation of this object.
    */
+  @Override
   public String toString() {
     return "Class: " + getClass().getName() + "\n  Key Derivation Function: " + codeToName(Category.CKD, kdf) +
         "\n  Public Data: " + Functions.toHex(publicData);
