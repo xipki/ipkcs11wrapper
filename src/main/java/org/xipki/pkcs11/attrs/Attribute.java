@@ -285,6 +285,7 @@ public abstract class Attribute {
         : (ckAttribute.type == CKA_KEY_TYPE)         ? codeToName(Category.CKK, (long) ckAttribute.pValue)
         : (ckAttribute.type == CKA_CERTIFICATE_TYPE) ? codeToName(Category.CKC, (long) ckAttribute.pValue)
         : (ckAttribute.type == CKA_HW_FEATURE_TYPE)  ? codeToName(Category.CKH, (long) ckAttribute.pValue)
+        : (ckAttribute.pValue instanceof Boolean)    ? ((boolean) ckAttribute.pValue ? "TRUE" : "FALSE")
         : ckAttribute.pValue.toString();
   }
 
