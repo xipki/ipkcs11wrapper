@@ -160,7 +160,7 @@ public class Functions {
         } else {
           sb.append(" | ");
         }
-        sb.append(codeToName(category, flagMask));
+        sb.append(codeToName(category, flagMask).substring(4)); // 4 == "CKF_".length
       }
     }
 
