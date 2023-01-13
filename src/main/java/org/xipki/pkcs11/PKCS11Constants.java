@@ -1412,11 +1412,11 @@ public final class PKCS11Constants {
   }
 
   public static String ckrCodeToName(long code) {
-    return codeToName(Category.CKM, code);
+    return codeToName(Category.CKR, code);
   }
 
   public static long ckrNameToCode(String name) {
-    return nameToCode(Category.CKM, name);
+    return nameToCode(Category.CKR, name);
   }
 
   private static final Map<Category, CodeNameMap> codeNameMaps = new HashMap<>(20);
