@@ -100,7 +100,7 @@ public final class PKCS11Constants {
   public static final long CK_FALSE                             = 0x0L;
 
   /* some special values for certain CK_ULONG variables */
-  public static final long CK_UNAVAILABLE_INFORMATION               = 0xFFFFFFFFL;
+  public static final long CK_UNAVAILABLE_INFORMATION               = ~0L;
   public static final long CK_EFFECTIVELY_INFINITE                  = 0x0L;
 
   /* The following value is always invalid if used as a session
