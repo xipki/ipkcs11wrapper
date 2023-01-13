@@ -377,11 +377,11 @@ public class TokenInfo {
   public String toString() {
     String text = "Manufacturer ID:      " + manufacturerID         +
         "\nModel:                " + model                  + "\nSerial Number:        " + serialNumber +
-        "\nMax Session Count:    " + mct(maxSessionCount)   + "\nSession Count:        " + ct(sessionCount) +
+        "\nMax    Session Count: " + mct(maxSessionCount)   + "\n   Session Count:     " + ct(sessionCount) +
         "\nMax RW Session Count: " + mct(maxRwSessionCount) + "\nRW Session Count:     " + ct(rwSessionCount) +
-        "\nMaxPIN Length:        " + maxPinLen              + "\nMin PIN Length:       " + minPinLen +
-        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Public Memory:   " + ct(freePublicMemory) +
-        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Public Memory:   " + ct(freePublicMemory) +
+        "\nMax PIN Length:       " + maxPinLen              + "\nMin PIN Length:       " + minPinLen +
+        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Private Memory:  " + ct(freePrivateMemory) +
+        "\nTotal  Public Memory: " + ct(totalPublicMemory)  + "\nFree  Public Memory:  " + ct(freePublicMemory) +
         "\nHardware Version:     " + hardwareVersion        + "\nFirmware Version:     " + firmwareVersion +
         "\nTime:                 " + time                   + "\nFlags:                ";
 
