@@ -75,7 +75,6 @@ public class GetInfo extends TestBase {
       LOG.info("Slot with ID: {}", slot.getSlotID());
       LOG.info("--------------------------------------------------");
       LOG.info("{}", slotInfo);
-      LOG.info("___________________________________________________");
     }
 
     LOG.info("##################################################");
@@ -95,10 +94,9 @@ public class GetInfo extends TestBase {
       long[] supportedMechanisms = tokens[i].getMechanismList();
       for (long supportedMechanism : supportedMechanisms) {
         LOG.info("--------------------------------------------------");
-        LOG.info("Mechanism Name: {}", ckmCodeToName(supportedMechanism));
         MechanismInfo mechanismInfo = tokens[i].getMechanismInfo(supportedMechanism);
-        LOG.info("{}", mechanismInfo);
         LOG.info("--------------------------------------------------");
+        LOG.info("Mechanism: {}\n{}", ckmCodeToName(supportedMechanism), mechanismInfo);
       }
       LOG.info("___________________________________________________");
     }

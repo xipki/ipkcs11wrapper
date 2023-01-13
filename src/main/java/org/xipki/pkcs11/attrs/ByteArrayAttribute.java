@@ -113,8 +113,10 @@ public class ByteArrayAttribute extends Attribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    return ((ckAttribute != null) && (ckAttribute.pValue != null))
-      ? Functions.toHex((byte[]) ckAttribute.pValue) : "<NULL_PTR>";
+    if (ckAttribute == null || ckAttribute.pValue == null) return "<NULL_PTR>";
+
+    byte[] value = (byte[]) ckAttribute.pValue;
+    return "byte[" + value.length + "]\n" + Functions.toString(value);
   }
 
 }

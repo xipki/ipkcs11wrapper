@@ -113,7 +113,7 @@ public abstract class Attribute {
       for (String name : props.stringPropertyNames()) {
         name = name.trim();
         String type = props.getProperty(name).trim();
-        long code = nameToCode(Category.CKA, name);
+        long code = ckaNameToCode(name);
         if (code == -1) throw new IllegalStateException("unknown CKA: " + name);
 
         if (attributeTypes.containsKey(code)) {
@@ -280,13 +280,21 @@ public abstract class Attribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    return (ckAttribute == null || ckAttribute.pValue == null) ? "<NULL_PTR>"
-        : (ckAttribute.type == CKA_CLASS)            ? codeToName(Category.CKO, (long) ckAttribute.pValue)
-        : (ckAttribute.type == CKA_KEY_TYPE)         ? codeToName(Category.CKK, (long) ckAttribute.pValue)
-        : (ckAttribute.type == CKA_CERTIFICATE_TYPE) ? codeToName(Category.CKC, (long) ckAttribute.pValue)
-        : (ckAttribute.type == CKA_HW_FEATURE_TYPE)  ? codeToName(Category.CKH, (long) ckAttribute.pValue)
-        : (ckAttribute.pValue instanceof Boolean)    ? ((boolean) ckAttribute.pValue ? "TRUE" : "FALSE")
-        : ckAttribute.pValue.toString();
+    if (ckAttribute == null || ckAttribute.pValue == null) return "<NULL_PTR>";
+
+    long type = ckAttribute.type;
+    Object value = ckAttribute.pValue;
+    if (type == CKA_CLASS) {
+      return codeToName(Category.CKO, (long) value);
+    } else if (type == CKA_KEY_TYPE) {
+      return codeToName(Category.CKK, (long) value);
+    } else if (type == CKA_CERTIFICATE_TYPE) {
+      return codeToName(Category.CKC, (long) value);
+    } else if (ckAttribute.type == CKA_HW_FEATURE_TYPE) {
+      return codeToName(Category.CKH, (long) value);
+    } else {
+      return value.toString();
+    }
   }
 
   /**

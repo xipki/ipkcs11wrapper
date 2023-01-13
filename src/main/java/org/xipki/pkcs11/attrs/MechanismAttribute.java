@@ -88,8 +88,7 @@ public class MechanismAttribute extends LongAttribute {
     Long value = getValue();
     if (value == null) return "<NULL_PTR>";
 
-    return (value != CK_UNAVAILABLE_INFORMATION) ? PKCS11Constants.ckmCodeToName(value)
-            : "<Information unavailable>";
+    return (value == CK_UNAVAILABLE_INFORMATION) ? "N/A" : PKCS11Constants.ckmCodeToName(value);
   }
 
 }

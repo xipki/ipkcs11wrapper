@@ -125,10 +125,10 @@ public class GenericFind extends TestBase {
       long[] foundCertificateObjects;
       if ((foundCertificateObjects = session.findObjects(1)).length > 0) {
         privateKeyToCertificateTable.put(privateSignatureKeyHandle, foundCertificateObjects[0]);
-        LOG.info("The certificate for this private signature key {} is (handle={}, label={})",
+        LOG.info("The certificate for private signature key {} is (handle={}, label={})",
             privateSignatureKeyHandle, foundCertificateObjects[0], getLabel(session, foundCertificateObjects[0]));
       } else {
-        LOG.info("There is no certificate for this private signature key {}", privateSignatureKeyHandle);
+        LOG.info("There is no certificate for private signature key {}", privateSignatureKeyHandle);
       }
 
       session.findObjectsFinal();

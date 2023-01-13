@@ -16,7 +16,7 @@
  */
 package org.xipki.pkcs11;
 
-import java.util.Arrays;
+import java.util.*;
 
 import static org.xipki.pkcs11.PKCS11Constants.Category;
 import static org.xipki.pkcs11.PKCS11Constants.codeToName;
@@ -45,13 +45,12 @@ public class Functions {
       for (int i = 0; i < LINTS.length; i++) HINTS[i] = LINTS[i] << 4;
     }
 
-    public static String encode(byte[] data) {
-      int len = data.length;
-
+    public static String encode(byte[] data, int ofs, int len) {
       char[] out = new char[len << 1];
 
       // two characters from the hex value.
-      for (int i = 0, j = 0; i < len; i++) {
+      int endOfs = ofs + len;
+      for (int i = ofs, j = 0; i < endOfs; i++) {
         out[j++] = DIGITS[(0xF0 & data[i]) >>> 4];
         out[j++] = DIGITS[0x0F & data[i]];
       }
@@ -111,7 +110,11 @@ public class Functions {
    * @return the hexadecimal string representation of the byte array
    */
   public static String toHex(byte[] value) {
-    return Hex.encode(value);
+    return Hex.encode(value, 0, value.length);
+  }
+
+  public static String toHex(byte[] value, int ofs, int len) {
+    return Hex.encode(value, ofs, len);
   }
 
   public static byte[] decodeHex(String encoded) {
@@ -149,22 +152,47 @@ public class Functions {
   }
 
   public static String toStringFlags(Category category, String prefix, long flags, long... flagMasks) {
-    java.util.ArrayList<Long> sortedMasks = new java.util.ArrayList<>(flagMasks.length);
+    // initialize the indent for non-first lines.
+    char[] indentChars = new char[prefix.length() + 1];
+    Arrays.fill(indentChars, ' ');
+    String indent = new String(indentChars);
+
+    ArrayList<Long> sortedMasks = new ArrayList<>(flagMasks.length);
     for (long flagMask : flagMasks) {
       sortedMasks.add(flagMask);
     }
     java.util.Collections.sort(sortedMasks);
 
-    StringBuilder sb = new StringBuilder(100);
-    for (long flagMask : sortedMasks) {
-      if ((flags & flagMask) != 0L) {
-        if (sb.length() > 0) sb.append(" | ");
+    boolean first = true;
+    List<String> lines = new LinkedList<>();
 
-        sb.append(codeToName(category, flagMask).substring(4)); // 4 = "CKF_".length
+    String line = prefix + "0x" + toFullHex(flags) + " (";
+    for (long flagMask : sortedMasks) {
+      if ((flags & flagMask) == 0L) continue;
+
+      String thisEntry = first ? "" : " | ";
+
+      if (first) first = false;
+
+      thisEntry += codeToName(category, flagMask).substring(4); // 4 = "CKF_".length
+      if (line.length() + thisEntry.length() > 100) {
+        lines.add(line);
+        line = indent;
       }
+      line += thisEntry;
     }
 
-    return prefix + "0x" + toFullHex(flags) + " (" + sb + ")";
+    if (line.length() > indentChars.length) {
+      lines.add(line);
+    }
+
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < lines.size(); i++) {
+      if (i != 0) sb.append("\n");
+
+      sb.append(lines.get(i));
+    }
+    return sb.append(")").toString();
   }
 
   public static byte[] fixECDSASignature(byte[] sig) {
@@ -217,4 +245,14 @@ public class Functions {
     return rs;
   }
 
+  public static String toString(byte[] bytes) {
+    final int numPerLine = 40;
+    final int len = bytes.length;
+    StringBuilder sb = new StringBuilder(5 * (len + numPerLine - 1) / numPerLine + 4 * bytes.length);
+    for (int ofs = 0; ofs < len; ofs += numPerLine) {
+      int num = Math.min(numPerLine, len - ofs);
+      sb.append(ofs == 0 ? "    " : "\n    ").append(toHex(bytes, ofs, num));
+    }
+    return sb.toString();
+  }
 }

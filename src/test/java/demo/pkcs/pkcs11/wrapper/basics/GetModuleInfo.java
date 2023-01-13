@@ -88,19 +88,15 @@ public class GetModuleInfo extends TestBase {
       tokens[i] = slotsWithToken[i].getToken();
       TokenInfo tokenInfo = tokens[i].getTokenInfo();
       LOG.info("Token in slot with ID: {}", tokens[i].getSlot().getSlotID());
-      LOG.info("--------------------------------------------------");
       LOG.info("{}", tokenInfo);
 
       LOG.info("supported Mechanisms:");
       long[] supportedMechanisms = tokens[i].getMechanismList();
       for (long supportedMechanism : supportedMechanisms) {
-        LOG.info("--------------------------------------------------");
-        LOG.info("Mechanism Name: {}", ckmCodeToName(supportedMechanism));
         MechanismInfo mechanismInfo = tokens[i].getMechanismInfo(supportedMechanism);
-        LOG.info("{}", mechanismInfo);
         LOG.info("--------------------------------------------------");
+        LOG.info("Mechanism: {}\n{}", ckmCodeToName(supportedMechanism), mechanismInfo);
       }
-      LOG.info("___________________________________________________");
     }
 
     LOG.info("##################################################");

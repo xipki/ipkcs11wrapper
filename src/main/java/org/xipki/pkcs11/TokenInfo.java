@@ -377,15 +377,15 @@ public class TokenInfo {
   public String toString() {
     String text = "Manufacturer ID:      " + manufacturerID         +
         "\nModel:                " + model                  + "\nSerial Number:        " + serialNumber +
-        "\nMax    Session Count: " + mct(maxSessionCount)   + "\n   Session Count:     " + ct(sessionCount) +
+        "\nMax Session Count:    " + mct(maxSessionCount)   + "\nSession Count:        " + ct(sessionCount) +
         "\nMax RW Session Count: " + mct(maxRwSessionCount) + "\nRW Session Count:     " + ct(rwSessionCount) +
-        "\nMax PIN Length:       " + maxPinLen              + "\nMin PIN Length:       " + minPinLen +
+        "\nPIN Length:           [" + minPinLen + ", " + maxPinLen + "]" +
         "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Private Memory:  " + ct(freePrivateMemory) +
-        "\nTotal  Public Memory: " + ct(totalPublicMemory)  + "\nFree  Public Memory:  " + ct(freePublicMemory) +
+        "\nTotal Public Memory:  " + ct(totalPublicMemory)  + "\nFree Public Memory:   " + ct(freePublicMemory) +
         "\nHardware Version:     " + hardwareVersion        + "\nFirmware Version:     " + firmwareVersion +
-        "\nTime:                 " + time                   + "\nFlags:                ";
+        "\nTime:                 " + time                   + "\n";
 
-    return Functions.toStringFlags(Category.CKF_TOKEN, text, flags,
+    return text + Functions.toStringFlags(Category.CKF_TOKEN, "Flags: ", flags,
         CKF_RNG,                    CKF_WRITE_PROTECTED,        CKF_LOGIN_REQUIRED,
         CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN,         CKF_PROTECTED_AUTHENTICATION_PATH,
         CKF_DUAL_CRYPTO_OPERATIONS, CKF_TOKEN_INITIALIZED,      CKF_SECONDARY_AUTHENTICATION,
@@ -395,12 +395,12 @@ public class TokenInfo {
   }
 
   private static String mct(long count) {
-    return (count == CK_UNAVAILABLE_INFORMATION) ? "CK_UNAVAILABLE_INFORMATION"
-        : (count == CK_EFFECTIVELY_INFINITE) ? "CK_EFFECTIVELY_INFINITE" : Long.toString(count);
+    return (count == CK_UNAVAILABLE_INFORMATION) ? "N/A"
+        : (count == CK_EFFECTIVELY_INFINITE) ? "unlimited" : Long.toString(count);
   }
 
   private static String ct(long count) {
-    return (count == CK_UNAVAILABLE_INFORMATION) ? "CK_UNAVAILABLE_INFORMATION" : Long.toString(count);
+    return (count == CK_UNAVAILABLE_INFORMATION) ? "N/A" : Long.toString(count);
   }
 
 }

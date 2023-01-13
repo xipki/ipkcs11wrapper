@@ -142,8 +142,8 @@ public class SessionInfo {
   @Override
   public String toString() {
     String text = "State: " + codeToName(Category.CKS, state) + "\nSlot ID: " + slotID +
-        "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\nFlags: ";
-    return Functions.toStringFlags(Category.CKF_SESSION, text, flags, CKF_RW_SESSION, CKF_SERIAL_SESSION);
+        "\nDevice Error: 0x" + Long.toHexString(deviceError) + "\n";
+    return text + Functions.toStringFlags(Category.CKF_SESSION, "Flags: ", flags, CKF_RW_SESSION, CKF_SERIAL_SESSION);
   }
 
 }

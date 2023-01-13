@@ -42,6 +42,8 @@
 
 package org.xipki.pkcs11.attrs;
 
+import org.xipki.pkcs11.Functions;
+
 /**
  * Objects of this class represent a boolean attribute of a PKCS#11 object
  * as specified by PKCS#11.
@@ -82,6 +84,11 @@ public class BooleanAttribute extends Attribute {
   @Override
   public Boolean getValue() {
     return (Boolean) ckAttribute.pValue;
+  }
+
+  protected String getValueString() {
+    return (ckAttribute == null || ckAttribute.pValue == null) ? "<NULL_PTR>"
+        : (boolean) ckAttribute.pValue ? "TRUE" : "FALSE";
   }
 
 }

@@ -172,7 +172,7 @@ class VendorCode {
 
         ckkGenericToVendorMap.put(genericCode, vendorCode);
       } else if (name.startsWith("CKM_VENDOR_")) {
-        long genericCode = PKCS11Constants.nameToCode(PKCS11Constants.Category.CKM, name);
+        long genericCode = PKCS11Constants.ckmNameToCode(name);
         if (genericCode == -1) throw new IllegalStateException("unknown name in vendorcode block: " + name);
 
         ckmGenericToVendorMap.put(genericCode, vendorCode);

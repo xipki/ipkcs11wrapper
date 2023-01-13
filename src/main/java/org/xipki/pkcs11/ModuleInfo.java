@@ -130,8 +130,8 @@ public class ModuleInfo {
    */
   @Override
   public String toString() {
-    return "Cryptoki Version: " + cryptokiVersion + "\nManufacturerID: " + manufacturerID +
-        "\nLibrary Description: " + libraryDescription + "\nLibrary Version: " + libraryVersion;
+    return  "Cryptoki Version:    " + cryptokiVersion    + "\nManufacturerID:      " + manufacturerID +
+          "\nLibrary Description: " + libraryDescription + "\nLibrary Version:     " + libraryVersion;
   }
 
 }

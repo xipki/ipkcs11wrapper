@@ -166,9 +166,9 @@ public class MechanismInfo {
    */
   @Override
   public String toString() {
-    String text = "  Minimum Key-Size: " + minKeySize + "\n  Maximum Key-Size: " + maxKeySize + "\n  Flags: ";
+    String text = "  Key-Size: [" + minKeySize + ", " + maxKeySize + "]\n";
 
-    return Functions.toStringFlags(Category.CKF_MECHANISM, text, flags,
+    return text + Functions.toStringFlags(Category.CKF_MECHANISM, "  Flags: ", flags,
         CKF_HW,             CKF_MESSAGE_ENCRYPT, CKF_MESSAGE_DECRYPT, CKF_MESSAGE_SIGN,
         CKF_MESSAGE_VERIFY, CKF_MULTI_MESSAGE,   CKF_FIND_OBJECTS,
 

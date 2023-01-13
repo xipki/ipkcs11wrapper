@@ -175,8 +175,8 @@ public class SlotInfo {
   @Override
   public String toString() {
     String text = "Slot Description: " + slotDescription + "\nManufacturer ID: " + manufacturerID +
-        "\nHardware Version: " + hardwareVersion + "\nFirmware Version: " + firmwareVersion + "\nFlags: ";
-    return Functions.toStringFlags(Category.CKF_TOKEN, text, flags,
+        "\nHardware Version: " + hardwareVersion + "\nFirmware Version: " + firmwareVersion + "\n";
+    return text + Functions.toStringFlags(Category.CKF_TOKEN, "Flags: ", flags,
         CKF_TOKEN_PRESENT, CKF_REMOVABLE_DEVICE, CKF_HW_SLOT);
   }
 
