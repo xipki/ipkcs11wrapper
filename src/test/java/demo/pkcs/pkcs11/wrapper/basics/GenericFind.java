@@ -77,9 +77,7 @@ public class GenericFind extends TestBase {
 
     LOG.info("##################################################");
     LOG.info("Find all signature private keys.");
-    AttributeVector signatureKeyTemplate = new AttributeVector()
-        .attr(CKA_CLASS, CKO_PRIVATE_KEY)
-        .attr(CKA_SIGN, true);
+    AttributeVector signatureKeyTemplate = AttributeVector.newPrivateKey().attr(CKA_SIGN, true);
 
     // this find operation will find all objects that possess a CKA_SIGN
     // attribute with value true

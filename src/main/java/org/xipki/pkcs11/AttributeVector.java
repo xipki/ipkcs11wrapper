@@ -42,36 +42,56 @@ public class AttributeVector {
     }
   }
 
+  public static AttributeVector newSecretKey() {
+    return new AttributeVector().class_(CKO_SECRET_KEY);
+  }
+
   public static AttributeVector newSecretKey(long keyType) {
-    return new AttributeVector().class_(CKO_SECRET_KEY).keyType(keyType);
+    return newSecretKey().keyType(keyType);
   }
 
   public static AttributeVector newAESSecretKey() {
-    return new AttributeVector().class_(CKO_SECRET_KEY).keyType(CKK_AES);
+    return newSecretKey(CKK_AES);
+  }
+
+  public static AttributeVector newPrivateKey() {
+    return new AttributeVector().class_(CKO_PRIVATE_KEY);
   }
 
   public static AttributeVector newPrivateKey(long keyType) {
-    return new AttributeVector().class_(CKO_PRIVATE_KEY).keyType(keyType);
+    return newPrivateKey().keyType(keyType);
   }
 
   public static AttributeVector newRSAPrivateKey() {
-    return new AttributeVector().class_(CKO_PRIVATE_KEY).keyType(CKK_RSA);
+    return newPrivateKey(CKK_RSA);
   }
 
   public static AttributeVector newECPrivateKey() {
-    return new AttributeVector().class_(CKO_PRIVATE_KEY).keyType(CKK_EC);
+    return newPrivateKey(CKK_EC);
+  }
+
+  public static AttributeVector newDSAPrivateKey() {
+    return newPrivateKey(CKK_DSA);
+  }
+
+  public static AttributeVector newPublicKey() {
+    return new AttributeVector().class_(CKO_PUBLIC_KEY);
   }
 
   public static AttributeVector newPublicKey(long keyType) {
-    return new AttributeVector().class_(CKO_PUBLIC_KEY).keyType(keyType);
+    return newPublicKey().keyType(keyType);
   }
 
   public static AttributeVector newRSAPublicKey() {
-    return new AttributeVector().class_(CKO_PUBLIC_KEY).keyType(CKK_RSA);
+    return newPublicKey(CKK_RSA);
   }
 
   public static AttributeVector newECPublicKey() {
-    return new AttributeVector().class_(CKO_PUBLIC_KEY).keyType(CKK_EC);
+    return newPublicKey(CKK_EC);
+  }
+
+  public static AttributeVector newDSAPublicKey() {
+    return newPublicKey(CKK_DSA);
   }
 
   public static AttributeVector newCertificate(long certificateType) {
@@ -79,7 +99,7 @@ public class AttributeVector {
   }
 
   public static AttributeVector newX509Certificate() {
-    return new AttributeVector().class_(CKO_CERTIFICATE).certificateType(CKC_X_509);
+    return newCertificate(CKC_X_509);
   }
 
   public AttributeVector attr(long attrType, Object attrValue) {

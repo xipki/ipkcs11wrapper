@@ -240,7 +240,7 @@ public class UploadPrivateKey extends TestBase {
       LOG.info("creating certificate object on the card... ");
 
       // create certificate object template
-      AttributeVector certTemp = new AttributeVector().class_(CKO_CERTIFICATE).certificateType(CKC_X_509)
+      AttributeVector certTemp = AttributeVector.newX509Certificate()
           .token(true).private_(false).id(newObjectID).label(keyLabel)
           .subject(userCertificate.getSubjectX500Principal().getEncoded())
           .issuer(userCertificate.getIssuerX500Principal().getEncoded())

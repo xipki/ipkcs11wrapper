@@ -110,18 +110,20 @@ public class ImportCertificate extends TestBase {
 
     PublicKey publicKey = x509Certificate.getPublicKey();
 
-    AttributeVector searchTemplate = new AttributeVector();
+    AttributeVector searchTemplate;
     if (publicKey.getAlgorithm().equalsIgnoreCase("RSA")) {
       RSAPublicKey rsaPublicKey = (RSAPublicKey) publicKey;
-      searchTemplate.class_(CKO_PRIVATE_KEY).keyType(CKK_RSA).modulus(rsaPublicKey.getModulus());
+      searchTemplate = AttributeVector.newRSAPrivateKey().modulus(rsaPublicKey.getModulus());
     } else if (publicKey.getAlgorithm().equalsIgnoreCase("DSA")) {
       DSAParams dsaParams = ((DSAPublicKey) publicKey).getParams();
-      searchTemplate.class_(CKO_PRIVATE_KEY).keyType(CKK_DSA)
+      searchTemplate = AttributeVector.newDSAPrivateKey()
           .base(dsaParams.getG()).prime(dsaParams.getP()).subprime(dsaParams.getQ());
     } else if (publicKey.getAlgorithm().equalsIgnoreCase("DH")
         || publicKey.getAlgorithm().equalsIgnoreCase("DiffieHellman")) {
       DHParameterSpec dhParams = ((DHPublicKey) publicKey).getParams();
-      searchTemplate.class_(CKO_PRIVATE_KEY).keyType(CKK_DSA).base(dhParams.getG()).prime(dhParams.getP());
+      searchTemplate = AttributeVector.newPrivateKey(CKK_DSA).base(dhParams.getG()).prime(dhParams.getP());
+    } else {
+      searchTemplate = null;
     }
 
     byte[] objectID = null;
@@ -137,7 +139,7 @@ public class ImportCertificate extends TestBase {
       }
       session.findObjectsFinal();
     } else {
-      LOG.info("public key is neither RSA, DSA nor DH.");
+      LOG.info("private key is neither RSA, DSA nor DH.");
     }
 
     LOG.info("##################################################");
