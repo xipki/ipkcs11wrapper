@@ -1351,7 +1351,7 @@ public final class PKCS11Constants {
 
     String codeToString(long code) {
       String name = codeNameMap.get(code);
-      return name != null ? name : "Unknown " + description + " with code: 0x" + Functions.toFullHex(code);
+      return name != null ? name : "Unknown " + description + " 0x" + Functions.toFullHex(code);
     }
 
     long stringToCode(String name) {
