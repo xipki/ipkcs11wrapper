@@ -1804,19 +1804,6 @@ public class Session {
     }
   }
 
-  private static void fixBooleanAttrValue(CK_ATTRIBUTE attr) {
-    if (attr.pValue instanceof byte[]) {
-      boolean allZeros = true;
-      for (byte b : (byte[]) attr.pValue) {
-        if (b != 0) {
-          allZeros = false;
-          break;
-        }
-      }
-      attr.pValue = !allZeros;
-    }
-  }
-
   private static void checkParams(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) {
     checkInParams(in, inOfs, inLen);
     checkOutParams(out, outOfs, outLen);
