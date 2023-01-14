@@ -1798,9 +1798,25 @@ public class Session {
 
   private void postProcessGetAttribute(Attribute attr) {
     CK_ATTRIBUTE ckAttr = attr.getCkAttribute();
+    if (ckAttr == null || ckAttr.pValue == null) return;
+
     if (ckAttr.type == CKA_KEY_TYPE && ckAttr.pValue != null) {
       long value = (long) ckAttr.pValue;
-      if ((value & CKK_VENDOR_DEFINED) != 0L) ckAttr.pValue = vendorCode.ckkVendorToGeneric(value);
+      if ((value & CKK_VENDOR_DEFINED) != 0L) {
+        ckAttr.pValue = vendorCode.ckkVendorToGeneric(value);
+      }
+    } else if (attr instanceof BooleanAttribute) {
+      if (ckAttr.pValue instanceof byte[]) {
+        byte[] value = (byte[]) ckAttr.pValue;
+        boolean allZeros = true;
+        for (byte b : value) {
+          if (b != 0) {
+            allZeros = false;
+            break;
+          }
+        }
+        ckAttr.pValue = !allZeros;
+      }
     }
   }
 
