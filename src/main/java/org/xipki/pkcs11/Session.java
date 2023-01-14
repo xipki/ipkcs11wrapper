@@ -46,10 +46,8 @@ import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM;
 import iaik.pkcs.pkcs11.wrapper.PKCS11;
 import org.xipki.pkcs11.attrs.*;
-import org.xipki.pkcs11.params.CcmMessageParameters;
 import org.xipki.pkcs11.params.MessageParameters;
 import org.xipki.pkcs11.params.Parameters;
-import org.xipki.pkcs11.params.Salsa20Chacha20Poly1305MessageParameters;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -1576,13 +1574,13 @@ public class Session {
 
   public Long getLongAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     LongAttribute attr = new LongAttribute(attributeType);
-    getAttrValue(objectHandle, attr);
+    doGetAttrValue(objectHandle, attr);
     return attr.getValue();
   }
 
   public String getStringAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     CharArrayAttribute attr = new CharArrayAttribute(attributeType);
-    getAttrValue(objectHandle, attr);
+    doGetAttrValue(objectHandle, attr);
     return attr.getValue();
   }
 
@@ -1593,13 +1591,13 @@ public class Session {
 
   public byte[] getByteArrayAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     ByteArrayAttribute attr = new ByteArrayAttribute(attributeType);
-    getAttrValue(objectHandle, attr);
+    doGetAttrValue(objectHandle, attr);
     return attr.getValue();
   }
 
   public Boolean getBooleanAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     BooleanAttribute attr = new BooleanAttribute(attributeType);
-    getAttrValue(objectHandle, attr);
+    doGetAttrValue(objectHandle, attr);
     return attr.getValue();
   }
 
@@ -1625,7 +1623,7 @@ public class Session {
 
   public Object getAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     Attribute attr = Attribute.getInstance(attributeType);
-    getAttrValue(objectHandle, attr);
+    doGetAttrValue(objectHandle, attr);
     return attr.getValue();
   }
 
@@ -1635,7 +1633,7 @@ public class Session {
     for (int i = 0; i < n; i++) {
       attrs[i] = Attribute.getInstance(attributeTypes[i]);
     }
-    getAttrValues(objectHandle, attrs);
+    doGetAttrValues(objectHandle, attrs);
     return new AttributeVector(attrs);
   }
 
@@ -1653,15 +1651,18 @@ public class Session {
    * @exception PKCS11Exception
    *              If getting the attributes failed.
    */
-  private void getAttrValues(long objectHandle, Attribute... attributes) throws PKCS11Exception {
+  private void doGetAttrValues(long objectHandle, Attribute... attributes) throws PKCS11Exception {
     Functions.requireNonNull("attributes", attributes);
 
+    if (attributes.length == 1) {
+      doGetAttrValue(objectHandle, attributes[0], null);
+      return;
+    }
+
     CK_ATTRIBUTE[] attributeTemplateList = new CK_ATTRIBUTE[attributes.length];
-    for (int i = 0; i < attributeTemplateList.length; i++) {
-      CK_ATTRIBUTE attribute = new CK_ATTRIBUTE();
-      attribute.type = attributes[i].getType();
-      attributeTemplateList[i] = attribute;
-      attributes[i].stateKnown(false);
+    for (int i = 0; i < attributes.length; i++) {
+      attributeTemplateList[i] = new CK_ATTRIBUTE();
+      attributeTemplateList[i].type = attributes[i].getType();
     }
 
     PKCS11Exception delayedEx = null;
@@ -1674,30 +1675,23 @@ public class Session {
     for (int i = 0; i < attributes.length; i++) {
       Attribute attribute = attributes[i];
       CK_ATTRIBUTE template = attributeTemplateList[i];
-      boolean templateNotNull = template != null;
-      attribute.stateKnown(templateNotNull).present(templateNotNull).sensitive(!templateNotNull);
-
-      if (templateNotNull) {
-        if (attribute instanceof BooleanAttribute) fixBooleanAttrValue(template);
-
-        attribute.ckAttribute(template);
+      if (template != null) {
+        attribute.present(true).sensitive(false).ckAttribute(template);
+        postProcessGetAttribute(attribute);
       }
     }
 
-    if (delayedEx == null) {
+    if (delayedEx != null) {
+      // do all failed separately again.
+      delayedEx = null;
       for (Attribute attr : attributes) {
-        postProcessGetAttribute(attr);
-      }
-      return;
-    }
-
-    // do all separately again.
-    delayedEx = null;
-    for (Attribute attr : attributes) {
-      try {
-        getAttrValue(objectHandle, attr);
-      } catch (PKCS11Exception ex) {
-        if (delayedEx == null) delayedEx = ex;
+        if (attr.getCkAttribute() == null || attr.getCkAttribute().pValue == null) {
+          try {
+            doGetAttrValue(objectHandle, attr, attributes);
+          } catch (PKCS11Exception ex) {
+            if (delayedEx == null) delayedEx = ex;
+          }
+        }
       }
     }
 
@@ -1728,8 +1722,9 @@ public class Session {
    * @exception PKCS11Exception
    *              If getting the attribute failed.
    */
-  private void getAttrValue(long objectHandle, Attribute attribute) throws PKCS11Exception {
-    attribute.stateKnown(false).present(false);
+  private void doGetAttrValue(long objectHandle, Attribute attribute, Attribute... otherAttributes)
+      throws PKCS11Exception {
+    attribute.present(false);
 
     try {
       CK_ATTRIBUTE[] attributeTemplateList = new CK_ATTRIBUTE[1];
@@ -1737,28 +1732,53 @@ public class Session {
       attributeTemplateList[0].type = attribute.getType();
       pkcs11.C_GetAttributeValue(sessionHandle, objectHandle, attributeTemplateList, useUtf8);
 
-      if (attribute instanceof BooleanAttribute) fixBooleanAttrValue(attributeTemplateList[0]);
-
-      attribute.ckAttribute(attributeTemplateList[0]).stateKnown(true).present(true).sensitive(false);
-      postProcessGetAttribute(attribute);
+      attribute.ckAttribute(attributeTemplateList[0]).present(true).sensitive(false);
     } catch (PKCS11Exception ex) {
       long ec = ex.getErrorCode();
       if (ec == CKR_ATTRIBUTE_TYPE_INVALID) {
+        if (attribute.getType() == CKA_EC_PARAMS) {
+          // this means, that some requested attributes are missing, but
+          // we can ignore this and proceed; e.g. a v2.01 module won't
+          // have the object ID attribute
+          attribute.present(false).getCkAttribute().pValue = null;
+
+          // Maybe we can fix it.
+          // Some HSMs do not return EC_PARAMS
+          Long keyType = null;
+          if (otherAttributes != null) {
+            for (Attribute otherAttr : otherAttributes) {
+              if (otherAttr.type() == CKA_KEY_TYPE) {
+                keyType = ((LongAttribute) otherAttr).getValue();
+              }
+            }
+          }
+
+          if (keyType == null) {
+            try {
+              keyType = getCkaKeyType(objectHandle);
+            } catch (PKCS11Exception e2) {
+            }
+          }
+
+          if (keyType != null && keyType == CKK_VENDOR_SM2) {
+            attribute.present(false).getCkAttribute().pValue = Functions.decodeHex("06082a811ccf5501822d");
+          }
+        }
+      } else if (ec == CKR_ATTRIBUTE_SENSITIVE) {
         // this means, that some requested attributes are missing, but
         // we can ignore this and proceed; e.g. a v2.01 module won't
         // have the object ID attribute
-        attribute.stateKnown(true).present(false).getCkAttribute().pValue = null;
-      } else if (ec == CKR_ATTRIBUTE_SENSITIVE) {
-        // this means, that some requested attributes are missing, but we can ignore this and
-        // proceed; e.g. a v2.01 module won't have the object ID attribute
-        attribute.stateKnown(true).present(true).sensitive(true).getCkAttribute().pValue = null;
+        attribute.getCkAttribute().pValue = null;
+        attribute.present(true).sensitive(true).getCkAttribute().pValue = null;
       } else if (ec == CKR_ARGUMENTS_BAD || ec == CKR_FUNCTION_FAILED || ec == CKR_FUNCTION_REJECTED) {
-        attribute.stateKnown(true).present(false).sensitive(false).getCkAttribute().pValue = null;
+        attribute.present(false).sensitive(false).getCkAttribute().pValue = null;
       } else {
         // there was a different error that we should propagate
         throw ex;
       }
     }
+
+    postProcessGetAttribute(attribute);
   }
 
   private CK_ATTRIBUTE[] toOutCKAttributes(AttributeVector template) {

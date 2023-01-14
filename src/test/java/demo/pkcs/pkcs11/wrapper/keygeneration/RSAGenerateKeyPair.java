@@ -84,18 +84,12 @@ public class RSAGenerateKeyPair extends TestBase {
     // first check out what attributes of the keys we may set
     List<Long> supportedMechanisms = token.getMechanismList2();
 
-    MechanismInfo signatureMechanismInfo;
-    if (supportedMechanisms.contains(CKM_RSA_PKCS)) {
-      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS);
-    } else if (supportedMechanisms.contains(CKM_RSA_X_509)) {
-      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_X_509);
-    } else if (supportedMechanisms.contains(CKM_RSA_9796)) {
-      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_9796);
-    } else if (supportedMechanisms.contains(CKM_RSA_PKCS_OAEP)) {
-      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS_OAEP);
-    } else {
-      signatureMechanismInfo = null;
-    }
+    MechanismInfo signatureMechanismInfo =
+          supportedMechanisms.contains(CKM_RSA_PKCS) ? token.getMechanismInfo(CKM_RSA_PKCS)
+        : supportedMechanisms.contains(CKM_RSA_X_509) ? token.getMechanismInfo(CKM_RSA_X_509)
+        : supportedMechanisms.contains(CKM_RSA_9796) ? token.getMechanismInfo(CKM_RSA_9796)
+        : supportedMechanisms.contains(CKM_RSA_PKCS_OAEP) ? token.getMechanismInfo(CKM_RSA_PKCS_OAEP)
+        : null;
 
     final long mechCode = CKM_RSA_PKCS_KEY_PAIR_GEN;
     if (!Util.supports(token, mechCode)) {
