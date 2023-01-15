@@ -95,6 +95,10 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  */
 public class Session {
 
+  private static final int SIGN_TYPE_ECDSA = 1;
+
+  private static final int SIGN_TYPE_SM2 = 2;
+
   /**
    * A reference to the underlying PKCS#11 module to perform the operations.
    */
@@ -127,7 +131,11 @@ public class Session {
    */
   private Boolean rwSession = null;
 
-  private boolean isEcdsaSign;
+  private int signatureType;
+
+  private long signKeyHandle;
+
+  private final LruCache<Long, byte[]> handleEcParamsMap = new LruCache<>(1000);
 
   /**
    * Constructor taking the token and the session handle.
@@ -174,6 +182,7 @@ public class Session {
    * @throws PKCS11Exception If closing the session failed.
    */
   public void closeSession() throws PKCS11Exception {
+    this.handleEcParamsMap.evictAll();
     pkcs11.C_CloseSession(sessionHandle);
   }
 
@@ -931,10 +940,17 @@ public class Session {
    */
   public void signInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     long code = mechanism.getMechanismCode();
-    isEcdsaSign = code == CKM_ECDSA   || code == CKM_ECDSA_SHA1     || code == CKM_ECDSA_SHA224
-        || code == CKM_ECDSA_SHA256   || code == CKM_ECDSA_SHA384   || code == CKM_ECDSA_SHA512
-        || code == CKM_VENDOR_SM2     || code == CKM_VENDOR_SM2_SM3 || code == CKM_ECDSA_SHA3_224
-        || code == CKM_ECDSA_SHA3_256 || code == CKM_ECDSA_SHA3_384 || code == CKM_ECDSA_SHA3_512;
+
+    this.signKeyHandle = keyHandle;
+    if (code == CKM_ECDSA || code == CKM_ECDSA_SHA1 || code == CKM_ECDSA_SHA224 || code == CKM_ECDSA_SHA256
+        || code == CKM_ECDSA_SHA384   || code == CKM_ECDSA_SHA512   || code == CKM_ECDSA_SHA3_224
+        || code == CKM_ECDSA_SHA3_256 || code == CKM_ECDSA_SHA3_384 || code == CKM_ECDSA_SHA3_512) {
+      signatureType = SIGN_TYPE_ECDSA;
+    } else if (code == CKM_VENDOR_SM2 || code == CKM_VENDOR_SM2_SM3) {
+      signatureType = SIGN_TYPE_SM2;
+    } else {
+      signatureType = 0;
+    }
 
     pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
@@ -950,7 +966,7 @@ public class Session {
    */
   public byte[] sign(byte[] data) throws PKCS11Exception {
     byte[] sigValue = pkcs11.C_Sign(sessionHandle, data);
-    return isEcdsaSign ? Functions.fixECDSASignature(sigValue) : sigValue;
+    return fixSignature(sigValue);
   }
 
   /**
@@ -993,7 +1009,52 @@ public class Session {
    */
   public byte[] signFinal() throws PKCS11Exception {
     byte[] sigValue = pkcs11.C_SignFinal(sessionHandle);
-    return isEcdsaSign ? Functions.fixECDSASignature(sigValue) : sigValue;
+    return fixSignature(sigValue);
+  }
+
+  private byte[] fixSignature(byte[] signatureValue) {
+    if (signatureType == 0) return signatureValue;
+
+    ModuleFix moduleFix = module.getModuleFix();
+    synchronized (module) {
+      if (signatureType == SIGN_TYPE_ECDSA) {
+        Boolean b = moduleFix.getEcdsaSignatureFixNeeded();
+        if (b == null || b) {
+          // get the ecParams
+          byte[] ecParams = handleEcParamsMap.get(signKeyHandle);
+          if (ecParams == null) {
+            try {
+              ecParams = getByteArrayAttrValue(signKeyHandle, CKA_EC_PARAMS);
+            } catch (PKCS11Exception e) {
+              return signatureValue;
+            }
+
+            handleEcParamsMap.put(signKeyHandle, ecParams);
+          }
+
+          if (ecParams != null) {
+            byte[] fixedSigValue = Functions.fixECDSASignature(signatureValue, ecParams);
+            boolean fixed = !Arrays.equals(fixedSigValue, signatureValue);
+            if (b == null) {
+              moduleFix.setEcdsaSignatureFixNeeded(fixed);
+            }
+            return fixedSigValue;
+          }
+        }
+      } else if (signatureType == SIGN_TYPE_SM2) {
+        Boolean b = moduleFix.getSm2SignatureFixNeeded();
+        if (b == null || b) {
+          byte[] fixedSigValue = Functions.fixECDSASignature(signatureValue, 32);
+          boolean fixed = !Arrays.equals(fixedSigValue, signatureValue);
+          if (b == null) {
+            moduleFix.setSm2SignatureFixNeeded(fixed);
+          }
+          return fixedSigValue;
+        }
+      }
+
+      return signatureValue;
+    }
   }
 
   /**
@@ -1636,7 +1697,12 @@ public class Session {
     }
 
     if (typeList.contains(CKA_EC_POINT) && !typeList.contains(CKA_EC_PARAMS)) {
-      typeList.add(CKA_EC_PARAMS);
+      synchronized (module) {
+        Boolean b = module.getModuleFix().getEcPointFixNeeded();
+        if (b == null || b) {
+          typeList.add(CKA_EC_PARAMS);
+        }
+      }
     }
 
     Attribute[] attrs = new Attribute[typeList.size()];
@@ -1751,10 +1817,14 @@ public class Session {
   private void doGetAttrValue(long objectHandle, Attribute attribute)
       throws PKCS11Exception {
     if (attribute.getType() == CKA_EC_POINT) {
-      doGetAttrValues(objectHandle, new ByteArrayAttribute(CKA_EC_PARAMS), attribute);
-    } else {
-      doGetAttrValue0(objectHandle, attribute, true);
+      Boolean b = module.getModuleFix().getEcPointFixNeeded();
+      if ((b == null || b)) {
+        doGetAttrValues(objectHandle, new ByteArrayAttribute(CKA_EC_PARAMS), attribute);
+        return;
+      }
     }
+
+    doGetAttrValue0(objectHandle, attribute, true);
   }
 
   private void doGetAttrValue0(long objectHandle, Attribute attribute, boolean postProcess)
@@ -1868,17 +1938,25 @@ public class Session {
         }
       }
     } else if (type == CKA_EC_POINT) {
-      byte[] ecParams = null;
-      if (otherAttrs != null) {
-        for (Attribute otherAttr : otherAttrs) {
-          if (otherAttr.getType() == CKA_EC_PARAMS) {
-            ecParams = ((ByteArrayAttribute) otherAttr).getValue();
+      Boolean b = module.getModuleFix().getEcPointFixNeeded();
+      if (b == null || b) {
+        byte[] ecParams = null;
+        if (otherAttrs != null) {
+          for (Attribute otherAttr : otherAttrs) {
+            if (otherAttr.getType() == CKA_EC_PARAMS) {
+              ecParams = ((ByteArrayAttribute) otherAttr).getValue();
+            }
           }
         }
-      }
 
-      if (ecParams != null) {
-        ckAttr.pValue = Functions.fixECPoint((byte[]) ckAttr.pValue, ecParams);
+        if (ecParams != null) {
+          byte[] fixedValue = Functions.fixECPoint((byte[]) ckAttr.pValue, ecParams);
+          boolean fixed = Arrays.equals(fixedValue, (byte[]) ckAttr.pValue);
+
+          if (b == null) module.getModuleFix().setEcPointFixNeeded(fixed);
+
+          if (fixed) ckAttr.pValue = fixedValue;
+        }
       }
     } else if (attr instanceof BooleanAttribute) {
       if (ckAttr.pValue instanceof byte[]) {

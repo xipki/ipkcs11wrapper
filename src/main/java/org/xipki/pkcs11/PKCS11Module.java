@@ -118,6 +118,8 @@ public class PKCS11Module {
 
   private VendorCode vendorCode;
 
+  private final ModuleFix moduleFix = new ModuleFix();
+
   /**
    * Indicates, if the static linking and initialization of the library is already done.
    */
@@ -177,6 +179,10 @@ public class PKCS11Module {
 
   public void setVendorCode(VendorCode vendorCode) {
     this.vendorCode = vendorCode;
+  }
+
+  public ModuleFix getModuleFix() {
+    return moduleFix;
   }
 
   /**

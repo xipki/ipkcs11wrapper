@@ -231,7 +231,14 @@ public class Functions {
     return sb.append(")").toString();
   }
 
-  public static byte[] fixECDSASignature(byte[] sig) {
+  static byte[] fixECDSASignature(byte[] sig, byte[] ecParams) {
+    Integer fieldLen = ecParamsToFieldSize.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (fieldLen == null) ? sig : fixECDSASignature(sig, fieldLen);
+  }
+
+  static byte[] fixECDSASignature(byte[] sig, int fieldLen) {
+    if (sig.length == 2 * fieldLen) return sig;
+
     if (sig[0] != 0x30) return sig;
 
     int b = sig[1];
@@ -270,10 +277,10 @@ public class Functions {
 
     if (s[0] == 0) s = Arrays.copyOfRange(s, 1, s.length);
 
-    // valid length is either multiple of 8, e.g. 32, 48, and 64, or 66 for the curve P-521.
-    int maxFieldLen = Math.max(r.length, s.length);
-    int fieldLen = (maxFieldLen > 64 && maxFieldLen <= 66) ? 66
-        : (maxFieldLen % 8 == 0) ? maxFieldLen : (maxFieldLen + 7) / 8 * 8;
+    if (r.length > fieldLen || s.length > fieldLen) {
+      // we can not fix it.
+      return sig;
+    }
 
     byte[] rs = new byte[2 * fieldLen];
     System.arraycopy(r, 0, rs, fieldLen - r.length, r.length);
