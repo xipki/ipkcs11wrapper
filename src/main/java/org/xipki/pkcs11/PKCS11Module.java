@@ -181,7 +181,7 @@ public class PKCS11Module {
     this.vendorCode = vendorCode;
   }
 
-  public ModuleFix getModuleFix() {
+  ModuleFix getModuleFix() {
     return moduleFix;
   }
 

@@ -939,9 +939,15 @@ public class Session {
    * @throws PKCS11Exception If initializing this operation failed.
    */
   public void signInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
+    initSign(mechanism, keyHandle);
+    pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+  }
+
+  private void initSign(Mechanism mechanism, long keyHandle) {
+    this.signKeyHandle = keyHandle;
+
     long code = mechanism.getMechanismCode();
 
-    this.signKeyHandle = keyHandle;
     if (code == CKM_ECDSA || code == CKM_ECDSA_SHA1 || code == CKM_ECDSA_SHA224 || code == CKM_ECDSA_SHA256
         || code == CKM_ECDSA_SHA384   || code == CKM_ECDSA_SHA512   || code == CKM_ECDSA_SHA3_224
         || code == CKM_ECDSA_SHA3_256 || code == CKM_ECDSA_SHA3_384 || code == CKM_ECDSA_SHA3_512) {
@@ -951,8 +957,6 @@ public class Session {
     } else {
       signatureType = 0;
     }
-
-    pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
   /**
@@ -1116,6 +1120,7 @@ public class Session {
    * @throws PKCS11Exception in case of error.
    */
   public void messageSignInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
+    initSign(mechanism, keyHandle);
     pkcs11.C_MessageSignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1146,12 +1151,14 @@ public class Session {
    *
    * @param parameter       the mechanism parameter to use
    * @param data            the message to sign
-   * @param isLastOperation specifies if this is the last part of this messsage.
+   * @param isLastOperation specifies if this is the last part of this message.
    * @return the signature
    * @throws PKCS11Exception in case of error.
    */
   public byte[] signMessageNext(Parameters parameter, byte[] data, boolean isLastOperation) throws PKCS11Exception {
-    return pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(parameter), data, isLastOperation, useUtf8);
+    byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(parameter), data, isLastOperation,
+        useUtf8);
+    return fixSignature(signature);
   }
 
   /**
