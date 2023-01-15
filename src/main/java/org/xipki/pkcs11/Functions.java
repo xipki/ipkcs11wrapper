@@ -74,6 +74,42 @@ public class Functions {
 
   }
 
+  private static final Map<String, Integer> ecParamsToFieldSize;
+
+  private static final Map<String, Integer> edwardsMontegomeryEcParamsToFieldSize;
+
+  static {
+    edwardsMontegomeryEcParamsToFieldSize = new HashMap<>(6);
+    // X25519 (1.3.101.110)
+    edwardsMontegomeryEcParamsToFieldSize.put("06032b656e", 32);
+    // X448 (1.3.101.111)
+    edwardsMontegomeryEcParamsToFieldSize.put("06032b656f", 56);
+    // ED25519 (1.3.101.112)
+    edwardsMontegomeryEcParamsToFieldSize.put("06032b6570", 32);
+    // ED448 (1.3.101.113)
+    edwardsMontegomeryEcParamsToFieldSize.put("06032b6571", 57);
+
+    ecParamsToFieldSize = new HashMap<>(130);
+    String propFile = "org/xipki/pkcs11/size-EC.properties";
+    Properties props = new Properties();
+    try {
+      props.load(Functions.class.getClassLoader().getResourceAsStream(propFile));
+      for (String name : props.stringPropertyNames()) {
+        name = name.trim();
+
+        if (ecParamsToFieldSize.containsKey(name)) {
+          throw new IllegalStateException("duplicated definition of CKA: " + name);
+        }
+
+        byte[] ecParams = Hex.decode(name);
+        int fieldBitSize = Integer.parseInt(props.getProperty(name));
+        ecParamsToFieldSize.put(Hex.encode(ecParams, 0, ecParams.length), (fieldBitSize + 7) / 8);
+      }
+    } catch (Throwable t) {
+      throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
+    }
+  }
+
   public static byte[] asUnsignedByteArray(java.math.BigInteger bn) {
     byte[] bytes = bn.toByteArray();
     return bytes[0] != 0 ? bytes : Arrays.copyOfRange(bytes, 1, bytes.length);
@@ -255,4 +291,71 @@ public class Functions {
     }
     return sb.toString();
   }
+
+  // some HSM does not return the standard conform ECPoint
+  static byte[] fixECPoint(byte[] ecPoint, byte[] ecParams) {
+    if (ecParams == null) return ecPoint;
+
+    int len = ecPoint.length;
+
+    if (len > 0xFFF0) return ecPoint; // too long, should not happen.
+
+    String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
+    Integer fieldSize = ecParamsToFieldSize.get(hexEcParams);
+    if (fieldSize != null) {
+      // weierstrauss curve.
+      if (ecPoint.length == 2 * fieldSize) {
+        // HSM returns x_coord. || y_coord.
+        return toOctetString((byte) 0x04, ecPoint);
+      } else {
+        byte encodingByte = ecPoint[0];
+        if (encodingByte == 0x04) {
+          if (len == 1 + 2 * fieldSize) {
+            // HSM returns 04 || x_coord. || y_coord.
+            return toOctetString(null, ecPoint);
+          }
+        } else if (encodingByte == 0x02 || encodingByte == 0x03) {
+          if (len == 1 + fieldSize) {
+            // HSM returns <02 or 03> || x_coord.
+            return toOctetString(null, ecPoint);
+          }
+        }
+      }
+
+      return ecPoint;
+    }
+
+    fieldSize = edwardsMontegomeryEcParamsToFieldSize.get(hexEcParams);
+    if (fieldSize != null) {
+      return (len == fieldSize) ? toOctetString(null, ecPoint) : ecPoint;
+    }
+
+    return ecPoint;
+  }
+
+  private static byte[] toOctetString(Byte byte1, byte[] bytes) {
+    int len = bytes.length;
+    if (byte1 != null) len++;
+
+    int numLenBytes = (len <= 0x7F) ? 1 : (len < 0xFF) ? 2 : 3;
+
+    byte[] ret = new byte[1 + numLenBytes + len];
+    ret[0] = 0x04;
+    if (numLenBytes == 2) {
+      ret[1] = (byte) 0x81;
+    } else if (numLenBytes == 3) {
+      ret[1] = (byte) 0x82;
+      ret[2] = (byte) (len >> 8);
+    }
+    ret[numLenBytes] = (byte) len;
+
+    if (byte1 == null) {
+      System.arraycopy(bytes, 0, ret, 1 + numLenBytes, bytes.length);
+    } else {
+      ret[1 + numLenBytes] = byte1;
+      System.arraycopy(bytes, 0, ret, 2 + numLenBytes, bytes.length);
+    }
+    return ret;
+  }
+
 }

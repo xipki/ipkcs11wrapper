@@ -42,8 +42,6 @@
 
 package org.xipki.pkcs11.attrs;
 
-import org.xipki.pkcs11.Functions;
-
 /**
  * Objects of this class represent a boolean attribute of a PKCS#11 object
  * as specified by PKCS#11.

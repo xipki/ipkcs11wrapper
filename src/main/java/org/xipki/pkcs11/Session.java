@@ -50,7 +50,9 @@ import org.xipki.pkcs11.params.MessageParameters;
 import org.xipki.pkcs11.params.Parameters;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
 
@@ -1628,11 +1630,32 @@ public class Session {
   }
 
   public AttributeVector getAttrValues(long objectHandle, long... attributeTypes) throws PKCS11Exception {
-    final int n = attributeTypes.length;
-    Attribute[] attrs = new Attribute[n];
-    for (int i = 0; i < n; i++) {
-      attrs[i] = Attribute.getInstance(attributeTypes[i]);
+    List<Long> typeList = new ArrayList<>(attributeTypes.length);
+    for (long attrType : attributeTypes) {
+      typeList.add(attrType);
     }
+
+    if (typeList.contains(CKA_EC_POINT) && !typeList.contains(CKA_EC_PARAMS)) {
+      typeList.add(CKA_EC_PARAMS);
+    }
+
+    Attribute[] attrs = new Attribute[typeList.size()];
+    int index = 0;
+
+    // we need to fix attributes EC_PARAMS and EC_POINT. Where EC_POINT needs EC_PARAMS,
+    // and EC_PARAMS needs KEY_TYPE.
+    long[] firstTypes = {CKA_CLASS, CKA_KEY_TYPE, CKA_EC_PARAMS, CKA_EC_POINT};
+
+    for (long type : firstTypes) {
+      if (typeList.remove(type)) {
+        attrs[index++] =  Attribute.getInstance(type);
+      }
+    }
+
+    for (long type : typeList) {
+      attrs[index++] =  Attribute.getInstance(type);
+    }
+
     doGetAttrValues(objectHandle, attrs);
     return new AttributeVector(attrs);
   }
@@ -1647,7 +1670,7 @@ public class Session {
    * @param attributes
    *          The objects specifying the attribute types
    *          (see {@link Attribute#getType()}) and receiving the attribute
-   *          values (see {@link Attribute#ckAttribute(iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE)}).
+   *          values (see {@link Attribute#ckAttribute(CK_ATTRIBUTE)}).
    * @exception PKCS11Exception
    *              If getting the attributes failed.
    */
@@ -1655,7 +1678,7 @@ public class Session {
     Functions.requireNonNull("attributes", attributes);
 
     if (attributes.length == 1) {
-      doGetAttrValue(objectHandle, attributes[0], null);
+      doGetAttrValue(objectHandle, attributes[0]);
       return;
     }
 
@@ -1677,7 +1700,6 @@ public class Session {
       CK_ATTRIBUTE template = attributeTemplateList[i];
       if (template != null) {
         attribute.present(true).sensitive(false).ckAttribute(template);
-        postProcessGetAttribute(attribute);
       }
     }
 
@@ -1687,12 +1709,16 @@ public class Session {
       for (Attribute attr : attributes) {
         if (attr.getCkAttribute() == null || attr.getCkAttribute().pValue == null) {
           try {
-            doGetAttrValue(objectHandle, attr, attributes);
+            doGetAttrValue0(objectHandle, attr, false);
           } catch (PKCS11Exception ex) {
             if (delayedEx == null) delayedEx = ex;
           }
         }
       }
+    }
+
+    for (Attribute attr : attributes) {
+      postProcessGetAttribute(attr, objectHandle, attributes);
     }
 
     if (delayedEx != null) throw delayedEx;
@@ -1722,7 +1748,16 @@ public class Session {
    * @exception PKCS11Exception
    *              If getting the attribute failed.
    */
-  private void doGetAttrValue(long objectHandle, Attribute attribute, Attribute... otherAttributes)
+  private void doGetAttrValue(long objectHandle, Attribute attribute)
+      throws PKCS11Exception {
+    if (attribute.getType() == CKA_EC_POINT) {
+      doGetAttrValues(objectHandle, new ByteArrayAttribute(CKA_EC_PARAMS), attribute);
+    } else {
+      doGetAttrValue0(objectHandle, attribute, true);
+    }
+  }
+
+  private void doGetAttrValue0(long objectHandle, Attribute attribute, boolean postProcess)
       throws PKCS11Exception {
     attribute.present(false);
 
@@ -1741,28 +1776,6 @@ public class Session {
           // we can ignore this and proceed; e.g. a v2.01 module won't
           // have the object ID attribute
           attribute.present(false).getCkAttribute().pValue = null;
-
-          // Maybe we can fix it.
-          // Some HSMs do not return EC_PARAMS
-          Long keyType = null;
-          if (otherAttributes != null) {
-            for (Attribute otherAttr : otherAttributes) {
-              if (otherAttr.type() == CKA_KEY_TYPE) {
-                keyType = ((LongAttribute) otherAttr).getValue();
-              }
-            }
-          }
-
-          if (keyType == null) {
-            try {
-              keyType = getCkaKeyType(objectHandle);
-            } catch (PKCS11Exception e2) {
-            }
-          }
-
-          if (keyType != null && keyType == CKK_VENDOR_SM2) {
-            attribute.present(false).getCkAttribute().pValue = Functions.decodeHex("06082a811ccf5501822d");
-          }
         }
       } else if (ec == CKR_ATTRIBUTE_SENSITIVE) {
         // this means, that some requested attributes are missing, but
@@ -1778,7 +1791,9 @@ public class Session {
       }
     }
 
-    postProcessGetAttribute(attribute);
+    if (postProcess) {
+      postProcessGetAttribute(attribute, objectHandle, null);
+    }
   }
 
   private CK_ATTRIBUTE[] toOutCKAttributes(AttributeVector template) {
@@ -1796,14 +1811,74 @@ public class Session {
     return ret;
   }
 
-  private void postProcessGetAttribute(Attribute attr) {
+  private void postProcessGetAttribute(Attribute attr, long objectHandle, Attribute... otherAttrs) {
+    long type = attr.getType();
     CK_ATTRIBUTE ckAttr = attr.getCkAttribute();
+
+    if (type == CKA_EC_PARAMS) {
+      if (ckAttr.pValue == null) {
+        // Some HSMs do not return EC_PARAMS
+        Long keyType = null;
+        if (otherAttrs != null) {
+          for (Attribute otherAttr : otherAttrs) {
+            if (otherAttr.type() == CKA_KEY_TYPE) {
+              keyType = ((LongAttribute) otherAttr).getValue();
+            }
+          }
+        }
+
+        if (keyType == null) {
+          try {
+            keyType = getCkaKeyType(objectHandle);
+          } catch (PKCS11Exception e2) {
+          }
+        }
+
+        if (keyType != null && keyType == CKK_VENDOR_SM2) {
+          attr.present(false).getCkAttribute().pValue = Functions.decodeHex("06082a811ccf5501822d");
+        }
+      }
+
+      return;
+    }
+
     if (ckAttr == null || ckAttr.pValue == null) return;
 
-    if (ckAttr.type == CKA_KEY_TYPE && ckAttr.pValue != null) {
-      long value = (long) ckAttr.pValue;
-      if ((value & CKK_VENDOR_DEFINED) != 0L) {
-        ckAttr.pValue = vendorCode.ckkVendorToGeneric(value);
+    if (type == CKA_KEY_TYPE) {
+      if (ckAttr.pValue != null) {
+        long value = (long) ckAttr.pValue;
+        if ((value & CKK_VENDOR_DEFINED) != 0L) {
+          ckAttr.pValue = vendorCode.ckkVendorToGeneric(value);
+        }
+      }
+    } else if (type == CKA_KEY_GEN_MECHANISM) {
+      if (ckAttr.pValue != null) {
+        long value = (long) ckAttr.pValue;
+        if ((value & CKM_VENDOR_DEFINED) != 0L) {
+          ckAttr.pValue = vendorCode.ckmVendorToGeneric(value);
+        }
+      }
+    } else if (type == CKA_ALLOWED_MECHANISMS) {
+      if (ckAttr.pValue != null) {
+        long[] mechs = ((MechanismArrayAttribute) attr).getValue();
+        for (long mech : mechs) {
+          if ((mech & CKM_VENDOR_DEFINED) != 0L) {
+            ckAttr.pValue = vendorCode.ckmVendorToGeneric(mech);
+          }
+        }
+      }
+    } else if (type == CKA_EC_POINT) {
+      byte[] ecParams = null;
+      if (otherAttrs != null) {
+        for (Attribute otherAttr : otherAttrs) {
+          if (otherAttr.getType() == CKA_EC_PARAMS) {
+            ecParams = ((ByteArrayAttribute) otherAttr).getValue();
+          }
+        }
+      }
+
+      if (ecParams != null) {
+        ckAttr.pValue = Functions.fixECPoint((byte[]) ckAttr.pValue, ecParams);
       }
     } else if (attr instanceof BooleanAttribute) {
       if (ckAttr.pValue instanceof byte[]) {
