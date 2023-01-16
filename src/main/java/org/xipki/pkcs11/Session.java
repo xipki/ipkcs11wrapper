@@ -1922,21 +1922,21 @@ public class Session {
     if (ckAttr == null || ckAttr.pValue == null) return;
 
     if (type == CKA_KEY_TYPE) {
-      if (ckAttr.pValue != null) {
+      if (vendorCode != null && ckAttr.pValue != null) {
         long value = (long) ckAttr.pValue;
         if ((value & CKK_VENDOR_DEFINED) != 0L) {
           ckAttr.pValue = vendorCode.ckkVendorToGeneric(value);
         }
       }
     } else if (type == CKA_KEY_GEN_MECHANISM) {
-      if (ckAttr.pValue != null) {
+      if (vendorCode != null && ckAttr.pValue != null) {
         long value = (long) ckAttr.pValue;
         if ((value & CKM_VENDOR_DEFINED) != 0L) {
           ckAttr.pValue = vendorCode.ckmVendorToGeneric(value);
         }
       }
     } else if (type == CKA_ALLOWED_MECHANISMS) {
-      if (ckAttr.pValue != null) {
+      if (vendorCode != null && ckAttr.pValue != null) {
         long[] mechs = ((MechanismArrayAttribute) attr).getValue();
         for (long mech : mechs) {
           if ((mech & CKM_VENDOR_DEFINED) != 0L) {
