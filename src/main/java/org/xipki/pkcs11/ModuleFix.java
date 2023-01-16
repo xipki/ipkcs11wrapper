@@ -8,6 +8,8 @@ class ModuleFix {
 
   private Boolean sm2SignatureFixNeeded;
 
+  private Boolean getSessionInfoSupported;
+
   public Boolean getEcPointFixNeeded() {
     return ecPointFixNeeded;
   }
@@ -31,4 +33,13 @@ class ModuleFix {
   public void setSm2SignatureFixNeeded(Boolean sm2SignatureFixNeeded) {
     this.sm2SignatureFixNeeded = sm2SignatureFixNeeded;
   }
+
+  public Boolean getGetSessionInfoSupported() {
+    return getSessionInfoSupported;
+  }
+
+  public void setGetSessionInfoSupported(Boolean getSessionInfoSupported) {
+    this.getSessionInfoSupported = getSessionInfoSupported;
+  }
+
 }
