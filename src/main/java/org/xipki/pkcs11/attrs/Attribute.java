@@ -94,11 +94,6 @@ public abstract class Attribute {
   protected boolean sensitive;
 
   /**
-   * True, if status of this attribute is known.
-   */
-  protected boolean stateKnown;
-
-  /**
    * The CK_ATTRIBUTE that is used to hold the PKCS#11 type of this attribute
    * and the value.
    */
@@ -144,7 +139,6 @@ public abstract class Attribute {
   protected Attribute(long type) {
     present = false;
     sensitive = false;
-    stateKnown = true;
     ckAttribute = new CK_ATTRIBUTE();
     ckAttribute.type = type;
   }
@@ -195,11 +189,6 @@ public abstract class Attribute {
     } else {
       throw new IllegalStateException("unknown attribute type " + ckaCodeToName(type));
     }
-  }
-
-  public Attribute stateKnown(boolean stateKnown) {
-    this.stateKnown = stateKnown;
-    return this;
   }
 
   /**
@@ -254,10 +243,6 @@ public abstract class Attribute {
    */
   public boolean isSensitive() {
     return sensitive;
-  }
-
-  public boolean isStateKnown() {
-    return stateKnown;
   }
 
   /**
@@ -325,8 +310,8 @@ public abstract class Attribute {
 
     if (withName) sb.append(ckaCodeToName(ckAttribute.type)).append(": ");
 
-    String valueString = (!stateKnown) ? "<Value is not present or sensitive>"
-        : present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";
+    String valueString = present ? (sensitive ? "<Value is sensitive>" : getValueString())
+                                 : "<Attribute not present>";
     return sb.append(valueString).toString();
   }
 

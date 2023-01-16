@@ -395,12 +395,12 @@ public class TokenInfo {
   }
 
   private static String mct(long count) {
-    return (count == CK_UNAVAILABLE_INFORMATION) ? "N/A"
+    return isUnavailableInformation(count) ? "N/A"
         : (count == CK_EFFECTIVELY_INFINITE) ? "unlimited" : Long.toString(count);
   }
 
   private static String ct(long count) {
-    return (count == CK_UNAVAILABLE_INFORMATION) ? "N/A" : Long.toString(count);
+    return isUnavailableInformation(count) ? "N/A" : Long.toString(count);
   }
 
 }

@@ -1938,14 +1938,14 @@ public class Session {
     if (type == CKA_KEY_TYPE) {
       if (vendorCode != null && ckAttr.pValue != null) {
         long value = (long) ckAttr.pValue;
-        if ((value & CKK_VENDOR_DEFINED) != 0L) {
+        if ((value & CKK_VENDOR_DEFINED) != 0L && !isUnavailableInformation(value)) {
           ckAttr.pValue = vendorCode.ckkVendorToGeneric(value);
         }
       }
     } else if (type == CKA_KEY_GEN_MECHANISM) {
       if (vendorCode != null && ckAttr.pValue != null) {
         long value = (long) ckAttr.pValue;
-        if ((value & CKM_VENDOR_DEFINED) != 0L) {
+        if ((value & CKM_VENDOR_DEFINED) != 0L && !isUnavailableInformation(value)) {
           ckAttr.pValue = vendorCode.ckmVendorToGeneric(value);
         }
       }

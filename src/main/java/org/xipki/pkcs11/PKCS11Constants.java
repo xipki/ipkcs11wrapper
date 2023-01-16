@@ -101,6 +101,8 @@ public final class PKCS11Constants {
 
   /* some special values for certain CK_ULONG variables */
   public static final long CK_UNAVAILABLE_INFORMATION               = ~0L;
+
+  public static final long CK_UNAVAILABLE_INFORMATION_2             = 0xFFFFFFFFL;
   public static final long CK_EFFECTIVELY_INFINITE                  = 0x0L;
 
   /* The following value is always invalid if used as a session
@@ -1288,6 +1290,11 @@ public final class PKCS11Constants {
 
   private PKCS11Constants() {
   }
+
+  public static boolean isUnavailableInformation(long value) {
+    return value == CK_UNAVAILABLE_INFORMATION || value == CK_UNAVAILABLE_INFORMATION_2;
+  }
+
   private static class CodeNameMap {
 
     private static final String pathPrefix = "org/xipki/pkcs11/";
