@@ -1,5 +1,11 @@
+// Copyright (c) 2022 xipki. All rights reserved.
+// License Apache License 2.0
+
 package org.xipki.pkcs11;
 
+/**
+ * @author Lijun Liao (xipki)
+ */
 class ModuleFix {
 
   private Boolean ecPointFixNeeded;

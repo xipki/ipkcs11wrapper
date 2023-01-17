@@ -1,44 +1,8 @@
 // Copyright (c) 2002 Graz University of Technology. All rights reserved.
+// License IAIK PKCS#11 Wrapper License.
 //
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//
-// 1. Redistributions of source code must retain the above copyright notice,
-//    this list of conditions and the following disclaimer.
-//
-// 2. Redistributions in binary form must reproduce the above copyright notice,
-//    this list of conditions and the following disclaimer in the documentation
-//    and/or other materials provided with the distribution.
-//
-// 3. The end-user documentation included with the redistribution, if any, must
-//    include the following acknowledgment:
-//
-//    "This product includes software developed by IAIK of Graz University of
-//     Technology."
-//
-//    Alternately, this acknowledgment may appear in the software itself, if and
-//    wherever such third-party acknowledgments normally appear.
-//
-// 4. The names "Graz University of Technology" and "IAIK of Graz University of
-//    Technology" must not be used to endorse or promote products derived from
-//    this software without prior written permission.
-//
-// 5. Products derived from this software may not be called "IAIK PKCS Wrapper",
-//    nor may "IAIK" appear in their name, without prior written permission of
-//    Graz University of Technology.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED
-// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-// WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE LICENSOR BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-// OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
-// OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-// ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-// OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
+// Copyright (c) 2022 xipki. All rights reserved.
+// License Apache License 2.0
 
 package org.xipki.pkcs11.attrs;
 
@@ -55,17 +19,18 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * This is the base-class for all types of attributes. In general, all PKCS#11
  * objects are just a collection of attributes. PKCS#11 specifies which
  * attributes each type of objects must have.
- * In some cases, attributes are optional (e.g. in RSAPrivateKey). In such a
- * case, this attribute will return false when the application calls
- * isPresent() on this attribute. This means, that the object does not
- * possess this attribute (maybe even though it should, but not all drivers
- * seem to implement the standard correctly). Handling attributes in this
- * fashion ensures that this library can work also with drivers that are
- * not fully compliant.
+ * <p/>
+ * In some cases, attributes are optional. In such a case, this attribute will
+ * return false when the application calls present() on this attribute. This
+ * means, that the object does not possess this attribute (maybe even though
+ * it should, but not all drivers seem to implement the standard correctly).
+ * Handling attributes in this fashion ensures that this library can work also
+ * with drivers that are not fully standard-compliant.
+ * <p/>
  * Moreover, certain attributes can be sensitive; i.e. their values cannot
  * be read, e.g. the private exponent of an RSA private key.
  *
- * @author Karl Scheibelhofer
+ * @author Karl Scheibelhofer (SIC)
  * @author Lijun Liao (xipki)
  */
 public abstract class Attribute {
@@ -310,8 +275,7 @@ public abstract class Attribute {
 
     if (withName) sb.append(ckaCodeToName(ckAttribute.type)).append(": ");
 
-    String valueString = present ? (sensitive ? "<Value is sensitive>" : getValueString())
-                                 : "<Attribute not present>";
+    String valueString = present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";
     return sb.append(valueString).toString();
   }
 
@@ -322,6 +286,10 @@ public abstract class Attribute {
    */
   public long getType() {
     return ckAttribute.type;
+  }
+
+  protected boolean isNullValue() {
+    return ckAttribute == null || ckAttribute.pValue == null;
   }
 
 }
