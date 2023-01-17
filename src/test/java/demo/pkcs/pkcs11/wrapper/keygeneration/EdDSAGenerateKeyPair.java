@@ -50,7 +50,7 @@ public class EdDSAGenerateKeyPair extends TestBase {
     LOG.info("Generating new EdDSA (curve Ed25519) key-pair... ");
 
     // first check out what attributes of the keys we may set
-    List<Long> supportedMechanisms = token.getMechanismList2();
+    List<Long> supportedMechanisms = getMechanismList(token);
 
     MechanismInfo signatureMechanismInfo;
     if (supportedMechanisms.contains(CKM_EDDSA)) {

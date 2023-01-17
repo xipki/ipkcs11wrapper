@@ -82,7 +82,7 @@ public class RSAGenerateKeyPair extends TestBase {
     LOG.info("Generating new 2048 bit RSA key-pair... ");
 
     // first check out what attributes of the keys we may set
-    List<Long> supportedMechanisms = token.getMechanismList2();
+    List<Long> supportedMechanisms = getMechanismList(token);
 
     MechanismInfo signatureMechanismInfo =
           supportedMechanisms.contains(CKM_RSA_PKCS) ? token.getMechanismInfo(CKM_RSA_PKCS)

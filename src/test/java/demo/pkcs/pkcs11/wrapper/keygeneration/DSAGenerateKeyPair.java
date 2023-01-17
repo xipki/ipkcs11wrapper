@@ -50,7 +50,7 @@ public class DSAGenerateKeyPair extends TestBase {
     LOG.info("Generating new DSA key-pair... ");
 
     // first check out what attributes of the keys we may set
-    List<Long> supportedMechanisms = token.getMechanismList2();
+    List<Long> supportedMechanisms = getMechanismList(token);
 
     MechanismInfo signatureMechanismInfo;
     if (supportedMechanisms.contains(CKM_DSA)) {

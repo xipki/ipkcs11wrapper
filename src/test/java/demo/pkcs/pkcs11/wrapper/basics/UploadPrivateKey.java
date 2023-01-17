@@ -147,7 +147,7 @@ public class UploadPrivateKey extends TestBase {
     LOG.info("creating private key object on the card... ");
 
     // check out what attributes of the keys we may set using the mechanism info
-    List<Long> supportedMechs = token.getMechanismList2();
+    List<Long> supportedMechs = getMechanismList(token);
     MechanismInfo signatureMechanismInfo;
     if (supportedMechs.contains(CKM_RSA_PKCS)) {
       signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS);

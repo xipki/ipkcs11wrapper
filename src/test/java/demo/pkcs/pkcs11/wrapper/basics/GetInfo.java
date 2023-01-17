@@ -46,6 +46,8 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
 
+import java.util.List;
+
 import static org.xipki.pkcs11.PKCS11Constants.CKF_TOKEN_INITIALIZED;
 import static org.xipki.pkcs11.PKCS11Constants.ckmCodeToName;
 
@@ -91,7 +93,7 @@ public class GetInfo extends TestBase {
       LOG.info("{}", tokenInfo);
 
       LOG.info("supported Mechanisms:");
-      long[] supportedMechanisms = tokens[i].getMechanismList();
+      List<Long> supportedMechanisms = getMechanismList(tokens[i]);
       for (long supportedMechanism : supportedMechanisms) {
         LOG.info("--------------------------------------------------");
         MechanismInfo mechanismInfo = tokens[i].getMechanismInfo(supportedMechanism);

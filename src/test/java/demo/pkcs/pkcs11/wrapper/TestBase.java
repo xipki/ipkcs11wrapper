@@ -61,6 +61,8 @@ import java.security.SecureRandom;
 import java.security.spec.DSAPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -329,5 +331,14 @@ public class TestBase {
       throw new InvalidKeySpecException("unknown publicKey type " + codeToName(Category.CKK, keyType));
     }
   } // method generatePublicKey
+
+  protected static List<Long> getMechanismList(Token token) throws PKCS11Exception {
+    long[] supportedMechanisms = token.getMechanismList();
+    List<Long> list = new ArrayList<>(supportedMechanisms.length);
+    for (long mech : supportedMechanisms) {
+      list.add(mech);
+    }
+    return list;
+  }
 
 }
