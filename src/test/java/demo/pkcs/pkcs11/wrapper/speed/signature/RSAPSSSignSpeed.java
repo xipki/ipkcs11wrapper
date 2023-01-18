@@ -25,7 +25,7 @@ import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.params.RSAPkcsPssParameters;
+import org.xipki.pkcs11.params.RSA_PKCS_PSS_PARAMS;
 import org.xipki.util.BenchmarkExecutor;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -91,7 +91,7 @@ public class RSAPSSSignSpeed extends TestBase {
   }
 
   public RSAPSSSignSpeed() {
-    signMechanism2 = new Mechanism(CKM_RSA_PKCS_PSS, new RSAPkcsPssParameters(CKM_SHA256, CKG_MGF1_SHA256, 32));
+    signMechanism2 = new Mechanism(CKM_RSA_PKCS_PSS, new RSA_PKCS_PSS_PARAMS(CKM_SHA256, CKG_MGF1_SHA256, 32));
   }
 
   @Test

@@ -23,7 +23,7 @@ import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.PKCS11KeyPair;
 import org.xipki.pkcs11.Session;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.params.RSAPkcsPssParameters;
+import org.xipki.pkcs11.params.RSA_PKCS_PSS_PARAMS;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -58,7 +58,7 @@ public class RSAPKCSPSSSignRawData extends SignatureTestBase {
       return;
     }
     // be sure that your token can process the specified mechanism
-    RSAPkcsPssParameters pssParams = new RSAPkcsPssParameters(CKM_SHA256, CKG_MGF1_SHA256, 32);
+    RSA_PKCS_PSS_PARAMS pssParams = new RSA_PKCS_PSS_PARAMS(CKM_SHA256, CKG_MGF1_SHA256, 32);
     Mechanism signatureMechanism = getSupportedMechanism(token, mechCode, pssParams);
 
     final boolean inToken = false;

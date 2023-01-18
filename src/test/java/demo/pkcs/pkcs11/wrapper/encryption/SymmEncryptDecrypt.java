@@ -21,8 +21,8 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.params.CcmParameters;
-import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.params.CCM_PARAMS;
+import org.xipki.pkcs11.params.CkParams;
 
 import java.util.Arrays;
 
@@ -75,9 +75,9 @@ public abstract class SymmEncryptDecrypt extends TestBase {
 
     // be sure that your token can process the specified mechanism
     Mechanism encryptionMechanism = getEncryptionMech(token);
-    Parameters params = encryptionMechanism.getParameters();
-    if (params instanceof CcmParameters) {
-      ((CcmParameters) params).setDataLen(rawData.length);
+    CkParams params = encryptionMechanism.getParameters();
+    if (params instanceof CCM_PARAMS) {
+      ((CCM_PARAMS) params).setDataLen(rawData.length);
     }
 
     // initialize for encryption
@@ -92,8 +92,8 @@ public abstract class SymmEncryptDecrypt extends TestBase {
 
     Mechanism decryptionMechanism = getEncryptionMech(token);
     params = encryptionMechanism.getParameters();
-    if (params instanceof CcmParameters) {
-      ((CcmParameters) params).setDataLen(encryptedData.length - 16);
+    if (params instanceof CCM_PARAMS) {
+      ((CCM_PARAMS) params).setDataLen(encryptedData.length - 16);
     }
 
     // initialize for decryption

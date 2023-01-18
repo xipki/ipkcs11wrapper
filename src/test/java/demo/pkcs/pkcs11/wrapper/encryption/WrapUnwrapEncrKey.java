@@ -46,7 +46,7 @@ import demo.pkcs.pkcs11.wrapper.TestBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.params.InitializationVectorParameters;
+import org.xipki.pkcs11.params.ByteArrayParams;
 
 import java.util.Arrays;
 
@@ -85,8 +85,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     Mechanism wrapMechanism = getSupportedMechanism(token, CKM_AES_KEY_WRAP);
 
     byte[] encryptIV = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    Mechanism encryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD,
-        new InitializationVectorParameters(encryptIV));
+    Mechanism encryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD, new ByteArrayParams(encryptIV));
 
     // initialize for encryption
     session.encryptInit(encryptionMechanism, encryptionKey);
@@ -117,8 +116,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     LOG.info("trying to decrypt");
 
     byte[] decryptIV = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    Mechanism decryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD,
-        new InitializationVectorParameters(decryptIV));
+    Mechanism decryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD, new ByteArrayParams(decryptIV));
 
     // initialize for decryption
     session.decryptInit(decryptionMechanism, unwrappedKey);

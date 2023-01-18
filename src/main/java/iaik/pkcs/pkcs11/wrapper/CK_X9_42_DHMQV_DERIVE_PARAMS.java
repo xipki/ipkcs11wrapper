@@ -4,25 +4,22 @@
 package iaik.pkcs.pkcs11.wrapper;
 
 /**
- * class CK_X9_42_DH2_DERIVE_PARAMS provides the parameters to the CKM_X9_42_DH_HYBRID_DERIVE and
- * CKM_X9_42_MQV_DERIVE mechanisms.
- * <p>
+ *
  * <B>PKCS#11 structure:</B>
- *
- * <PRE>
- * typedef struct CK_X9_42_DH2_DERIVE_PARAMS {
+ * <pre>
+ * typedef struct CK_X9_42_MQV_DERIVE_PARAMS {
  *   CK_X9_42_DH_KDF_TYPE kdf;
- *   CK_ULONG ulOtherInfoLen;
- *   CK_BYTE_PTR pOtherInfo;
- *   CK_ULONG ulPublicDataLen;
- *   CK_BYTE_PTR pPublicData;
- *   CK_ULONG ulPrivateDataLen;
- *   CK_OBJECT_HANDLE hPrivateData;
- *   CK_ULONG ulPublicDataLen2;
- *   CK_BYTE_PTR pPublicData2;
- * } CK_X9_42_DH2_DERIVE_PARAMS;
- * </PRE>
- *
+ *   CK_ULONG             ulOtherInfoLen;
+ *   CK_BYTE_PTR          pOtherInfo;
+ *   CK_ULONG             ulPublicDataLen;
+ *   CK_BYTE_PTR          pPublicData;
+ *   CK_ULONG             ulPrivateDataLen;
+ *   CK_OBJECT_HANDLE     hPrivateData;
+ *   CK_ULONG             ulPublicDataLen2;
+ *   CK_BYTE_PTR          pPublicData2;
+ *   CK_OBJECT_HANDLE     publicKey;
+ * } CK_X9_42_MQV_DERIVE_PARAMS;
+ * </pre>
  * @author Karl Scheibelhofer (SIC)
  */
 public class CK_X9_42_DHMQV_DERIVE_PARAMS {

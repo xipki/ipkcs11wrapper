@@ -51,7 +51,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xipki.pkcs11.*;
-import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.params.CkParams;
 import org.xipki.util.Hex;
 
 import java.io.InputStream;
@@ -215,7 +215,7 @@ public class TestBase {
     return new Mechanism(mechCode);
   }
 
-  protected Mechanism getSupportedMechanism(Token token, long mechCode, Parameters parameters) throws PKCS11Exception {
+  protected Mechanism getSupportedMechanism(Token token, long mechCode, CkParams parameters) throws PKCS11Exception {
     assertSupport(token, mechCode);
     return new Mechanism(mechCode, parameters);
   }

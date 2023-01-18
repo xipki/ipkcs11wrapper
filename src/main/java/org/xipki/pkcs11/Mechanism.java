@@ -6,7 +6,7 @@
 
 package org.xipki.pkcs11;
 
-import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.params.CkParams;
 
 /**
  * Objects of this class represent a mechanism as defined in PKCS#11. There are
@@ -26,7 +26,7 @@ public class Mechanism {
   /**
    * The parameters of the mechanism. Not all mechanisms use these parameters.
    */
-  private final Parameters parameters;
+  private final CkParams parameters;
 
   /**
    * Constructor taking just the mechanism code as defined in PKCS11Constants.
@@ -44,7 +44,7 @@ public class Mechanism {
    * @param pkcs11MechanismCode The mechanism code.
    * @param parameters The mechanism parameters.
    */
-  public Mechanism(long pkcs11MechanismCode, Parameters parameters) {
+  public Mechanism(long pkcs11MechanismCode, CkParams parameters) {
     this.pkcs11MechanismCode = pkcs11MechanismCode;
     this.parameters = parameters;
   }
@@ -54,7 +54,7 @@ public class Mechanism {
    *
    * @return The parameters of this mechanism. May be null.
    */
-  public Parameters getParameters() {
+  public CkParams getParameters() {
     return parameters;
   }
 

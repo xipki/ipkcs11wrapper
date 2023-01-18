@@ -8,12 +8,12 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  * <PRE>
  * typedef struct CK_CCM_PARAMS {
- * CK_ULONG ulDataLen;
- * CK_ULONG ulNonceLen;
- * CK_BYTE_PTR ulNonceLen;
- * CK_BYTE_PTR pAAD;
- * CK_ULONG ulAADLen;
- * CK_ULONG ulMACLen;
+ *   CK_ULONG     ulDataLen; //plaintext or ciphertext
+ *   CK_BYTE_PTR  pNonce;
+ *   CK_ULONG     ulNonceLen;
+ *   CK_BYTE_PTR  pAAD;
+ *   CK_ULONG     ulAADLen;
+ *   CK_ULONG     ulMACLen;
  * } CK_CCM_PARAMS;
  * </PRE>
  *

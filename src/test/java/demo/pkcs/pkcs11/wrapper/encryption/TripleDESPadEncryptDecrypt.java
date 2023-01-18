@@ -21,7 +21,7 @@ import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.params.InitializationVectorParameters;
+import org.xipki.pkcs11.params.ByteArrayParams;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
 
@@ -45,7 +45,7 @@ public class TripleDESPadEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, CKM_DES3_CBC_PAD, new InitializationVectorParameters(iv));
+    return getSupportedMechanism(token, CKM_DES3_CBC_PAD, new ByteArrayParams(iv));
   }
 
   @Override

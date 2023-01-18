@@ -25,7 +25,7 @@ import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.params.GcmParameters;
+import org.xipki.pkcs11.params.GCM_PARAMS;
 import org.xipki.util.BenchmarkExecutor;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
@@ -92,7 +92,7 @@ public class AESGCMPadEncryptDecryptSpeed extends TestBase {
   }
 
   private Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, encryptMechanism, new GcmParameters(iv, aad, 128));
+    return getSupportedMechanism(token, encryptMechanism, new GCM_PARAMS(iv, aad, 128));
   }
 
   private AttributeVector getMinimalKeyTemplate0() {

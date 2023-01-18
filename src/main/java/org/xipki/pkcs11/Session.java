@@ -10,8 +10,8 @@ import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM;
 import iaik.pkcs.pkcs11.wrapper.PKCS11;
 import org.xipki.pkcs11.attrs.*;
-import org.xipki.pkcs11.params.MessageParameters;
-import org.xipki.pkcs11.params.Parameters;
+import org.xipki.pkcs11.params.CkMessageParams;
+import org.xipki.pkcs11.params.CkParams;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -576,11 +576,11 @@ public class Session {
    * @return The ciphertext
    * @throws PKCS11Exception If encrypting failed.
    */
-  public byte[] encryptMessage(Parameters parameter, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
-    Object paramObject = toCkParameters(parameter);
+  public byte[] encryptMessage(CkParams params, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
+    Object paramObject = toCkParameters(params);
     byte[] rv = pkcs11.C_EncryptMessage(sessionHandle, paramObject, associatedData, plaintext, useUtf8);
 
-    if (parameter instanceof MessageParameters) ((MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
+    if (params instanceof CkMessageParams) ((CkMessageParams) params).setValuesFromPKCS11Object(paramObject);
 
     return rv;
   }
@@ -589,12 +589,12 @@ public class Session {
    * Starts a multi-part message-encryption operation. Can only be called when an encryption operation has been
    * initialized before.
    *
-   * @param parameter      The IV or nonce
+   * @param params         The IV or nonce
    * @param associatedData The associated Data for AEAS Mechanisms
    * @throws PKCS11Exception in case of error.
    */
-  public void encryptMessageBegin(Parameters parameter, byte[] associatedData) throws PKCS11Exception {
-    pkcs11.C_EncryptMessageBegin(sessionHandle, toCkParameters(parameter), associatedData, useUtf8);
+  public void encryptMessageBegin(CkParams params, byte[] associatedData) throws PKCS11Exception {
+    pkcs11.C_EncryptMessageBegin(sessionHandle, toCkParameters(params), associatedData, useUtf8);
   }
 
   /**
@@ -608,11 +608,11 @@ public class Session {
    * @return The encrypted message part
    * @throws PKCS11Exception in case of error.
    */
-  public byte[] encryptMessageNext(Parameters parameter, byte[] plaintext, boolean isLastOperation)
+  public byte[] encryptMessageNext(CkParams params, byte[] plaintext, boolean isLastOperation)
       throws PKCS11Exception {
-    Object paramObject = toCkParameters(parameter);
-    if (parameter instanceof MessageParameters) {
-      ((MessageParameters) parameter).setValuesFromPKCS11Object(paramObject);
+    Object paramObject = toCkParameters(params);
+    if (params instanceof CkMessageParams) {
+      ((CkMessageParams) params).setValuesFromPKCS11Object(paramObject);
     }
     return pkcs11.C_EncryptMessageNext(sessionHandle, paramObject, plaintext,
         isLastOperation ? CKF_END_OF_MESSAGE : 0, useUtf8);
@@ -765,8 +765,8 @@ public class Session {
    * @return The ciphertext
    * @throws PKCS11Exception If encrypting failed.
    */
-  public byte[] decryptMessage(Parameters parameter, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
-    return pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(parameter), associatedData, plaintext, useUtf8);
+  public byte[] decryptMessage(CkParams params, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
+    return pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(params), associatedData, plaintext, useUtf8);
   }
 
   /**
@@ -776,8 +776,8 @@ public class Session {
    * @param associatedData The associated Data for AEAS Mechanisms
    * @throws PKCS11Exception in case of error.
    */
-  public void decryptMessageBegin(Parameters parameter, byte[] associatedData) throws PKCS11Exception {
-    pkcs11.C_DecryptMessageBegin(sessionHandle, toCkParameters(parameter), associatedData, useUtf8);
+  public void decryptMessageBegin(CkParams params, byte[] associatedData) throws PKCS11Exception {
+    pkcs11.C_DecryptMessageBegin(sessionHandle, toCkParameters(params), associatedData, useUtf8);
   }
 
   /**
@@ -785,15 +785,15 @@ public class Session {
    * with decryptMessageBegin before calling this function. If the isLastOperation is set, the multi-part operation
    * finishes.
    *
-   * @param parameter       The parameter object
+   * @param params          The parameter object
    * @param ciphertext      The ciphertext getting decrypted
    * @param isLastOperation If this is the last part of the multi-part message encryption, this should be true
    * @return the decrypted message part
    * @throws PKCS11Exception in case of error.
    */
-  public byte[] decryptMessageNext(Parameters parameter, byte[] ciphertext, boolean isLastOperation)
+  public byte[] decryptMessageNext(CkParams params, byte[] ciphertext, boolean isLastOperation)
       throws PKCS11Exception {
-    return pkcs11.C_DecryptMessageNext(sessionHandle, toCkParameters(parameter),
+    return pkcs11.C_DecryptMessageNext(sessionHandle, toCkParameters(params),
         ciphertext, isLastOperation ? CKF_END_OF_MESSAGE : 0, useUtf8);
   }
 
@@ -1108,8 +1108,8 @@ public class Session {
    * @return the signature
    * @throws PKCS11Exception if signing failed.
    */
-  public byte[] signMessage(Parameters parameter, byte[] data) throws PKCS11Exception {
-    return pkcs11.C_SignMessage(sessionHandle, toCkParameters(parameter), data, useUtf8);
+  public byte[] signMessage(CkParams params, byte[] data) throws PKCS11Exception {
+    return pkcs11.C_SignMessage(sessionHandle, toCkParameters(params), data, useUtf8);
   }
 
   /**
@@ -1119,8 +1119,8 @@ public class Session {
    * @param parameter the mechanism parameter to use
    * @throws PKCS11Exception in case of error.
    */
-  public void signMessageBegin(Parameters parameter) throws PKCS11Exception {
-    pkcs11.C_SignMessageBegin(sessionHandle, toCkParameters(parameter), useUtf8);
+  public void signMessageBegin(CkParams params) throws PKCS11Exception {
+    pkcs11.C_SignMessageBegin(sessionHandle, toCkParameters(params), useUtf8);
   }
 
   /**
@@ -1133,8 +1133,8 @@ public class Session {
    * @return the signature
    * @throws PKCS11Exception in case of error.
    */
-  public byte[] signMessageNext(Parameters parameter, byte[] data, boolean isLastOperation) throws PKCS11Exception {
-    byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(parameter), data, isLastOperation,
+  public byte[] signMessageNext(CkParams params, byte[] data, boolean isLastOperation) throws PKCS11Exception {
+    byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data, isLastOperation,
         useUtf8);
     return fixSignature(signature);
   }
@@ -1318,8 +1318,8 @@ public class Session {
    *          the signature of the message
    * @throws PKCS11Exception if the message cant be verified
    */
-  public void verifyMessage(Parameters parameter, byte[] data, byte[] signature) throws PKCS11Exception {
-    pkcs11.C_VerifyMessage(sessionHandle, toCkParameters(parameter), data, signature, useUtf8);
+  public void verifyMessage(CkParams params, byte[] data, byte[] signature) throws PKCS11Exception {
+    pkcs11.C_VerifyMessage(sessionHandle, toCkParameters(params), data, signature, useUtf8);
   }
 
   /**
@@ -1330,8 +1330,8 @@ public class Session {
    *          the mechanism parameter to use
    * @throws PKCS11Exception in case of error.
    */
-  public void verifyMessageBegin(Parameters parameter) throws PKCS11Exception {
-    pkcs11.C_VerifyMessageBegin(sessionHandle, toCkParameters(parameter), useUtf8);
+  public void verifyMessageBegin(CkParams params) throws PKCS11Exception {
+    pkcs11.C_VerifyMessageBegin(sessionHandle, toCkParameters(params), useUtf8);
   }
 
   /**
@@ -1349,8 +1349,8 @@ public class Session {
    * @throws PKCS11Exception
    *            if The Signature is invalid
    */
-  public void verifyMessageNext(Parameters parameter, byte[] data, byte[] signature) throws PKCS11Exception {
-    pkcs11.C_VerifyMessageNext(sessionHandle, toCkParameters(parameter), data, signature, useUtf8);
+  public void verifyMessageNext(CkParams params, byte[] data, byte[] signature) throws PKCS11Exception {
+    pkcs11.C_VerifyMessageNext(sessionHandle, toCkParameters(params), data, signature, useUtf8);
   }
 
   /**
@@ -1611,8 +1611,8 @@ public class Session {
     return ret;
   }
 
-  private Object toCkParameters(Parameters parameter) {
-    return parameter == null ? null : parameter.getPKCS11ParamsObject();
+  private Object toCkParameters(CkParams params) {
+    return params == null ? null : params.getParams();
   }
 
   public Integer getIntAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {

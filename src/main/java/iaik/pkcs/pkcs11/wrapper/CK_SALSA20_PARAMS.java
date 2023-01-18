@@ -10,7 +10,7 @@ package iaik.pkcs.pkcs11.wrapper;
  typedef struct CK_SALSA20_PARAMS {
  CK_BYTE_PTR    pBlockCounter;
  CK_BYTE_PTR    pNonce;
- CK_ULONG    ulNonceBits;
+ CK_ULONG       ulNonceBits;
  } CK_SALSA20_PARAMS;
  * </PRE>
  *

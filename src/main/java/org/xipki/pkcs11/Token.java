@@ -6,9 +6,6 @@
 
 package org.xipki.pkcs11;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**

@@ -23,7 +23,7 @@ import org.xipki.pkcs11.AttributeVector;
 import org.xipki.pkcs11.Mechanism;
 import org.xipki.pkcs11.PKCS11Exception;
 import org.xipki.pkcs11.Token;
-import org.xipki.pkcs11.params.CcmParameters;
+import org.xipki.pkcs11.params.CCM_PARAMS;
 
 import static org.xipki.pkcs11.PKCS11Constants.*;
 
@@ -63,7 +63,7 @@ public class AESCCMEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Override
   protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, CKM_AES_CCM, new CcmParameters(0, iv, aad, 128));
+    return getSupportedMechanism(token, CKM_AES_CCM, new CCM_PARAMS(0, iv, aad, 128));
   }
 
   @Override
