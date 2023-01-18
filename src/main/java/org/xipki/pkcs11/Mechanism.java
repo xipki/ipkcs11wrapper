@@ -6,7 +6,10 @@
 
 package org.xipki.pkcs11;
 
+import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM;
 import org.xipki.pkcs11.params.CkParams;
+
+import static org.xipki.pkcs11.PKCS11Constants.CKM_VENDOR_DEFINED;
 
 /**
  * Objects of this class represent a mechanism as defined in PKCS#11. There are
@@ -21,7 +24,7 @@ public class Mechanism {
    * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
    * likewise).
    */
-  private final long pkcs11MechanismCode;
+  private final long mechanismCode;
 
   /**
    * The parameters of the mechanism. Not all mechanisms use these parameters.
@@ -31,21 +34,21 @@ public class Mechanism {
   /**
    * Constructor taking just the mechanism code as defined in PKCS11Constants.
    *
-   * @param pkcs11MechanismCode
+   * @param mechanismCode
    *          The mechanism code.
    */
-  public Mechanism(long pkcs11MechanismCode) {
-    this(pkcs11MechanismCode, null);
+  public Mechanism(long mechanismCode) {
+    this(mechanismCode, null);
   }
 
   /**
    * Constructor taking just the mechanism code as defined in PKCS11Constants.
    *
-   * @param pkcs11MechanismCode The mechanism code.
+   * @param mechanismCode The mechanism code.
    * @param parameters The mechanism parameters.
    */
-  public Mechanism(long pkcs11MechanismCode, CkParams parameters) {
-    this.pkcs11MechanismCode = pkcs11MechanismCode;
+  public Mechanism(long mechanismCode, CkParams parameters) {
+    this.mechanismCode = mechanismCode;
     this.parameters = parameters;
   }
 
@@ -65,7 +68,7 @@ public class Mechanism {
    * @return The code of this mechanism.
    */
   public long getMechanismCode() {
-    return pkcs11MechanismCode;
+    return mechanismCode;
   }
 
   /**
@@ -74,7 +77,16 @@ public class Mechanism {
    * @return The name of this mechanism.
    */
   public String getName() {
-    return PKCS11Constants.ckmCodeToName(pkcs11MechanismCode);
+    return PKCS11Constants.ckmCodeToName(mechanismCode);
+  }
+
+  CK_MECHANISM toCkMechanism() {
+    CK_MECHANISM ckMechanism = new CK_MECHANISM();
+    ckMechanism.mechanism = mechanismCode;
+    if (parameters != null) {
+      ckMechanism.pParameter = parameters.getParams();
+    }
+    return ckMechanism;
   }
 
   /**

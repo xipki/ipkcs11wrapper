@@ -570,7 +570,7 @@ public class Session {
    * Contrary to the encrypt-Function, the encryptMessage-Function can be called any number of times and does
    * not finalize the encryption-operation
    *
-   * @param parameter      The parameter object
+   * @param params         The parameter object
    * @param associatedData The associated Data for AEAS Mechanisms
    * @param plaintext      The plaintext getting encrypted
    * @return The ciphertext
@@ -602,7 +602,7 @@ public class Session {
    * with encryptMessageBegin before calling this function. If the isLastOperation is set, the multi-part operation
    * finishes and if present the TAG or MAC is returned in the parameters.
    *
-   * @param parameter       The parameter object
+   * @param params          The parameter object
    * @param plaintext       The associated Data for AEAS Mechanisms
    * @param isLastOperation If this is the last part of the multi-part message encryption, this should be true
    * @return The encrypted message part
@@ -759,7 +759,7 @@ public class Session {
    * Contrary to the decrypt-Function, the decryptMessage-Function can be called any number of times and does
    * not finalize the decryption-operation
    *
-   * @param parameter      The parameter object
+   * @param params         The parameter object
    * @param associatedData The associated Data for AEAS Mechanisms
    * @param plaintext      The plaintext getting encrypted
    * @return The ciphertext
@@ -772,7 +772,7 @@ public class Session {
   /**
    * Starts a multi-part message-decryption operation.
    *
-   * @param parameter      The parameter object
+   * @param params         The parameter object
    * @param associatedData The associated Data for AEAS Mechanisms
    * @throws PKCS11Exception in case of error.
    */
@@ -1103,7 +1103,7 @@ public class Session {
   }
 
   /**
-   * @param parameter the mechanism parameter to use
+   * @param params    the mechanism parameter to use
    * @param data      the data to sign
    * @return the signature
    * @throws PKCS11Exception if signing failed.
@@ -1116,7 +1116,7 @@ public class Session {
    * SignMessageBegin begins a multiple-part message signature operation, where the signature is an
    * appendix to the message.
    *
-   * @param parameter the mechanism parameter to use
+   * @param params    the mechanism parameter to use
    * @throws PKCS11Exception in case of error.
    */
   public void signMessageBegin(CkParams params) throws PKCS11Exception {
@@ -1127,7 +1127,7 @@ public class Session {
    * SignMessageNext continues a multiple-part message signature operation, processing another data
    * part, or finishes a multiple-part message signature operation, returning the signature.
    *
-   * @param parameter       the mechanism parameter to use
+   * @param params          the mechanism parameter to use
    * @param data            the message to sign
    * @param isLastOperation specifies if this is the last part of this message.
    * @return the signature
@@ -1310,7 +1310,7 @@ public class Session {
    * Verifies a signature on a message in a single part operation. messageVerifyInit must previously
    * been called on the session.
    *
-   * @param parameter
+   * @param params
    *          the mechanism parameter to use
    * @param data
    *          the message to verify with the signature
@@ -1326,7 +1326,7 @@ public class Session {
    * Begins a multi-part message verification operation.
    * MessageVerifyInit must previously been called on the session
    *
-   * @param parameter
+   * @param params
    *          the mechanism parameter to use
    * @throws PKCS11Exception in case of error.
    */
@@ -1340,7 +1340,7 @@ public class Session {
    * The signature argument is set to NULL if there is more data part to follow, or set to a non-NULL value
    * (pointing to the signature to verify) if this is the last data part.
    *
-   * @param parameter
+   * @param params
    *          the mechanism parameter to use
    * @param data
    *          the data to be verified
@@ -1600,15 +1600,12 @@ public class Session {
   }
 
   private CK_MECHANISM toCkMechanism(Mechanism mechanism) {
-    long code = mechanism.getMechanismCode();
-    if ((code & CKM_VENDOR_DEFINED) != 0) {
-      if (vendorCode != null) code = vendorCode.ckmGenericToVendor(code);
+    CK_MECHANISM ckMechanism = mechanism.toCkMechanism();
+    long code = ckMechanism.mechanism;
+    if ((code & CKM_VENDOR_DEFINED) != 0 && vendorCode != null) {
+      ckMechanism.mechanism = vendorCode.ckmGenericToVendor(code);
     }
-
-    CK_MECHANISM ret = new CK_MECHANISM();
-    ret.mechanism = code;
-    ret.pParameter = toCkParameters(mechanism.getParameters());
-    return ret;
+    return ckMechanism;
   }
 
   private Object toCkParameters(CkParams params) {
