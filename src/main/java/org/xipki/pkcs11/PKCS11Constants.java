@@ -1296,7 +1296,9 @@ public final class PKCS11Constants {
           boolean first = true;
           while (tokens.hasMoreTokens()) {
             String name = tokens.nextToken();
-            if (!name.startsWith(prefix)) throw new IllegalStateException(name + " does not start with " + prefix);
+            if (!name.startsWith(prefix)) {
+              throw new IllegalStateException(name + " does not start with " + prefix);
+            }
 
             if (first) {
               codeNameMap.put(code, name);

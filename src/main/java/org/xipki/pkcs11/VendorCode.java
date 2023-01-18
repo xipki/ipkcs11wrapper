@@ -36,7 +36,9 @@ class VendorCode {
         return false;
       }
 
-      if (isEmpty(versions)) return true;
+      if (isEmpty(versions)) {
+        return true;
+      }
 
       int iVersion = ((0xFF & libraryVersion.getMajor()) << 8) + (0xFF & libraryVersion.getMinor());
       boolean match = false;
@@ -66,7 +68,9 @@ class VendorCode {
     private static boolean contains(List<String> list, String str) {
       str = str.toLowerCase(Locale.ROOT);
       for (String s : list) {
-        if (str.contains(s)) return true;
+        if (str.contains(s)) {
+          return true;
+        }
       }
       return false;
     }
@@ -80,12 +84,16 @@ class VendorCode {
     try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
       while (true) {
         ConfBlock block = readVendorCodeBlock(br);
-        if (block == null) break;
+        if (block == null) {
+          break;
+        }
 
         // For better performance, this line should be in the if-block. But we put
         // it here explicitly to make sure that all vendorcode blocks ar configured correctly.
         VendorCode vendorCode = new VendorCode(block.nameToCodeMap);
-        if (block.matches(modulePath, manufacturerID, libraryDescription, libraryVersion)) return vendorCode;
+        if (block.matches(modulePath, manufacturerID, libraryDescription, libraryVersion)) {
+          return vendorCode;
+        }
       }
     }
 
@@ -98,7 +106,9 @@ class VendorCode {
     ConfBlock block = null;
     while ((line = reader.readLine()) != null) {
       line = line.trim();
-      if (line.isEmpty() || line.charAt(0) == '#') continue;
+      if (line.isEmpty() || line.charAt(0) == '#') {
+        continue;
+      }
 
       if (line.startsWith("<vendorcode>")) {
         block = new ConfBlock();
@@ -109,10 +119,14 @@ class VendorCode {
       } else if (inBlock) {
         if (line.startsWith("module.")) {
           int idx = line.indexOf(' ');
-          if (idx == -1) continue;
+          if (idx == -1) {
+            continue;
+          }
 
           String value = line.substring(idx + 1).trim();
-          if (value.isEmpty()) continue;
+          if (value.isEmpty()) {
+            continue;
+          }
 
           String name = line.substring(0, idx).trim();
           List<String> textList = Arrays.asList(value.toLowerCase(Locale.ROOT).split(":"));
@@ -154,12 +168,16 @@ class VendorCode {
 
       if (name.startsWith("CKK_VENDOR_")) {
         long genericCode = PKCS11Constants.nameToCode(PKCS11Constants.Category.CKK, name);
-        if (genericCode == -1) throw new IllegalStateException("unknown name in vendorcode block: " + name);
+        if (genericCode == -1) {
+          throw new IllegalStateException("unknown name in vendorcode block: " + name);
+        }
 
         ckkGenericToVendorMap.put(genericCode, vendorCode);
       } else if (name.startsWith("CKM_VENDOR_")) {
         long genericCode = PKCS11Constants.ckmNameToCode(name);
-        if (genericCode == -1) throw new IllegalStateException("unknown name in vendorcode block: " + name);
+        if (genericCode == -1) {
+          throw new IllegalStateException("unknown name in vendorcode block: " + name);
+        }
 
         ckmGenericToVendorMap.put(genericCode, vendorCode);
       } else {

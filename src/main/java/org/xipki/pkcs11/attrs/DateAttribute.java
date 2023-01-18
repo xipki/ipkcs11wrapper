@@ -68,7 +68,9 @@ public class DateAttribute extends Attribute {
    */
   @Override
   public Date getValue() {
-    if (isNullValue()) return null;
+    if (isNullValue()) {
+      return null;
+    }
 
     CK_DATE ckDate = (CK_DATE) ckAttribute.pValue;
     int year = Integer.parseInt(new String(ckDate.year));

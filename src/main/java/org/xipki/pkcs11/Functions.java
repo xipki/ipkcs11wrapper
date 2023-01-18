@@ -25,11 +25,17 @@ public class Functions {
     private static final int[] HINTS = new int[LINTS.length];
 
     static {
-      for (int i = 0; i < DIGITS.length; i++) LINTS[DIGITS[i]] = i;
+      for (int i = 0; i < DIGITS.length; i++) {
+        LINTS[DIGITS[i]] = i;
+      }
 
-      for (int i = 10; i < UPPER_DIGITS.length; i++) LINTS[UPPER_DIGITS[i]] = i;
+      for (int i = 10; i < UPPER_DIGITS.length; i++) {
+        LINTS[UPPER_DIGITS[i]] = i;
+      }
 
-      for (int i = 0; i < LINTS.length; i++) HINTS[i] = LINTS[i] << 4;
+      for (int i = 0; i < LINTS.length; i++) {
+        HINTS[i] = LINTS[i] << 4;
+      }
     }
 
     public static String encode(byte[] data, int ofs, int len) {
@@ -49,12 +55,16 @@ public class Functions {
       char[] data = hex.toCharArray();
       int len = data.length;
 
-      if ((len & 0x01) != 0) throw new IllegalArgumentException("Odd number of characters.");
+      if ((len & 0x01) != 0) {
+        throw new IllegalArgumentException("Odd number of characters.");
+      }
 
       byte[] out = new byte[len >> 1];
 
       // two characters from the hex value.
-      for (int i = 0, j = 0; j < len; i++) out[i] = (byte) (HINTS[data[j++]] | LINTS[data[j++]]);
+      for (int i = 0, j = 0; j < len; i++) {
+        out[i] = (byte) (HINTS[data[j++]] | LINTS[data[j++]]);
+      }
 
       return out;
     }
@@ -145,7 +155,9 @@ public class Functions {
   }
 
   public static <T> T requireNonNull(String paramName, T param) {
-    if (param == null) throw new NullPointerException("Argument '" + paramName + "' must not be null.");
+    if (param == null) {
+      throw new NullPointerException("Argument '" + paramName + "' must not be null.");
+    }
 
     return param;
   }
@@ -160,7 +172,9 @@ public class Functions {
 
   public static int requireAmong(String name, int argument, int... candidates) {
     for (int candidate : candidates) {
-      if (argument == candidate) return argument;
+      if (argument == candidate) {
+        return argument;
+      }
     }
 
     throw new IllegalArgumentException(name + " is not among " + Arrays.toString(candidates) + ": " + argument);
@@ -168,7 +182,9 @@ public class Functions {
 
   public static long requireAmong(String name, long argument, long... candidates) {
     for (long candidate : candidates) {
-      if (argument == candidate) return argument;
+      if (argument == candidate) {
+        return argument;
+      }
     }
 
     throw new IllegalArgumentException(name + " is not among " + Arrays.toString(candidates) + ": " + argument);
@@ -191,11 +207,15 @@ public class Functions {
 
     String line = prefix + "0x" + toFullHex(flags) + " (";
     for (long flagMask : sortedMasks) {
-      if ((flags & flagMask) == 0L) continue;
+      if ((flags & flagMask) == 0L) {
+        continue;
+      }
 
       String thisEntry = first ? "" : " | ";
 
-      if (first) first = false;
+      if (first) {
+        first = false;
+      }
 
       thisEntry += codeToName(category, flagMask).substring(4); // 4 = "CKF_".length
       if (line.length() + thisEntry.length() > 100) {
@@ -211,7 +231,9 @@ public class Functions {
 
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < lines.size(); i++) {
-      if (i != 0) sb.append("\n");
+      if (i != 0) {
+        sb.append("\n");
+      }
 
       sb.append(lines.get(i));
     }
@@ -224,9 +246,13 @@ public class Functions {
   }
 
   static byte[] fixECDSASignature(byte[] sig, int fieldLen) {
-    if (sig.length == 2 * fieldLen) return sig;
+    if (sig.length == 2 * fieldLen) {
+      return sig;
+    }
 
-    if (sig[0] != 0x30) return sig;
+    if (sig[0] != 0x30) {
+      return sig;
+    }
 
     int b = sig[1];
     int ofs = 2;
@@ -234,35 +260,53 @@ public class Functions {
     int len = ((b & 0x80) == 0) ? 0xFF & b
         : (b == (byte) 0x81) ? 0xFF & sig[ofs++] : 0;
 
-    if (len == 0) return sig;
+    if (len == 0) {
+      return sig;
+    }
 
-    if (ofs + len != sig.length) return sig;
+    if (ofs + len != sig.length) {
+      return sig;
+    }
 
     // first integer, r
-    if (sig[ofs++] != 0x02) return sig;
+    if (sig[ofs++] != 0x02) {
+      return sig;
+    }
 
     b = sig[ofs++];
-    if ((b & 0x80) != 0) return sig;
+    if ((b & 0x80) != 0) {
+      return sig;
+    }
 
     int rLen = 0xFF & b;
     byte[] r = Arrays.copyOfRange(sig, ofs, ofs + rLen);
     ofs += rLen;
 
     // second integer, s
-    if (sig[ofs++] != 0x02) return sig;
+    if (sig[ofs++] != 0x02) {
+      return sig;
+    }
 
     b = sig[ofs++];
-    if ((b & 0x80) != 0) return sig;
+    if ((b & 0x80) != 0) {
+      return sig;
+    }
 
     int sLen = 0xFF & b;
-    if (ofs + sLen != sig.length) return sig;
+    if (ofs + sLen != sig.length) {
+      return sig;
+    }
 
     byte[] s = Arrays.copyOfRange(sig, ofs, sig.length);
 
     // remove leading zero
-    if (r[0] == 0) r = Arrays.copyOfRange(r, 1, r.length);
+    if (r[0] == 0) {
+      r = Arrays.copyOfRange(r, 1, r.length);
+    }
 
-    if (s[0] == 0) s = Arrays.copyOfRange(s, 1, s.length);
+    if (s[0] == 0) {
+      s = Arrays.copyOfRange(s, 1, s.length);
+    }
 
     if (r.length > fieldLen || s.length > fieldLen) {
       // we can not fix it.
@@ -288,11 +332,15 @@ public class Functions {
 
   // some HSM does not return the standard conform ECPoint
   static byte[] fixECPoint(byte[] ecPoint, byte[] ecParams) {
-    if (ecParams == null) return ecPoint;
+    if (ecParams == null) {
+      return ecPoint;
+    }
 
     int len = ecPoint.length;
 
-    if (len > 0xFFF0) return ecPoint; // too long, should not happen.
+    if (len > 0xFFF0) {
+      return ecPoint; // too long, should not happen.
+    }
 
     String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
     Integer fieldSize = ecParamsToFieldSize.get(hexEcParams);
@@ -329,7 +377,9 @@ public class Functions {
 
   private static byte[] toOctetString(Byte byte1, byte[] bytes) {
     int len = bytes.length;
-    if (byte1 != null) len++;
+    if (byte1 != null) {
+      len++;
+    }
 
     int numLenBytes = (len <= 0x7F) ? 1 : (len < 0xFF) ? 2 : 3;
 

@@ -59,9 +59,13 @@ public class AttributeArrayAttribute extends Attribute {
    */
   @Override
   public AttributeVector getValue() {
-    if (template != null) return template;
+    if (template != null) {
+      return template;
+    }
 
-    if (isNullValue() || ((CK_ATTRIBUTE[]) ckAttribute.pValue).length == 0) return null;
+    if (isNullValue() || ((CK_ATTRIBUTE[]) ckAttribute.pValue).length == 0) {
+      return null;
+    }
 
     CK_ATTRIBUTE[] attributesArray = (CK_ATTRIBUTE[]) ckAttribute.pValue;
     AttributeVector template = new AttributeVector();
@@ -84,7 +88,9 @@ public class AttributeArrayAttribute extends Attribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    if (template == null) template = getValue();
+    if (template == null) {
+      template = getValue();
+    }
 
     return (template == null) ? "<NULL_PTR>" : "\n" + template.toString("    ");
   }

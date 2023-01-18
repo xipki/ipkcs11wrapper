@@ -26,7 +26,9 @@ public class AttributeVector {
   public AttributeVector(Attribute... attributes) {
     if (attributes != null) {
       for (Attribute attr : attributes) {
-        if (attr != null) attr(attr);
+        if (attr != null) {
+          attr(attr);
+        }
       }
     }
   }
@@ -106,7 +108,9 @@ public class AttributeVector {
         }
       }
 
-      if (oldAttrIdx != -1) attributes.remove(oldAttrIdx);
+      if (oldAttrIdx != -1) {
+        attributes.remove(oldAttrIdx);
+      }
     }
 
     attributes.add(attr);
@@ -120,14 +124,18 @@ public class AttributeVector {
   public CK_ATTRIBUTE[] toCkAttributes() {
     List<CK_ATTRIBUTE> attributeList = new ArrayList<>();
     for (Attribute attribute : attributes) {
-      if (attribute.isPresent()) attributeList.add(attribute.getCkAttribute());
+      if (attribute.isPresent()) {
+        attributeList.add(attribute.getCkAttribute());
+      }
     }
     return attributeList.toArray(new CK_ATTRIBUTE[0]);
   }
 
   public Attribute getAttribute(long type) {
     for (Attribute attr : attributes) {
-      if (attr.getType() == type) return attr;
+      if (attr.getType() == type) {
+        return attr;
+      }
     }
     return null;
   }
@@ -168,7 +176,9 @@ public class AttributeVector {
 
     String indent2 = indent + "  ";
     for (Attribute attribute : attributes) {
-      if (sb.length() > 0) sb.append("\n");
+      if (sb.length() > 0) {
+        sb.append("\n");
+      }
 
       sb.append(attribute.toString(true, indent2));
     }

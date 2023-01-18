@@ -44,7 +44,9 @@ class LruCache<K, V> {
    *     this is the maximum sum of the sizes of the entries in this cache.
    */
   public LruCache(int maxSize) {
-    if (maxSize < 0) throw new IllegalArgumentException("maxSize is not positive: " + maxSize);
+    if (maxSize < 0) {
+      throw new IllegalArgumentException("maxSize is not positive: " + maxSize);
+    }
     this.maxSize = maxSize;
     this.map = new LinkedHashMap<>(0, 0.75f, true);
   }
@@ -55,7 +57,9 @@ class LruCache<K, V> {
    * @param maxSize the new maximum size.
    */
   public void resize(int maxSize) {
-    if (maxSize < 0) throw new IllegalArgumentException("maxSize is not positive: " + maxSize);
+    if (maxSize < 0) {
+      throw new IllegalArgumentException("maxSize is not positive: " + maxSize);
+    }
     synchronized (this) {
       this.maxSize = maxSize;
     }

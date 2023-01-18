@@ -74,7 +74,9 @@ public abstract class Attribute {
         name = name.trim();
         String type = props.getProperty(name).trim();
         long code = ckaNameToCode(name);
-        if (code == -1) throw new IllegalStateException("unknown CKA: " + name);
+        if (code == -1) {
+          throw new IllegalStateException("unknown CKA: " + name);
+        }
 
         if (attributeTypes.containsKey(code)) {
           throw new IllegalStateException("duplicated definition of CKA: " + name);
@@ -110,7 +112,9 @@ public abstract class Attribute {
 
   public static Attribute getInstance(long type) {
     Attribute attr = getInstance0(type);
-    if (attr == null) throw new IllegalArgumentException("Unknown attribute type " + ckaCodeToName(type));
+    if (attr == null) {
+      throw new IllegalArgumentException("Unknown attribute type " + ckaCodeToName(type));
+    }
 
     return attr;
   }
@@ -230,7 +234,9 @@ public abstract class Attribute {
    * @return A string representation of the value of this attribute.
    */
   protected String getValueString() {
-    if (ckAttribute == null || ckAttribute.pValue == null) return "<NULL_PTR>";
+    if (ckAttribute == null || ckAttribute.pValue == null) {
+      return "<NULL_PTR>";
+    }
 
     long type = ckAttribute.type;
     Object value = ckAttribute.pValue;
@@ -273,7 +279,9 @@ public abstract class Attribute {
   public String toString(boolean withName, String indent) {
     StringBuilder sb = new StringBuilder(32).append(indent);
 
-    if (withName) sb.append(ckaCodeToName(ckAttribute.type)).append(": ");
+    if (withName) {
+      sb.append(ckaCodeToName(ckAttribute.type)).append(": ");
+    }
 
     String valueString = present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";
     return sb.append(valueString).toString();
