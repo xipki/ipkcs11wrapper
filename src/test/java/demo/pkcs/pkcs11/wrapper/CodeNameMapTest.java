@@ -1,3 +1,6 @@
+// Copyright (c) 2022 xipki. All rights reserved.
+// License Apache License 2.0
+
 package demo.pkcs.pkcs11.wrapper;
 
 import junit.framework.Assert;
