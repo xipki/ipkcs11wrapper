@@ -8,12 +8,12 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- *  typedef struct CK_INFO {&nbsp;&nbsp;
- *    CK_VERSION cryptokiVersion;&nbsp;&nbsp;
- *    CK_UTF8CHAR manufacturerID[32];&nbsp;&nbsp;
- *    CK_FLAGS flags;&nbsp;&nbsp;
- *    CK_UTF8CHAR libraryDescription[32];&nbsp;&nbsp;
- *    CK_VERSION libraryVersion;&nbsp;&nbsp;
+ *  typedef struct CK_INFO {
+ *    CK_VERSION   cryptokiVersion;
+ *    CK_UTF8CHAR  manufacturerID[32];
+ *    CK_FLAGS     flags;
+ *    CK_UTF8CHAR  libraryDescription[32];
+ *    CK_VERSION   libraryVersion;
  *  } CK_INFO;
  * </PRE>
  *

@@ -9,10 +9,10 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- * typedef struct CK_RC5_MAC_GENERAL_PARAMS {&nbsp;&nbsp;
- *   CK_ULONG ulWordsize;&nbsp;&nbsp;
- *   CK_ULONG ulRounds;&nbsp;&nbsp;
- *   CK_ULONG ulMacLength;&nbsp;&nbsp;
+ * typedef struct CK_RC5_MAC_GENERAL_PARAMS {
+ *   CK_ULONG  ulWordsize;
+ *   CK_ULONG  ulRounds;
+ *   CK_ULONG  ulMacLength;
  * } CK_RC5_MAC_GENERAL_PARAMS;
  * </PRE>
  *

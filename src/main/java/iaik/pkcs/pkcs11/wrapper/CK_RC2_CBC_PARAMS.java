@@ -11,8 +11,8 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  *  typedef struct CK_RC2_CBC_PARAMS {
- *    CK_ULONG ulEffectiveBits;
- *    CK_BYTE iv[8];
+ *    CK_ULONG  ulEffectiveBits;
+ *    CK_BYTE   iv[8];
  *  } CK_RC2_CBC_PARAMS;
  * </PRE>
  *

@@ -11,8 +11,8 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_SSL3_MASTER_KEY_DERIVE_PARAMS {
- *   CK_SSL3_RANDOM_DATA RandomInfo;
- *   CK_VERSION_PTR pVersion;
+ *   CK_SSL3_RANDOM_DATA  RandomInfo;
+ *   CK_VERSION_PTR       pVersion;
  * } CK_SSL3_MASTER_KEY_DERIVE_PARAMS;
  * </PRE>
  *

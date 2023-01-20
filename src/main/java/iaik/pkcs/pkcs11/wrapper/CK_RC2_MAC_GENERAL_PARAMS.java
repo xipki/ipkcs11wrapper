@@ -10,8 +10,8 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_RC2_MAC_GENERAL_PARAMS {
- *   CK_ULONG ulEffectiveBits;
- *   CK_ULONG ulMacLength;
+ *   CK_ULONG  ulEffectiveBits;
+ *   CK_ULONG  ulMacLength;
  * } CK_RC2_MAC_GENERAL_PARAMS;
  * </PRE>
  *

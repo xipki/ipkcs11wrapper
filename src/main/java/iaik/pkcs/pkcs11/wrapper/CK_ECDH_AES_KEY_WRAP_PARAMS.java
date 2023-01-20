@@ -7,12 +7,12 @@ package iaik.pkcs.pkcs11.wrapper;
  * class
  * <B>PKCS#11 structure:</B>
  * <PRE>
- typedef struct CK_ECDH_AES_KEY_WRAP_PARAMS {
- CK_ULONG           ulAESKeyBits;
- CK_EC_KDF_TYPE     kdf;
- CK_ULONG           ulSharedDataLen;
- CK_BYTE_PTR        pSharedData;
- } CK_ECDH_AES_KEY_WRAP_PARAMS;
+ * typedef struct CK_ECDH_AES_KEY_WRAP_PARAMS {
+ *   CK_ULONG        ulAESKeyBits;
+ *   CK_EC_KDF_TYPE  kdf;
+ *   CK_ULONG        ulSharedDataLen;
+ *   CK_BYTE_PTR     pSharedData;
+ * } CK_ECDH_AES_KEY_WRAP_PARAMS;
  * </PRE>
  *
  * @author Patrick Schuster (SIC)

@@ -7,10 +7,10 @@ package iaik.pkcs.pkcs11.wrapper;
  * class
  * <B>PKCS#11 structure:</B>
  * <PRE>
- typedef struct CK_RSA_AES_KEY_WRAP_PARAMS {
- CK_ULONG                      ulAESKeyBits;
- CK_RSA_PKCS_OAEP_PARAMS_PTR   pOAEPParams;
- } CK_RSA_AES_KEY_WRAP_PARAMS;
+ * typedef struct CK_RSA_AES_KEY_WRAP_PARAMS {
+ *   CK_ULONG                      ulAESKeyBits;
+ *   CK_RSA_PKCS_OAEP_PARAMS_PTR   pOAEPParams;
+ * } CK_RSA_AES_KEY_WRAP_PARAMS;
  * </PRE>
  *
  * @author Patrick Schuster (SIC)

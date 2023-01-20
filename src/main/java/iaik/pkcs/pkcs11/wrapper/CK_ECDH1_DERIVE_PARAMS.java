@@ -11,11 +11,11 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_ECDH1_DERIVE_PARAMS {
- *   CK_EC_KDF_TYPE kdf;
- *   CK_ULONG ulSharedDataLen;
- *   CK_BYTE_PTR pSharedData;
- *   CK_ULONG ulPublicDataLen;
- *   CK_BYTE_PTR pPublicData;
+ *   CK_EC_KDF_TYPE  kdf;
+ *   CK_ULONG        ulSharedDataLen;
+ *   CK_BYTE_PTR     pSharedData;
+ *   CK_ULONG        ulPublicDataLen;
+ *   CK_BYTE_PTR     pPublicData;
  * } CK_ECDH1_DERIVE_PARAMS;
  * </PRE>
  *

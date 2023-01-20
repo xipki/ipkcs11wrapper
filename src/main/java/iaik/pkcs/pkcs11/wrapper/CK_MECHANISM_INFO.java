@@ -9,10 +9,10 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- * typedef struct CK_MECHANISM_INFO {&nbsp;&nbsp;
- *   CK_ULONG ulMinKeySize;&nbsp;&nbsp;
- *   CK_ULONG ulMaxKeySize;&nbsp;&nbsp;
- *   CK_FLAGS flags;&nbsp;&nbsp;
+ * typedef struct CK_MECHANISM_INFO {
+ *   CK_ULONG  ulMinKeySize;
+ *   CK_ULONG  ulMaxKeySize;
+ *   CK_FLAGS  flags;
  * } CK_MECHANISM_INFO;
  * </PRE>
  *

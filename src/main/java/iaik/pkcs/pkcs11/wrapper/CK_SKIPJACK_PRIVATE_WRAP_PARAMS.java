@@ -11,17 +11,17 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  *  typedef struct CK_SKIPJACK_PRIVATE_WRAP_PARAMS {
- *    CK_ULONG ulPasswordLen;
- *    CK_BYTE_PTR pPassword;
- *    CK_ULONG ulPublicDataLen;
- *    CK_BYTE_PTR pPublicData;
- *    CK_ULONG ulPandGLen;
- *    CK_ULONG ulQLen;
- *    CK_ULONG ulRandomLen;
- *    CK_BYTE_PTR pRandomA;
- *    CK_BYTE_PTR pPrimeP;
- *    CK_BYTE_PTR pBaseG;
- *    CK_BYTE_PTR pSubprimeQ;
+ *    CK_ULONG     ulPasswordLen;
+ *    CK_BYTE_PTR  pPassword;
+ *    CK_ULONG     ulPublicDataLen;
+ *    CK_BYTE_PTR  pPublicData;
+ *    CK_ULONG     ulPandGLen;
+ *    CK_ULONG     ulQLen;
+ *    CK_ULONG     ulRandomLen;
+ *    CK_BYTE_PTR  pRandomA;
+ *    CK_BYTE_PTR  pPrimeP;
+ *    CK_BYTE_PTR  pBaseG;
+ *    CK_BYTE_PTR  pSubprimeQ;
  *  } CK_SKIPJACK_PRIVATE_WRAP_PARAMS;
  * </PRE>
  *

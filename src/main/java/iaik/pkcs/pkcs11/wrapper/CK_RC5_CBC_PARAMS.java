@@ -11,10 +11,10 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  *  typedef struct CK_RC5_CBC_PARAMS {
- *    CK_ULONG ulWordsize;
- *    CK_ULONG ulRounds;
- *    CK_BYTE_PTR pIv;
- *    CK_ULONG ulIvLen;
+ *    CK_ULONG     ulWordsize;
+ *    CK_ULONG     ulRounds;
+ *    CK_BYTE_PTR  pIv;
+ *    CK_ULONG     ulIvLen;
  *  } CK_RC5_CBC_PARAMS;
  * </PRE>
  *

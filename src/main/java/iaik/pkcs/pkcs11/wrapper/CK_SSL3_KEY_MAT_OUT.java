@@ -11,12 +11,12 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_SSL3_KEY_MAT_OUT {
- *   CK_OBJECT_HANDLE hClientMacSecret;
- *   CK_OBJECT_HANDLE hServerMacSecret;
- *   CK_OBJECT_HANDLE hClientKey;
- *   CK_OBJECT_HANDLE hServerKey;
- *   CK_BYTE_PTR pIVClient;
- *   CK_BYTE_PTR pIVServer;
+ *   CK_OBJECT_HANDLE  hClientMacSecret;
+ *   CK_OBJECT_HANDLE  hServerMacSecret;
+ *   CK_OBJECT_HANDLE  hClientKey;
+ *   CK_OBJECT_HANDLE  hServerKey;
+ *   CK_BYTE_PTR       pIVClient;
+ *   CK_BYTE_PTR       pIVServer;
  * } CK_SSL3_KEY_MAT_OUT;
  * </PRE>
  *

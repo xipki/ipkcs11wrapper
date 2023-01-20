@@ -10,16 +10,16 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_ECMQV_DERIVE_PARAMS {
- *   CK_EC_KDF_TYPE kdf;
- *   CK_ULONG ulSharedDataLen;
- *   CK_BYTE_PTR pSharedData;
- *   CK_ULONG ulPublicDataLen;
- *   CK_BYTE_PTR pPublicData;
- *   CK_ULONG ulPrivateDataLen;
- *   CK_OBJECT_HANDLE hPrivateData;
- *   CK_ULONG ulPublicDataLen2;
- *   CK_BYTE_PTR pPublicData2;
- *   CK_OBJECT_HANDLE publicKey;
+ *   CK_EC_KDF_TYPE    kdf;
+ *   CK_ULONG          ulSharedDataLen;
+ *   CK_BYTE_PTR       pSharedData;
+ *   CK_ULONG          ulPublicDataLen;
+ *   CK_BYTE_PTR       pPublicData;
+ *   CK_ULONG          ulPrivateDataLen;
+ *   CK_OBJECT_HANDLE  hPrivateData;
+ *   CK_ULONG          ulPublicDataLen2;
+ *   CK_BYTE_PTR       pPublicData2;
+ *   CK_OBJECT_HANDLE  publicKey;
  * } CK_ECMQV_DERIVE_PARAMS;
  * </PRE>
  *

@@ -11,9 +11,9 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- *  typedef struct CK_KEY_DERIVATION_STRING_DATA {&nbsp;&nbsp;
- *    CK_BYTE_PTR pData;&nbsp;&nbsp;
- *    CK_ULONG ulLen;&nbsp;&nbsp;
+ *  typedef struct CK_KEY_DERIVATION_STRING_DATA {
+ *    CK_BYTE_PTR  pData;
+ *    CK_ULONG     ulLen;
  *  } CK_KEY_DERIVATION_STRING_DATA;
  * </PRE>
  *

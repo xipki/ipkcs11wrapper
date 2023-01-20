@@ -11,9 +11,9 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  *  typedef struct CK_DES_CBC_ENCRYPT_DATA_PARAMS {
- *    CK_BYTE iv[8];
- *    CK_BYTE_PTR pData;
- *    CK_ULONG length;
+ *    CK_BYTE      iv[8];
+ *    CK_BYTE_PTR  pData;
+ *    CK_ULONG     length;
  *  } CK_DES_CBC_ENCRYPT_DATA_PARAMS;
  * </PRE>
  *

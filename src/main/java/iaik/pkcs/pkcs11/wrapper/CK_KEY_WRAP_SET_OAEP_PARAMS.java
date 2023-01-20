@@ -10,9 +10,9 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_KEY_WRAP_SET_OAEP_PARAMS {
- *   CK_BYTE bBC;
- *   CK_BYTE_PTR pX;
- *   CK_ULONG ulXLen;
+ *   CK_BYTE      bBC;
+ *   CK_BYTE_PTR  pX;
+ *   CK_ULONG     ulXLen;
  * } CK_KEY_WRAP_SET_OAEP_PARAMS;
  * </PRE>
  *

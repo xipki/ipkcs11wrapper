@@ -8,16 +8,16 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  * <pre>
  * typedef struct CK_X9_42_MQV_DERIVE_PARAMS {
- *   CK_X9_42_DH_KDF_TYPE kdf;
- *   CK_ULONG             ulOtherInfoLen;
- *   CK_BYTE_PTR          pOtherInfo;
- *   CK_ULONG             ulPublicDataLen;
- *   CK_BYTE_PTR          pPublicData;
- *   CK_ULONG             ulPrivateDataLen;
- *   CK_OBJECT_HANDLE     hPrivateData;
- *   CK_ULONG             ulPublicDataLen2;
- *   CK_BYTE_PTR          pPublicData2;
- *   CK_OBJECT_HANDLE     publicKey;
+ *   CK_X9_42_DH_KDF_TYPE  kdf;
+ *   CK_ULONG              ulOtherInfoLen;
+ *   CK_BYTE_PTR           pOtherInfo;
+ *   CK_ULONG              ulPublicDataLen;
+ *   CK_BYTE_PTR           pPublicData;
+ *   CK_ULONG              ulPrivateDataLen;
+ *   CK_OBJECT_HANDLE      hPrivateData;
+ *   CK_ULONG              ulPublicDataLen2;
+ *   CK_BYTE_PTR           pPublicData2;
+ *   CK_OBJECT_HANDLE      publicKey;
  * } CK_X9_42_MQV_DERIVE_PARAMS;
  * </pre>
  * @author Karl Scheibelhofer (SIC)

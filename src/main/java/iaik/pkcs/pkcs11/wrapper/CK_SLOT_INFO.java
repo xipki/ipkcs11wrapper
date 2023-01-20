@@ -9,12 +9,12 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- *  typedef struct CK_SLOT_INFO {&nbsp;&nbsp;
- *    CK_UTF8CHAR slotDescription[64];&nbsp;&nbsp;
- *    CK_UTF8CHAR manufacturerID[32];&nbsp;&nbsp;
- *    CK_FLAGS flags;&nbsp;&nbsp;
- *    CK_VERSION hardwareVersion;&nbsp;&nbsp;
- *    CK_VERSION firmwareVersion;&nbsp;&nbsp;
+ *  typedef struct CK_SLOT_INFO {
+ *    CK_UTF8CHAR  slotDescription[64];
+ *    CK_UTF8CHAR  manufacturerID[32];
+ *    CK_FLAGS     flags;
+ *    CK_VERSION   hardwareVersion;
+ *    CK_VERSION   firmwareVersion;
  *  } CK_SLOT_INFO;
  * </PRE>
  *

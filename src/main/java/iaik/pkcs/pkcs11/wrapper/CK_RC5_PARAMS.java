@@ -9,9 +9,9 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- *  typedef struct CK_RC5_PARAMS {&nbsp;&nbsp;
- *    CK_ULONG ulWordsize;&nbsp;&nbsp;
- *    CK_ULONG ulRounds;&nbsp;&nbsp;
+ *  typedef struct CK_RC5_PARAMS {
+ *    CK_ULONG  ulWordsize;
+ *    CK_ULONG  ulRounds;
  *  } CK_RC5_PARAMS;
  * </PRE>
  *

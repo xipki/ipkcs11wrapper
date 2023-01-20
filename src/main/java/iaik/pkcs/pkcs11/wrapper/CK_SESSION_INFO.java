@@ -9,11 +9,11 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- * typedef struct CK_SESSION_INFO {&nbsp;&nbsp;
- *   CK_SLOT_ID slotID;&nbsp;&nbsp;
- *   CK_STATE state;&nbsp;&nbsp;
- *   CK_FLAGS flags;&nbsp;&nbsp;
- *   CK_ULONG ulDeviceError;&nbsp;&nbsp;
+ * typedef struct CK_SESSION_INFO {
+ *   CK_SLOT_ID  slotID;
+ *   CK_STATE    state;
+ *   CK_FLAGS    flags;
+ *   CK_ULONG    ulDeviceError;
  * } CK_SESSION_INFO;
  * </PRE>
  *

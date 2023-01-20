@@ -7,15 +7,15 @@ package iaik.pkcs.pkcs11.wrapper;
  * class
  * <B>PKCS#11 structure:</B>
  * <PRE>
- typedef struct CK_CCM_MESSAGE_PARAMS {
-        CK_ULONG    ulDataLen;  // plaintext or ciphertext
-        CK_BYTE_PTR pNonce;
-        CK_ULONG    ulNonceLen;
-        CK_ULONG    ulNonceFixedBits;
-        CK_GENERATOR_FUNCTION nonceGenerator;
-        CK_BYTE_PTR pMAC;
-        CK_ULONG    ulMACLen;
-        } CK_CCM_MESSAGE_PARAMS;
+ * typedef struct CK_CCM_MESSAGE_PARAMS {
+ *   CK_ULONG               ulDataLen;  // plaintext or ciphertext
+ *   CK_BYTE_PTR            pNonce;
+ *   CK_ULONG               ulNonceLen;
+ *   CK_ULONG               ulNonceFixedBits;
+ *   CK_GENERATOR_FUNCTION  nonceGenerator;
+ *   CK_BYTE_PTR            pMAC;
+ *   CK_ULONG               ulMACLen;
+ * } CK_CCM_MESSAGE_PARAMS;
  * </PRE>
  *
  * @author Patrick Schuster (SIC)

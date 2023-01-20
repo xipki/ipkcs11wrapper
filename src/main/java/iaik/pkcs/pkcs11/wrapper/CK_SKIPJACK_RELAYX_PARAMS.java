@@ -10,20 +10,20 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_SKIPJACK_RELAYX_PARAMS {
- *   CK_ULONG ulOldWrappedXLen;
- *   CK_BYTE_PTR pOldWrappedX;
- *   CK_ULONG ulOldPasswordLen;
- *   CK_BYTE_PTR pOldPassword;
- *   CK_ULONG ulOldPublicDataLen;
- *   CK_BYTE_PTR pOldPublicData;
- *   CK_ULONG ulOldRandomLen;
- *   CK_BYTE_PTR pOldRandomA;
- *   CK_ULONG ulNewPasswordLen;
- *   CK_BYTE_PTR pNewPassword;
- *   CK_ULONG ulNewPublicDataLen;
- *   CK_BYTE_PTR pNewPublicData;
- *   CK_ULONG ulNewRandomLen;
- *   CK_BYTE_PTR pNewRandomA;
+ *   CK_ULONG     ulOldWrappedXLen;
+ *   CK_BYTE_PTR  pOldWrappedX;
+ *   CK_ULONG     ulOldPasswordLen;
+ *   CK_BYTE_PTR  pOldPassword;
+ *   CK_ULONG     ulOldPublicDataLen;
+ *   CK_BYTE_PTR  pOldPublicData;
+ *   CK_ULONG     ulOldRandomLen;
+ *   CK_BYTE_PTR  pOldRandomA;
+ *   CK_ULONG     ulNewPasswordLen;
+ *   CK_BYTE_PTR  pNewPassword;
+ *   CK_ULONG     ulNewPublicDataLen;
+ *   CK_BYTE_PTR  pNewPublicData;
+ *   CK_ULONG     ulNewRandomLen;
+ *   CK_BYTE_PTR  pNewRandomA;
  * } CK_SKIPJACK_RELAYX_PARAMS;
  * </PRE>
  *

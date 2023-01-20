@@ -8,11 +8,11 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  * <PRE>
  * typedef struct CK_GCM_PARAMS {
- * CK_BYTE_PTR pIv;
- * CK_ULONG ulIvLen;
- * CK_BYTE_PTR pAAD;
- * CK_ULONG ulAADLen;
- * CK_ULONG ulTagBits;
+ *   CK_BYTE_PTR   pIv;
+ *   CK_ULONG      ulIvLen;
+ *   CK_BYTE_PTR   pAAD;
+ *   CK_ULONG      ulAADLen;
+ *   CK_ULONG      ulTagBits;
  * } CK_GCM_PARAMS;
  * </PRE>
  *

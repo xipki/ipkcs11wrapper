@@ -10,11 +10,11 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- *  typedef struct CK_AES_CBC_ENCRYPT_DATA_PARAMS {
- *    CK_BYTE iv[16];
- *    CK_BYTE_PTR pData;
- *    CK_ULONG length;
- *  } CK_AES_CBC_ENCRYPT_DATA_PARAMS;
+ * typedef struct CK_AES_CBC_ENCRYPT_DATA_PARAMS {
+ *   CK_BYTE      iv[16];
+ *   CK_BYTE_PTR  pData;
+ *   CK_ULONG     length;
+ * } CK_AES_CBC_ENCRYPT_DATA_PARAMS;
  * </PRE>
  *
  * @author Karl Scheibelhofer (SIC)

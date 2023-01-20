@@ -11,12 +11,12 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_SSL3_KEY_MAT_PARAMS {
- *   CK_ULONG ulMacSizeInBits;
- *   CK_ULONG ulKeySizeInBits;
- *   CK_ULONG ulIVSizeInBits;
- *   CK_BBOOL bIsExport;
- *   CK_SSL3_RANDOM_DATA RandomInfo;
- *   CK_SSL3_KEY_MAT_OUT_PTR pReturnedKeyMaterial;
+ *   CK_ULONG                 ulMacSizeInBits;
+ *   CK_ULONG                 ulKeySizeInBits;
+ *   CK_ULONG                 ulIVSizeInBits;
+ *   CK_BBOOL                 bIsExport;
+ *   CK_SSL3_RANDOM_DATA      RandomInfo;
+ *   CK_SSL3_KEY_MAT_OUT_PTR  pReturnedKeyMaterial;
  * } CK_SSL3_KEY_MAT_PARAMS;
  * </PRE>
  *

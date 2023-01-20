@@ -10,9 +10,9 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- * typedef struct CK_VERSION {&nbsp;&nbsp;
- *   CK_BYTE major;&nbsp;&nbsp;
- *   CK_BYTE minor;&nbsp;&nbsp;
+ * typedef struct CK_VERSION {
+ *   CK_BYTE  major;
+ *   CK_BYTE  minor;
  * } CK_VERSION;
  * </PRE>
  *

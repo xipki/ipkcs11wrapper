@@ -10,13 +10,13 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_PKCS5_PBKD2_PARAMS {
- *   CK_PKCS5_PBKD2_SALT_SOURCE_TYPE saltSource;
- *   CK_VOID_PTR pSaltSourceData;
- *   CK_ULONG ulSaltSourceDataLen;
- *   CK_ULONG iterations;
- *   CK_PKCS5_PBKD2_PSEUDO_RANDOM_FUNCTION_TYPE prf;
- *   CK_VOID_PTR pPrfData;
- *   CK_ULONG ulPrfDataLen;
+ *   CK_PKCS5_PBKD2_SALT_SOURCE_TYPE             saltSource;
+ *   CK_VOID_PTR                                 pSaltSourceData;
+ *   CK_ULONG                                    ulSaltSourceDataLen;
+ *   CK_ULONG                                    iterations;
+ *   CK_PKCS5_PBKD2_PSEUDO_RANDOM_FUNCTION_TYPE  prf;
+ *   CK_VOID_PTR                                 pPrfData;
+ *   CK_ULONG                                    ulPrfDataLen;
  * } CK_PKCS5_PBKD2_PARAMS;
  * </PRE>
  *

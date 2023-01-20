@@ -9,13 +9,13 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- * typedef struct CK_C_INITIALIZE_ARGS {&nbsp;&nbsp;
- *   CK_CREATEMUTEX CreateMutex;&nbsp;&nbsp;
- *   CK_DESTROYMUTEX DestroyMutex;&nbsp;&nbsp;
- *   CK_LOCKMUTEX LockMutex;&nbsp;&nbsp;
- *   CK_UNLOCKMUTEX UnlockMutex;&nbsp;&nbsp;
- *   CK_FLAGS flags;&nbsp;&nbsp;
- *   CK_VOID_PTR pReserved;&nbsp;&nbsp;
+ * typedef struct CK_C_INITIALIZE_ARGS {
+ *   CK_CREATEMUTEX   CreateMutex;
+ *   CK_DESTROYMUTEX  DestroyMutex;
+ *   CK_LOCKMUTEX     LockMutex;
+ *   CK_UNLOCKMUTEX   UnlockMutex;
+ *   CK_FLAGS         flags;
+ *   CK_VOID_PTR      pReserved;
  * } CK_C_INITIALIZE_ARGS;
  * </PRE>
  *

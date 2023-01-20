@@ -7,12 +7,12 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  * <PRE>
  * typedef struct CK_GCM_MESSAGE_PARAMS {
- * CK_BYTE_PTR       pIv;
- * CK_ULONG          ulIvLen;
- * CK_ULONG          ulIvFixedBits;
- * CK_GENERATOR_FUNCTION ivGenerator;
- * CK_BYTE_PTR       pTag;
- * CK_ULONG          ulTagBits;
+ *   CK_BYTE_PTR            pIv;
+ *   CK_ULONG               ulIvLen;
+ *   CK_ULONG               ulIvFixedBits;
+ *   CK_GENERATOR_FUNCTION  ivGenerator;
+ *   CK_BYTE_PTR            pTag;
+ *   CK_ULONG               ulTagBits;
  * } CK_GCM_MESSAGE_PARAMS;
  * </PRE>
  *

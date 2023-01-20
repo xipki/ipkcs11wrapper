@@ -12,10 +12,10 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_SSL3_RANDOM_DATA {
- *   CK_BYTE_PTR pClientRandom;
- *   CK_ULONG ulClientRandomLen;
- *   CK_BYTE_PTR pServerRandom;
- *   CK_ULONG ulServerRandomLen;
+ *   CK_BYTE_PTR  pClientRandom;
+ *   CK_ULONG     ulClientRandomLen;
+ *   CK_BYTE_PTR  pServerRandom;
+ *   CK_ULONG     ulServerRandomLen;
  * } CK_SSL3_RANDOM_DATA;
  * </PRE>
  *

@@ -9,10 +9,10 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- * typedef struct CK_DATE {&nbsp;&nbsp;
- *   CK_CHAR year[4];&nbsp;&nbsp;
- *   CK_CHAR month[2];&nbsp;&nbsp;
- *   CK_CHAR day[2];&nbsp;&nbsp;
+ * typedef struct CK_DATE {
+ *   CK_CHAR  year[4];
+ *   CK_CHAR  month[2];
+ *   CK_CHAR  day[2];
  * } CK_DATE;
  * </PRE>
  *

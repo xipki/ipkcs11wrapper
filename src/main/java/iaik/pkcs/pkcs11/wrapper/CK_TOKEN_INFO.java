@@ -9,27 +9,27 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- * typedef struct CK_TOKEN_INFO {&nbsp;&nbsp;
- *   CK_UTF8CHAR label[32];&nbsp;&nbsp;
- *   CK_UTF8CHAR manufacturerID[32];&nbsp;&nbsp;
- *   CK_UTF8CHAR model[16];&nbsp;&nbsp;
- *   CK_CHAR serialNumber[16];&nbsp;&nbsp;
- *   CK_FLAGS flags;&nbsp;&nbsp;
- *   CK_ULONG ulMaxSessionCount;&nbsp;&nbsp;
- *   CK_ULONG ulSessionCount;&nbsp;&nbsp;
- *   CK_ULONG ulMaxRwSessionCount;&nbsp;&nbsp;
- *   CK_ULONG ulRwSessionCount;&nbsp;&nbsp;
- *   CK_ULONG ulMaxPinLen;&nbsp;&nbsp;
- *   CK_ULONG ulMinPinLen;&nbsp;&nbsp;
- *   CK_ULONG ulTotalPublicMemory;&nbsp;&nbsp;
- *   CK_ULONG ulFreePublicMemory;&nbsp;&nbsp;
- *   CK_ULONG ulTotalPrivateMemory;&nbsp;&nbsp;
- *   CK_ULONG ulFreePrivateMemory;&nbsp;&nbsp;
- *   CK_VERSION hardwareVersion;&nbsp;&nbsp;
- *   CK_VERSION firmwareVersion;&nbsp;&nbsp;
- *   CK_CHAR utcTime[16];&nbsp;&nbsp;
+ * typedef struct CK_TOKEN_INFO {
+ *   CK_UTF8CHAR  label[32];
+ *   CK_UTF8CHAR  manufacturerID[32];
+ *   CK_UTF8CHAR  model[16];
+ *   CK_CHAR      serialNumber[16];
+ *   CK_FLAGS     flags;
+ *   CK_ULONG     ulMaxSessionCount;
+ *   CK_ULONG     ulSessionCount;
+ *   CK_ULONG     ulMaxRwSessionCount;
+ *   CK_ULONG     ulRwSessionCount;
+ *   CK_ULONG     ulMaxPinLen;
+ *   CK_ULONG     ulMinPinLen;
+ *   CK_ULONG     ulTotalPublicMemory;
+ *   CK_ULONG     ulFreePublicMemory;
+ *   CK_ULONG     ulTotalPrivateMemory;
+ *   CK_ULONG     ulFreePrivateMemory;
+ *   CK_VERSION   hardwareVersion;
+ *   CK_VERSION   firmwareVersion;
+ *   CK_CHAR      utcTime[16];
  * } CK_TOKEN_INFO;
- * &nbsp;&nbsp;
+ * 
  * </PRE>
  *
  * @author Karl Scheibelhofer (SIC)

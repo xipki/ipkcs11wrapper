@@ -9,10 +9,10 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- *  typedef struct CK_MECHANISM {&nbsp;&nbsp;
- *    CK_MECHANISM_TYPE mechanism;&nbsp;&nbsp;
- *    CK_VOID_PTR pParameter;&nbsp;&nbsp;
- *    CK_ULONG ulParameterLen;&nbsp;&nbsp;
+ *  typedef struct CK_MECHANISM {
+ *    CK_MECHANISM_TYPE  mechanism;
+ *    CK_VOID_PTR        pParameter;
+ *    CK_ULONG           ulParameterLen;
  *  } CK_MECHANISM;
  * </PRE>
  *

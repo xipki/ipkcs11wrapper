@@ -7,12 +7,12 @@ package iaik.pkcs.pkcs11.wrapper;
  * class
  * <B>PKCS#11 structure:</B>
  * <PRE>
- typedef struct CK_SALSA20_CHACHA20_POLY1305_PARAMS {
- CK_BYTE_PTR    pNonce;
- CK_ULONG    ulNonceLen;
- CK_BYTE_PTR pAAD;
- CK_ULONG ulAADLen;
- } CK_SALSA20_CHACHA20_POLY1305_PARAMS;
+ * typedef struct CK_SALSA20_CHACHA20_POLY1305_PARAMS {
+ *   CK_BYTE_PTR  pNonce;
+ *   CK_ULONG     ulNonceLen;
+ *   CK_BYTE_PTR  pAAD;
+ *   CK_ULONG     ulAADLen;
+ * } CK_SALSA20_CHACHA20_POLY1305_PARAMS;
  * </PRE>
  *
  * @author Patrick Schuster (SIC)

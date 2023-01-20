@@ -9,10 +9,10 @@ package iaik.pkcs.pkcs11.wrapper;
  * <B>PKCS#11 structure:</B>
  *
  * <PRE>
- * typedef struct CK_ATTRIBUTE {&nbsp;&nbsp;
- *   CK_ATTRIBUTE_TYPE type;&nbsp;&nbsp;
- *   CK_VOID_PTR pValue;&nbsp;&nbsp;
- *   CK_ULONG ulValueLen;
+ * typedef struct CK_ATTRIBUTE {
+ *   CK_ATTRIBUTE_TYPE  type;
+ *   CK_VOID_PTR        pValue;
+ *   CK_ULONG           sulValueLen;
  * } CK_ATTRIBUTE;
  * </PRE>
  *

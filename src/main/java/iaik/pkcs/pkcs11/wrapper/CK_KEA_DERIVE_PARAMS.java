@@ -10,12 +10,12 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_KEA_DERIVE_PARAMS {
- *   CK_BBOOL isSender;
- *   CK_ULONG ulRandomLen;
- *   CK_BYTE_PTR pRandomA;
- *   CK_BYTE_PTR pRandomB;
- *   CK_ULONG ulPublicDataLen;
- *   CK_BYTE_PTR pPublicData;
+ *   CK_BBOOL     isSender;
+ *   CK_ULONG     ulRandomLen;
+ *   CK_BYTE_PTR  pRandomA;
+ *   CK_BYTE_PTR  pRandomB;
+ *   CK_ULONG     ulPublicDataLen;
+ *   CK_BYTE_PTR  pPublicData;
  * } CK_KEA_DERIVE_PARAMS;
  * </PRE>
  *

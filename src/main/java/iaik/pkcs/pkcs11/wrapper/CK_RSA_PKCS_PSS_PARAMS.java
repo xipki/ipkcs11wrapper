@@ -10,9 +10,9 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_RSA_PKCS_PSS_PARAMS {
- *   CK_MECHANISM_TYPE hashAlg;
- *   CK_RSA_PKCS_MGF_TYPE mgf;
- *   CK_ULONG sLen;
+ *   CK_MECHANISM_TYPE     hashAlg;
+ *   CK_RSA_PKCS_MGF_TYPE  mgf;
+ *   CK_ULONG              sLen;
  * } CK_RSA_PKCS_PSS_PARAMS;
  * </PRE>
  *

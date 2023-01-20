@@ -10,11 +10,11 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_RSA_PKCS_OAEP_PARAMS {
- *   CK_MECHANISM_TYPE hashAlg;
- *   CK_RSA_PKCS_OAEP_MGF_TYPE mgf;
- *   CK_RSA_PKCS_OAEP_SOURCE_TYPE source;
- *   CK_VOID_PTR pSourceData;
- *   CK_ULONG ulSourceDataLen;
+ *   CK_MECHANISM_TYPE             hashAlg;
+ *   CK_RSA_PKCS_OAEP_MGF_TYPE     mgf;
+ *   CK_RSA_PKCS_OAEP_SOURCE_TYPE  source;
+ *   CK_VOID_PTR                   pSourceData;
+ *   CK_ULONG                      ulSourceDataLen;
  * } CK_RSA_PKCS_OAEP_PARAMS;
  * </PRE>
  *

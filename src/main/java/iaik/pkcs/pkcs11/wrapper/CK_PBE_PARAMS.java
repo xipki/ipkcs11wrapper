@@ -11,12 +11,12 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * <PRE>
  * typedef struct CK_PBE_PARAMS {
- *   CK_CHAR_PTR pInitVector;
- *   CK_CHAR_PTR pPassword;
- *   CK_ULONG ulPasswordLen;
- *   CK_CHAR_PTR pSalt;
- *   CK_ULONG ulSaltLen;
- *   CK_ULONG ulIteration;
+ *   CK_CHAR_PTR  pInitVector;
+ *   CK_CHAR_PTR  pPassword;
+ *   CK_ULONG     ulPasswordLen;
+ *   CK_CHAR_PTR  pSalt;
+ *   CK_ULONG     ulSaltLen;
+ *   CK_ULONG     ulIteration;
  * } CK_PBE_PARAMS;
  * </PRE>
  *
