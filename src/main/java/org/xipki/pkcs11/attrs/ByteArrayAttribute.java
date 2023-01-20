@@ -65,11 +65,11 @@ public class ByteArrayAttribute extends Attribute {
   }
 
   public BigInteger getBigIntValue() {
-    return new BigInteger(1, (byte[]) ckAttribute.pValue);
+    return isNullValue() ? null : new BigInteger(1, (byte[]) ckAttribute.pValue);
   }
 
   public BigInteger getSignedBigIntValue() {
-    return new BigInteger((byte[]) ckAttribute.pValue);
+    return isNullValue() ? null : new BigInteger((byte[]) ckAttribute.pValue);
   }
 
   /**
@@ -77,6 +77,7 @@ public class ByteArrayAttribute extends Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
+  @Override
   protected String getValueString() {
     if (isNullValue()) {
       return "<NULL_PTR>";

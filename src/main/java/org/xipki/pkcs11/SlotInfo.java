@@ -56,8 +56,8 @@ public class SlotInfo {
    */
   protected SlotInfo(CK_SLOT_INFO ckSlotInfo) {
     Functions.requireNonNull("ckSlotInfo", ckSlotInfo);
-    this.slotDescription = new String(ckSlotInfo.slotDescription);
-    this.manufacturerID = new String(ckSlotInfo.manufacturerID);
+    this.slotDescription = new String(ckSlotInfo.slotDescription).trim();
+    this.manufacturerID = new String(ckSlotInfo.manufacturerID).trim();
     this.hardwareVersion = new Version(ckSlotInfo.hardwareVersion);
     this.firmwareVersion = new Version(ckSlotInfo.firmwareVersion);
     this.flags = ckSlotInfo.flags;

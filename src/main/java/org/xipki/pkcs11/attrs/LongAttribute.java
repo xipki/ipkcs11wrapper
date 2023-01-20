@@ -67,8 +67,7 @@ public class LongAttribute extends Attribute {
    * @return A string representation of the value of this attribute.
    */
   public String toString(int radix) {
-    String valueText = ((ckAttribute == null) || (ckAttribute.pValue == null)) ? "<NULL_PTR>"
-        : Long.toString(((Long) ckAttribute.pValue), radix);
+    String valueText = isNullValue() ? "<NULL_PTR>" : Long.toString(((Long) ckAttribute.pValue), radix);
     return present ? (sensitive ? "<Value is sensitive>" : valueText) : "<Attribute not present>";
   }
 

@@ -43,7 +43,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * <pre><code>
  *  Session session = token.openSession(readWrite);
  * </code></pre>
- * to open a  read-only session for readWrite = false, or a read-write session if
+ * to open a read-only session for readWrite = false, or a read-write session if
  * readWrite = true.
  *
  * @author Karl Scheibelhofer (SIC)
@@ -118,15 +118,12 @@ public class Token {
    *              If reading the list of supported mechanisms fails.
    */
   public long[] getMechanismList() throws PKCS11Exception {
-    long[] mechanisms = slot.getModule().getPKCS11Module().C_GetMechanismList(slot.getSlotID());
-
-    VendorCode vendorCode = slot.getModule().getVendorCode();
-    if (vendorCode != null) {
-      for (int i = 0; i < mechanisms.length; i++) {
-        long code = mechanisms[i];
-        if (vendorCode != null && (code & CKM_VENDOR_DEFINED) != 0L) {
-          mechanisms[i] = vendorCode.ckmVendorToGeneric(code);
-        }
+    PKCS11Module module = slot.getModule();
+    long[] mechanisms = module.getPKCS11Module().C_GetMechanismList(slot.getSlotID());
+    for (int i = 0; i < mechanisms.length; i++) {
+      long code = mechanisms[i];
+      if ((code & CKM_VENDOR_DEFINED) != 0L) {
+        mechanisms[i] = module.ckmVendorToGeneric(code);
       }
     }
 
@@ -146,10 +143,7 @@ public class Token {
    */
   public MechanismInfo getMechanismInfo(long mechanism) throws PKCS11Exception {
     if ((mechanism & CKM_VENDOR_DEFINED) != 0L) {
-      VendorCode vendorCode = slot.getModule().getVendorCode();
-      if (vendorCode != null) {
-        mechanism = vendorCode.ckmGenericToVendor(mechanism);
-      }
+      mechanism = slot.getModule().ckmGenericToVendor(mechanism);
     }
 
     return new MechanismInfo(slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism));

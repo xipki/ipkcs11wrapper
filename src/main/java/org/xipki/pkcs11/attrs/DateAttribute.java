@@ -53,9 +53,9 @@ public class DateAttribute extends Attribute {
       CK_DATE ckDate = new CK_DATE();
       ckAttribute.pValue = ckDate;
 
-      ckDate.year = Integer.toString(year).toCharArray();
+      ckDate.year  = Integer.toString(year).toCharArray();
       ckDate.month = (month < 10 ? "0" + month: Integer.toString(month)).toCharArray();
-      ckDate.day = (day < 10 ? "0" + day: Integer.toString(day)).toCharArray();
+      ckDate.day   = (  day < 10 ? "0" +   day: Integer.toString(day)).toCharArray();
     }
     present = true;
     return this;
@@ -73,9 +73,9 @@ public class DateAttribute extends Attribute {
     }
 
     CK_DATE ckDate = (CK_DATE) ckAttribute.pValue;
-    int year = Integer.parseInt(new String(ckDate.year));
+    int year  = Integer.parseInt(new String(ckDate.year));
     int month = Integer.parseInt(new String(ckDate.month));
-    int day = Integer.parseInt(new String(ckDate.day));
+    int day   = Integer.parseInt(new String(ckDate.day));
     // poor performance, consider alternatives
     Calendar calendar = new GregorianCalendar();
     // calendar starts months with 0

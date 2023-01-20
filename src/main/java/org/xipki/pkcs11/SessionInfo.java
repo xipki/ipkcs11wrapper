@@ -15,7 +15,7 @@ import static org.xipki.pkcs11.PKCS11Constants.*;
  * provided is just a snapshot at the time this information object was created;
  * it does not retrieve the information from the session on demand.
  *
- * @author Karl Scheibelhofer
+ * @author Karl Scheibelhofer (SIC)
  * @author Lijun Liao (xipki)
  */
 public class SessionInfo {

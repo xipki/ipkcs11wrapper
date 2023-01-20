@@ -64,6 +64,7 @@ public class CharArrayAttribute extends Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
+  @Override
   protected String getValueString() {
     String value = getValue();
     return (value != null) ? value : "<NULL_PTR>";

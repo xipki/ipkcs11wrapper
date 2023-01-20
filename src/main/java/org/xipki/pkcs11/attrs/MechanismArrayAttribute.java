@@ -58,6 +58,7 @@ public class MechanismArrayAttribute extends Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
+  @Override
   protected String getValueString() {
     long[] allowedMechanisms = getValue();
     if (allowedMechanisms != null && allowedMechanisms.length > 0) {

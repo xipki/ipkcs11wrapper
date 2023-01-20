@@ -45,56 +45,6 @@ public class TokenInfo {
   private final String serialNumber;
 
   /**
-   * The maximum number of concurrent (open) sessions.
-   */
-  private final long maxSessionCount;
-
-  /**
-   * The current number of open sessions.
-   */
-  private final long sessionCount;
-
-  /**
-   * Maximum number of concurrent (open) read-write sessions.
-   */
-  private final long maxRwSessionCount;
-
-  /**
-   * The current number of open read-write sessions.
-   */
-  private final long rwSessionCount;
-
-  /**
-   * The maximum PIN length that this token allows.
-   */
-  private final long maxPinLen;
-
-  /**
-   * The minimum PIN length that this token allows.
-   */
-  private final long minPinLen;
-
-  /**
-   * The total amount of memory for public objects on this token.
-   */
-  private final long totalPublicMemory;
-
-  /**
-   * The amount of free memory for public objects on this token.
-   */
-  private final long freePublicMemory;
-
-  /**
-   * The total amount of memory for private objects on this token.
-   */
-  private final long totalPrivateMemory;
-
-  /**
-   * The amount of free memory for private objects on this token.
-   */
-  private final long freePrivateMemory;
-
-  /**
    * The version of the hardware of this token.
    */
   private final Version hardwareVersion;
@@ -110,10 +60,7 @@ public class TokenInfo {
    */
   private final Date time;
 
-  /**
-   * The token flags.
-   */
-  private final long flags;
+  private final CK_TOKEN_INFO ckTokenInfo;
 
   /**
    * Constructor taking CK_TOKEN_INFO as given returned by
@@ -124,23 +71,14 @@ public class TokenInfo {
    */
   protected TokenInfo(CK_TOKEN_INFO ckTokenInfo) {
     Functions.requireNonNull("ckTokenInfo", ckTokenInfo);
-    label = new String(ckTokenInfo.label);
-    manufacturerID = new String(ckTokenInfo.manufacturerID);
-    model = new String(ckTokenInfo.model);
-    serialNumber = new String(ckTokenInfo.serialNumber);
-    maxSessionCount = ckTokenInfo.ulMaxSessionCount;
-    sessionCount = ckTokenInfo.ulSessionCount;
-    maxRwSessionCount = ckTokenInfo.ulMaxRwSessionCount;
-    rwSessionCount = ckTokenInfo.ulRwSessionCount;
-    maxPinLen = ckTokenInfo.ulMaxPinLen;
-    minPinLen = ckTokenInfo.ulMinPinLen;
-    totalPublicMemory = ckTokenInfo.ulTotalPublicMemory;
-    freePublicMemory = ckTokenInfo.ulFreePublicMemory;
-    totalPrivateMemory = ckTokenInfo.ulTotalPrivateMemory;
-    freePrivateMemory = ckTokenInfo.ulFreePrivateMemory;
+    label = new String(ckTokenInfo.label).trim();
+    manufacturerID = new String(ckTokenInfo.manufacturerID).trim();
+    model = new String(ckTokenInfo.model).trim();
+    serialNumber = new String(ckTokenInfo.serialNumber).trim();
     hardwareVersion = new Version(ckTokenInfo.hardwareVersion);
     firmwareVersion = new Version(ckTokenInfo.firmwareVersion);
-    flags = ckTokenInfo.flags;
+
+    this.ckTokenInfo = ckTokenInfo;
 
     Date time = null;
     try {
@@ -194,7 +132,7 @@ public class TokenInfo {
    * @return The maximum allowed number of (open) concurrent sessions.
    */
   public long getMaxSessionCount() {
-    return maxSessionCount;
+    return ckTokenInfo.ulMaxSessionCount;
   }
 
   /**
@@ -203,7 +141,7 @@ public class TokenInfo {
    * @return The current number of open sessions.
    */
   public long getSessionCount() {
-    return sessionCount;
+    return ckTokenInfo.ulSessionCount;
   }
 
   /**
@@ -213,7 +151,7 @@ public class TokenInfo {
    *         sessions.
    */
   public long getMaxRwSessionCount() {
-    return maxRwSessionCount;
+    return ckTokenInfo.ulMaxRwSessionCount;
   }
 
   /**
@@ -222,7 +160,7 @@ public class TokenInfo {
    * @return The current number of open read-write sessions.
    */
   public long getRwSessionCount() {
-    return rwSessionCount;
+    return ckTokenInfo.ulRwSessionCount;
   }
 
   /**
@@ -231,7 +169,7 @@ public class TokenInfo {
    * @return The maximum length for the PIN.
    */
   public long getMaxPinLen() {
-    return maxPinLen;
+    return ckTokenInfo.ulMaxPinLen;
   }
 
   /**
@@ -240,7 +178,7 @@ public class TokenInfo {
    * @return The minimum length for the PIN.
    */
   public long getMinPinLen() {
-    return minPinLen;
+    return ckTokenInfo.ulMinPinLen;
   }
 
   /**
@@ -249,7 +187,7 @@ public class TokenInfo {
    * @return The total amount of memory for public objects.
    */
   public long getTotalPublicMemory() {
-    return totalPublicMemory;
+    return ckTokenInfo.ulTotalPublicMemory;
   }
 
   /**
@@ -258,7 +196,7 @@ public class TokenInfo {
    * @return The amount of free memory for public objects.
    */
   public long getFreePublicMemory() {
-    return freePublicMemory;
+    return ckTokenInfo.ulFreePublicMemory;
   }
 
   /**
@@ -267,7 +205,7 @@ public class TokenInfo {
    * @return The total amount of memory for private objects.
    */
   public long getTotalPrivateMemory() {
-    return totalPrivateMemory;
+    return ckTokenInfo.ulTotalPrivateMemory;
   }
 
   /**
@@ -276,7 +214,7 @@ public class TokenInfo {
    * @return The amount of free memory for private objects.
    */
   public long getFreePrivateMemory() {
-    return freePrivateMemory;
+    return ckTokenInfo.ulFreePrivateMemory;
   }
 
   /**
@@ -313,11 +251,11 @@ public class TokenInfo {
    * @return the token flags.
    */
   public long getFlags() {
-    return flags;
+    return ckTokenInfo.flags;
   }
 
   public boolean hasFlagBit(long flagMask) {
-    return (flags & flagMask) != 0L;
+    return (ckTokenInfo.flags & flagMask) != 0L;
   }
 
   public boolean isProtectedAuthenticationPath() {
@@ -339,17 +277,23 @@ public class TokenInfo {
    */
   @Override
   public String toString() {
-    String text = "Manufacturer ID:      " + manufacturerID         +
-        "\nModel:                " + model                  + "\nSerial Number:        " + serialNumber +
-        "\nMax Session Count:    " + mct(maxSessionCount)   + "\nSession Count:        " + ct(sessionCount) +
-        "\nMax RW Session Count: " + mct(maxRwSessionCount) + "\nRW Session Count:     " + ct(rwSessionCount) +
-        "\nPIN Length:           [" + minPinLen + ", " + maxPinLen + "]" +
-        "\nTotal Private Memory: " + ct(totalPrivateMemory) + "\nFree Private Memory:  " + ct(freePrivateMemory) +
-        "\nTotal Public Memory:  " + ct(totalPublicMemory)  + "\nFree Public Memory:   " + ct(freePublicMemory) +
-        "\nHardware Version:     " + hardwareVersion        + "\nFirmware Version:     " + firmwareVersion +
-        "\nTime:                 " + time                   + "\n";
+    String text = "Manufacturer ID:      " + manufacturerID +
+        "\nModel:                " + model +
+        "\nSerial Number:        " + serialNumber +
+        "\nMax Session Count:    " + mct(getMaxSessionCount()) +
+        "\nSession Count:        " + ct(getSessionCount()) +
+        "\nMax RW Session Count: " + mct(getMaxRwSessionCount()) +
+        "\nRW Session Count:     " + ct(getRwSessionCount()) +
+        "\nPIN Length:           [" + getMinPinLen() + ", " + getMaxPinLen() + "]" +
+        "\nTotal Private Memory: " + ct(getTotalPrivateMemory()) +
+        "\nFree Private Memory:  " + ct(getFreePrivateMemory()) +
+        "\nTotal Public Memory:  " + ct(getTotalPublicMemory()) +
+        "\nFree Public Memory:   " + ct(getFreePublicMemory()) +
+        "\nHardware Version:     " + hardwareVersion +
+        "\nFirmware Version:     " + firmwareVersion +
+        "\nTime:                 " + time;
 
-    return text + Functions.toStringFlags(Category.CKF_TOKEN, "Flags: ", flags,
+    return text + "\n" + Functions.toStringFlags(Category.CKF_TOKEN, "Flags: ", ckTokenInfo.flags,
         CKF_RNG,                    CKF_WRITE_PROTECTED,        CKF_LOGIN_REQUIRED,
         CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN,         CKF_PROTECTED_AUTHENTICATION_PATH,
         CKF_DUAL_CRYPTO_OPERATIONS, CKF_TOKEN_INITIALIZED,      CKF_SECONDARY_AUTHENTICATION,

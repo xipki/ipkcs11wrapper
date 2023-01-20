@@ -46,8 +46,8 @@ public class ModuleInfo {
   public ModuleInfo(CK_INFO ckInfo) {
     Functions.requireNonNull("ckInfo", ckInfo);
     cryptokiVersion = new Version(ckInfo.cryptokiVersion);
-    manufacturerID = new String(ckInfo.manufacturerID);
-    libraryDescription = new String(ckInfo.libraryDescription);
+    manufacturerID = new String(ckInfo.manufacturerID).trim();
+    libraryDescription = new String(ckInfo.libraryDescription).trim();
     libraryVersion = new Version(ckInfo.libraryVersion);
   }
 

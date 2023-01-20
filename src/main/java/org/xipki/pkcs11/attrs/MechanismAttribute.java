@@ -46,6 +46,7 @@ public class MechanismAttribute extends LongAttribute {
    *
    * @return A string representation of the value of this attribute.
    */
+  @Override
   protected String getValueString() {
     Long value = getValue();
     if (value == null) {

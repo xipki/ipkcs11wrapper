@@ -87,6 +87,7 @@ public class AttributeArrayAttribute extends Attribute {
    *
    * @return A string representation of the value of this attribute.
    */
+  @Override
   protected String getValueString() {
     if (template == null) {
       template = getValue();

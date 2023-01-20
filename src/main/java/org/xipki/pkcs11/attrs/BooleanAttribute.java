@@ -48,6 +48,7 @@ public class BooleanAttribute extends Attribute {
     return (Boolean) ckAttribute.pValue;
   }
 
+  @Override
   protected String getValueString() {
     return isNullValue() ? "<NULL_PTR>" : (boolean) ckAttribute.pValue ? "TRUE" : "FALSE";
   }

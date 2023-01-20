@@ -9,8 +9,6 @@ package org.xipki.pkcs11;
 import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM;
 import org.xipki.pkcs11.params.CkParams;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKM_VENDOR_DEFINED;
-
 /**
  * Objects of this class represent a mechanism as defined in PKCS#11. There are
  * constants defined for all mechanisms that PKCS#11 version 2.11 defines.
