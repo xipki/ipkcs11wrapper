@@ -277,23 +277,28 @@ public class TokenInfo {
    */
   @Override
   public String toString() {
-    String text = "Manufacturer ID:      " + manufacturerID +
-        "\nModel:                " + model +
-        "\nSerial Number:        " + serialNumber +
-        "\nMax Session Count:    " + mct(getMaxSessionCount()) +
-        "\nSession Count:        " + ct(getSessionCount()) +
-        "\nMax RW Session Count: " + mct(getMaxRwSessionCount()) +
-        "\nRW Session Count:     " + ct(getRwSessionCount()) +
-        "\nPIN Length:           [" + getMinPinLen() + ", " + getMaxPinLen() + "]" +
-        "\nTotal Private Memory: " + ct(getTotalPrivateMemory()) +
-        "\nFree Private Memory:  " + ct(getFreePrivateMemory()) +
-        "\nTotal Public Memory:  " + ct(getTotalPublicMemory()) +
-        "\nFree Public Memory:   " + ct(getFreePublicMemory()) +
-        "\nHardware Version:     " + hardwareVersion +
-        "\nFirmware Version:     " + firmwareVersion +
-        "\nTime:                 " + time;
+    return toString("");
+  }
 
-    return text + "\n" + Functions.toStringFlags(Category.CKF_TOKEN, "Flags: ", ckTokenInfo.flags,
+  public String toString(String indent) {
+    final String ni = "\n" + indent;
+    String text = indent + "Manufacturer ID:      " + manufacturerID +
+        ni + "Model:                " + model +
+        ni + "Serial Number:        " + serialNumber +
+        ni + "Max Session Count:    " + mct(getMaxSessionCount()) +
+        ni + "Session Count:        " + ct(getSessionCount()) +
+        ni + "Max RW Session Count: " + mct(getMaxRwSessionCount()) +
+        ni + "RW Session Count:     " + ct(getRwSessionCount()) +
+        ni + "PIN Length:           [" + getMinPinLen() + ", " + getMaxPinLen() + "]" +
+        ni + "Total Private Memory: " + ct(getTotalPrivateMemory()) +
+        ni + "Free Private Memory:  " + ct(getFreePrivateMemory()) +
+        ni + "Total Public Memory:  " + ct(getTotalPublicMemory()) +
+        ni + "Free Public Memory:   " + ct(getFreePublicMemory()) +
+        ni + "Hardware Version:     " + hardwareVersion +
+        ni + "Firmware Version:     " + firmwareVersion +
+        ni + "Time:                 " + time;
+
+    return text + "\n" + Functions.toStringFlags(Category.CKF_TOKEN, indent + "Flags: ", ckTokenInfo.flags,
         CKF_RNG,                    CKF_WRITE_PROTECTED,        CKF_LOGIN_REQUIRED,
         CKF_RESTORE_KEY_NOT_NEEDED, CKF_CLOCK_ON_TOKEN,         CKF_PROTECTED_AUTHENTICATION_PATH,
         CKF_DUAL_CRYPTO_OPERATIONS, CKF_TOKEN_INITIALIZED,      CKF_SECONDARY_AUTHENTICATION,

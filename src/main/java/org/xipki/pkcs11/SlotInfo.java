@@ -138,9 +138,16 @@ public class SlotInfo {
    */
   @Override
   public String toString() {
-    String text = "Slot Description: " + slotDescription + "\nManufacturer ID: " + manufacturerID +
-        "\nHardware Version: " + hardwareVersion + "\nFirmware Version: " + firmwareVersion + "\n";
-    return text + Functions.toStringFlags(Category.CKF_TOKEN, "Flags: ", flags,
+    return toString("");
+  }
+
+  public String toString(String indent) {
+    String ni = "\n" + indent;
+    String text = indent + "Slot Description: " + slotDescription +
+        ni + "Manufacturer ID: " + manufacturerID +
+        ni + "Hardware Version: " + hardwareVersion +
+        ni + "Firmware Version: " + firmwareVersion;
+    return text + "\n" + Functions.toStringFlags(Category.CKF_TOKEN, indent + "Flags: ", flags,
         CKF_TOKEN_PRESENT, CKF_REMOVABLE_DEVICE, CKF_HW_SLOT);
   }
 

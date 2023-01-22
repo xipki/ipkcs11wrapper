@@ -505,7 +505,7 @@ public class PKCS11Module {
             long vendorCode = hex ? Long.parseLong(valueStr.substring(2), 16) : Long.parseLong(valueStr);
 
             if (name.startsWith("CKK_VENDOR_")) {
-              long genericCode = PKCS11Constants.nameToCode(PKCS11Constants.Category.CKK, name);
+              long genericCode = PKCS11Constants.ckkNameToCode(name);
               if (genericCode == -1) {
                 throw new IllegalStateException("unknown name in vendorcode block: " + name);
               }

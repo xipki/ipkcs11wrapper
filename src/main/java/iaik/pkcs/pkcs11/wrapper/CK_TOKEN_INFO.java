@@ -29,7 +29,7 @@ package iaik.pkcs.pkcs11.wrapper;
  *   CK_VERSION   firmwareVersion;
  *   CK_CHAR      utcTime[16];
  * } CK_TOKEN_INFO;
- * 
+ *
  * </PRE>
  *
  * @author Karl Scheibelhofer (SIC)
