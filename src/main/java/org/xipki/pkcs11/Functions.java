@@ -72,6 +72,7 @@ public class Functions {
   }
 
   private static final Map<String, Integer> ecParamsToFieldSize;
+  private static final Map<String, Integer> ecParamsToOrderSize;
 
   private static final Map<String, Integer> edwardsMontegomeryEcParamsToFieldSize;
 
@@ -87,6 +88,8 @@ public class Functions {
     edwardsMontegomeryEcParamsToFieldSize.put("06032b6571", 57);
 
     ecParamsToFieldSize = new HashMap<>(130);
+    ecParamsToOrderSize = new HashMap<>(130);
+
     String propFile = "org/xipki/pkcs11/size-EC.properties";
     Properties props = new Properties();
     try {
@@ -95,12 +98,28 @@ public class Functions {
         name = name.trim();
 
         if (ecParamsToFieldSize.containsKey(name)) {
-          throw new IllegalStateException("duplicated definition of CKA: " + name);
+          throw new IllegalStateException("duplicated definition of " + name);
         }
 
         byte[] ecParams = Hex.decode(name);
-        int fieldBitSize = Integer.parseInt(props.getProperty(name));
-        ecParamsToFieldSize.put(Hex.encode(ecParams, 0, ecParams.length), (fieldBitSize + 7) / 8);
+
+        String value = props.getProperty(name);
+
+        int fieldBitSize;
+        int orderBitSize;
+        if (value.contains(",")) {
+          String[] tokens = value.split(",");
+          fieldBitSize = Integer.parseInt(tokens[0].trim());
+          orderBitSize = Integer.parseInt(tokens[1].trim());
+        } else {
+          fieldBitSize = Integer.parseInt(value);
+          orderBitSize = fieldBitSize;
+        }
+
+        String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
+
+        ecParamsToFieldSize.put(hexEcParams, (fieldBitSize + 7) / 8);
+        ecParamsToOrderSize.put(hexEcParams, (orderBitSize + 7) / 8);
       }
     } catch (Throwable t) {
       throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
@@ -241,12 +260,12 @@ public class Functions {
   }
 
   static byte[] fixECDSASignature(byte[] sig, byte[] ecParams) {
-    Integer fieldLen = ecParamsToFieldSize.get(Hex.encode(ecParams, 0, ecParams.length));
-    return (fieldLen == null) ? sig : fixECDSASignature(sig, fieldLen);
+    Integer rOrSLen = ecParamsToOrderSize.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (rOrSLen == null) ? sig : fixECDSASignature(sig, rOrSLen);
   }
 
-  static byte[] fixECDSASignature(byte[] sig, int fieldLen) {
-    if (sig.length == 2 * fieldLen || sig[0] != 0x30) {
+  static byte[] fixECDSASignature(byte[] sig, int rOrSLen) {
+    if (sig.length == 2 * rOrSLen || sig[0] != 0x30) {
       return sig;
     }
 
@@ -300,13 +319,13 @@ public class Functions {
       s = Arrays.copyOfRange(s, 1, s.length);
     }
 
-    if (r.length > fieldLen || s.length > fieldLen) {
+    if (r.length > rOrSLen || s.length > rOrSLen) {
       // we can not fix it.
       return sig;
     }
 
-    byte[] rs = new byte[2 * fieldLen];
-    System.arraycopy(r, 0, rs, fieldLen - r.length, r.length);
+    byte[] rs = new byte[2 * rOrSLen];
+    System.arraycopy(r, 0, rs, rOrSLen - r.length, r.length);
     System.arraycopy(s, 0, rs, rs.length - s.length, s.length);
     return rs;
   }
