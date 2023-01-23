@@ -1883,6 +1883,11 @@ public class Session {
         if (keyType != null && keyType == CKK_VENDOR_SM2) {
           attr.present(false).getCkAttribute().pValue = Functions.decodeHex("06082a811ccf5501822d");
         }
+      } else {
+        byte[] ecParams = (byte[]) ckAttr.pValue;
+        if (ecParams[0] != 0x06) { // 06: OBJECT IDENTIFIER
+          ckAttr.pValue = Functions.fixECParams((byte[]) ckAttr.pValue);
+        }
       }
 
       return;

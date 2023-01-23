@@ -3,6 +3,7 @@
 
 package org.xipki.pkcs11;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static org.xipki.pkcs11.PKCS11Constants.Category;
@@ -71,8 +72,142 @@ public class Functions {
 
   }
 
-  private static final Map<String, Integer> ecParamsToFieldSize;
-  private static final Map<String, Integer> ecParamsToOrderSize;
+  private static class ECInfo {
+    int fieldSize;
+    int orderSize;
+    long ecParamsHash;
+  }
+
+  /**
+   * Implementation of SipHash as specified in "SipHash: a fast short-input PRF", by Jean-Philippe
+   * Aumasson and Daniel J. Bernstein (https://131002.net/siphash/siphash.pdf).
+   * <p>
+   * "SipHash is a family of PRFs SipHash-c-d where the integer parameters c and d are the number of
+   * compression rounds and the number of finalization rounds. A compression round is identical to a
+   * finalization round and this round function is called SipRound. Given a 128-bit key k and a
+   * (possibly empty) byte string m, SipHash-c-d returns a 64-bit value..."
+   */
+  private static class SipHash24 {
+    private final int c = 2, d = 4;
+
+    private final long k0 = 0x0706050403020100L, k1 = 0x0f0e0d0c0b0a0908L;
+    private long v0, v1, v2, v3;
+
+    private long m = 0;
+    private int wordPos = 0;
+    private int wordCount = 0;
+
+    public SipHash24() {
+      reset();
+    }
+
+    public void update(byte[] input, int offset, int length) {
+      int i = 0, fullWords = length & ~7;
+      if (wordPos == 0) {
+        for (; i < fullWords; i += 8) {
+          m = littleEndianToLong(input, offset + i);
+          processMessageWord();
+        }
+        for (; i < length; ++i) {
+          m >>>= 8;
+          m |= (input[offset + i] & 0xffL) << 56;
+        }
+        wordPos = length - fullWords;
+      } else {
+        int bits = wordPos << 3;
+        for (; i < fullWords; i += 8) {
+          long n = littleEndianToLong(input, offset + i);
+          m = (n << bits) | (m >>> -bits);
+          processMessageWord();
+          m = n;
+        }
+
+        for (; i < length; ++i) {
+          m >>>= 8;
+          m |= (input[offset + i] & 0xffL) << 56;
+
+          if (++wordPos == 8) {
+            processMessageWord();
+            wordPos = 0;
+          }
+        }
+      }
+    }
+
+    public long doFinal() {
+      // NOTE: 2 distinct shifts to avoid "64-bit shift" when wordPos == 0
+      m >>>= ((7 - wordPos) << 3);
+      m >>>= 8;
+      m |= (((wordCount << 3) + wordPos) & 0xffL) << 56;
+
+      processMessageWord();
+
+      v2 ^= 0xffL;
+
+      applySipRounds(d);
+
+      long result = v0 ^ v1 ^ v2 ^ v3;
+
+      reset();
+
+      return result;
+    }
+
+    public void reset() {
+      v0 = k0 ^ 0x736f6d6570736575L;
+      v1 = k1 ^ 0x646f72616e646f6dL;
+      v2 = k0 ^ 0x6c7967656e657261L;
+      v3 = k1 ^ 0x7465646279746573L;
+
+      m = 0;
+      wordPos = 0;
+      wordCount = 0;
+    }
+
+    private void processMessageWord() {
+      ++wordCount;
+      v3 ^= m;
+      applySipRounds(c);
+      v0 ^= m;
+    }
+
+    private void applySipRounds(int n) {
+      long r0 = v0, r1 = v1, r2 = v2, r3 = v3;
+
+      for (int r = 0; r < n; ++r) {
+        r0 += r1; r2 += r3;
+        r1 = (r1 << 13) | (r1 >>> -13); // rotateLeft(r1, 13);
+        r3 = (r3 << 16) | (r3 >>> -16); // rotateLeft(r3, 16);
+        r1 ^= r0; r3 ^= r2;
+        r0 = (r0 << 32) | (r0 >>> -32); // rotateLeft(r0, 32);
+        r2 += r1; r0 += r3;
+        r1 = (r1 << 17) | (r1 >>> -17); // rotateLeft(r1, 17);
+        r3 = (r3 << 21) | (r3 >>> -21); // rotateLeft(r3, 21);
+        r1 ^= r2; r3 ^= r0;
+        r2 = (r2 << 32) | (r2 >>> -32); // rotateLeft(r2, 32);
+      }
+
+      v0 = r0; v1 = r1; v2 = r2; v3 = r3;
+    }
+
+    private static long littleEndianToLong(byte[] bs, int off) {
+      return      (bs[off++] & 0xFFL) | (bs[off++] & 0xFFL) << 8
+          | (bs[off++] & 0xFFL) << 16 | (bs[off++] & 0xFFL) << 24
+          | (bs[off++] & 0xFFL) << 32 | (bs[off++] & 0xFFL) << 40
+          | (bs[off++] & 0xFFL) << 48 | (bs[off]   & 0xFFL) << 56;
+    }
+
+    private static byte[] littleEndianToLong(long v) {
+      byte[] bs = new byte[8];
+      for (int i = 0; i < 8; i++, v >>= 8) {
+        bs[i] = (byte) v;
+      }
+      return bs;
+    }
+
+  }
+
+  private static final Map<String, ECInfo> ecParamsInfoMap;
 
   private static final Map<String, Integer> edwardsMontegomeryEcParamsToFieldSize;
 
@@ -87,39 +222,29 @@ public class Functions {
     // ED448 (1.3.101.113)
     edwardsMontegomeryEcParamsToFieldSize.put("06032b6571", 57);
 
-    ecParamsToFieldSize = new HashMap<>(130);
-    ecParamsToOrderSize = new HashMap<>(130);
+    ecParamsInfoMap = new HashMap<>(120);
 
-    String propFile = "org/xipki/pkcs11/size-EC.properties";
+    String propFile = "org/xipki/pkcs11/EC.properties";
     Properties props = new Properties();
     try {
       props.load(Functions.class.getClassLoader().getResourceAsStream(propFile));
       for (String name : props.stringPropertyNames()) {
         name = name.trim();
 
-        if (ecParamsToFieldSize.containsKey(name)) {
+        if (ecParamsInfoMap.containsKey(name)) {
           throw new IllegalStateException("duplicated definition of " + name);
         }
 
         byte[] ecParams = Hex.decode(name);
 
-        String value = props.getProperty(name);
-
-        int fieldBitSize;
-        int orderBitSize;
-        if (value.contains(",")) {
-          String[] tokens = value.split(",");
-          fieldBitSize = Integer.parseInt(tokens[0].trim());
-          orderBitSize = Integer.parseInt(tokens[1].trim());
-        } else {
-          fieldBitSize = Integer.parseInt(value);
-          orderBitSize = fieldBitSize;
-        }
-
+        String[] values = props.getProperty(name).split(",");
+        ECInfo ecInfo = new ECInfo();
+        ecInfo.ecParamsHash = SipHash24.littleEndianToLong(Hex.decode(values[0]), 0);
+        ecInfo.fieldSize = (Integer.parseInt(values[1]) + 7) / 8;
+        ecInfo.orderSize = (values.length > 2) ? (Integer.parseInt(values[2]) + 7) / 8 : ecInfo.fieldSize;
         String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
 
-        ecParamsToFieldSize.put(hexEcParams, (fieldBitSize + 7) / 8);
-        ecParamsToOrderSize.put(hexEcParams, (orderBitSize + 7) / 8);
+        ecParamsInfoMap.put(hexEcParams, ecInfo);
       }
     } catch (Throwable t) {
       throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
@@ -260,8 +385,57 @@ public class Functions {
   }
 
   static byte[] fixECDSASignature(byte[] sig, byte[] ecParams) {
-    Integer rOrSLen = ecParamsToOrderSize.get(Hex.encode(ecParams, 0, ecParams.length));
-    return (rOrSLen == null) ? sig : fixECDSASignature(sig, rOrSLen);
+    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (ecInfo == null) ? sig : fixECDSASignature(sig, ecInfo.orderSize);
+  }
+
+  static byte[] fixECParams(byte[] ecParams) {
+    // some HSMs, e.g. SoftHSM may return the ASN.1 string, e.g. edwards25519 for ED25519.
+    int tag = 0xFF & ecParams[0];
+    if (tag == 12 || tag == 19) { // 12: UTF8 String, 19: Printable String
+      int len = 0xFF & ecParams[1];
+      if (len < 128 && 2 + len == ecParams.length) {
+        String curveName = new String(ecParams, 2, len, StandardCharsets.UTF_8).trim().toUpperCase(Locale.ROOT);
+        // EDWARDS and MONTGOMERY cuve
+        curveName = curveName.replace("EDWARDS", "ED")
+            .replace("MONTGOMERY", "X").replace("XDH", "X");
+        String hexEcParams = "ED25519".equals(curveName) ? "06032b6570"
+            : "ED448".equals(curveName) ? "06032b6571"
+            : "X25519".equals(curveName) ? "06032b656e"
+            : "X448".equals(curveName) ? "06032b656f"
+            : null;
+        if (hexEcParams != null) {
+          return Functions.decodeHex(hexEcParams);
+        }
+      }
+
+      return ecParams;
+    }
+
+    if (tag == 0x30) { // ECParameters
+      int offset = 1;
+      int lenb = 0xFF & ecParams[offset++];
+
+      int len = (lenb <= 127) ? lenb
+          : (lenb == 0x81) ? 0xFF & ecParams[offset++]
+          : (lenb == 0x82) ? ((0xFF & ecParams[offset++]) << 8) | (0xFF & ecParams[offset++])
+          : -1;
+
+      if (len == -1 || offset + len != ecParams.length) {
+        return ecParams;
+      }
+
+      SipHash24 hash = new SipHash24();
+      hash.update(ecParams, 0, ecParams.length);
+      long hashValue = hash.doFinal();
+      for (Map.Entry<String, ECInfo> m : ecParamsInfoMap.entrySet()) {
+        if (hashValue == m.getValue().ecParamsHash) {
+          return decodeHex(m.getKey());
+        }
+      }
+    }
+
+    return ecParams;
   }
 
   static byte[] fixECDSASignature(byte[] sig, int rOrSLen) {
@@ -354,8 +528,10 @@ public class Functions {
     }
 
     String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
-    Integer fieldSize = ecParamsToFieldSize.get(hexEcParams);
-    if (fieldSize != null) {
+    ECInfo ecInfo = ecParamsInfoMap.get(hexEcParams);
+
+    if (ecInfo != null) {
+      int fieldSize = ecInfo.fieldSize;
       // weierstrauss curve.
       if (ecPoint.length == 2 * fieldSize) {
         // HSM returns x_coord. || y_coord.
@@ -378,7 +554,7 @@ public class Functions {
       return ecPoint;
     }
 
-    fieldSize = edwardsMontegomeryEcParamsToFieldSize.get(hexEcParams);
+    Integer fieldSize = edwardsMontegomeryEcParamsToFieldSize.get(hexEcParams);
     if (fieldSize != null) {
       return (len == fieldSize) ? toOctetString(null, ecPoint) : ecPoint;
     }
