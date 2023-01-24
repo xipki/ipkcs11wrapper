@@ -15,7 +15,7 @@ import static org.xipki.pkcs11.PKCS11Constants.codeToName;
  */
 public class X9_42_MQV_DERIVE_PARAMS extends CkParams {
 
-  private CK_X9_42_DHMQV_DERIVE_PARAMS params;
+  private final CK_X9_42_DHMQV_DERIVE_PARAMS params;
 
   public X9_42_MQV_DERIVE_PARAMS(long kdf, byte[] otherInfo, byte[] publicData, int privateDataLength,
                                  long privateDataHandle, byte[] publicData2, long publicKeyHandle) {

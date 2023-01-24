@@ -22,7 +22,7 @@ public class GCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
    * @param ivFixedBits number of bits of the original IV to preserve when generating an <br>
    *                    new IV. These bits are counted from the Most significant bits (to the right).
    * @param ivGenerator Function used to generate a new IV. Each IV must be unique for a given session.
-   * @param tag ocation of the authentication tag which is returned on MessageEncrypt, and provided on MessageDecrypt.
+   * @param tag location of the authentication tag which is returned on MessageEncrypt, and provided on MessageDecrypt.
    */
   public GCM_MESSAGE_PARAMS(byte[] iv, long ivFixedBits, long ivGenerator, byte[] tag) {
     params = new CK_GCM_MESSAGE_PARAMS();

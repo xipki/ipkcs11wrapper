@@ -79,7 +79,7 @@ public class DateAttribute extends Attribute {
     // poor performance, consider alternatives
     Calendar calendar = new GregorianCalendar();
     // calendar starts months with 0
-    calendar.set(year, Calendar.JANUARY + (month - 1), day);
+    calendar.set(year, month - 1, day);
     return calendar.getTime();
   }
 

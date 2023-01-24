@@ -18,7 +18,7 @@ public class EXTRACT_PARAMS extends LongParams {
    *          the derived key.
    */
   public EXTRACT_PARAMS(int bitIndex) {
-    super((long) bitIndex);
+    super(bitIndex);
   }
 
   @Override

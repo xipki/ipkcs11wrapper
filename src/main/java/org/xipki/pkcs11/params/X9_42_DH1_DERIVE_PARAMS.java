@@ -13,7 +13,7 @@ import org.xipki.pkcs11.PKCS11Constants;
  */
 public class X9_42_DH1_DERIVE_PARAMS extends CkParams {
 
-  private CK_X9_42_DH1_DERIVE_PARAMS params;
+  private final CK_X9_42_DH1_DERIVE_PARAMS params;
 
   public X9_42_DH1_DERIVE_PARAMS(long kdf, byte[] otherInfo, byte[] publicData) {
     params = new CK_X9_42_DH1_DERIVE_PARAMS();

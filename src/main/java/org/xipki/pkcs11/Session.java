@@ -1574,7 +1574,7 @@ public class Session {
       this.rwSession = getSessionInfo().isRwSession();
     }
 
-    return this.rwSession.booleanValue();
+    return this.rwSession;
   }
 
   /**
@@ -1836,7 +1836,7 @@ public class Session {
     }
 
     if (postProcess) {
-      postProcessGetAttribute(attribute, objectHandle, null);
+      postProcessGetAttribute(attribute, objectHandle);
     }
   }
 
@@ -1898,26 +1898,20 @@ public class Session {
     }
 
     if (type == CKA_KEY_TYPE) {
-      if (ckAttr.pValue != null) {
-        long value = (long) ckAttr.pValue;
-        if ((value & CKK_VENDOR_DEFINED) != 0L && !isUnavailableInformation(value)) {
-          ckAttr.pValue = module.ckkVendorToGeneric(value);
-        }
+      long value = (long) ckAttr.pValue;
+      if ((value & CKK_VENDOR_DEFINED) != 0L && !isUnavailableInformation(value)) {
+        ckAttr.pValue = module.ckkVendorToGeneric(value);
       }
     } else if (type == CKA_KEY_GEN_MECHANISM) {
-      if (ckAttr.pValue != null) {
-        long value = (long) ckAttr.pValue;
-        if ((value & CKM_VENDOR_DEFINED) != 0L && !isUnavailableInformation(value)) {
-          ckAttr.pValue = module.ckmVendorToGeneric(value);
-        }
+      long value = (long) ckAttr.pValue;
+      if ((value & CKM_VENDOR_DEFINED) != 0L && !isUnavailableInformation(value)) {
+        ckAttr.pValue = module.ckmVendorToGeneric(value);
       }
     } else if (type == CKA_ALLOWED_MECHANISMS) {
-      if (ckAttr.pValue != null) {
-        long[] mechs = ((MechanismArrayAttribute) attr).getValue();
-        for (long mech : mechs) {
-          if ((mech & CKM_VENDOR_DEFINED) != 0L) {
-            ckAttr.pValue = module.ckmVendorToGeneric(mech);
-          }
+      long[] mechs = ((MechanismArrayAttribute) attr).getValue();
+      for (long mech : mechs) {
+        if ((mech & CKM_VENDOR_DEFINED) != 0L) {
+          ckAttr.pValue = module.ckmVendorToGeneric(mech);
         }
       }
     } else if (type == CKA_EC_POINT) {
@@ -1992,7 +1986,7 @@ public class Session {
     /** Size of this cache in units. Not necessarily the number of elements. */
     private int size;
 
-    private int maxSize;
+    private final int maxSize;
 
     public LruCache(int maxSize) {
       if (maxSize < 0) {

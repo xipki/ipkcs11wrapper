@@ -327,13 +327,13 @@ public class PKCS11Module {
 
     String osName = System.getProperty("os.name");
     osName = osName.toLowerCase(Locale.ROOT);
-    int osIndex = osName.indexOf("win") > -1 ? WIN_INDEX
-        : osName.indexOf("linux") > -1 ? LINUX_INDEX
-        : osName.indexOf("mac") > -1 ? MAC_INDEX : 0; // it may be some Linux - try it
+    int osIndex = osName.contains("win") ? WIN_INDEX
+        : osName.contains("linux") ? LINUX_INDEX
+        : osName.contains("mac") ? MAC_INDEX : 0; // it may be some Linux - try it
 
     String archName = System.getProperty("os.arch");
-    int archIndex = archName.indexOf("64") > -1 ? X64_INDEX
-        : archName.indexOf("32") > -1 || archName.indexOf("86") > -1 ? X86_INDEX : -1;
+    int archIndex = archName.contains("64") ? X64_INDEX
+        : archName.contains("32") || archName.contains("86") ? X86_INDEX : -1;
 
     if (archIndex == -1) {
       archIndex = 0;
@@ -352,23 +352,22 @@ public class PKCS11Module {
     String osFileEnding = WRAPPER_FILE_SUFFIX[osIndex];
 
     boolean success = false;
-    boolean tryAgain;
     do {
-      tryAgain = false;
       String jarFilePath = system + architecture + releaseOrDebugDir;
       File tempWrapperFile = null;
       InputStream wrapperLibrary = classLoader.getResourceAsStream(jarFilePath + libName + osFileEnding);
+
       if (wrapperLibrary == null) {
         if (trialCounter < WRAPPER_ARCH_PATH.length) {
           archIndex = trialCounter++;
           architecture = WRAPPER_ARCH_PATH[archIndex];
-          tryAgain = true;
           continue;
         } else {
           throw new IOException("No suitable wrapper native library for " + osName + " "
               + archName + " found in jar file.");
         }
       }
+
       try {
         String directory = System.getProperty(PKCS11_TEMP_DIR, null);
         if (directory != null && !directory.isEmpty()) {
@@ -413,13 +412,12 @@ public class PKCS11Module {
         if (trialCounter < WRAPPER_ARCH_PATH.length) {
           archIndex = trialCounter++;
           architecture = WRAPPER_ARCH_PATH[archIndex];
-          tryAgain = true;
         } else {
           throw new IOException("No suitable wrapper native library found in jar file. "
               + osName + " " + archName + " not supported.");
         }
       }
-    } while (!success && tryAgain);
+    } while (!success);
 
   }
 

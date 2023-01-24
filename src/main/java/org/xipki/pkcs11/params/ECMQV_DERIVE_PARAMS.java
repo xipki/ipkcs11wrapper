@@ -16,7 +16,7 @@ import static org.xipki.pkcs11.PKCS11Constants.codeToName;
  */
 public class ECMQV_DERIVE_PARAMS extends CkParams {
 
-  private CK_ECMQV_DERIVE_PARAMS params;
+  private final CK_ECMQV_DERIVE_PARAMS params;
 
   /**
    * Create a new ECMQV_DERIVE_PARAMS object with the given attributes.
