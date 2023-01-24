@@ -6,8 +6,7 @@ package org.xipki.pkcs11;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static org.xipki.pkcs11.PKCS11Constants.Category;
-import static org.xipki.pkcs11.PKCS11Constants.codeToName;
+import static org.xipki.pkcs11.PKCS11Constants.*;
 
 /**
  * This class contains only static methods. It is the place for all functions
@@ -76,6 +75,7 @@ public class Functions {
     int fieldSize;
     int orderSize;
     long ecParamsHash;
+    String[] names;
   }
 
   /**
@@ -176,15 +176,15 @@ public class Functions {
 
       for (int r = 0; r < n; ++r) {
         r0 += r1; r2 += r3;
-        r1 = (r1 << 13) | (r1 >>> -13); // rotateLeft(r1, 13);
-        r3 = (r3 << 16) | (r3 >>> -16); // rotateLeft(r3, 16);
+        r1 = (r1 << 13) | (r1 >>> 51); // rotateLeft(r1, 13);
+        r3 = (r3 << 16) | (r3 >>> 48); // rotateLeft(r3, 16);
         r1 ^= r0; r3 ^= r2;
-        r0 = (r0 << 32) | (r0 >>> -32); // rotateLeft(r0, 32);
+        r0 = (r0 << 32) | (r0 >>> 32); // rotateLeft(r0, 32);
         r2 += r1; r0 += r3;
-        r1 = (r1 << 17) | (r1 >>> -17); // rotateLeft(r1, 17);
-        r3 = (r3 << 21) | (r3 >>> -21); // rotateLeft(r3, 21);
+        r1 = (r1 << 17) | (r1 >>> 47); // rotateLeft(r1, 17);
+        r3 = (r3 << 21) | (r3 >>> 43); // rotateLeft(r3, 21);
         r1 ^= r2; r3 ^= r0;
-        r2 = (r2 << 32) | (r2 >>> -32); // rotateLeft(r2, 32);
+        r2 = (r2 << 32) | (r2 >>> 32); // rotateLeft(r2, 32);
       }
 
       v0 = r0; v1 = r1; v2 = r2; v3 = r3;
@@ -197,30 +197,22 @@ public class Functions {
           | (bs[off++] & 0xFFL) << 48 | (bs[off]   & 0xFFL) << 56;
     }
 
-    private static byte[] littleEndianToLong(long v) {
-      byte[] bs = new byte[8];
-      for (int i = 0; i < 8; i++, v >>= 8) {
-        bs[i] = (byte) v;
-      }
-      return bs;
-    }
-
   }
 
   private static final Map<String, ECInfo> ecParamsInfoMap;
 
-  private static final Map<String, Integer> edwardsMontegomeryEcParamsToFieldSize;
+  private static final Set<String> edwardsMontgomeryEcParams;
 
   static {
-    edwardsMontegomeryEcParamsToFieldSize = new HashMap<>(6);
+    edwardsMontgomeryEcParams = new HashSet<>(6);
     // X25519 (1.3.101.110)
-    edwardsMontegomeryEcParamsToFieldSize.put("06032b656e", 32);
+    edwardsMontgomeryEcParams.add("06032b656e");
     // X448 (1.3.101.111)
-    edwardsMontegomeryEcParamsToFieldSize.put("06032b656f", 56);
+    edwardsMontgomeryEcParams.add("06032b656f");
     // ED25519 (1.3.101.112)
-    edwardsMontegomeryEcParamsToFieldSize.put("06032b6570", 32);
+    edwardsMontgomeryEcParams.add("06032b6570");
     // ED448 (1.3.101.113)
-    edwardsMontegomeryEcParamsToFieldSize.put("06032b6571", 57);
+    edwardsMontgomeryEcParams.add("06032b6571");
 
     ecParamsInfoMap = new HashMap<>(120);
 
@@ -237,11 +229,13 @@ public class Functions {
 
         byte[] ecParams = Hex.decode(name);
 
-        String[] values = props.getProperty(name).split(",");
         ECInfo ecInfo = new ECInfo();
-        ecInfo.ecParamsHash = SipHash24.littleEndianToLong(Hex.decode(values[0]), 0);
-        ecInfo.fieldSize = (Integer.parseInt(values[1]) + 7) / 8;
-        ecInfo.orderSize = (values.length > 2) ? (Integer.parseInt(values[2]) + 7) / 8 : ecInfo.fieldSize;
+
+        String[] values = props.getProperty(name).split(",");
+        ecInfo.names = values[0].toUpperCase(Locale.ROOT).split(":");
+        ecInfo.ecParamsHash = "-".equals(values[1]) ? 0 : SipHash24.littleEndianToLong(Hex.decode(values[1]), 0);
+        ecInfo.fieldSize = (Integer.parseInt(values[2]) + 7) / 8;
+        ecInfo.orderSize = (values.length > 3) ? (Integer.parseInt(values[3]) + 7) / 8 : ecInfo.fieldSize;
         String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
 
         ecParamsInfoMap.put(hexEcParams, ecInfo);
@@ -396,16 +390,12 @@ public class Functions {
       int len = 0xFF & ecParams[1];
       if (len < 128 && 2 + len == ecParams.length) {
         String curveName = new String(ecParams, 2, len, StandardCharsets.UTF_8).trim().toUpperCase(Locale.ROOT);
-        // EDWARDS and MONTGOMERY cuve
-        curveName = curveName.replace("EDWARDS", "ED")
-            .replace("MONTGOMERY", "X").replace("XDH", "X");
-        String hexEcParams = "ED25519".equals(curveName) ? "06032b6570"
-            : "ED448".equals(curveName) ? "06032b6571"
-            : "X25519".equals(curveName) ? "06032b656e"
-            : "X448".equals(curveName) ? "06032b656f"
-            : null;
-        if (hexEcParams != null) {
-          return Functions.decodeHex(hexEcParams);
+        for (Map.Entry<String, ECInfo> m : ecParamsInfoMap.entrySet()) {
+          for (String name : m.getValue().names) {
+            if (name.equals(curveName)) {
+              return decodeHex(m.getKey());
+            }
+          }
         }
       }
 
@@ -530,33 +520,33 @@ public class Functions {
     String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
     ECInfo ecInfo = ecParamsInfoMap.get(hexEcParams);
 
-    if (ecInfo != null) {
-      int fieldSize = ecInfo.fieldSize;
-      // weierstrauss curve.
-      if (ecPoint.length == 2 * fieldSize) {
-        // HSM returns x_coord. || y_coord.
-        return toOctetString((byte) 0x04, ecPoint);
-      } else {
-        byte encodingByte = ecPoint[0];
-        if (encodingByte == 0x04) {
-          if (len == 1 + 2 * fieldSize) {
-            // HSM returns 04 || x_coord. || y_coord.
-            return toOctetString(null, ecPoint);
-          }
-        } else if (encodingByte == 0x02 || encodingByte == 0x03) {
-          if (len == 1 + fieldSize) {
-            // HSM returns <02 or 03> || x_coord.
-            return toOctetString(null, ecPoint);
-          }
-        }
-      }
-
+    if (ecInfo == null) {
       return ecPoint;
     }
 
-    Integer fieldSize = edwardsMontegomeryEcParamsToFieldSize.get(hexEcParams);
-    if (fieldSize != null) {
+    int fieldSize = ecInfo.fieldSize;
+    if (edwardsMontgomeryEcParams.contains(hexEcParams)) {
+      // edwards or montgomery curve
       return (len == fieldSize) ? toOctetString(null, ecPoint) : ecPoint;
+    }
+
+    // weierstrauss curve.
+    if (ecPoint.length == 2 * fieldSize) {
+      // HSM returns x_coord. || y_coord.
+      return toOctetString((byte) 0x04, ecPoint);
+    } else {
+      byte encodingByte = ecPoint[0];
+      if (encodingByte == 0x04) {
+        if (len == 1 + 2 * fieldSize) {
+          // HSM returns 04 || x_coord. || y_coord.
+          return toOctetString(null, ecPoint);
+        }
+      } else if (encodingByte == 0x02 || encodingByte == 0x03) {
+        if (len == 1 + fieldSize) {
+          // HSM returns <02 or 03> || x_coord.
+          return toOctetString(null, ecPoint);
+        }
+      }
     }
 
     return ecPoint;
