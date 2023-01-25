@@ -1326,9 +1326,8 @@ public final class PKCS11Constants {
       return name != null ? name : "Unknown " + description + " 0x" + Functions.toFullHex(code);
     }
 
-    long stringToCode(String name) {
-      Long code = nameCodeMap.get(name);
-      return (code != null) ? code : -1;
+    Long stringToCode(String name) {
+      return nameCodeMap.get(name);
     }
 
     Set<Long> codes() {
@@ -1359,7 +1358,7 @@ public final class PKCS11Constants {
    * @param name The name to be converted to a code.
    * @return The code representation of the given name.
    */
-  public static long nameToCode(Category category, String name) {
+  public static Long nameToCode(Category category, String name) {
     CodeNameMap map = codeNameMaps.get(category);
     if (map == null) {
       throw new IllegalArgumentException("Unknown category " + category);
@@ -1371,7 +1370,7 @@ public final class PKCS11Constants {
     return codeToName(Category.CKA, code);
   }
 
-  public static long ckaNameToCode(String name) {
+  public static Long ckaNameToCode(String name) {
     return nameToCode(Category.CKA, name);
   }
 
@@ -1379,7 +1378,7 @@ public final class PKCS11Constants {
     return codeToName(Category.CKK, code);
   }
 
-  public static long ckkNameToCode(String name) {
+  public static Long ckkNameToCode(String name) {
     return nameToCode(Category.CKK, name);
   }
 
@@ -1387,7 +1386,7 @@ public final class PKCS11Constants {
     return codeToName(Category.CKM, code);
   }
 
-  public static long ckmNameToCode(String name) {
+  public static Long ckmNameToCode(String name) {
     return nameToCode(Category.CKM, name);
   }
 
@@ -1395,7 +1394,7 @@ public final class PKCS11Constants {
     return codeToName(Category.CKO, code);
   }
 
-  public static long ckoNameToCode(String name) {
+  public static Long ckoNameToCode(String name) {
     return nameToCode(Category.CKO, name);
   }
 
@@ -1403,7 +1402,7 @@ public final class PKCS11Constants {
     return codeToName(Category.CKR, code);
   }
 
-  public static long ckrNameToCode(String name) {
+  public static Long ckrNameToCode(String name) {
     return nameToCode(Category.CKR, name);
   }
 

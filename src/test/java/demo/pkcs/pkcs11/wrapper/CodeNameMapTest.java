@@ -13,10 +13,14 @@ public class CodeNameMapTest {
 
   private static void evaluate(Category category, long code, String name, String... aliases) {
     Assert.assertEquals(category + "." + Functions.toFullHex(code), name, codeToName(category, code));
-    Assert.assertEquals(category + "." + name, code, nameToCode(category, name));
+    Long code2 = nameToCode(category, name);
+    Assert.assertNotNull(category + "." + name, code2);
+    Assert.assertEquals(category + "." + name, code, code2.longValue());
     if (aliases != null) {
       for (String alias : aliases) {
-        Assert.assertEquals(category + "." + alias, code, nameToCode(category, alias));
+        code2 = nameToCode(category, alias);
+        Assert.assertNotNull(category + "." + alias, code2);
+        Assert.assertEquals(category + "." + alias, code, code2.longValue());
       }
     }
   }

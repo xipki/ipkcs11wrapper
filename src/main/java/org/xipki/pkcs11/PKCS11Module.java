@@ -503,15 +503,15 @@ public class PKCS11Module {
             long vendorCode = hex ? Long.parseLong(valueStr.substring(2), 16) : Long.parseLong(valueStr);
 
             if (name.startsWith("CKK_VENDOR_")) {
-              long genericCode = PKCS11Constants.ckkNameToCode(name);
-              if (genericCode == -1) {
+              Long genericCode = PKCS11Constants.ckkNameToCode(name);
+              if (genericCode == null) {
                 throw new IllegalStateException("unknown name in vendorcode block: " + name);
               }
 
               ckkGenericToVendorMap.put(genericCode, vendorCode);
             } else if (name.startsWith("CKM_VENDOR_")) {
-              long genericCode = PKCS11Constants.ckmNameToCode(name);
-              if (genericCode == -1) {
+              Long genericCode = PKCS11Constants.ckmNameToCode(name);
+              if (genericCode == null) {
                 throw new IllegalStateException("unknown name in vendorcode block: " + name);
               }
 

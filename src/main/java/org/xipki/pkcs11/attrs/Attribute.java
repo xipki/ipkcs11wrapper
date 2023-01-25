@@ -73,8 +73,8 @@ public abstract class Attribute {
       for (String name : props.stringPropertyNames()) {
         name = name.trim();
         String type = props.getProperty(name).trim();
-        long code = ckaNameToCode(name);
-        if (code == -1) {
+        Long code = ckaNameToCode(name);
+        if (code == null) {
           throw new IllegalStateException("unknown CKA: " + name);
         }
 
