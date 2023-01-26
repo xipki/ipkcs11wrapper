@@ -185,6 +185,7 @@
             <configuration>
               <classifier>debug</classifier>
               <includes>
+                <include>org/xipki/**</include>
                 <include>iaik/**</include>
                 <include>LICENSE</include>
                 <include>natives/**/debug/**</include>
