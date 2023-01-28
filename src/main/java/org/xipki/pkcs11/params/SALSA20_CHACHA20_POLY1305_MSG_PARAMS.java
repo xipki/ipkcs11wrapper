@@ -40,8 +40,8 @@ public class SALSA20_CHACHA20_POLY1305_MSG_PARAMS extends CkParams implements Ck
   @Override
   public String toString() {
     return "CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS:" +
-        "\n  pNonce: " + ptrToString(params.pNonce) +
-        "\n  pTag:   " + ptrToString(params.pTag);
+        ptrToString("\n  pNonce: ", params.pNonce) +
+        ptrToString("\n  pTag:   ", params.pTag);
   }
 
 }

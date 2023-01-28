@@ -38,10 +38,10 @@ public class X9_42_MQV_DERIVE_PARAMS extends CkParams {
   public String toString() {
     return "CK_X9_42_MQV_DERIVE_PARAMS:" +
         "\n  kdf:              " + codeToName(PKCS11Constants.Category.CKD, params.kdf) +
-        "\n  pPublicData:      " + ptrToString(params.pPublicData) +
+        ptrToString("\n  pPublicData:      ", params.pPublicData) +
         "\n  ulPrivateDataLen: " + params.ulPrivateDataLen +
         "\n  hPrivateData:     " + params.hPrivateData +
-        "\n  pPublicData2:     " + ptrToString(params.pPublicData2) +
+        ptrToString("\n  pPublicData2:     ", params.pPublicData2) +
         "\n  hPublicKey:       " + params.hPublicKey;
   }
 

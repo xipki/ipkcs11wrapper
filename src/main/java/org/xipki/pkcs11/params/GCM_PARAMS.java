@@ -39,8 +39,8 @@ public class GCM_PARAMS extends CkParams {
   @Override
   public String toString() {
     return "CK_GCM_PARAMS:" +
-        "\n  pIv:       " + ptrToString(params.pIv) +
-        "\n  pAAD:      " + ptrToString(params.pAAD) +
+        ptrToString("\n  pIv:       ", params.pIv) +
+        ptrToString("\n  pAAD:      ", params.pAAD) +
         "\n  ulTagBits: " + params.ulTagBits;
   }
 

@@ -494,13 +494,22 @@ public class Functions {
     return rs;
   }
 
-  public static String toString(byte[] bytes) {
+  public static String toString(String prefix, byte[] bytes) {
     final int numPerLine = 40;
     final int len = bytes.length;
+    int indentLen = prefix.length();
+    if (indentLen > 0 && prefix.charAt(0) == '\n') {
+      indentLen--;
+    }
+
+    char[] indentChars = new char[indentLen];
+    Arrays.fill(indentChars, ' ');
+    String indent = "\n" + new String(indentChars);
+
     StringBuilder sb = new StringBuilder(5 * (len + numPerLine - 1) / numPerLine + 4 * bytes.length);
     for (int ofs = 0; ofs < len; ofs += numPerLine) {
       int num = Math.min(numPerLine, len - ofs);
-      sb.append(ofs == 0 ? "    " : "\n    ").append(toHex(bytes, ofs, num));
+      sb.append(ofs == 0 ? prefix : indent).append(toHex(bytes, ofs, num));
     }
     return sb.toString();
   }

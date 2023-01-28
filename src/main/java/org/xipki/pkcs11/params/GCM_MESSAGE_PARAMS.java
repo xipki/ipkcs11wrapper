@@ -45,8 +45,8 @@ public class GCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
   @Override
   public String toString() {
     return "CK_GCM_MESSAGE_PARAMS:" +
-        "\n  IV:            " + ptrToString(params.pIv) +
-        "\n  pTag:          " + ptrToString(params.pTag) +
+        ptrToString("\n  IV:            ", params.pIv) +
+        ptrToString("\n  pTag:          ", params.pTag) +
         "\n  ivGenerator:   " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.ivGenerator) +
         "\n  ulIvFixedBits: " + params.ulIvFixedBits;
   }

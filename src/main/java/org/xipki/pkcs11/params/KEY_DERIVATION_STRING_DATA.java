@@ -33,7 +33,7 @@ public class KEY_DERIVATION_STRING_DATA extends CkParams {
   @Override
   public String toString() {
     return "CK_KEY_DERIVATION_STRING_DATA:" +
-        "\n  pData: " + ptrToString(params.pData);
+        ptrToString("\n  pData: ", params.pData);
   }
 
 }

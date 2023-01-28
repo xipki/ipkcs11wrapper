@@ -34,8 +34,8 @@ public class CHACHA20_PARAMS extends CkParams {
   @Override
   public String toString() {
     return "CK_CHACHA20_PARAMS:" +
-        "\n  BlockCounter: " + ptrToString(params.pBlockCounter) +
-        "\n  pNonce:       " + ptrToString(params.pNonce);
+        ptrToString("\n  BlockCounter: ", params.pBlockCounter) +
+        ptrToString("\n  pNonce:       ", params.pNonce);
   }
 
 }

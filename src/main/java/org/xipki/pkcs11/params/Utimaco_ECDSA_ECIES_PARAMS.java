@@ -66,8 +66,8 @@ public class Utimaco_ECDSA_ECIES_PARAMS extends CkParams {
         "\n  cryptOpt:      " + params.cryptOpt +
         "\n  macAlg:        " + ckmCodeToName(params.macAlg) +
         "\n  mac options:   " + params.macOpt +
-        "\n  sharedSecret1: " + ptrToString(params.pSharedSecret1) +
-        "\n  sharedSecret2: " + ptrToString(params.pSharedSecret2);
+        ptrToString("\n  sharedSecret1: ", params.pSharedSecret1) +
+        ptrToString("\n  sharedSecret2: ", params.pSharedSecret2);
   }
 
 }

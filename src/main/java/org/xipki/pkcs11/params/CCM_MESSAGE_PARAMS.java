@@ -49,11 +49,11 @@ public class CCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
   public String toString() {
     return "CK_CCM_MESSAGE_PARAMS: " +
         "\n  ulDataLen:        " + params.ulDataLen +
-        "\n  pNonce:           " + ptrToString(params.pNonce) +
+        ptrToString("\n  pNonce:           ", params.pNonce) +
         "\n  nonceGenerator:   " +
             PKCS11Constants.codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.nonceGenerator) +
         "\n  ulNonceFixedBits: " + params.ulNonceFixedBits +
-        "\n  pMAC:             " + ptrToString(params.pMAC);
+        ptrToString("\n  pMAC:             ", params.pMAC);
   }
 
 }

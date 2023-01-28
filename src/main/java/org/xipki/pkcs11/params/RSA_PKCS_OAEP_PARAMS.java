@@ -52,7 +52,7 @@ public class RSA_PKCS_OAEP_PARAMS extends CkParams {
         "\n  hashAlg:     " + ckmCodeToName(params.hashAlg) +
         "\n  mgf:         " + codeToName(PKCS11Constants.Category.CKG_MGF, params.mgf) +
         "\n  source:      " + codeToName(Category.CKZ, params.source) +
-        "\n  pSourceData: " + ptrToString(params.pSourceData);
+        ptrToString("\n  pSourceData: ", params.pSourceData);
   }
 
 }

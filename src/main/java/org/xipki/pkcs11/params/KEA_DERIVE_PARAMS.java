@@ -46,9 +46,9 @@ public class KEA_DERIVE_PARAMS extends CkParams {
   public String toString() {
     return "CK_KEA_DERIVE_PARAMS:" +
         "\n  isSender:    " + params.isSender +
-        "\n  pRandomA:    " + ptrToString(params.pRandomA) +
-        "\n  pRandomB:    " + ptrToString(params.pRandomB) +
-        "\n  pPublicData: " + ptrToString(params.pPublicData);
+        ptrToString("\n  pRandomA:    ", params.pRandomA) +
+        ptrToString("\n  pRandomB:    ", params.pRandomB) +
+        ptrToString("\n  pPublicData: ", params.pPublicData);
   }
 
 }

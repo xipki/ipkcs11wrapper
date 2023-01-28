@@ -38,8 +38,8 @@ public class RSA_AES_KEY_WRAP_PARAMS extends CkParams {
     return "CK_RSA_AES_KEY_WRAP_PARAMS:" +
         "\n  AESKeyBits: " + params.ulAESKeyBits +
         "\n  pOAEPParams:" +
-        "\n    source:     " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, params.pOAEPParams.source) +
-        "\n    pSourceData: " + ptrToString(params.pOAEPParams.pSourceData);
+        "\n    source:      " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, params.pOAEPParams.source) +
+        ptrToString("\n    pSourceData: ", params.pOAEPParams.pSourceData);
   }
 
 }

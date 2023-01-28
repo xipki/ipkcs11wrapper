@@ -37,7 +37,7 @@ public class KEY_WRAP_SET_OAEP_PARAMS extends CkParams {
   public String toString() {
     return "CK_KEY_WRAP_SET_OAEP_PARAMS:" +
         "\n  bBC: 0x" + Integer.toHexString(0xFF & params.bBC) +
-        "\n  pX:  " + ptrToString(params.pX);
+        ptrToString("\n  pX:  ", params.pX);
   }
 
 }

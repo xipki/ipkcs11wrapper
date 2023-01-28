@@ -34,8 +34,8 @@ public class SALSA20_PARAMS extends CkParams {
   @Override
   public String toString() {
     return "CK_SALSA20_PARAMS: " +
-        "\n  pBlockCounter: " + ptrToString(params.pBlockCounter) +
-        "\n  pNonce:        " + ptrToString(params.pNonce);
+        ptrToString("\n  pBlockCounter: ", params.pBlockCounter) +
+        ptrToString("\n  pNonce:        ", params.pNonce);
   }
 
 }

@@ -59,10 +59,10 @@ public class ECMQV_DERIVE_PARAMS extends CkParams {
   public String toString() {
     return "CK_ECMQV_DERIVE_PARAMS:" +
         "\n  kdf:          " + codeToName(PKCS11Constants.Category.CKD, params.kdf) +
-        "\n  pPublicData:  " + ptrToString(params.pPublicData) +
-        "\n  pSharedData:  " + Functions.toHex(params.pSharedData) +
+        ptrToString("\n  pPublicData:  ", params.pPublicData) +
+        ptrToString("\n  pSharedData:  ", params.pSharedData) +
         "\n  hPrivateData: " + params.hPrivateData +
-        "\n  pPublicData2: " + Functions.toHex(params.pPublicData2) +
+        ptrToString("\n  pPublicData2: ", params.pPublicData2) +
         "\n  publicKey:    " + params.publicKey;
   }
 

@@ -31,8 +31,8 @@ public class X9_42_DH1_DERIVE_PARAMS extends CkParams {
   public String toString() {
     return "CK_X9_42_DH2_DERIVE_PARAMS:" +
         "\n  kdf:         " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKD, params.kdf) +
-        "\n  pPublicData: " + ptrToString(params.pPublicData) +
-        "\n  pOtherInfo:  " + ptrToString(params.pOtherInfo);
+        ptrToString("\n  pPublicData: ", params.pPublicData) +
+        ptrToString("\n  pOtherInfo:  ", params.pOtherInfo);
   }
 
 }

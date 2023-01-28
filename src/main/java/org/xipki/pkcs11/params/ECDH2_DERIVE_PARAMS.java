@@ -58,11 +58,11 @@ public class ECDH2_DERIVE_PARAMS extends CkParams {
   public String toString() {
     return "CK_ECDH2_DERIVE_PARAMS:" +
         "\n  kdf:              " + codeToName(Category.CKD, params.kdf) +
-        "\n  pPublicData:      " + ptrToString(params.pPublicData) +
-        "\n  pSharedData:      " + Functions.toHex(params.pSharedData) +
+        ptrToString("\n  pPublicData:      ", params.pPublicData) +
+        ptrToString("\n  pSharedData:      ", params.pSharedData) +
         "\n  ulPrivateDataLen: " + params.ulPrivateDataLen +
         "\n  hPrivateData:     " + params.hPrivateData +
-        "\n  pPublicData2:     " + ptrToString(params.pPublicData2);
+        ptrToString("\n  pPublicData2:     ", params.pPublicData2);
   }
 
 }

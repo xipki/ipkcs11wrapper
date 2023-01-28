@@ -84,7 +84,7 @@ public class ByteArrayAttribute extends Attribute {
     }
 
     byte[] value = (byte[]) ckAttribute.pValue;
-    return "byte[" + value.length + "]\n" + Functions.toString(value);
+    return "byte[" + value.length + "]\n" + Functions.toString("    ", value);
   }
 
 }

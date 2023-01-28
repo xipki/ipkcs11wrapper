@@ -55,10 +55,10 @@ public class PKCS5_PBKD2_PARAMS extends CkParams {
   public String toString() {
     return "CK_PKCS5_PBKD2_PARAMS:" +
         "\n  saltSource:      " + codeToName(Category.CKZ, params.saltSource) +
-        "\n  pSaltSourceData: " + ptrToString(params.pSaltSourceData) +
+        ptrToString("\n  pSaltSourceData: ", params.pSaltSourceData) +
         "\n  iterations:      " + params.iterations +
         "\n  prf:             " + codeToName(Category.CKP_PRF, params.prf) +
-        "\n  pPrfData:        " + ptrToString(params.pPrfData);
+        ptrToString("\n  pPrfData:        ", params.pPrfData);
   }
 
 }

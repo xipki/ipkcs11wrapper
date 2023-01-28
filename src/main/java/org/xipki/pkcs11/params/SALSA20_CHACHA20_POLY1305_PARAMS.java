@@ -47,8 +47,8 @@ public class SALSA20_CHACHA20_POLY1305_PARAMS extends CkParams implements CkMess
   @Override
   public String toString() {
     return "CK_SALSA20_CHACHA20_POLY1305_PARAMS:" +
-        "\n  pNonce: " + ptrToString(params.pNonce) +
-        "\n  pAAD:   " + ptrToString(params.pAAD);
+        ptrToString("\n  pNonce: ", params.pNonce) +
+        ptrToString("\n  pAAD:   ", params.pAAD);
   }
 
 }

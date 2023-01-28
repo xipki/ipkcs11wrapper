@@ -25,7 +25,7 @@ public class ByteArrayParams extends CkParams {
 
   @Override
   public String toString() {
-    return "ByteArray Params: " + getClass().getName() + "  : " + Functions.toHex(bytes);
+    return "ByteArray Params: " + ptrToString("\n  ", bytes);
   }
 
 }

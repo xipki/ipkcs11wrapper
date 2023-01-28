@@ -20,11 +20,15 @@ public abstract class CkParams {
    */
   public abstract Object getParams();
 
-  protected String ptrToString(byte[] data) {
-    return data == null ? "<NULL_PTR>" : Functions.toString(data);
+  protected static String ptrToString(String prefix, byte[] data) {
+    if (prefix == null) {
+      prefix = "";
+    }
+
+    return data == null ? prefix + "<NULL_PTR>" : Functions.toString(prefix, data);
   }
 
-  protected String ptrToString(char[] data) {
+  protected static String ptrToString(char[] data) {
     return data == null ? "<NULL_PTR>" : new String(data);
   }
 
