@@ -51,29 +51,28 @@ public class EdDSAGenerateKeyPair extends TestBase {
 
     Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
 
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_EC_EDWARDS);
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_EC_EDWARDS);
+    byte[] id = new byte[20];
+    new Random().nextBytes(id);
+
+    KeyPairTemplate template = new KeyPairTemplate(CKK_EC_EDWARDS).token(true).id(id);
 
     // set the general attributes for the public key
     // OID: 1.3.101.112 (Ed25519)
     byte[] encodedCurveOid = new byte[] {0x06, 0x03, 0x2b, 0x65, 0x70};
-    byte[] id = new byte[20];
-    new Random().nextBytes(id);
-    publicKeyTemplate.ecParams(encodedCurveOid).token(true).id(id);
-
-    privateKeyTemplate.sensitive(true).token(true).private_(true).id(id);
+    template.publicKey().ecParams(encodedCurveOid);
+    template.privateKey().sensitive(true).private_(true);
 
     // set the attributes in a way netscape does, this should work with most
     // tokens
     if (signatureMechanismInfo != null) {
-      publicKeyTemplate
+      template.publicKey()
           .verify(signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
           .verifyRecover(signatureMechanismInfo.hasFlagBit(CKF_VERIFY_RECOVER))
           .encrypt(signatureMechanismInfo.hasFlagBit(CKF_ENCRYPT))
           .derive(signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
           .wrap(signatureMechanismInfo.hasFlagBit(CKF_WRAP));
 
-      privateKeyTemplate
+      template.privateKey()
           .sign(signatureMechanismInfo.hasFlagBit(CKF_SIGN))
           .signRecover(signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
           .decrypt(signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
@@ -81,12 +80,10 @@ public class EdDSAGenerateKeyPair extends TestBase {
           .unwrap(signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
     } else {
       // if we have no information we assume these attributes
-      privateKeyTemplate.attr(CKA_SIGN, true).attr(CKA_DECRYPT, true);
-      publicKeyTemplate.attr(CKA_VERIFY, true).attr(CKA_ENCRYPT, true);
+      template.signVerify(true).decryptEncrypt(true);
     }
 
-    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(
-        keyPairGenerationMechanism, publicKeyTemplate, privateKeyTemplate);
+    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(keyPairGenerationMechanism, template);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
     // no we may work with the keys...

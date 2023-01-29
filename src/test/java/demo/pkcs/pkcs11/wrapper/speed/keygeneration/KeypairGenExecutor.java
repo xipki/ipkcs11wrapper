@@ -11,8 +11,6 @@ import org.xipki.pkcs11.*;
 
 import java.util.Random;
 
-import static org.xipki.pkcs11.PKCS11Constants.CKA_ID;
-
 /**
  * Keypair generation executor base class.
  */
@@ -30,23 +28,21 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
       while (!stop()) {
         try {
           // generate keypair on token
-          AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate().token(inToken).verify(true);
-
-          AttributeVector privateKeyTemplate = getMinimalPrivateKeyTemplate().sensitive(true)
-                  .private_(true).token(inToken).sign(true);
+          KeyPairTemplate template = new KeyPairTemplate(getMinimalPrivateKeyTemplate(), getMinimalPublicKeyTemplate());
+          template.token(inToken).signVerify(true);
+          template.privateKey().sensitive(true).private_(true);
 
           if (inToken) {
             byte[] id = new byte[20];
             new Random().nextBytes(id);
-            publicKeyTemplate.attr(CKA_ID, id);
-            privateKeyTemplate.attr(CKA_ID, id);
+            template.id(id);
           }
 
           ConcurrentSessionBagEntry sessionBag = borrowSession();
           PKCS11KeyPair keypair;
           try {
             Session session = sessionBag.value();
-            keypair = session.generateKeyPair(mechanism, publicKeyTemplate, privateKeyTemplate);
+            keypair = session.generateKeyPair(mechanism, template);
             destroyObject(LOG, session, keypair.getPrivateKey());
             destroyObject(LOG, session, keypair.getPublicKey());
           } finally {

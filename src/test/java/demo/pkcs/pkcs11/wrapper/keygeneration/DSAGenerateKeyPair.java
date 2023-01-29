@@ -53,21 +53,20 @@ public class DSAGenerateKeyPair extends TestBase {
     new Random().nextBytes(id);
 
     Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
+    KeyPairTemplate template = new KeyPairTemplate(CKK_DSA).token(true).id(id);
 
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_DSA).token(true).id(id)
-        .prime(DSA_P).subprime(DSA_Q).base(DSA_G);
-
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_DSA).id(id).sensitive(true).token(true).private_(true);
+    template.publicKey().prime(DSA_P).subprime(DSA_Q).base(DSA_G);
+    template.privateKey().sensitive(true).private_(true);
 
     // set the attributes in a way netscape does, this should work with most tokens
     if (signatureMechanismInfo != null) {
-      publicKeyTemplate.verify(signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
+      template.publicKey().verify(signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
           .verifyRecover(signatureMechanismInfo.hasFlagBit(CKF_VERIFY_RECOVER))
           .encrypt(signatureMechanismInfo.hasFlagBit(CKF_ENCRYPT))
           .derive(signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
           .wrap(signatureMechanismInfo.hasFlagBit(CKF_WRAP));
 
-      privateKeyTemplate
+      template.privateKey()
           .sign(signatureMechanismInfo.hasFlagBit(CKF_SIGN))
           .signRecover(signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
           .decrypt(signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
@@ -75,12 +74,10 @@ public class DSAGenerateKeyPair extends TestBase {
           .unwrap(signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
     } else {
       // if we have no information we assume these attributes
-      privateKeyTemplate.sign(true).decrypt(true);
-      publicKeyTemplate.verify(true).encrypt(true);
+      template.signVerify(true).decryptEncrypt(true);
     }
 
-    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(
-        keyPairGenerationMechanism, publicKeyTemplate, privateKeyTemplate);
+    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(keyPairGenerationMechanism, template);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
     // no we may work with the keys...

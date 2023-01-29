@@ -1436,20 +1436,15 @@ public class Session {
    * @param mechanism
    *          The mechanism to generate a key for; e.g. Mechanism.RSA to generate a new RSA
    *          key-pair.
-   * @param publicKeyTemplate
-   *          The template for the new public key part; e.g. a RSAPublicKey object which has set
-   *          certain attributes (e.g. public exponent and verify).
-   * @param privateKeyTemplate
-   *          The template for the new private key part; e.g. a RSAPrivateKey object which has set
-   *          certain attributes (e.g. sign and decrypt).
+   * @param template
+   *          The template for the new keypair.
    * @return The newly generated key-pair.
    * @exception PKCS11Exception
    *              If generating a new key-pair failed.
    */
-  public PKCS11KeyPair generateKeyPair(Mechanism mechanism, AttributeVector publicKeyTemplate,
-                                       AttributeVector privateKeyTemplate) throws PKCS11Exception {
+  public PKCS11KeyPair generateKeyPair(Mechanism mechanism, KeyPairTemplate template) throws PKCS11Exception {
     long[] objectHandles = pkcs11.C_GenerateKeyPair(sessionHandle, toCkMechanism(mechanism),
-        toOutCKAttributes(publicKeyTemplate), toOutCKAttributes(privateKeyTemplate), useUtf8);
+        toOutCKAttributes(template.publicKey()), toOutCKAttributes(template.privateKey()), useUtf8);
     return new PKCS11KeyPair(objectHandles[0], objectHandles[1]);
   }
 

@@ -65,20 +65,21 @@ public class RSAGenerateKeyPair extends TestBase {
     new Random().nextBytes(id);
 
     // set the general attributes for the public key
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_RSA).modulusBits(2048).token(true).id(id);
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_RSA).sensitive(true).token(true).private_(true).id(id);
+    KeyPairTemplate template = new KeyPairTemplate(CKK_RSA).token(true).id(id);
+    template.publicKey().modulusBits(2048);
+    template.privateKey().sensitive(true).private_(true);
 
     // set the attributes in a way netscape does, this should work with most
     // tokens
     if (signatureMechanismInfo != null) {
-      publicKeyTemplate
+      template.publicKey()
           .verify(signatureMechanismInfo.hasFlagBit(CKF_VERIFY))
           .verifyRecover(signatureMechanismInfo.hasFlagBit(CKF_VERIFY_RECOVER))
           .encrypt(signatureMechanismInfo.hasFlagBit(CKF_ENCRYPT))
           .derive(signatureMechanismInfo.hasFlagBit(CKF_DERIVE))
           .wrap(signatureMechanismInfo.hasFlagBit(CKF_WRAP));
 
-      privateKeyTemplate
+      template.privateKey()
           .sign(signatureMechanismInfo.hasFlagBit(CKF_SIGN))
           .signRecover(signatureMechanismInfo.hasFlagBit(CKF_SIGN_RECOVER))
           .decrypt(signatureMechanismInfo.hasFlagBit(CKF_DECRYPT))
@@ -86,12 +87,10 @@ public class RSAGenerateKeyPair extends TestBase {
           .unwrap(signatureMechanismInfo.hasFlagBit(CKF_UNWRAP));
     } else {
       // if we have no information we assume these attributes
-      privateKeyTemplate.sign(true).decrypt(true);
-      publicKeyTemplate.verify(true).encrypt(true);
+      template.signVerify(true).decryptEncrypt(true);
     }
 
-    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(
-        keyPairGenerationMechanism, publicKeyTemplate, privateKeyTemplate);
+    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(keyPairGenerationMechanism, template);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
     // no we may work with the keys...

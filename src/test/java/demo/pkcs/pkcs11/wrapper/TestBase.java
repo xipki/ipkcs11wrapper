@@ -183,18 +183,17 @@ public class TestBase {
 
   protected PKCS11KeyPair generateRSAKeypair(Token token, Session session, int keysize, boolean inToken)
       throws PKCS11Exception {
-    Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_RSA_PKCS_KEY_PAIR_GEN);
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_RSA);
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_RSA);
-
     // set the general attributes for the public key
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    publicKeyTemplate.modulusBits(keysize).token(inToken).id(id).verify(true);
-    privateKeyTemplate.sensitive(true).token(inToken).private_(true).id(id).sign(true);
+    Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_RSA_PKCS_KEY_PAIR_GEN);
 
-    return session.generateKeyPair(keyPairGenMechanism, publicKeyTemplate, privateKeyTemplate);
+    KeyPairTemplate template = new KeyPairTemplate(CKK_RSA).token(inToken).id(id).signVerify(true);
+    template.publicKey().modulusBits(keysize);
+    template.privateKey().sensitive(true).private_(true);
+
+    return session.generateKeyPair(keyPairGenMechanism, template);
   }
 
   protected PKCS11KeyPair generateECKeypair(Token token, Session session, byte[] ecParams, boolean inToken)
@@ -210,15 +209,16 @@ public class TestBase {
   private PKCS11KeyPair generateECKeypair(
       long keyGenMechanism, long keyType, Token token, Session session, byte[] ecParams, boolean inToken)
       throws PKCS11Exception {
-    Mechanism keyPairGenMechanism = getSupportedMechanism(token, keyGenMechanism);
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributeVector publicKeyTemplate  = newPublicKey(keyType) .ecParams(ecParams).token(inToken).id(id).verify(true);
-    AttributeVector privateKeyTemplate = newPrivateKey(keyType).sensitive(true)
-        .token(inToken).private_(true).id(id).sign(true);
+    Mechanism keyPairGenMechanism = getSupportedMechanism(token, keyGenMechanism);
 
-    return session.generateKeyPair(keyPairGenMechanism, publicKeyTemplate, privateKeyTemplate);
+    KeyPairTemplate template = new KeyPairTemplate(keyType).token(inToken).id(id).signVerify(true);
+    template.publicKey().ecParams(ecParams);
+    template.privateKey().sensitive(true).private_(true);
+
+    return session.generateKeyPair(keyPairGenMechanism, template);
   }
 
   protected PKCS11KeyPair generateDSAKeypair(Token token, Session session, boolean inToken)
@@ -227,13 +227,11 @@ public class TestBase {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributeVector publicKeyTemplate = newPublicKey(CKK_DSA).prime(DSA_P).subprime(DSA_Q).base(DSA_G)
-        .token(inToken).id(id).verify(true);
+    KeyPairTemplate template = new KeyPairTemplate(CKK_DSA).token(inToken).id(id).signVerify(true);
+    template.publicKey().prime(DSA_P).subprime(DSA_Q).base(DSA_G);
+    template.privateKey().sensitive(true).private_(true);
 
-    AttributeVector privateKeyTemplate = newPrivateKey(CKK_DSA).sensitive(true).token(inToken).private_(true)
-        .id(id).sign(true);
-
-    return session.generateKeyPair(keyPairGenMechanism, publicKeyTemplate, privateKeyTemplate);
+    return session.generateKeyPair(keyPairGenMechanism, template);
   }
 
   protected AttributeVector newSecretKey(long keyType) {

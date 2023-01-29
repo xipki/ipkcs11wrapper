@@ -69,15 +69,14 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    AttributeVector publicKeyTemplate = getMinimalPublicKeyTemplate().token(true).id(id).verify(true);
-
-    AttributeVector privateKeyTemplate = getMinimalPrivateKeyTemplate()
-        .sensitive(true).private_(true).token(true).id(id).sign(true);
+    KeyPairTemplate template = new KeyPairTemplate(getMinimalPrivateKeyTemplate(), getMinimalPublicKeyTemplate());
+    template.token(true).id(id).signVerify(true);
+    template.privateKey().sensitive(true).private_(true);
 
     ConcurrentSessionBagEntry sessionBag = borrowSession();
     try {
       Session session = sessionBag.value();
-      keypair = session.generateKeyPair(keypairGenMechanism, publicKeyTemplate, privateKeyTemplate);
+      keypair = session.generateKeyPair(keypairGenMechanism, template);
 
       dataToVerify = TestBase.randomBytes(inputLen);
       // initialize for signing
