@@ -433,7 +433,7 @@ public class Functions {
       return sig;
     }
 
-    int b = sig[1];
+    byte b = sig[1];
     int ofs = 2;
 
     int len = ((b & 0x80) == 0) ? 0xFF & b
@@ -536,24 +536,27 @@ public class Functions {
     int fieldSize = ecInfo.fieldSize;
     if (edwardsMontgomeryEcParams.contains(hexEcParams)) {
       // edwards or montgomery curve
-      return (len == fieldSize) ? toOctetString(null, ecPoint) : ecPoint;
+      return (len == fieldSize) ? toOctetString(ecPoint) : ecPoint;
     }
 
     // weierstrauss curve.
     if (ecPoint.length == 2 * fieldSize) {
       // HSM returns x_coord. || y_coord.
-      return toOctetString((byte) 0x04, ecPoint);
+      byte[] ecPoint2 = new byte[1 + ecPoint.length];
+      ecPoint2[0] = (byte) 4;
+      System.arraycopy(ecPoint, 0, ecPoint2, 1, ecPoint.length);
+      return toOctetString(ecPoint2);
     } else {
       byte encodingByte = ecPoint[0];
       if (encodingByte == 0x04) {
         if (len == 1 + 2 * fieldSize) {
           // HSM returns 04 || x_coord. || y_coord.
-          return toOctetString(null, ecPoint);
+          return toOctetString(ecPoint);
         }
       } else if (encodingByte == 0x02 || encodingByte == 0x03) {
         if (len == 1 + fieldSize) {
           // HSM returns <02 or 03> || x_coord.
-          return toOctetString(null, ecPoint);
+          return toOctetString(ecPoint);
         }
       }
     }
@@ -561,13 +564,10 @@ public class Functions {
     return ecPoint;
   }
 
-  private static byte[] toOctetString(Byte byte1, byte[] bytes) {
+  private static byte[] toOctetString(byte[] bytes) {
     int len = bytes.length;
-    if (byte1 != null) {
-      len++;
-    }
 
-    int numLenBytes = (len <= 0x7F) ? 1 : (len < 0xFF) ? 2 : 3;
+    int numLenBytes = (len <= 0x7F) ? 1 : (len <= 0xFF) ? 2 : (len <= 0xFFFF) ? 3 : 4;
 
     byte[] ret = new byte[1 + numLenBytes + len];
     ret[0] = 0x04;
@@ -576,15 +576,14 @@ public class Functions {
     } else if (numLenBytes == 3) {
       ret[1] = (byte) 0x82;
       ret[2] = (byte) (len >> 8);
+    } else if (numLenBytes == 4) {
+      ret[1] = (byte) 0x83;
+      ret[2] = (byte) (len >> 16);
+      ret[3] = (byte) (len >> 8);
     }
     ret[numLenBytes] = (byte) len;
 
-    if (byte1 == null) {
-      System.arraycopy(bytes, 0, ret, 1 + numLenBytes, bytes.length);
-    } else {
-      ret[1 + numLenBytes] = byte1;
-      System.arraycopy(bytes, 0, ret, 2 + numLenBytes, bytes.length);
-    }
+    System.arraycopy(bytes, 0, ret, 1 + numLenBytes, bytes.length);
     return ret;
   }
 
