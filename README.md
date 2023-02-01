@@ -1,3 +1,30 @@
+## TODO
+- Add Native Libraries for ARM 32-bit and 64-bit OS.
+  - Add libpkcs11wrapper.so (both release version and debug version) to the directories
+    src/main/resources/natives/unix/linux-arm and src/main/resources/natives/unix/linux-aarch64.
+  - Extend the org.xipki.pkcs11.PKCS11Module.loadWrapperFromJar() method to load the libpkcs11wrapper.so.
+
+- Fix bug "thread crashes when reading an existing CKA_WRAP_TEMPLATE and CKA_UNWRAP_TEMPLATE"
+  - The C code of JNI needs to be adapted
+  - The result can be verified by the class demo.pkcs.pkcs11.wrapper.basics.TestReadUnwrapTemplate.
+
+- Add new JNI functions, as in the cryptoki implementation of JDK.
+  - In C: For Encryption
+    - https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_crypt.c#L129
+    - https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_crypt.c#L195
+    - https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_crypt.c#L259
+  - In C: For Decryption
+    - https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_crypt.c#L365
+    - https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_crypt.c#L430
+    - https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/native/libj2pkcs11/p11_crypt.c#L493
+  - In Java
+    - IN the interface iaik.pkcs.pkcs11.wrapper.PKCS11 and the corresponding implementation 
+      iaik.pkcs.pkcs11.wrapper.PKCS11Implementation, add new functions, as in 
+      https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/wrapper/PKCS11.java.
+    - In the class org.xipki.pkcs11.Session, add new functions, as in 
+      https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/Session.java
+    - Add new JUnit tests.
+
 ## Licenses
 This product includes software (IAIK PKCS#11 wrapper version 1.6.6) 
 developed by Stiftung SIC which is licensed under "IAIK PKCS#11 Wrapper License".
