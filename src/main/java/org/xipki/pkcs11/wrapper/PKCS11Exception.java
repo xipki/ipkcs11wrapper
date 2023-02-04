@@ -1,7 +1,7 @@
-// Copyright (c) 2002 Graz University of Technology. All rights reserved.
-// License IAIK PKCS#11 Wrapper License.
+// Copyright (c) 2022 xipki. All rights reserved.
+// License Apache License 2.0
 
-package iaik.pkcs.pkcs11.wrapper;
+package org.xipki.pkcs11.wrapper;
 
 /**
  * This is the superclass of all checked exceptions used by this package. An
@@ -12,11 +12,14 @@ package iaik.pkcs.pkcs11.wrapper;
  * PKCS#11 defines the meaning of an error-code, which may depend on the
  * context in which the error occurs.
  *
- * @author Karl Scheibelhofer (SIC)
- * @version 1.0
- * @deprecated Use #org.xipki.pkcs11.PKCS11Exception instead.
+ * @author Lijun Liao (xipki)
  */
-public class PKCS11Exception extends org.xipki.pkcs11.wrapper.PKCS11Exception {
+public class PKCS11Exception extends TokenException {
+
+  /**
+   * The code of the error which was the reason for this exception.
+   */
+  private final long errorCode;
 
   /**
    * Constructor taking the error code as defined for the CKR_* constants
@@ -26,7 +29,17 @@ public class PKCS11Exception extends org.xipki.pkcs11.wrapper.PKCS11Exception {
    *          The PKCS#11 error code (return value).
    */
   public PKCS11Exception(long errorCode) {
-    super(errorCode);
+    super(PKCS11Constants.ckrCodeToName(errorCode));
+    this.errorCode = errorCode;
+  }
+
+  /**
+   * Returns the PKCS#11 error code.
+   *
+   * @return The error code; e.g. 0x00000030.
+   */
+  public long getErrorCode() {
+    return errorCode;
   }
 
 }

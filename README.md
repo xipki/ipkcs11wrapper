@@ -2,7 +2,7 @@
 - Add Native Libraries for ARM 32-bit and 64-bit OS.
   - Add libpkcs11wrapper.so (both release version and debug version) to the directories
     src/main/resources/natives/unix/linux-arm and src/main/resources/natives/unix/linux-aarch64.
-  - Extend the org.xipki.pkcs11.PKCS11Module.loadWrapperFromJar() method to load the libpkcs11wrapper.so.
+  - Extend the org.xipki.pkcs11.wrapper.PKCS11Module.loadWrapperFromJar() method to load the libpkcs11wrapper.so.
 
 - Fix bug "thread crashes when reading an existing CKA_WRAP_TEMPLATE and CKA_UNWRAP_TEMPLATE"
   - The C code of JNI needs to be adapted
@@ -21,7 +21,7 @@
     - IN the interface iaik.pkcs.pkcs11.wrapper.PKCS11 and the corresponding implementation 
       iaik.pkcs.pkcs11.wrapper.PKCS11Implementation, add new functions, as in 
       https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/wrapper/PKCS11.java.
-    - In the class org.xipki.pkcs11.Session, add new functions, as in 
+    - In the class org.xipki.pkcs11.wrapper.Session, add new functions, as in 
       https://github.com/openjdk/jdk/blob/master/src/jdk.crypto.cryptoki/share/classes/sun/security/pkcs11/Session.java
     - Add new JUnit tests.
 
