@@ -18,14 +18,14 @@ import java.util.*;
  * This is the base-class for all types of attributes. In general, all PKCS#11
  * objects are just a collection of attributes. PKCS#11 specifies which
  * attributes each type of objects must have.
- * <p/>
+ * <p>
  * In some cases, attributes are optional. In such a case, this attribute will
  * return false when the application calls present() on this attribute. This
  * means, that the object does not possess this attribute (maybe even though
  * it should, but not all drivers seem to implement the standard correctly).
  * Handling attributes in this fashion ensures that this library can work also
  * with drivers that are not fully standard-compliant.
- * <p/>
+ * <p>
  * Moreover, certain attributes can be sensitive; i.e. their values cannot
  * be read, e.g. the private exponent of an RSA private key.
  *
@@ -165,6 +165,7 @@ public abstract class Attribute {
    *
    * @param present
    *          True, if attribute is present.
+   * @return a reference to this object.
    */
   public Attribute present(boolean present) {
     this.present = present;
@@ -177,6 +178,7 @@ public abstract class Attribute {
    *
    * @param sensitive
    *          True, if attribute is sensitive.
+   * @return a reference to this object.
    */
   public Attribute sensitive(boolean sensitive) {
     this.sensitive = sensitive;
@@ -188,6 +190,7 @@ public abstract class Attribute {
    *
    * @param ckAttribute
    *          The new CK_ATTRIBUTE of this Attribute.
+   * @return a reference to this object.
    */
   public Attribute ckAttribute(CK_ATTRIBUTE ckAttribute) {
     this.ckAttribute = Functions.requireNonNull("ckAttribute", ckAttribute);
@@ -268,6 +271,7 @@ public abstract class Attribute {
    * @param withName
    *          If true, the string contains the attribute type name and the
    *          value. If false, it just contains the value.
+   * @param indent The indent.
    * @return A string representation of this attribute.
    */
   public String toString(boolean withName, String indent) {

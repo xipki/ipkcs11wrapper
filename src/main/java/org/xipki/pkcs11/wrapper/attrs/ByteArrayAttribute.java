@@ -35,6 +35,7 @@ public class ByteArrayAttribute extends Attribute {
    *
    * @param value
    *          The byte-array value to set. May be null.
+   * @return a reference to this object.
    */
   public ByteArrayAttribute byteArrayValue(byte[] value) {
     ckAttribute.pValue = value;
@@ -49,6 +50,7 @@ public class ByteArrayAttribute extends Attribute {
    *
    * @param value
    *          The byte-array value to set. May be null.
+   * @return a reference to this object.
    */
   public ByteArrayAttribute bigIntValue(BigInteger value) {
     return byteArrayValue(value == null ? null : Functions.asUnsignedByteArray(value));

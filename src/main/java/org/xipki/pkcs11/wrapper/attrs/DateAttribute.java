@@ -37,6 +37,7 @@ public class DateAttribute extends Attribute {
    *
    * @param value
    *          The date value to set. May be null.
+   * @return a reference to this object.
    */
   public DateAttribute dateValue(Date value) {
     if (value == null) {

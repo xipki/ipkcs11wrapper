@@ -44,6 +44,7 @@ public class AttributeArrayAttribute extends Attribute {
    *
    * @param value
    *          The AttributeArray value to set. May be null.
+   * @return a reference to this object.
    */
   public AttributeArrayAttribute attributeArrayValue(AttributeVector value) {
     template = value;

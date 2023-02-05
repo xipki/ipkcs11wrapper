@@ -34,8 +34,9 @@ public class MechanismAttribute extends LongAttribute {
    *
    * @param mechanism
    *          The mechanism value to set. May be <code>null</code>.
+   * @return a reference to this object.
    */
-  public MechanismAttribute setMechanism(Long mechanism) {
+  public MechanismAttribute mechanism(Long mechanism) {
     ckAttribute.pValue = mechanism;
     present = true;
     return this;

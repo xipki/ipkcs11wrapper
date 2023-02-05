@@ -164,7 +164,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Export-Package>org.xipki.pkcs11,org.xipki.pkcs11.attrs,org.xipki.pkcs11.params</Export-Package>
+              <Export-Package>org.xipki.pkcs11.wrapper,org.xipki.pkcs11.wrapper.attrs,org.xipki.pkcs11.wrapper.params</Export-Package>
               <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
               <Bundle-Name>ipkcs11wrapper</Bundle-Name>
               <Bundle-SymbolicName>org.xipki.ipkcs11wrapper</Bundle-SymbolicName>

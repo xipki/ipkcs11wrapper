@@ -31,6 +31,7 @@ public class CharArrayAttribute extends Attribute {
    *
    * @param value
    *          The char-array value to set. May be null.
+   * @return a reference to this object.
    */
   protected CharArrayAttribute charArrayValue(char[] value) {
     ckAttribute.pValue = value;
@@ -44,6 +45,7 @@ public class CharArrayAttribute extends Attribute {
    *
    * @param value
    *          The char-array value to set. May be null.
+   * @return a reference to this object.
    */
   public CharArrayAttribute stringValue(String value) {
     return charArrayValue(value == null ? null : value.toCharArray());

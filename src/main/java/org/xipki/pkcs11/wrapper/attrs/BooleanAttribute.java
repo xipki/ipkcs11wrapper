@@ -31,6 +31,7 @@ public class BooleanAttribute extends Attribute {
    *
    * @param value
    *          The boolean value to set. May be null.
+   * @return a reference to this object.
    */
   public BooleanAttribute booleanValue(Boolean value) {
     ckAttribute.pValue = value;

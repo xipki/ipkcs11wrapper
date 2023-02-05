@@ -35,6 +35,7 @@ public class MechanismArrayAttribute extends Attribute {
    *
    * @param value
    *          The MechanismArrayAttribute value to set. May be null.
+   * @return a reference to this object.
    */
   public MechanismArrayAttribute mechanismAttributeArrayValue(long[] value) {
     ckAttribute.pValue = value.clone();

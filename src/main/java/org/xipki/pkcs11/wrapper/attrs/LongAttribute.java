@@ -31,6 +31,7 @@ public class LongAttribute extends Attribute {
    *
    * @param value
    *          The long value to set. May be null.
+   * @return a reference to this object.
    */
   public LongAttribute longValue(Long value) {
     ckAttribute.pValue = value;

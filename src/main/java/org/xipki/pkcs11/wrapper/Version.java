@@ -30,7 +30,8 @@ public class Version {
 
   /**
    * Constructor for internal use only.
-   *
+   * @param major the major version
+   * @param minor  the minor version.
    */
   protected Version(byte major, byte minor) {
     this.major = major;
@@ -42,7 +43,6 @@ public class Version {
    *
    * @param ckVersion
    *          A CK_VERSION object.
-   *
    */
   protected Version(CK_VERSION ckVersion) {
     this(Functions.requireNonNull("ckVersion", ckVersion).major, ckVersion.minor);
