@@ -317,7 +317,7 @@ public class PKCS11Module {
     final int X64_INDEX = 0;
     final int X86_INDEX = 1;
     final int ARM_INDEX = 2;
-    final int AARCH_INDEX = 3;
+    final int AARCH64_INDEX = 3;
 
     // subdirectories per architecture.
     final String[] WRAPPER_ARCH_PATH = {"x86_64/", "x86/", "arm/", "aarch64/"};
@@ -330,12 +330,20 @@ public class PKCS11Module {
         : osName.contains("linux") ? LINUX_INDEX
         : osName.contains("mac") ? MAC_INDEX : 0; // it may be some Linux - try it
 
-    String archName = System.getProperty("os.arch");
-    int archIndex = archName.contains("64") ? X64_INDEX
-        : archName.contains("32") || archName.contains("86") ? X86_INDEX : -1;
+    String archName = System.getProperty("os.arch").toLowerCase(Locale.ROOT);
 
-     String osVersion = System.getProperty("os.version");
-     archIndex = !osVersion.contains("v7") ?  AARCH_INDEX : archName.contains("arm") ? ARM_INDEX : archIndex;
+    int archIndex;
+    if (archName.contains("aarch64")) {
+      archIndex = AARCH64_INDEX;
+    } else if (archName.contains("arm")) {
+      archIndex = ARM_INDEX;
+    } else if (archName.contains("64")) {
+      archIndex = X64_INDEX;
+    } else if (archName.contains("32") || archName.contains("86")){
+      archIndex = X86_INDEX;
+    } else {
+       archIndex = -1;
+     }
 
     if (archIndex == -1) {
       archIndex = 0;
