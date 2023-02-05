@@ -1,9 +1,4 @@
 ## TODO
-- Add Native Libraries for ARM 32-bit and 64-bit OS.
-  - Add libpkcs11wrapper.so (both release version and debug version) to the directories
-    src/main/resources/natives/unix/linux-arm and src/main/resources/natives/unix/linux-aarch64.
-  - Extend the org.xipki.pkcs11.wrapper.PKCS11Module.loadWrapperFromJar() method to load the libpkcs11wrapper.so.
-
 - Fix bug "thread crashes when reading an existing CKA_WRAP_TEMPLATE and CKA_UNWRAP_TEMPLATE"
   - The C code of JNI needs to be adapted
   - The result can be verified by the class demo.pkcs.pkcs11.wrapper.basics.TestReadUnwrapTemplate.
