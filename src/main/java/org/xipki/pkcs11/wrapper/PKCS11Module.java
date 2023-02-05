@@ -316,9 +316,11 @@ public class PKCS11Module {
     // index constants per architecture as used in below array.
     final int X64_INDEX = 0;
     final int X86_INDEX = 1;
+    final int ARM_INDEX = 2;
+    final int AARCH_INDEX = 3;
 
     // subdirectories per architecture.
-    final String[] WRAPPER_ARCH_PATH = {"x86_64/", "x86/"};
+    final String[] WRAPPER_ARCH_PATH = {"x86_64/", "x86/", "arm/", "aarch64/"};
 
     int trialCounter = 0;
 
@@ -331,6 +333,9 @@ public class PKCS11Module {
     String archName = System.getProperty("os.arch");
     int archIndex = archName.contains("64") ? X64_INDEX
         : archName.contains("32") || archName.contains("86") ? X86_INDEX : -1;
+
+     String osVersion = System.getProperty("os.version");
+     archIndex = !osVersion.contains("v7") ?  AARCH_INDEX : archName.contains("arm") ? ARM_INDEX : archIndex;
 
     if (archIndex == -1) {
       archIndex = 0;
