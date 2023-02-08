@@ -321,14 +321,14 @@ public class Session {
       System.arraycopy(wx, 0, ecPoint, 1 + fieldSize - wx.length,  wx.length);
       System.arraycopy(wy, 0, ecPoint, ecPoint.length - wy.length, wy.length);
 
-      template.ecPoint(ecPoint);
+      template.ecPoint(Functions.toOctetString(ecPoint));
     }
     return createObject(template);
   }
 
   public long createECPrivateKeyObject(AttributeVector template, byte[] ecPoint) throws PKCS11Exception {
     if (ecPoint != null && privateKeyWithEcPoint(template.keyType())) {
-      template.ecPoint(ecPoint);
+      template.ecPoint(Functions.toOctetString(ecPoint));
     }
 
     return createObject(template);
@@ -1077,7 +1077,7 @@ public class Session {
         return Functions.toX962DSASignature(signatureValue);
       }
     } else if (signatureType == SIGN_TYPE_SM2) {
-      if (module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_SM2_PRIVATEKEY_ECPOINT)) {
+      if (module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_SM2_SIGNATURE_X962)) {
         return Functions.toX962DSASignature(signatureValue);
       }
     }

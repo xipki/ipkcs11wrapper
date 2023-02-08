@@ -128,9 +128,13 @@ public class MechanismInfo {
    */
   @Override
   public String toString() {
-    String text = "  Key-Size: [" + minKeySize + ", " + maxKeySize + "]\n";
+    return toString("");
+  }
 
-    return text + Functions.toStringFlags(PKCS11Constants.Category.CKF_MECHANISM, "  Flags: ", flags,
+  public String toString(String indent) {
+    String text = indent + "  Key-Size: [" + minKeySize + ", " + maxKeySize + "]\n";
+
+    return text + Functions.toStringFlags(PKCS11Constants.Category.CKF_MECHANISM, indent + "  Flags: ", flags,
         PKCS11Constants.CKF_HW,             PKCS11Constants.CKF_MESSAGE_ENCRYPT, PKCS11Constants.CKF_MESSAGE_DECRYPT,
         PKCS11Constants.CKF_MESSAGE_SIGN,   PKCS11Constants.CKF_MESSAGE_VERIFY,  PKCS11Constants.CKF_MULTI_MESSAGE,
         PKCS11Constants.CKF_FIND_OBJECTS,

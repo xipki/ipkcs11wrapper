@@ -272,21 +272,31 @@ public class Functions {
     return sb.append(")").toString();
   }
 
-  public static String getCurveName(byte[] ecParams) {
-    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
-    return (ecInfo == null) ? null : ecInfo.names[0];
-  }
-
-  public static String getCurveName(BigInteger order, BigInteger baseX) {
+  public static byte[] getEcParams(BigInteger order, BigInteger baseX) {
     byte[] orderBytes = order.toByteArray();
     byte[] baseXBytes = baseX.toByteArray();
     for (Map.Entry<String, ECInfo> m : ecParamsInfoMap.entrySet()) {
       ECInfo ei = m.getValue();
       if (Arrays.equals(ei.order, orderBytes) && Arrays.equals(ei.baseX, baseXBytes)) {
-        return ei.names[0];
+        return Hex.decode(m.getKey());
       }
     }
     return null;
+  }
+
+  public static String getCurveName(byte[] ecParams) {
+    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (ecInfo == null) ? null : ecInfo.names[0];
+  }
+
+  public static String[] getCurveNames(byte[] ecParams) {
+    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (ecInfo == null) ? null : ecInfo.names.clone();
+  }
+
+  public static String getCurveOid(byte[] ecParams) {
+    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (ecInfo == null) ? null : ecInfo.oid;
   }
 
   static Integer getECFieldSize(byte[] ecParams) {
@@ -617,7 +627,7 @@ public class Functions {
     return ecPoint;
   }
 
-  private static byte[] toOctetString(byte[] bytes) {
+  public static byte[] toOctetString(byte[] bytes) {
     int len = bytes.length;
 
     int numLenBytes = (len <= 0x7F) ? 1 : (len <= 0xFF) ? 2 : (len <= 0xFFFF) ? 3 : 4;
