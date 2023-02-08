@@ -3,6 +3,7 @@
 
 package org.xipki.pkcs11.wrapper;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -104,28 +105,26 @@ public class Functions {
     try {
       props.load(Functions.class.getClassLoader().getResourceAsStream(propFile));
       for (String name : props.stringPropertyNames()) {
-        name = name.trim();
+        ECInfo ecInfo = new ECInfo();
+        ecInfo.oid = name.trim();
 
         if (ecParamsInfoMap.containsKey(name)) {
           throw new IllegalStateException("duplicated definition of " + name);
         }
 
-        byte[] ecParams = Hex.decode(name);
-
-        ECInfo ecInfo = new ECInfo();
+        byte[] ecParams = encodeOid(ecInfo.oid);
 
         String[] values = props.getProperty(name).split(",");
         ecInfo.names = values[0].toUpperCase(Locale.ROOT).split(":");
-        ecInfo.oid = values[1];
-        ecInfo.fieldSize = (Integer.parseInt(values[2]) + 7) / 8;
-        ecInfo.orderSize = (Integer.parseInt(values[3]) + 7) / 8;
+        ecInfo.fieldSize = (Integer.parseInt(values[1]) + 7) / 8;
+        ecInfo.orderSize = (Integer.parseInt(values[2]) + 7) / 8;
 
-        String str = values[4];
+        String str = values[3];
         if (!str.isEmpty() && !"-".equals(str)) {
           ecInfo.order = new BigInteger(str, 16).toByteArray();
         }
 
-        str = values[5];
+        str = values[4];
         if (!str.isEmpty() && !"-".equals(str)) {
           ecInfo.baseX = new BigInteger(str, 16).toByteArray();
         }
@@ -137,6 +136,40 @@ public class Functions {
     } catch (Throwable t) {
       throw new IllegalStateException("error reading properties file " + propFile + ": " + t.getMessage());
     }
+  }
+
+  private static byte[] encodeOid(String oid) {
+    String[] nodes = oid.split("\\.");
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    out.write(0x06);
+    out.write(0); // place holder for length
+    // first two nodes
+    out.write(Integer.parseInt(nodes[0]) * 40 + Integer.parseInt(nodes[1]));
+    for (int i = 2; i < nodes.length; i++) {
+      int v = Integer.parseInt(nodes[i]);
+      if (v < 128) {
+        out.write(v);
+      } else {
+        int bitLen = BigInteger.valueOf(v).bitLength();
+        // bitLen=8, numBytes=2, shiftBits = 1
+        int numBytes = (bitLen + 6) / 7;
+        int shiftBits = bitLen - (numBytes - 1) * 7;
+        for (int j = 0; j < numBytes; j++) {
+          int k = 0x7F & (v >> (bitLen - shiftBits - 7 * j));
+          if (j != numBytes - 1) {
+            k |= 0x80;
+          }
+          out.write(k);
+        }
+      }
+    }
+
+    byte[] is = out.toByteArray();
+    if (is.length - 2 > 127) {
+      throw new IllegalStateException("should not reach here, OID too long");
+    }
+    is[1] = (byte) (is.length - 2);
+    return is;
   }
 
   public static byte[] asUnsignedByteArray(java.math.BigInteger bn) {
