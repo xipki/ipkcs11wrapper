@@ -245,8 +245,10 @@ public abstract class Attribute {
 
     return    (type == PKCS11Constants.CKA_CLASS)            ? PKCS11Constants.ckoCodeToName((long) value)
             : (type == PKCS11Constants.CKA_KEY_TYPE)         ? PKCS11Constants.ckkCodeToName((long) value)
-            : (type == PKCS11Constants.CKA_CERTIFICATE_TYPE) ? PKCS11Constants.codeToName(PKCS11Constants.Category.CKC, (long) value)
-            : (type == PKCS11Constants.CKA_HW_FEATURE_TYPE)  ? PKCS11Constants.codeToName(PKCS11Constants.Category.CKH, (long) value)
+            : (type == PKCS11Constants.CKA_CERTIFICATE_TYPE)
+                  ? PKCS11Constants.codeToName(PKCS11Constants.Category.CKC, (long) value)
+            : (type == PKCS11Constants.CKA_HW_FEATURE_TYPE)
+                  ? PKCS11Constants.codeToName(PKCS11Constants.Category.CKH, (long) value)
             : value.toString();
   }
 

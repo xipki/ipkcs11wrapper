@@ -3,8 +3,10 @@
 
 package org.xipki.pkcs11.wrapper;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -74,129 +76,10 @@ public class Functions {
   private static class ECInfo {
     int fieldSize;
     int orderSize;
-    long ecParamsHash;
+    String oid;
     String[] names;
-  }
-
-  /**
-   * Implementation of SipHash as specified in "SipHash: a fast short-input PRF", by Jean-Philippe
-   * Aumasson and Daniel J. Bernstein (<a href="https://131002.net/siphash/siphash.pdf">https://131002.net/siphash/siphash.pdf</a>).
-   * <p>
-   * "SipHash is a family of PRFs SipHash-c-d where the integer parameters c and d are the number of
-   * compression rounds and the number of finalization rounds. A compression round is identical to a
-   * finalization round and this round function is called SipRound. Given a 128-bit key k and a
-   * (possibly empty) byte string m, SipHash-c-d returns a 64-bit value..."
-   */
-  private static class SipHash24 {
-    private final int c = 2, d = 4;
-
-    private final long k0 = 0x0706050403020100L, k1 = 0x0f0e0d0c0b0a0908L;
-    private long v0, v1, v2, v3;
-
-    private long m = 0;
-    private int wordPos = 0;
-    private int wordCount = 0;
-
-    public SipHash24() {
-      reset();
-    }
-
-    public void update(byte[] input, int offset, int length) {
-      int i = 0, fullWords = length & ~7;
-      if (wordPos == 0) {
-        for (; i < fullWords; i += 8) {
-          m = littleEndianToLong(input, offset + i);
-          processMessageWord();
-        }
-        for (; i < length; ++i) {
-          m >>>= 8;
-          m |= (input[offset + i] & 0xffL) << 56;
-        }
-        wordPos = length - fullWords;
-      } else {
-        int bits = wordPos << 3;
-        for (; i < fullWords; i += 8) {
-          long n = littleEndianToLong(input, offset + i);
-          m = (n << bits) | (m >>> -bits);
-          processMessageWord();
-          m = n;
-        }
-
-        for (; i < length; ++i) {
-          m >>>= 8;
-          m |= (input[offset + i] & 0xffL) << 56;
-
-          if (++wordPos == 8) {
-            processMessageWord();
-            wordPos = 0;
-          }
-        }
-      }
-    }
-
-    public long doFinal() {
-      // NOTE: 2 distinct shifts to avoid "64-bit shift" when wordPos == 0
-      m >>>= ((7 - wordPos) << 3);
-      m >>>= 8;
-      m |= (((wordCount << 3) + wordPos) & 0xffL) << 56;
-
-      processMessageWord();
-
-      v2 ^= 0xffL;
-
-      applySipRounds(d);
-
-      long result = v0 ^ v1 ^ v2 ^ v3;
-
-      reset();
-
-      return result;
-    }
-
-    public void reset() {
-      v0 = k0 ^ 0x736f6d6570736575L;
-      v1 = k1 ^ 0x646f72616e646f6dL;
-      v2 = k0 ^ 0x6c7967656e657261L;
-      v3 = k1 ^ 0x7465646279746573L;
-
-      m = 0;
-      wordPos = 0;
-      wordCount = 0;
-    }
-
-    private void processMessageWord() {
-      ++wordCount;
-      v3 ^= m;
-      applySipRounds(c);
-      v0 ^= m;
-    }
-
-    private void applySipRounds(int n) {
-      long r0 = v0, r1 = v1, r2 = v2, r3 = v3;
-
-      for (int r = 0; r < n; ++r) {
-        r0 += r1; r2 += r3;
-        r1 = (r1 << 13) | (r1 >>> 51); // rotateLeft(r1, 13);
-        r3 = (r3 << 16) | (r3 >>> 48); // rotateLeft(r3, 16);
-        r1 ^= r0; r3 ^= r2;
-        r0 = (r0 << 32) | (r0 >>> 32); // rotateLeft(r0, 32);
-        r2 += r1; r0 += r3;
-        r1 = (r1 << 17) | (r1 >>> 47); // rotateLeft(r1, 17);
-        r3 = (r3 << 21) | (r3 >>> 43); // rotateLeft(r3, 21);
-        r1 ^= r2; r3 ^= r0;
-        r2 = (r2 << 32) | (r2 >>> 32); // rotateLeft(r2, 32);
-      }
-
-      v0 = r0; v1 = r1; v2 = r2; v3 = r3;
-    }
-
-    private static long littleEndianToLong(byte[] bs, int off) {
-      return      (bs[off++] & 0xFFL) | (bs[off++] & 0xFFL) << 8
-          | (bs[off++] & 0xFFL) << 16 | (bs[off++] & 0xFFL) << 24
-          | (bs[off++] & 0xFFL) << 32 | (bs[off++] & 0xFFL) << 40
-          | (bs[off++] & 0xFFL) << 48 | (bs[off]   & 0xFFL) << 56;
-    }
-
+    byte[] order;
+    byte[] baseX;
   }
 
   private static final Map<String, ECInfo> ecParamsInfoMap;
@@ -233,9 +116,20 @@ public class Functions {
 
         String[] values = props.getProperty(name).split(",");
         ecInfo.names = values[0].toUpperCase(Locale.ROOT).split(":");
-        ecInfo.ecParamsHash = "-".equals(values[1]) ? 0 : SipHash24.littleEndianToLong(Hex.decode(values[1]), 0);
+        ecInfo.oid = values[1];
         ecInfo.fieldSize = (Integer.parseInt(values[2]) + 7) / 8;
-        ecInfo.orderSize = (values.length > 3) ? (Integer.parseInt(values[3]) + 7) / 8 : ecInfo.fieldSize;
+        ecInfo.orderSize = (Integer.parseInt(values[3]) + 7) / 8;
+
+        String str = values[4];
+        if (!str.isEmpty() && !"-".equals(str)) {
+          ecInfo.order = new BigInteger(str, 16).toByteArray();
+        }
+
+        str = values[5];
+        if (!str.isEmpty() && !"-".equals(str)) {
+          ecInfo.baseX = new BigInteger(str, 16).toByteArray();
+        }
+
         String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
 
         ecParamsInfoMap.put(hexEcParams, ecInfo);
@@ -378,120 +272,279 @@ public class Functions {
     return sb.append(")").toString();
   }
 
+  public static String getCurveName(byte[] ecParams) {
+    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (ecInfo == null) ? null : ecInfo.names[0];
+  }
+
+  public static String getCurveName(BigInteger order, BigInteger baseX) {
+    byte[] orderBytes = order.toByteArray();
+    byte[] baseXBytes = baseX.toByteArray();
+    for (Map.Entry<String, ECInfo> m : ecParamsInfoMap.entrySet()) {
+      ECInfo ei = m.getValue();
+      if (Arrays.equals(ei.order, orderBytes) && Arrays.equals(ei.baseX, baseXBytes)) {
+        return ei.names[0];
+      }
+    }
+    return null;
+  }
+
+  static Integer getECFieldSize(byte[] ecParams) {
+    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (ecInfo == null) ? null : ecInfo.fieldSize;
+  }
+
   static byte[] fixECDSASignature(byte[] sig, byte[] ecParams) {
     ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
     return (ecInfo == null) ? sig : fixECDSASignature(sig, ecInfo.orderSize);
   }
 
   static byte[] fixECParams(byte[] ecParams) {
-    // some HSMs, e.g. SoftHSM may return the ASN.1 string, e.g. edwards25519 for ED25519.
-    int tag = 0xFF & ecParams[0];
-    if (tag == 12 || tag == 19) { // 12: UTF8 String, 19: Printable String
-      int len = 0xFF & ecParams[1];
-      if (len < 128 && 2 + len == ecParams.length) {
-        String curveName = new String(ecParams, 2, len, StandardCharsets.UTF_8).trim().toUpperCase(Locale.ROOT);
-        for (Map.Entry<String, ECInfo> m : ecParamsInfoMap.entrySet()) {
-          for (String name : m.getValue().names) {
-            if (name.equals(curveName)) {
-              return decodeHex(m.getKey());
+    try {
+      AtomicInteger numLenBytes = new AtomicInteger();
+
+      // some HSMs, e.g. SoftHSM may return the ASN.1 string, e.g. edwards25519 for ED25519.
+      int tag = 0xFF & ecParams[0];
+      if (tag == 12 || tag == 19) { // 12: UTF8 String, 19: Printable String
+        int offset = 1;
+        int len = getDerLen(ecParams, offset, numLenBytes);
+        offset += numLenBytes.get();
+
+        if (offset + len == ecParams.length) {
+          String curveName = new String(ecParams, offset, len, StandardCharsets.UTF_8).trim().toUpperCase(Locale.ROOT);
+          for (Map.Entry<String, ECInfo> m : ecParamsInfoMap.entrySet()) {
+            for (String name : m.getValue().names) {
+              if (name.equals(curveName)) {
+                return decodeHex(m.getKey());
+              }
             }
+          }
+        }
+
+        return ecParams;
+      }
+
+      if (tag == 0x30) { // ECParameters
+        /*
+        ECParameters ::= SEQUENCE {
+          version         INTEGER { ecpVer1(1) } (ecpVer1),
+          fieldID         FieldID {{FieldTypes}},
+          curve           X9Curve,
+          base            X9ECPoint,
+          order           INTEGER,
+          cofactor        INTEGER OPTIONAL
+        }
+        */
+
+        int offset = 1;
+        int len = getDerLen(ecParams, offset, numLenBytes);
+        offset += numLenBytes.get();
+
+        // outside SEQUENCE
+        if (offset + len != ecParams.length) {
+          return ecParams;
+        }
+
+        offset = getOffsetOfNextField(ecParams, offset); // version
+        offset = getOffsetOfNextField(ecParams, offset); // fieldID
+        offset = getOffsetOfNextField(ecParams, offset); // curve
+
+        // base
+        if (ecParams[offset++] != 0x04) {
+          return ecParams;
+        }
+        len = getDerLen(ecParams, offset, numLenBytes);
+        offset += numLenBytes.get();
+        int nextOffset = offset + len;
+
+        byte pointEncoding = ecParams[offset++];
+
+        byte[] baseX;
+        if (pointEncoding == 0x04) {
+          baseX = Arrays.copyOfRange(ecParams, offset, offset + (len - 1) / 2);
+        } else if (pointEncoding == 0x02 || pointEncoding == 0x03) {
+          baseX = Arrays.copyOfRange(ecParams, offset, offset + len - 1);
+        } else {
+          // throw new TokenException("unknown ECPoint encoding " + pointEncoding);
+          return ecParams;
+        }
+
+        // fix baseX
+        if ((baseX[0] & 0x80) != 0) {
+          byte[] newBaseX = new byte[1 + baseX.length];
+          System.arraycopy(baseX, 0, newBaseX, 1,  baseX.length);
+          baseX = newBaseX;
+        } else if (baseX[0] == 0 && (baseX[1] & 0x80) == 0) {
+          baseX = new BigInteger(1, baseX).toByteArray();
+        }
+
+        offset = nextOffset;
+
+        // order
+        if (ecParams[offset++] != 0x02) {
+          return ecParams;
+        }
+        len = getDerLen(ecParams, offset, numLenBytes);
+        offset += numLenBytes.get();
+        byte[] order = Arrays.copyOfRange(ecParams, offset, offset + len);
+
+        for (Map.Entry<String, ECInfo> m : ecParamsInfoMap.entrySet()) {
+          ECInfo ei = m.getValue();
+          if (ei.order == null) {
+            continue;
+          }
+
+          if (Arrays.equals(ei.order, order) && Arrays.equals(ei.baseX, baseX)) {
+            return decodeHex(m.getKey());
           }
         }
       }
 
       return ecParams;
+    } catch (Exception e) {
+      return ecParams;
+    }
+  }
+
+  static byte[] toX962DSASignature(byte[] sig) {
+    if (sig.length % 2 != 0) {
+      // invalid format, just returns sig.
+      return sig;
     }
 
-    if (tag == 0x30) { // ECParameters
-      int offset = 1;
-      int lenb = 0xFF & ecParams[offset++];
+    int rOrSLen = sig.length / 2;
 
-      int len = (lenb <= 127) ? lenb
-          : (lenb == 0x81) ? 0xFF & ecParams[offset++]
-          : (lenb == 0x82) ? ((0xFF & ecParams[offset++]) << 8) | (0xFF & ecParams[offset++])
-          : -1;
-
-      if (len == -1 || offset + len != ecParams.length) {
-        return ecParams;
-      }
-
-      SipHash24 hash = new SipHash24();
-      hash.update(ecParams, 0, ecParams.length);
-      long hashValue = hash.doFinal();
-      for (Map.Entry<String, ECInfo> m : ecParamsInfoMap.entrySet()) {
-        if (hashValue == m.getValue().ecParamsHash) {
-          return decodeHex(m.getKey());
-        }
+    //----- determine the length of the DER-encoded R
+    int derRLen = rOrSLen;
+    // remove the leading zeros.
+    for (int i = 0; i < rOrSLen; i++) {
+      if (sig[i] == 0) {
+        derRLen--;
       }
     }
 
-    return ecParams;
+    // add one zero if the first byte is greater than 127.
+    if ((sig[rOrSLen - derRLen] & 0x80) != 0) {
+      derRLen++;
+    }
+
+    //----- determine the length of the DER-encoded S
+    int derSLen = rOrSLen;
+    // remove the leading zeros.
+    for (int i = 0; i < rOrSLen; i++) {
+      if (sig[rOrSLen + i] == 0) {
+        derSLen--;
+      }
+    }
+
+    // add one zero if the first byte is greater than 127.
+    if ((sig[sig.length - derSLen] & 0x80) != 0) {
+      derSLen++;
+    }
+
+    int contentLen = 2 + derRLen + 2 + derSLen;
+    int numBytesForContentLen = 1;
+    if (contentLen > 127) {
+      numBytesForContentLen++;
+    }
+
+    // construct the result
+    byte[] res = new byte[1 + numBytesForContentLen + contentLen];
+    res[0] = 0x30;
+
+    // length
+    int offset = 1;
+    if (numBytesForContentLen > 1) {
+      res[offset++] = (byte) 0x81;
+    }
+    res[offset++] = (byte) contentLen;
+
+    // R
+    res[offset++] = 0x02;
+    res[offset++] = (byte) derRLen;
+
+    if (derRLen >= rOrSLen) {
+      System.arraycopy(sig, 0, res, offset + derRLen - rOrSLen, rOrSLen);
+    } else {
+      System.arraycopy(sig, rOrSLen - derRLen, res, offset, derRLen);
+    }
+    offset += derRLen;
+
+    // S
+    res[offset++] = 0x02;
+    res[offset++] = (byte) derSLen;
+
+    if (derSLen >= rOrSLen) {
+      System.arraycopy(sig, rOrSLen, res, offset + derSLen - rOrSLen, rOrSLen);
+    } else {
+      System.arraycopy(sig, sig.length - derSLen, res, offset, derSLen);
+    }
+
+    return res;
   }
 
   static byte[] fixECDSASignature(byte[] sig, int rOrSLen) {
-    if (sig.length == 2 * rOrSLen || sig[0] != 0x30) {
+    try {
+      if (sig.length == 2 * rOrSLen || sig[0] != 0x30) {
+        return sig;
+      }
+
+      AtomicInteger numLenBytes = new AtomicInteger();
+
+      int ofs = 1;
+      int len = getDerLen(sig, ofs, numLenBytes);
+      ofs += numLenBytes.get();
+
+      if (len == 0 || ofs + len != sig.length) {
+        return sig;
+      }
+
+      // first integer, r
+      if (sig[ofs++] != 0x02) {
+        return sig;
+      }
+
+      int rLen = getDerLen(sig, ofs, numLenBytes);
+      ofs += numLenBytes.get();
+
+      byte[] r = Arrays.copyOfRange(sig, ofs, ofs + rLen);
+      ofs += rLen;
+
+      // second integer, s
+      if (sig[ofs++] != 0x02) {
+        return sig;
+      }
+
+      int sLen = getDerLen(sig, ofs, numLenBytes);
+      ofs += numLenBytes.get();
+
+      if (ofs + sLen != sig.length) {
+        return sig;
+      }
+
+      byte[] s = Arrays.copyOfRange(sig, ofs, sig.length);
+
+      // remove leading zero
+      if (r[0] == 0) {
+        r = Arrays.copyOfRange(r, 1, r.length);
+      }
+
+      if (s[0] == 0) {
+        s = Arrays.copyOfRange(s, 1, s.length);
+      }
+
+      if (r.length > rOrSLen || s.length > rOrSLen) {
+        // we can not fix it.
+        return sig;
+      }
+
+      byte[] rs = new byte[2 * rOrSLen];
+      System.arraycopy(r, 0, rs, rOrSLen - r.length, r.length);
+      System.arraycopy(s, 0, rs, rs.length - s.length, s.length);
+      return rs;
+    } catch (Exception e) {
       return sig;
     }
-
-    byte b = sig[1];
-    int ofs = 2;
-
-    int len = ((b & 0x80) == 0) ? 0xFF & b
-        : (b == (byte) 0x81) ? 0xFF & sig[ofs++] : 0;
-
-    if (len == 0 || ofs + len != sig.length) {
-      return sig;
-    }
-
-    // first integer, r
-    if (sig[ofs++] != 0x02) {
-      return sig;
-    }
-
-    b = sig[ofs++];
-    if ((b & 0x80) != 0) {
-      return sig;
-    }
-
-    int rLen = 0xFF & b;
-    byte[] r = Arrays.copyOfRange(sig, ofs, ofs + rLen);
-    ofs += rLen;
-
-    // second integer, s
-    if (sig[ofs++] != 0x02) {
-      return sig;
-    }
-
-    b = sig[ofs++];
-    if ((b & 0x80) != 0) {
-      return sig;
-    }
-
-    int sLen = 0xFF & b;
-    if (ofs + sLen != sig.length) {
-      return sig;
-    }
-
-    byte[] s = Arrays.copyOfRange(sig, ofs, sig.length);
-
-    // remove leading zero
-    if (r[0] == 0) {
-      r = Arrays.copyOfRange(r, 1, r.length);
-    }
-
-    if (s[0] == 0) {
-      s = Arrays.copyOfRange(s, 1, s.length);
-    }
-
-    if (r.length > rOrSLen || s.length > rOrSLen) {
-      // we can not fix it.
-      return sig;
-    }
-
-    byte[] rs = new byte[2 * rOrSLen];
-    System.arraycopy(r, 0, rs, rOrSLen - r.length, r.length);
-    System.arraycopy(s, 0, rs, rs.length - s.length, s.length);
-    return rs;
   }
 
   public static String toString(String prefix, byte[] bytes) {
@@ -585,6 +638,31 @@ public class Functions {
 
     System.arraycopy(bytes, 0, ret, 1 + numLenBytes, bytes.length);
     return ret;
+  }
+
+  private static int getOffsetOfNextField(byte[] bytes, int offset) throws TokenException {
+    offset++; // tag
+    AtomicInteger numLenBytes = new AtomicInteger();
+    int len = getDerLen(bytes, offset, numLenBytes);
+    return offset + numLenBytes.get() + len;
+  }
+
+  private static int getDerLen(byte[] bytes, int ofs, AtomicInteger numLenBytes) throws TokenException {
+    int origOfs = ofs;
+    int b = 0xFF & bytes[ofs++];
+    int len = ((b & 0x80) == 0) ? b
+        : (b == 0x81) ?  0xFF & bytes[ofs++]
+        : (b == 0x82) ? (0xFF & bytes[ofs++]) <<  8 | (0xFF & bytes[ofs++])
+        : (b == 0x83) ? (0xFF & bytes[ofs++]) << 16 | 0xFF & (0xFF & bytes[ofs++]) << 8 | (0xFF & bytes[ofs++])
+        : (b == 0x84) ? (0xFF & bytes[ofs++]) << 24 | (0xFF & bytes[ofs++]) << 16
+                        | 0xFF & (0xFF & bytes[ofs++]) << 8 | (0xFF & bytes[ofs++])
+        : -1;
+    if (len == -1) {
+      throw new TokenException("invalid DER encoded bytes");
+    }
+
+    numLenBytes.set(ofs - origOfs);
+    return len;
   }
 
 }

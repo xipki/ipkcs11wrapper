@@ -14,6 +14,7 @@ import org.xipki.pkcs11.wrapper.params.CkMessageParams;
 import org.xipki.pkcs11.wrapper.params.CkParams;
 
 import java.math.BigInteger;
+import java.security.interfaces.ECPublicKey;
 import java.util.*;
 
 /**
@@ -91,7 +92,7 @@ public class Session {
 
   private int signatureType;
 
-  private long signKeyHandle;
+  private long signOrVerifyKeyHandle;
 
   private final LruCache<Long, byte[]> handleEcParamsMap = new LruCache<>(1000);
 
@@ -298,6 +299,53 @@ public class Session {
    */
   public long createObject(AttributeVector template) throws PKCS11Exception {
     return pkcs11.C_CreateObject(sessionHandle, toOutCKAttributes(template), useUtf8);
+  }
+
+  public long createECPrivateKeyObject(AttributeVector template, ECPublicKey publicKey) throws PKCS11Exception {
+    if (publicKey != null && privateKeyWithEcPoint(template.keyType())) {
+      byte[] ecParams = template.ecParams();
+      Integer fieldSize = Functions.getECFieldSize(ecParams);
+
+      byte[] wx = Functions.asUnsignedByteArray(publicKey.getW().getAffineX());
+      byte[] wy = Functions.asUnsignedByteArray(publicKey.getW().getAffineY());
+      if (fieldSize == null) {
+        fieldSize = Math.max(wx.length, wy.length);
+      } else {
+        if (wx.length > fieldSize || wy.length > fieldSize) {
+          throw new IllegalStateException("should not happen, public key and ecParams do not match");
+        }
+      }
+
+      byte[] ecPoint = new byte[1 + fieldSize << 1];
+      ecPoint[0] = 4;
+      System.arraycopy(wx, 0, ecPoint, 1 + fieldSize - wx.length,  wx.length);
+      System.arraycopy(wy, 0, ecPoint, ecPoint.length - wy.length, wy.length);
+
+      template.ecPoint(ecPoint);
+    }
+    return createObject(template);
+  }
+
+  public long createECPrivateKeyObject(AttributeVector template, byte[] ecPoint) throws PKCS11Exception {
+    if (ecPoint != null && privateKeyWithEcPoint(template.keyType())) {
+      template.ecPoint(ecPoint);
+    }
+
+    return createObject(template);
+  }
+
+  private boolean privateKeyWithEcPoint(Long keyType) {
+    if (keyType == null) {
+      return false;
+    }
+
+    if (PKCS11Constants.CKK_EC == keyType) {
+      return module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_EC_PRIVATEKEY_ECPOINT);
+    } else if (PKCS11Constants.CKK_VENDOR_SM2 == keyType) {
+      return module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_SM2_PRIVATEKEY_ECPOINT);
+    } else {
+      return false;
+    }
   }
 
   /**
@@ -898,18 +946,18 @@ public class Session {
    * @throws PKCS11Exception If initializing this operation failed.
    */
   public void signInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
-    initSign(mechanism, keyHandle);
+    initSignVerify(mechanism, keyHandle);
     pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
-  private void initSign(Mechanism mechanism, long keyHandle) {
-    this.signKeyHandle = keyHandle;
-
+  private void initSignVerify(Mechanism mechanism, long keyHandle) {
+    this.signOrVerifyKeyHandle = keyHandle;
     long code = mechanism.getMechanismCode();
-
-    if (code == PKCS11Constants.CKM_ECDSA || code == PKCS11Constants.CKM_ECDSA_SHA1 || code == PKCS11Constants.CKM_ECDSA_SHA224 || code == PKCS11Constants.CKM_ECDSA_SHA256
-        || code == PKCS11Constants.CKM_ECDSA_SHA384   || code == PKCS11Constants.CKM_ECDSA_SHA512   || code == PKCS11Constants.CKM_ECDSA_SHA3_224
-        || code == PKCS11Constants.CKM_ECDSA_SHA3_256 || code == PKCS11Constants.CKM_ECDSA_SHA3_384 || code == PKCS11Constants.CKM_ECDSA_SHA3_512) {
+    if (code == PKCS11Constants.CKM_ECDSA             || code == PKCS11Constants.CKM_ECDSA_SHA1
+        || code == PKCS11Constants.CKM_ECDSA_SHA224   || code == PKCS11Constants.CKM_ECDSA_SHA256
+        || code == PKCS11Constants.CKM_ECDSA_SHA384   || code == PKCS11Constants.CKM_ECDSA_SHA512
+        || code == PKCS11Constants.CKM_ECDSA_SHA3_224 || code == PKCS11Constants.CKM_ECDSA_SHA3_256
+        || code == PKCS11Constants.CKM_ECDSA_SHA3_384 || code == PKCS11Constants.CKM_ECDSA_SHA3_512) {
       signatureType = SIGN_TYPE_ECDSA;
     } else if (code == PKCS11Constants.CKM_VENDOR_SM2 || code == PKCS11Constants.CKM_VENDOR_SM2_SM3) {
       signatureType = SIGN_TYPE_SM2;
@@ -929,7 +977,7 @@ public class Session {
    */
   public byte[] sign(byte[] data) throws PKCS11Exception {
     byte[] sigValue = pkcs11.C_Sign(sessionHandle, data);
-    return fixSignature(sigValue);
+    return fixSignOutput(sigValue);
   }
 
   /**
@@ -972,10 +1020,10 @@ public class Session {
    */
   public byte[] signFinal() throws PKCS11Exception {
     byte[] sigValue = pkcs11.C_SignFinal(sessionHandle);
-    return fixSignature(sigValue);
+    return fixSignOutput(sigValue);
   }
 
-  private byte[] fixSignature(byte[] signatureValue) {
+  private byte[] fixSignOutput(byte[] signatureValue) {
     if (signatureType == 0) {
       return signatureValue;
     }
@@ -985,16 +1033,16 @@ public class Session {
         Boolean b = module.getEcdsaSignatureFixNeeded();
         if (b == null || b) {
           // get the ecParams
-          byte[] ecParams = handleEcParamsMap.get(signKeyHandle);
+          byte[] ecParams = handleEcParamsMap.get(signOrVerifyKeyHandle);
           if (ecParams == null) {
             try {
-              ecParams = getByteArrayAttrValue(signKeyHandle, PKCS11Constants.CKA_EC_PARAMS);
+              ecParams = getByteArrayAttrValue(signOrVerifyKeyHandle, PKCS11Constants.CKA_EC_PARAMS);
             } catch (PKCS11Exception e) {
               return signatureValue;
             }
 
             if (ecParams != null) {
-              handleEcParamsMap.put(signKeyHandle, ecParams);
+              handleEcParamsMap.put(signOrVerifyKeyHandle, ecParams);
             }
           }
 
@@ -1021,6 +1069,20 @@ public class Session {
 
       return signatureValue;
     }
+  }
+
+  private byte[] fixSignatureToVerify(byte[] signatureValue) {
+    if (signatureType == SIGN_TYPE_ECDSA) {
+      if (module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_ECDSA_SIGNATURE_X962)) {
+        return Functions.toX962DSASignature(signatureValue);
+      }
+    } else if (signatureType == SIGN_TYPE_SM2) {
+      if (module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_SM2_PRIVATEKEY_ECPOINT)) {
+        return Functions.toX962DSASignature(signatureValue);
+      }
+    }
+
+    return signatureValue;
   }
 
   /**
@@ -1082,7 +1144,7 @@ public class Session {
    * @throws PKCS11Exception in case of error.
    */
   public void messageSignInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
-    initSign(mechanism, keyHandle);
+    initSignVerify(mechanism, keyHandle);
     pkcs11.C_MessageSignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1120,7 +1182,7 @@ public class Session {
   public byte[] signMessageNext(CkParams params, byte[] data, boolean isLastOperation) throws PKCS11Exception {
     byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data, isLastOperation,
         useUtf8);
-    return fixSignature(signature);
+    return fixSignOutput(signature);
   }
 
   /**
@@ -1148,6 +1210,7 @@ public class Session {
    * @throws PKCS11Exception If initializing this operation failed.
    */
   public void verifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
+    initSignVerify(mechanism, keyHandle);
     pkcs11.C_VerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1164,7 +1227,7 @@ public class Session {
    *                         forged.
    */
   public void verify(byte[] data, byte[] signature) throws PKCS11Exception {
-    pkcs11.C_Verify(sessionHandle, data, signature);
+    pkcs11.C_Verify(sessionHandle, data, fixSignatureToVerify(signature));
   }
 
   /**
@@ -1207,7 +1270,7 @@ public class Session {
    *                         forged.
    */
   public void verifyFinal(byte[] signature) throws PKCS11Exception {
-    pkcs11.C_VerifyFinal(sessionHandle, signature);
+    pkcs11.C_VerifyFinal(sessionHandle, fixSignatureToVerify(signature));
   }
 
   /**
@@ -1287,6 +1350,7 @@ public class Session {
    * @throws PKCS11Exception in case of error.
    */
   public void messageVerifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
+    initSignVerify(mechanism, keyHandle);
     pkcs11.C_MessageVerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
@@ -1303,7 +1367,7 @@ public class Session {
    * @throws PKCS11Exception if the message cant be verified
    */
   public void verifyMessage(CkParams params, byte[] data, byte[] signature) throws PKCS11Exception {
-    pkcs11.C_VerifyMessage(sessionHandle, toCkParameters(params), data, signature, useUtf8);
+    pkcs11.C_VerifyMessage(sessionHandle, toCkParameters(params), data, fixSignatureToVerify(signature), useUtf8);
   }
 
   /**
@@ -1334,7 +1398,7 @@ public class Session {
    *            if The Signature is invalid
    */
   public void verifyMessageNext(CkParams params, byte[] data, byte[] signature) throws PKCS11Exception {
-    pkcs11.C_VerifyMessageNext(sessionHandle, toCkParameters(params), data, signature, useUtf8);
+    pkcs11.C_VerifyMessageNext(sessionHandle, toCkParameters(params), data, fixSignatureToVerify(signature), useUtf8);
   }
 
   /**
@@ -1673,7 +1737,8 @@ public class Session {
 
     // we need to fix attributes EC_PARAMS and EC_POINT. Where EC_POINT needs EC_PARAMS,
     // and EC_PARAMS needs KEY_TYPE.
-    long[] firstTypes = {PKCS11Constants.CKA_CLASS, PKCS11Constants.CKA_KEY_TYPE, PKCS11Constants.CKA_EC_PARAMS, PKCS11Constants.CKA_EC_POINT};
+    long[] firstTypes = {PKCS11Constants.CKA_CLASS, PKCS11Constants.CKA_KEY_TYPE,
+                          PKCS11Constants.CKA_EC_PARAMS, PKCS11Constants.CKA_EC_POINT};
 
     for (long type : firstTypes) {
       if (typeList.remove(type)) {
@@ -1820,7 +1885,8 @@ public class Session {
         // have the object ID attribute
         attribute.getCkAttribute().pValue = null;
         attribute.present(true).sensitive(true).getCkAttribute().pValue = null;
-      } else if (ec == PKCS11Constants.CKR_ARGUMENTS_BAD || ec == PKCS11Constants.CKR_FUNCTION_FAILED || ec == PKCS11Constants.CKR_FUNCTION_REJECTED) {
+      } else if (ec == PKCS11Constants.CKR_ARGUMENTS_BAD || ec == PKCS11Constants.CKR_FUNCTION_FAILED
+          || ec == PKCS11Constants.CKR_FUNCTION_REJECTED) {
         attribute.present(false).sensitive(false).getCkAttribute().pValue = null;
       } else {
         // there was a different error that we should propagate

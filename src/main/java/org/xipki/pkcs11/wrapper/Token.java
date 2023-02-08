@@ -181,7 +181,9 @@ public class Token {
    *              If the session could not be opened.
    */
   public Session openSession(boolean rwSession, Object application) throws PKCS11Exception {
-    long flags = rwSession ? PKCS11Constants.CKF_SERIAL_SESSION | PKCS11Constants.CKF_RW_SESSION : PKCS11Constants.CKF_SERIAL_SESSION;
+    long flags = rwSession
+        ? PKCS11Constants.CKF_SERIAL_SESSION | PKCS11Constants.CKF_RW_SESSION
+        : PKCS11Constants.CKF_SERIAL_SESSION;
     long sessionHandle = slot.getModule().getPKCS11Module().C_OpenSession(slot.getSlotID(), flags, application, null);
     return new Session(this, sessionHandle);
   }

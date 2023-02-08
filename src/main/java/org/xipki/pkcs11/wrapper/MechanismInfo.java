@@ -131,14 +131,18 @@ public class MechanismInfo {
     String text = "  Key-Size: [" + minKeySize + ", " + maxKeySize + "]\n";
 
     return text + Functions.toStringFlags(PKCS11Constants.Category.CKF_MECHANISM, "  Flags: ", flags,
-        PKCS11Constants.CKF_HW,             PKCS11Constants.CKF_MESSAGE_ENCRYPT, PKCS11Constants.CKF_MESSAGE_DECRYPT, PKCS11Constants.CKF_MESSAGE_SIGN,
-        PKCS11Constants.CKF_MESSAGE_VERIFY, PKCS11Constants.CKF_MULTI_MESSAGE,   PKCS11Constants.CKF_FIND_OBJECTS,
+        PKCS11Constants.CKF_HW,             PKCS11Constants.CKF_MESSAGE_ENCRYPT, PKCS11Constants.CKF_MESSAGE_DECRYPT,
+        PKCS11Constants.CKF_MESSAGE_SIGN,   PKCS11Constants.CKF_MESSAGE_VERIFY,  PKCS11Constants.CKF_MULTI_MESSAGE,
+        PKCS11Constants.CKF_FIND_OBJECTS,
 
-        PKCS11Constants.CKF_ENCRYPT,  PKCS11Constants.CKF_DECRYPT,  PKCS11Constants.CKF_DIGEST,  PKCS11Constants.CKF_SIGN,  PKCS11Constants.CKF_SIGN_RECOVER,  PKCS11Constants.CKF_VERIFY,  PKCS11Constants.CKF_VERIFY_RECOVER,
-        PKCS11Constants.CKF_GENERATE, PKCS11Constants.CKF_GENERATE_KEY_PAIR,     PKCS11Constants.CKF_WRAP,  PKCS11Constants.CKF_UNWRAP,        PKCS11Constants.CKF_DERIVE,
+        PKCS11Constants.CKF_ENCRYPT,        PKCS11Constants.CKF_DECRYPT,       PKCS11Constants.CKF_DIGEST,
+        PKCS11Constants.CKF_SIGN,           PKCS11Constants.CKF_SIGN_RECOVER,  PKCS11Constants.CKF_VERIFY,
+        PKCS11Constants.CKF_VERIFY_RECOVER, PKCS11Constants.CKF_GENERATE,      PKCS11Constants.CKF_GENERATE_KEY_PAIR,
+        PKCS11Constants.CKF_WRAP,           PKCS11Constants.CKF_UNWRAP,        PKCS11Constants.CKF_DERIVE,
 
-        PKCS11Constants.CKF_EC_F_P,        PKCS11Constants.CKF_EC_F_2M,      PKCS11Constants.CKF_EC_ECPARAMETERS,    PKCS11Constants.CKF_EC_OID,
-        PKCS11Constants.CKF_EC_UNCOMPRESS, PKCS11Constants.CKF_EC_COMPRESS,  PKCS11Constants.CKF_EC_CURVENAME);
+        PKCS11Constants.CKF_EC_F_P,        PKCS11Constants.CKF_EC_F_2M,      PKCS11Constants.CKF_EC_ECPARAMETERS,
+        PKCS11Constants.CKF_EC_OID,        PKCS11Constants.CKF_EC_UNCOMPRESS, PKCS11Constants.CKF_EC_COMPRESS,
+        PKCS11Constants.CKF_EC_CURVENAME);
   }
 
 }

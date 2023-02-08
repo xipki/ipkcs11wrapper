@@ -72,6 +72,26 @@ import java.util.*;
 public class PKCS11Module {
 
   /**
+   * The ECDSA signature is in X9.62 format.
+   */
+  static final int BEHAVIOUR_ECDSA_SIGNATURE_X962 = 1;
+
+  /**
+   * The SM2 signature is in X9.62 format.
+   */
+  static final int BEHAVIOUR_SM2_SIGNATURE_X962 = 2;
+
+  /**
+   * The private key of type CKK_EC has the attribute CKA_EC_POINT.
+   */
+  static final int BEHAVIOUR_EC_PRIVATEKEY_ECPOINT = 3;
+
+  /**
+   * The private key of type CKK_VENDOR_SM2 has the attribute CKA_EC_POINT.
+   */
+  static final int BEHAVIOUR_SM2_PRIVATEKEY_ECPOINT = 3;
+
+  /**
    * Interface to the underlying PKCS#11 module.
    */
   private final PKCS11Implementation pkcs11;
@@ -96,6 +116,8 @@ public class PKCS11Module {
   private final Map<Long, Long> ckmGenericToVendorMap = new HashMap<>();
 
   private final Map<Long, Long> ckmVendorToGenericMap = new HashMap<>();
+
+  private final Set<Integer> vendorBehaviours = new HashSet<>();
 
   /**
    * Create a new module that uses the given PKCS11 interface to interact with
@@ -195,7 +217,7 @@ public class PKCS11Module {
     pkcs11.C_Initialize(wrapperInitArgs, true);
 
     // Vendor code
-    initVendorCode();
+    initVendor();
   }
 
   /**
@@ -261,6 +283,10 @@ public class PKCS11Module {
    */
   public PKCS11 getPKCS11Module() {
     return pkcs11;
+  }
+
+  boolean hasVendorBehaviour(int vendorBehavior) {
+    return vendorBehaviours.contains(vendorBehavior);
   }
 
   long ckkGenericToVendor(long genericCode) {
@@ -431,20 +457,20 @@ public class PKCS11Module {
 
   }
 
-  private static VendorCodeConfBlock readVendorCodeBlock(BufferedReader reader) throws IOException {
+  private static VendorConfBlock readVendorBlock(BufferedReader reader) throws IOException {
     boolean inBlock = false;
     String line;
-    VendorCodeConfBlock block = null;
+    VendorConfBlock block = null;
     while ((line = reader.readLine()) != null) {
       line = line.trim();
       if (line.isEmpty() || line.charAt(0) == '#') {
         continue;
       }
 
-      if (line.startsWith("<vendorcode>")) {
-        block = new VendorCodeConfBlock();
+      if (line.startsWith("<vendor>")) {
+        block = new VendorConfBlock();
         inBlock = true;
-      } else if (line.startsWith("</vendorcode>")) {
+      } else if (line.startsWith("</vendor>")) {
         block.validate();
         return block;
       } else if (inBlock) {
@@ -475,6 +501,12 @@ public class PKCS11Module {
           if (idx != -1) {
             block.nameToCodeMap.put(line.substring(0, idx).trim(), line.substring(idx + 1).trim());
           }
+        } else if (line.startsWith("VENDOR_BEHAVIORS ")) {
+          int idx = line.indexOf(' ');
+          String value = line.substring(idx + 1).trim();
+          if (!value.isEmpty()) {
+            block.vendorBehaviours = value;
+          }
         }
       }
     }
@@ -482,7 +514,7 @@ public class PKCS11Module {
     return block;
   }
 
-  private void initVendorCode() {
+  private void initVendor() {
     try {
       String modulePath = pkcs11.getPkcs11ModulePath();
       ModuleInfo moduleInfo = getInfo();
@@ -490,20 +522,39 @@ public class PKCS11Module {
       String libraryDescription = moduleInfo.getLibraryDescription();
       Version libraryVersion = moduleInfo.getLibraryVersion();
 
-      String confPath = System.getProperty("org.xipki.pkcs11.vendorcode.conf");
+      String confPath = System.getProperty("org.xipki.pkcs11.vendor.conf");
       InputStream in = (confPath != null) ? Files.newInputStream(Paths.get(modulePath))
-          : PKCS11Module.class.getClassLoader().getResourceAsStream("org/xipki/pkcs11/wrapper/vendorcode.conf");
+          : PKCS11Module.class.getClassLoader().getResourceAsStream("org/xipki/pkcs11/wrapper/vendor.conf");
       try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
         while (true) {
-          VendorCodeConfBlock block = readVendorCodeBlock(br);
+          VendorConfBlock block = readVendorBlock(br);
           if (block == null) {
             break;
           }
 
           // For better performance, this line should be in the if-block. But we put
-          // it here explicitly to make sure that all vendorcode blocks ar configured correctly.
+          // it here explicitly to make sure that all vendor blocks ar configured correctly.
           if (!block.matches(modulePath, manufacturerID, libraryDescription, libraryVersion)) {
             continue;
+          }
+
+          // vendor behaviours
+          if (block.vendorBehaviours != null) {
+            StringTokenizer tokenizer = new StringTokenizer(block.vendorBehaviours, ", \t");
+            while (tokenizer.hasMoreTokens()) {
+              String token = tokenizer.nextToken();
+              if ("SM2_SIGNATURE_X962".equalsIgnoreCase(token)) {
+                vendorBehaviours.add(BEHAVIOUR_SM2_SIGNATURE_X962);
+              } else if ("ECDSA_SIGNATURE_X962".equalsIgnoreCase(token)) {
+                vendorBehaviours.add(BEHAVIOUR_ECDSA_SIGNATURE_X962);
+              } else if ("SM2_PRIVATEKEY_ECPOINT".equalsIgnoreCase(token)) {
+                vendorBehaviours.add(BEHAVIOUR_SM2_PRIVATEKEY_ECPOINT);
+              } else if ("EC_PRIVATEKEY_ECPOINT".equalsIgnoreCase(token)) {
+                vendorBehaviours.add(BEHAVIOUR_EC_PRIVATEKEY_ECPOINT);
+              } else {
+                System.out.println("Ignored unknown vendor behaviour '" + token + "'.");
+              }
+            }
           }
 
           for (Map.Entry<String, String> entry : block.nameToCodeMap.entrySet()) {
@@ -515,19 +566,19 @@ public class PKCS11Module {
             if (name.startsWith("CKK_VENDOR_")) {
               Long genericCode = PKCS11Constants.ckkNameToCode(name);
               if (genericCode == null) {
-                throw new IllegalStateException("unknown name in vendorcode block: " + name);
+                throw new IllegalStateException("unknown name in vendor block: " + name);
               }
 
               ckkGenericToVendorMap.put(genericCode, vendorCode);
             } else if (name.startsWith("CKM_VENDOR_")) {
               Long genericCode = PKCS11Constants.ckmNameToCode(name);
               if (genericCode == null) {
-                throw new IllegalStateException("unknown name in vendorcode block: " + name);
+                throw new IllegalStateException("unknown name in vendor block: " + name);
               }
 
               ckmGenericToVendorMap.put(genericCode, vendorCode);
             } else {
-              throw new IllegalStateException("Unknown name in vendorcode block: " + name);
+              throw new IllegalStateException("Unknown name in vendor block: " + name);
             }
 
             for (Map.Entry<Long, Long> m : ckkGenericToVendorMap.entrySet()) {
@@ -547,16 +598,17 @@ public class PKCS11Module {
     withVendorCodeMap = !ckmGenericToVendorMap.isEmpty() || !ckkGenericToVendorMap.isEmpty();
   }
 
-  private static final class VendorCodeConfBlock {
+  private static final class VendorConfBlock {
     private List<String> modulePaths;
     private List<String> manufacturerIDs;
     private List<String> descriptions;
     private List<String> versions;
+    private String vendorBehaviours;
     private final Map<String, String> nameToCodeMap = new HashMap<>();
 
     void validate() throws IOException {
       if (isEmpty(modulePaths) && isEmpty(manufacturerIDs) && isEmpty(descriptions)) {
-        throw new IOException("invalid <vendorcode>-block");
+        throw new IOException("invalid <vendor>-block");
       }
     }
 
@@ -605,6 +657,6 @@ public class PKCS11Module {
       }
       return false;
     }
-  } // class VendorCodeConfBlock
+  } // class VendorConfBlock
 
 }
