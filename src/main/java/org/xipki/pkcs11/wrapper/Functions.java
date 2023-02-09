@@ -77,6 +77,7 @@ public class Functions {
   private static class ECInfo {
     int fieldSize;
     int orderSize;
+    int orderBitLength;
     String oid;
     String[] names;
     byte[] order;
@@ -118,7 +119,8 @@ public class Functions {
         String[] values = props.getProperty(name).split(",");
         ecInfo.names = values[0].toUpperCase(Locale.ROOT).split(":");
         ecInfo.fieldSize = (Integer.parseInt(values[1]) + 7) / 8;
-        ecInfo.orderSize = (Integer.parseInt(values[2]) + 7) / 8;
+        ecInfo.orderBitLength = Integer.parseInt(values[2]);
+        ecInfo.orderSize = (ecInfo.orderBitLength + 7) / 8;
 
         String str = values[3];
         if (!str.isEmpty() && !"-".equals(str)) {
@@ -316,6 +318,11 @@ public class Functions {
       }
     }
     return null;
+  }
+
+  public static Integer getCurveOrderBitLength(byte[] ecParams) {
+    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
+    return (ecInfo == null) ? null : ecInfo.orderBitLength;
   }
 
   public static String getCurveName(byte[] ecParams) {
@@ -641,29 +648,41 @@ public class Functions {
     return sb.toString();
   }
 
-  // some HSM does not return the standard conform ECPoint
-  static byte[] fixECPoint(byte[] ecPoint, byte[] ecParams) {
-    if (ecParams == null) {
+  // remove the outer ASN.1 tag and length
+  static byte[] getCoreECPoint(byte[] ecPoint) {
+    try {
+      return getOctetsFromASN1OctetString(ecPoint);
+    } catch (TokenException e) {
       return ecPoint;
+    }
+  }
+
+  // remove the outer ASN.1 tag and length, and try to handle ECPoint that is not
+  // pKCS#11 standard conform.
+  static byte[] getCoreECPoint(byte[] ecPoint, byte[] ecParams) {
+    if (ecParams == null) {
+      return getCoreECPoint(ecPoint);
     }
 
     int len = ecPoint.length;
 
     if (len > 0xFFF0) {
-      return ecPoint; // too long, should not happen.
+      // too long, should not happen. Just try to remove the ASN.1 tag and length.
+      return getCoreECPoint(ecPoint);
     }
 
     String hexEcParams = Hex.encode(ecParams, 0, ecParams.length);
     ECInfo ecInfo = ecParamsInfoMap.get(hexEcParams);
 
     if (ecInfo == null) {
-      return ecPoint;
+      // Unknown curve. Just try to remove the ASN.1 tag and length.
+      return getCoreECPoint(ecPoint);
     }
 
     int fieldSize = ecInfo.fieldSize;
     if (edwardsMontgomeryEcParams.contains(hexEcParams)) {
       // edwards or montgomery curve
-      return (len == fieldSize) ? toOctetString(ecPoint) : ecPoint;
+      return (len == fieldSize) ? ecPoint : getCoreECPoint(ecPoint);
     }
 
     // weierstrauss curve.
@@ -672,23 +691,36 @@ public class Functions {
       byte[] ecPoint2 = new byte[1 + ecPoint.length];
       ecPoint2[0] = (byte) 4;
       System.arraycopy(ecPoint, 0, ecPoint2, 1, ecPoint.length);
-      return toOctetString(ecPoint2);
+      return ecPoint2;
     } else {
       byte encodingByte = ecPoint[0];
       if (encodingByte == 0x04) {
         if (len == 1 + 2 * fieldSize) {
           // HSM returns 04 || x_coord. || y_coord.
-          return toOctetString(ecPoint);
+          return ecPoint;
         }
       } else if (encodingByte == 0x02 || encodingByte == 0x03) {
         if (len == 1 + fieldSize) {
           // HSM returns <02 or 03> || x_coord.
-          return toOctetString(ecPoint);
+          return ecPoint;
         }
       }
     }
 
-    return ecPoint;
+    return getCoreECPoint(ecPoint);
+  }
+
+  public static byte[] getOctetsFromASN1OctetString(byte[] encoded) throws TokenException {
+    if (encoded[0] != 0x04) {
+      throw new TokenException("encoded is not a valid ASN.1 octet string");
+    }
+
+    AtomicInteger numLenBytes = new AtomicInteger();
+    int len = getDerLen(encoded, 1, numLenBytes);
+    if (1 + numLenBytes.get() + len != encoded.length) {
+      throw new TokenException("encoded is not a valid ASN.1 octet string");
+    }
+    return Arrays.copyOfRange(encoded, 1 + numLenBytes.get(), encoded.length);
   }
 
   public static byte[] toOctetString(byte[] bytes) {

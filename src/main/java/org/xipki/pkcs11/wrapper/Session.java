@@ -319,19 +319,19 @@ public class Session {
         }
       }
 
-      byte[] ecPoint = new byte[1 + fieldSize << 1];
+      byte[] ecPoint = new byte[1 + 2 * fieldSize];
       ecPoint[0] = 4;
       System.arraycopy(wx, 0, ecPoint, 1 + fieldSize - wx.length,  wx.length);
       System.arraycopy(wy, 0, ecPoint, ecPoint.length - wy.length, wy.length);
 
-      template.ecPoint(Functions.toOctetString(ecPoint));
+      template.ecPoint(ecPoint);
     }
     return createObject(template);
   }
 
   public long createECPrivateKeyObject(AttributeVector template, byte[] ecPoint) throws PKCS11Exception {
     if (ecPoint != null && privateKeyWithEcPoint(template.keyType())) {
-      template.ecPoint(Functions.toOctetString(ecPoint));
+      template.ecPoint(ecPoint);
     }
 
     return createObject(template);
@@ -1909,11 +1909,17 @@ public class Session {
 
     CK_ATTRIBUTE[] ret = template.toCkAttributes();
     for (CK_ATTRIBUTE ckAttr : ret) {
-      if (ckAttr.type == PKCS11Constants.CKA_KEY_TYPE && ckAttr.pValue != null) {
+      if (ckAttr.pValue == null) {
+        continue;
+      }
+
+      if (ckAttr.type == PKCS11Constants.CKA_KEY_TYPE) {
         long value = (long) ckAttr.pValue;
         if ((value & PKCS11Constants.CKK_VENDOR_DEFINED) != 0L) {
           ckAttr.pValue = module.ckkGenericToVendor(value);
         }
+      } else if (ckAttr.type == PKCS11Constants.CKA_EC_POINT) {
+        ckAttr.pValue = Functions.toOctetString((byte[]) ckAttr.pValue);
       }
     }
     return ret;
@@ -1978,28 +1984,27 @@ public class Session {
       }
     } else if (type == PKCS11Constants.CKA_EC_POINT) {
       Boolean b = module.getEcPointFixNeeded();
+      byte[] pValue = (byte[]) ckAttr.pValue;
+
       if (b == null || b) {
         byte[] ecParams = null;
         if (otherAttrs != null) {
           for (Attribute otherAttr : otherAttrs) {
             if (otherAttr.getType() == PKCS11Constants.CKA_EC_PARAMS) {
               ecParams = ((ByteArrayAttribute) otherAttr).getValue();
+              break;
             }
           }
         }
 
-        if (ecParams != null) {
-          byte[] fixedValue = Functions.fixECPoint((byte[]) ckAttr.pValue, ecParams);
-          boolean fixed = Arrays.equals(fixedValue, (byte[]) ckAttr.pValue);
-
-          if (b == null) {
-            module.setEcPointFixNeeded(fixed);
-          }
-
-          if (fixed) {
-            ckAttr.pValue = fixedValue;
-          }
+        byte[] fixedCoreEcPoint = Functions.getCoreECPoint(pValue, ecParams);
+        if (b == null) {
+          byte[] coreEcPoint = Functions.getCoreECPoint(pValue);
+          module.setEcPointFixNeeded(!Arrays.equals(coreEcPoint, fixedCoreEcPoint));
         }
+        ckAttr.pValue = fixedCoreEcPoint;
+      } else {
+        ckAttr.pValue = Functions.getCoreECPoint(pValue);
       }
     } else if (attr instanceof BooleanAttribute) {
       if (ckAttr.pValue instanceof byte[]) {
