@@ -14,7 +14,9 @@ import org.xipki.pkcs11.wrapper.params.CkMessageParams;
 import org.xipki.pkcs11.wrapper.params.CkParams;
 
 import java.math.BigInteger;
+import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECPoint;
 import java.util.*;
 
 /**
@@ -301,13 +303,14 @@ public class Session {
     return pkcs11.C_CreateObject(sessionHandle, toOutCKAttributes(template), useUtf8);
   }
 
-  public long createECPrivateKeyObject(AttributeVector template, ECPublicKey publicKey) throws PKCS11Exception {
-    if (publicKey != null && privateKeyWithEcPoint(template.keyType())) {
+  public long createPrivateKeyObject(AttributeVector template, PublicKey publicKey) throws PKCS11Exception {
+    if (publicKey instanceof ECPublicKey && privateKeyWithEcPoint(template.keyType())) {
       byte[] ecParams = template.ecParams();
       Integer fieldSize = Functions.getECFieldSize(ecParams);
+      ECPoint w = ((ECPublicKey) publicKey).getW();
 
-      byte[] wx = Functions.asUnsignedByteArray(publicKey.getW().getAffineX());
-      byte[] wy = Functions.asUnsignedByteArray(publicKey.getW().getAffineY());
+      byte[] wx = Functions.asUnsignedByteArray(w.getAffineX());
+      byte[] wy = Functions.asUnsignedByteArray(w.getAffineY());
       if (fieldSize == null) {
         fieldSize = Math.max(wx.length, wy.length);
       } else {
