@@ -104,6 +104,7 @@ public class Functions {
     Properties props = new Properties();
     try {
       props.load(Functions.class.getClassLoader().getResourceAsStream(propFile));
+      ByteArrayOutputStream buffer = new ByteArrayOutputStream(100);
       for (String name : props.stringPropertyNames()) {
         ECInfo ecInfo = new ECInfo();
         ecInfo.oid = name.trim();
@@ -112,7 +113,7 @@ public class Functions {
           throw new IllegalStateException("duplicated definition of " + name);
         }
 
-        byte[] ecParams = encodeOid(ecInfo.oid);
+        byte[] ecParams = encodeOid(buffer, ecInfo.oid);
 
         String[] values = props.getProperty(name).split(",");
         ecInfo.names = values[0].toUpperCase(Locale.ROOT).split(":");
@@ -138,9 +139,9 @@ public class Functions {
     }
   }
 
-  private static byte[] encodeOid(String oid) {
+  private static byte[] encodeOid(ByteArrayOutputStream out, String oid) {
+    out.reset();
     String[] nodes = oid.split("\\.");
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
     out.write(0x06);
     out.write(0); // place holder for length
     // first two nodes
@@ -327,9 +328,39 @@ public class Functions {
     return (ecInfo == null) ? null : ecInfo.names.clone();
   }
 
-  public static String getCurveOid(byte[] ecParams) {
-    ECInfo ecInfo = ecParamsInfoMap.get(Hex.encode(ecParams, 0, ecParams.length));
-    return (ecInfo == null) ? null : ecInfo.oid;
+  public static String decodeOid(byte[] encoded) {
+    final int len = encoded.length;
+    if (encoded[0] != 0x06 || (0xFF & encoded[1]) != len - 2 || (encoded[len - 1] & 0x80) != 0) {
+      throw new IllegalArgumentException("invalid ecParams");
+    }
+
+    StringBuilder sb = new StringBuilder(len + 5);
+
+    int ofs = 2;
+    int b = encoded[ofs++] & 0xFF;
+    sb.append(b / 40).append('.');
+    sb.append(b % 40).append('.');
+
+    while (ofs < len) {
+      b = encoded[ofs++] & 0xFF;
+      if (b < 128) {
+        sb.append(b).append('.');
+      } else {
+        int ni = b & 0x7F;
+        while (true) {
+          b = encoded[ofs++] & 0xFF;
+          int bi = b & 0x7F;
+          ni <<= 7;
+          ni += bi;
+          if (b == bi) {
+            break;
+          }
+        }
+        sb.append(ni).append('.');
+      }
+    }
+    sb.deleteCharAt(sb.length() - 1);
+    return sb.toString();
   }
 
   static Integer getECFieldSize(byte[] ecParams) {
