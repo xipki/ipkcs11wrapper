@@ -469,59 +469,18 @@ public class Session {
     pkcs11.C_EncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
   }
 
-  private static byte[] copy(byte[] bytes, int off, int len) {
-    return (off == 0 && len == bytes.length) ? bytes : Arrays.copyOfRange(bytes, off, off + len);
-  }
-
-  private static int copyResToBuffer(byte[] res, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkOutParams(out, outOfs, outLen);
-    int resLen = res == null ? 0 : res.length;
-
-    if (resLen > outLen) {
-      throw new PKCS11Exception(PKCS11Constants.CKR_BUFFER_TOO_SMALL);
-    } else if (resLen > 0) {
-      System.arraycopy(res, 0, out, outOfs, res.length);
-    }
-
-    return resLen;
-  }
-
   /**
    * Encrypts the given data with the key and mechanism given to the encryptInit method. This method
    * finalizes the current encryption operation; i.e. the application need (and should) not call
    * encryptFinal() after this call. For encrypting multiple pices of data use encryptUpdate and
    * encryptFinal.
    *
-   * @param in     the to-be-encrypted data
-   * @param out    buffer for the encrypted data
-   * @param outOfs buffer offset for the encrypted data
-   * @param outLen buffer size for the encrypted data
-   * @return the length of encrypted data
+   * @param plaintext the to-be-encrypted data
+   * @return the encrypted data. Never returns {@code null}.
    * @throws PKCS11Exception If encrypting failed.
    */
-  public int encrypt(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    return encrypt(in, 0, in.length, out, outOfs, outLen);
-  }
-
-  /**
-   * Encrypts the given data with the key and mechanism given to the encryptInit method. This method
-   * finalizes the current encryption operation; i.e. the application need (and should) not call
-   * encryptFinal() after this call. For encrypting multiple pices of data use encryptUpdate and
-   * encryptFinal.
-   *
-   * @param in     buffer containing the to-be-encrypted data
-   * @param inOfs  buffer offset of the to-be-encrypted data
-   * @param inLen  length of the to-be-encrypted data
-   * @param out    buffer for the encrypted data
-   * @param outOfs buffer offset for the encrypted data
-   * @param outLen buffer size for the encrypted data
-   * @return the length of encrypted data
-   * @throws PKCS11Exception If encrypting failed.
-   */
-  public int encrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkParams(in, inOfs, inLen, out, outOfs, outLen);
-    byte[] res = pkcs11.C_Encrypt(sessionHandle, copy(in, inOfs, inLen));
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] encrypt(byte[] plaintext) throws PKCS11Exception {
+    return toNonNull(pkcs11.C_Encrypt(sessionHandle, plaintext));
   }
 
   /**
@@ -530,36 +489,12 @@ public class Session {
    * encryptInit method. The application must call encryptFinal to get the final result of the
    * encryption after feeding in all data using this method.
    *
-   * @param in     the to-be-encrypted data
-   * @param out    buffer for the encrypted data
-   * @param outOfs buffer offset for the encrypted data
-   * @param outLen buffer size for the encrypted data
-   * @return the length of encrypted data for this update
+   * @param plaintextPat Piece of the to-be-encrypted data
+   * @return the encrypted data for this update. Never returns {@code null}.
    * @throws PKCS11Exception If encrypting the data failed.
    */
-  public int encryptUpdate(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    return encryptUpdate(in, 0, in.length, out, outOfs, outLen);
-  }
-
-  /**
-   * This method can be used to encrypt multiple pieces of data; e.g. buffer-size pieces when
-   * reading the data from a stream. Encrypts the given data with the key and mechanism given to the
-   * encryptInit method. The application must call encryptFinal to get the final result of the
-   * encryption after feeding in all data using this method.
-   *
-   * @param in     buffer containing the to-be-encrypted data
-   * @param inOfs  buffer offset of the to-be-encrypted data
-   * @param inLen  length of the to-be-encrypted data
-   * @param out    buffer for the encrypted data
-   * @param outOfs buffer offset for the encrypted data
-   * @param outLen buffer size for the encrypted data
-   * @return the length of encrypted data for this update
-   * @throws PKCS11Exception If encrypting the data failed.
-   */
-  public int encryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkParams(in, inOfs, inLen, out, outOfs, outLen);
-    byte[] res = pkcs11.C_EncryptUpdate(sessionHandle, copy(in, inOfs, inLen));
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] encryptUpdate(byte[] plaintextPat) throws PKCS11Exception {
+    return toNonNull(pkcs11.C_EncryptUpdate(sessionHandle, plaintextPat));
   }
 
   /**
@@ -567,15 +502,11 @@ public class Session {
    * you fed in the data using encryptUpdate. If you used the encrypt(byte[]) method, you need not
    * (and shall not) call this method, because encrypt(byte[]) finalizes the encryption itself.
    *
-   * @param out    buffer for the encrypted data
-   * @param outOfs buffer offset for the encrypted data
-   * @param outLen buffer size for the encrypted data
-   * @return the length of the last part of the encrypted data
+   * @return the last part of the encrypted data. Never returns {@code null}.
    * @throws PKCS11Exception If calculating the final result failed.
    */
-  public int encryptFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    byte[] res = pkcs11.C_EncryptFinal(sessionHandle);
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] encryptFinal() throws PKCS11Exception {
+    return toNonNull(pkcs11.C_EncryptFinal(sessionHandle));
   }
 
   /**
@@ -603,7 +534,7 @@ public class Session {
    * @param params         The parameter object
    * @param associatedData The associated Data for AEAS Mechanisms
    * @param plaintext      The plaintext getting encrypted
-   * @return The ciphertext
+   * @return The ciphertext. Never returns {@code null}.
    * @throws PKCS11Exception If encrypting failed.
    */
   public byte[] encryptMessage(CkParams params, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
@@ -614,7 +545,7 @@ public class Session {
       ((CkMessageParams) params).setValuesFromPKCS11Object(paramObject);
     }
 
-    return rv;
+    return toNonNull(rv);
   }
 
   /**
@@ -637,7 +568,7 @@ public class Session {
    * @param params          The parameter object
    * @param plaintext       The associated Data for AEAS Mechanisms
    * @param isLastOperation If this is the last part of the multi-part message encryption, this should be true
-   * @return The encrypted message part
+   * @return The encrypted message part. Never returns {@code null}.
    * @throws PKCS11Exception in case of error.
    */
   public byte[] encryptMessageNext(CkParams params, byte[] plaintext, boolean isLastOperation)
@@ -646,8 +577,8 @@ public class Session {
     if (params instanceof CkMessageParams) {
       ((CkMessageParams) params).setValuesFromPKCS11Object(paramObject);
     }
-    return pkcs11.C_EncryptMessageNext(sessionHandle, paramObject, plaintext,
-        isLastOperation ? PKCS11Constants.CKF_END_OF_MESSAGE : 0, useUtf8);
+    return toNonNull(pkcs11.C_EncryptMessageNext(sessionHandle, paramObject, plaintext,
+        isLastOperation ? PKCS11Constants.CKF_END_OF_MESSAGE : 0, useUtf8));
   }
 
   /**
@@ -682,36 +613,12 @@ public class Session {
    * decryptFinal() after this call. For decrypting multiple pieces of data use decryptUpdate and
    * decryptFinal.
    *
-   * @param in     the to-be-decrypted data
-   * @param out    buffer for the decrypted data
-   * @param outOfs buffer offset for the decrypted data
-   * @param outLen buffer size for the decrypted data
-   * @return the length of decrypted data
+   * @param ciphertext the to-be-decrypted data
+   * @return the decrypted data. Never returns {@code null}.
    * @throws PKCS11Exception If decrypting failed.
    */
-  public int decrypt(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    return decrypt(in, 0, in.length, out, outOfs, outLen);
-  }
-
-  /**
-   * Decrypts the given data with the key and mechanism given to the decryptInit method. This method
-   * finalizes the current decryption operation; i.e. the application need (and should) not call
-   * decryptFinal() after this call. For decrypting multiple pieces of data use decryptUpdate and
-   * decryptFinal.
-   *
-   * @param in     buffer containing the to-be-decrypted data
-   * @param inOfs  buffer offset of the to-be-decrypted data
-   * @param inLen  length of the to-be-decrypted data
-   * @param out    buffer for the decrypted data
-   * @param outOfs buffer offset for the decrypted data
-   * @param outLen buffer size for the decrypted data
-   * @return the length of decrypted data
-   * @throws PKCS11Exception If decrypting failed.
-   */
-  public int decrypt(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkParams(in, inOfs, inLen, out, outOfs, outLen);
-    byte[] res = pkcs11.C_Decrypt(sessionHandle, copy(in, inOfs, inLen));
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] decrypt(byte[] ciphertext) throws PKCS11Exception {
+    return toNonNull(pkcs11.C_Decrypt(sessionHandle, ciphertext));
   }
 
   /**
@@ -720,36 +627,12 @@ public class Session {
    * decryptInit method. The application must call decryptFinal to get the final result of the
    * encryption after feeding in all data using this method.
    *
-   * @param in     the to-be-decrypted data
-   * @param out    buffer for the decrypted data
-   * @param outOfs buffer offset for the decrypted data
-   * @param outLen buffer size for the decrypted data
-   * @return the length of decrypted data for this update
+   * @param ciphertextPart Piece of the to-be-decrypted data for this update
+   * @return the decrypted data for this update. Never returns {@code null}.
    * @throws PKCS11Exception If decrypting the data failed.
    */
-  public int decryptUpdate(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    return decryptUpdate(in, 0, in.length, out, outOfs, outLen);
-  }
-
-  /**
-   * This method can be used to decrypt multiple pieces of data; e.g. buffer-size pieces when
-   * reading the data from a stream. Decrypts the given data with the key and mechanism given to the
-   * decryptInit method. The application must call decryptFinal to get the final result of the
-   * encryption after feeding in all data using this method.
-   *
-   * @param in     buffer containing the to-be-decrypted data
-   * @param inOfs  buffer offset of the to-be-decrypted data
-   * @param inLen  length of the to-be-decrypted data
-   * @param out    buffer for the decrypted data
-   * @param outOfs buffer offset for the decrypted data
-   * @param outLen buffer size for the decrypted data
-   * @return the length of decrypted data for this update
-   * @throws PKCS11Exception If decrypting the data failed.
-   */
-  public int decryptUpdate(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkParams(in, inOfs, inLen, out, outOfs, outLen);
-    byte[] res = pkcs11.C_DecryptUpdate(sessionHandle, copy(in, inOfs, inLen));
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] decryptUpdate(byte[] ciphertextPart) throws PKCS11Exception {
+    return toNonNull(pkcs11.C_DecryptUpdate(sessionHandle, ciphertextPart));
   }
 
   /**
@@ -757,16 +640,11 @@ public class Session {
    * you fed in the data using decryptUpdate. If you used the decrypt(byte[]) method, you need not
    * (and shall not) call this method, because decrypt(byte[]) finalizes the decryption itself.
    *
-   * @param out    buffer for the decrypted data
-   * @param outOfs buffer offset for the decrypted data
-   * @param outLen buffer size for the decrypted data
-   * @return the length of this last part of decrypted data
+   * @return the last part of decrypted data. Never returns {@code null}.
    * @throws PKCS11Exception If calculating the final result failed.
    */
-  public int decryptFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkOutParams(out, outOfs, outLen);
-    byte[] res = pkcs11.C_DecryptFinal(sessionHandle);
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] decryptFinal() throws PKCS11Exception {
+    return toNonNull(pkcs11.C_DecryptFinal(sessionHandle));
   }
 
   /**
@@ -794,11 +672,12 @@ public class Session {
    * @param params         The parameter object
    * @param associatedData The associated Data for AEAS Mechanisms
    * @param plaintext      The plaintext getting encrypted
-   * @return The ciphertext
+   * @return The ciphertext. Never returns {@code null}.
    * @throws PKCS11Exception If encrypting failed.
    */
   public byte[] decryptMessage(CkParams params, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
-    return pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(params), associatedData, plaintext, useUtf8);
+    return toNonNull(pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(params),
+            associatedData, plaintext, useUtf8));
   }
 
   /**
@@ -820,13 +699,13 @@ public class Session {
    * @param params          The parameter object
    * @param ciphertext      The ciphertext getting decrypted
    * @param isLastOperation If this is the last part of the multi-part message encryption, this should be true
-   * @return the decrypted message part
+   * @return the decrypted message part. Never returns {@code null}.
    * @throws PKCS11Exception in case of error.
    */
   public byte[] decryptMessageNext(CkParams params, byte[] ciphertext, boolean isLastOperation)
       throws PKCS11Exception {
-    return pkcs11.C_DecryptMessageNext(sessionHandle, toCkParameters(params),
-        ciphertext, isLastOperation ? PKCS11Constants.CKF_END_OF_MESSAGE : 0, useUtf8);
+    return toNonNull(pkcs11.C_DecryptMessageNext(sessionHandle, toCkParameters(params),
+        ciphertext, isLastOperation ? PKCS11Constants.CKF_END_OF_MESSAGE : 0, useUtf8));
   }
 
   /**
@@ -858,35 +737,12 @@ public class Session {
    * the current digesting operation; i.e. the application need (and should) not call digestFinal()
    * after this call. For digesting multiple pieces of data use digestUpdate and digestFinal.
    *
-   * @param in     the to-be-digested data
-   * @param out    buffer for the digested data
-   * @param outOfs buffer offset for the digested data
-   * @param outLen buffer size for the digested data
-   * @return the length of digested data for this update
+   * @param data the to-be-digested data
+   * @return the message digest. Never returns {@code null}.
    * @throws PKCS11Exception If digesting the data failed.
    */
-  public int digest(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    return digest(in, 0, in.length, out, outOfs, outLen);
-  }
-
-  /**
-   * Digests the given data with the mechanism given to the digestInit method. This method finalizes
-   * the current digesting operation; i.e. the application need (and should) not call digestFinal()
-   * after this call. For digesting multiple pieces of data use digestUpdate and digestFinal.
-   *
-   * @param in     buffer containing the to-be-digested data
-   * @param inOfs  buffer offset of the to-be-digested data
-   * @param inLen  length of the to-be-digested data
-   * @param out    buffer for the digested data
-   * @param outOfs buffer offset for the digested data
-   * @param outLen buffer size for the digested data
-   * @return the length of digested data for this update
-   * @throws PKCS11Exception If digesting the data failed.
-   */
-  public int digest(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkParams(in, inOfs, inLen, out, outOfs, outLen);
-    byte[] res = pkcs11.C_Digest(sessionHandle, copy(in, inOfs, inLen));
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] digest(byte[] data) throws PKCS11Exception {
+    return toNonNull(pkcs11.C_Digest(sessionHandle, data));
   }
 
   /**
@@ -895,14 +751,11 @@ public class Session {
    * method. The application must call digestFinal to get the final result of the digesting after
    * feeding in all data using this method.
    *
-   * @param in    buffer containing the to-be-digested data
-   * @param inOfs buffer offset of the to-be-digested data
-   * @param inLen length of the to-be-digested data
+   * @param dataPart Piece of the to-be-digested data
    * @throws PKCS11Exception If digesting the data failed.
    */
-  public void digestUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
-    checkInParams(in, inOfs, inLen);
-    pkcs11.C_DigestUpdate(sessionHandle, copy(in, inOfs, inLen));
+  public void digestUpdate(byte[] dataPart) throws PKCS11Exception {
+    pkcs11.C_DigestUpdate(sessionHandle, dataPart);
   }
 
   /**
@@ -922,16 +775,11 @@ public class Session {
    * you need not (and shall not) call this method, because digest(byte[]) finalizes the digesting
    * itself.
    *
-   * @param out    buffer for the message digest
-   * @param outOfs buffer offset for the message digest
-   * @param outLen buffer size for the message digest
-   * @return the length of message digest
+   * @return the message digest. Never returns {@code null}.
    * @throws PKCS11Exception If calculating the final message digest failed.
    */
-  public int digestFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkOutParams(out, outOfs, outLen);
-    byte[] res = pkcs11.C_DigestFinal(sessionHandle);
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] digestFinal() throws PKCS11Exception {
+    return toNonNull(pkcs11.C_DigestFinal(sessionHandle));
   }
 
   /**
@@ -975,12 +823,12 @@ public class Session {
    * signFinal() after this call. For signing multiple pices of data use signUpdate and signFinal.
    *
    * @param data The data to sign.
-   * @return The signed data.
+   * @return The signed data. Never returns {@code null}.
    * @throws PKCS11Exception If signing the data failed.
    */
   public byte[] sign(byte[] data) throws PKCS11Exception {
     byte[] sigValue = pkcs11.C_Sign(sessionHandle, data);
-    return fixSignOutput(sigValue);
+    return toNonNull(fixSignOutput(sigValue));
   }
 
   /**
@@ -989,27 +837,11 @@ public class Session {
    * The application must call signFinal to get the final result of the signing after feeding in all
    * data using this method.
    *
-   * @param in the to-be-signed data
+   * @param dataPart Piece of the to-be-signed data
    * @throws PKCS11Exception If signing the data failed.
    */
-  public void signUpdate(byte[] in) throws PKCS11Exception {
-    signUpdate(in, 0, in.length);
-  }
-
-  /**
-   * This method can be used to sign multiple pieces of data; e.g. buffer-size pieces when reading
-   * the data from a stream. Signs the given data with the mechanism given to the signInit method.
-   * The application must call signFinal to get the final result of the signing after feeding in all
-   * data using this method.
-   *
-   * @param in    buffer containing the to-be-signed data
-   * @param inOfs buffer offset of the to-be-signed data
-   * @param inLen length of the to-be-signed data
-   * @throws PKCS11Exception If signing the data failed.
-   */
-  public void signUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
-    checkInParams(in, inOfs, inLen);
-    pkcs11.C_SignUpdate(sessionHandle, copy(in, inOfs, inLen));
+  public void signUpdate(byte[] dataPart) throws PKCS11Exception {
+    pkcs11.C_SignUpdate(sessionHandle, dataPart);
   }
 
   /**
@@ -1018,12 +850,12 @@ public class Session {
    * not) call this method, because sign(byte[]) finalizes the signing operation itself.
    *
    * @return The final result of the signing operation; i.e. the signature
-   * value.
+   * value. Never returns {@code null}.
    * @throws PKCS11Exception If calculating the final signature value failed.
    */
   public byte[] signFinal() throws PKCS11Exception {
     byte[] sigValue = pkcs11.C_SignFinal(sessionHandle);
-    return fixSignOutput(sigValue);
+    return toNonNull(fixSignOutput(sigValue));
   }
 
   private byte[] fixSignOutput(byte[] signatureValue) {
@@ -1110,35 +942,12 @@ public class Session {
    * method finalizes the current sign-recover operation; there is no equivalent method to
    * signUpdate for signing with recovery.
    *
-   * @param in     the to-be-signed data
-   * @param out    buffer for the signed data
-   * @param outOfs buffer offset for the signed data
-   * @param outLen buffer size for the signed data
-   * @return the length of signed data
+   * @param data the to-be-signed data
+   * @return the signed data. Never returns {@code null}.
    * @throws PKCS11Exception If signing the data failed.
    */
-  public int signRecover(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    return signRecover(in, 0, in.length, out, outOfs, outLen);
-  }
-
-  /**
-   * Signs the given data with the key and mechanism given to the signRecoverInit method. This
-   * method finalizes the current sign-recover operation; there is no equivalent method to
-   * signUpdate for signing with recovery.
-   *
-   * @param in     buffer containing the to-be-signed data
-   * @param inOfs  buffer offset of the to-be-signed data
-   * @param inLen  length of the to-be-signed data
-   * @param out    buffer for the signed data
-   * @param outOfs buffer offset for the signed data
-   * @param outLen buffer size for the signed data
-   * @return the length of signed data
-   * @throws PKCS11Exception If signing the data failed.
-   */
-  public int signRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkParams(in, inOfs, inLen, out, outOfs, outLen);
-    byte[] res = pkcs11.C_SignRecover(sessionHandle, copy(in, inOfs, inLen));
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] signRecover(byte[] data) throws PKCS11Exception {
+    return toNonNull(pkcs11.C_SignRecover(sessionHandle, data));
   }
 
   /**
@@ -1154,11 +963,11 @@ public class Session {
   /**
    * @param params    the mechanism parameter to use
    * @param data      the data to sign
-   * @return the signature
+   * @return the signature. Never returns {@code null}.
    * @throws PKCS11Exception if signing failed.
    */
   public byte[] signMessage(CkParams params, byte[] data) throws PKCS11Exception {
-    return pkcs11.C_SignMessage(sessionHandle, toCkParameters(params), data, useUtf8);
+    return toNonNull(pkcs11.C_SignMessage(sessionHandle, toCkParameters(params), data, useUtf8));
   }
 
   /**
@@ -1179,13 +988,12 @@ public class Session {
    * @param params          the mechanism parameter to use
    * @param data            the message to sign
    * @param isLastOperation specifies if this is the last part of this message.
-   * @return the signature
+   * @return the signature. Never returns {@code null}.
    * @throws PKCS11Exception in case of error.
    */
   public byte[] signMessageNext(CkParams params, byte[] data, boolean isLastOperation) throws PKCS11Exception {
-    byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data, isLastOperation,
-        useUtf8);
-    return fixSignOutput(signature);
+    byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data, isLastOperation, useUtf8);
+    return toNonNull(fixSignOutput(signature));
   }
 
   /**
@@ -1238,26 +1046,11 @@ public class Session {
    * pieces when reading the data from a stream. To verify the signature or MAC call verifyFinal
    * after feeding in all data using this method.
    *
-   * @param in the to-be-verified data
+   * @param dataPart Piece of the to-be-verified data.
    * @throws PKCS11Exception If verifying (e.g. digesting) the data failed.
    */
-  public void verifyUpdate(byte[] in) throws PKCS11Exception {
-    verifyUpdate(in, 0, in.length);
-  }
-
-  /**
-   * This method can be used to verify a signature with multiple pieces of data; e.g. buffer-size
-   * pieces when reading the data from a stream. To verify the signature or MAC call verifyFinal
-   * after feeding in all data using this method.
-   *
-   * @param in    buffer containing the to-be-verified data
-   * @param inOfs buffer offset of the to-be-verified data
-   * @param inLen length of the to-be-verified data
-   * @throws PKCS11Exception If verifying (e.g. digesting) the data failed.
-   */
-  public void verifyUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
-    checkInParams(in, inOfs, inLen);
-    pkcs11.C_VerifyUpdate(sessionHandle, copy(in, inOfs, inLen));
+  public void verifyUpdate(byte[] dataPart) throws PKCS11Exception {
+    pkcs11.C_VerifyUpdate(sessionHandle, dataPart);
   }
 
   /**
@@ -1298,47 +1091,13 @@ public class Session {
    * method finalizes the current verify-recover operation; there is no equivalent method to
    * verifyUpdate for signing with recovery.
    *
-   * @param in
-   *          the to-be-verified data
-   * @param out
-   *          buffer for the verified data
-   * @param outOfs
-   *          buffer offset for the verified data
-   * @param outLen
-   *          buffer size for the verified data
-   * @return the length of verified data
+   * @param data the to-be-verified data
+   * @return the verified data. Never returns {@code null}.
    * @exception PKCS11Exception
    *              If signing the data failed.
    */
-  public int verifyRecover(byte[] in, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    return verifyRecover(in, 0, in.length, out, outOfs, outLen);
-  }
-
-  /**
-   * Verifies the given data with the key and mechanism given to the verifyRecoverInit method. This
-   * method finalizes the current verify-recover operation; there is no equivalent method to
-   * verifyUpdate for signing with recovery.
-   *
-   * @param in
-   *          buffer containing the to-be-verified data
-   * @param inOfs
-   *          buffer offset of the to-be-verified data
-   * @param inLen
-   *          length of the to-be-verified data
-   * @param out
-   *          buffer for the verified data
-   * @param outOfs
-   *          buffer offset for the verified data
-   * @param outLen
-   *          buffer size for the verified data
-   * @return the length of verified data
-   * @exception PKCS11Exception
-   *              If signing the data failed.
-   */
-  public int verifyRecover(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) throws PKCS11Exception {
-    checkParams(in, inOfs, inLen, out, outOfs, outLen);
-    byte[] res = pkcs11.C_VerifyRecover(sessionHandle, copy(in, inOfs, inLen));
-    return copyResToBuffer(res, out, outOfs, outLen);
+  public byte[] verifyRecover(byte[] data) throws PKCS11Exception {
+    return toNonNull(pkcs11.C_VerifyRecover(sessionHandle, data));
   }
 
   /**
@@ -1420,12 +1179,12 @@ public class Session {
    *
    * @param part
    *          The piece of data to digest and encrypt.
-   * @return The intermediate result of the encryption.
+   * @return The intermediate result of the encryption. Never returns {@code null}.
    * @exception PKCS11Exception
    *              If digesting or encrypting the data failed.
    */
   public byte[] digestEncryptedUpdate(byte[] part) throws PKCS11Exception {
-    return pkcs11.C_DigestEncryptUpdate(sessionHandle, part);
+    return toNonNull(pkcs11.C_DigestEncryptUpdate(sessionHandle, part));
   }
 
   /**
@@ -1436,12 +1195,12 @@ public class Session {
    *
    * @param part
    *          The piece of data to decrypt and digest.
-   * @return The intermediate result of the decryption; the decrypted data.
+   * @return The intermediate result of the decryption; the decrypted data. Never returns {@code null}.
    * @exception PKCS11Exception
    *              If decrypting or digesting the data failed.
    */
   public byte[] decryptDigestUpdate(byte[] part) throws PKCS11Exception {
-    return pkcs11.C_DecryptDigestUpdate(sessionHandle, part);
+    return toNonNull(pkcs11.C_DecryptDigestUpdate(sessionHandle, part));
   }
 
   /**
@@ -1451,12 +1210,12 @@ public class Session {
    *
    * @param part
    *          The piece of data to sign and encrypt.
-   * @return The intermediate result of the encryption; the encrypted data.
+   * @return The intermediate result of the encryption; the encrypted data. Never returns {@code null}.
    * @exception PKCS11Exception
    *              If signing or encrypting the data failed.
    */
   public byte[] signEncryptUpdate(byte[] part) throws PKCS11Exception {
-    return pkcs11.C_SignEncryptUpdate(sessionHandle, part);
+    return toNonNull(pkcs11.C_SignEncryptUpdate(sessionHandle, part));
   }
 
   /**
@@ -1467,12 +1226,12 @@ public class Session {
    *
    * @param encryptedPart
    *          The piece of data to decrypt and verify.
-   * @return The intermediate result of the decryption; the decrypted data.
+   * @return The intermediate result of the decryption; the decrypted data. Never returns {@code null}.
    * @exception PKCS11Exception
    *              If decrypting or verifying the data failed.
    */
   public byte[] decryptVerifyUpdate(byte[] encryptedPart) throws PKCS11Exception {
-    return pkcs11.C_DecryptVerifyUpdate(sessionHandle, encryptedPart);
+    return toNonNull(pkcs11.C_DecryptVerifyUpdate(sessionHandle, encryptedPart));
   }
 
   /**
@@ -1522,12 +1281,12 @@ public class Session {
    *          The key to use for wrapping (encrypting).
    * @param keyHandle
    *          The key to wrap (encrypt).
-   * @return The wrapped key as byte array.
+   * @return The wrapped key as byte array. Never returns {@code null}.
    * @exception PKCS11Exception
    *              If wrapping the key failed.
    */
   public byte[] wrapKey(Mechanism mechanism, long wrappingKeyHandle, long keyHandle) throws PKCS11Exception {
-    return pkcs11.C_WrapKey(sessionHandle, toCkMechanism(mechanism), wrappingKeyHandle, keyHandle, useUtf8);
+    return toNonNull(pkcs11.C_WrapKey(sessionHandle, toCkMechanism(mechanism), wrappingKeyHandle, keyHandle, useUtf8));
   }
 
   /**
@@ -1870,6 +1629,7 @@ public class Session {
       CK_ATTRIBUTE[] attributeTemplateList = new CK_ATTRIBUTE[1];
       attributeTemplateList[0] = new CK_ATTRIBUTE();
       attributeTemplateList[0].type = attribute.getType();
+      // attributeTemplateList[0].pValue;
       pkcs11.C_GetAttributeValue(sessionHandle, objectHandle, attributeTemplateList, useUtf8);
 
       attribute.ckAttribute(attributeTemplateList[0]).present(true).sensitive(false);
@@ -2021,29 +1781,8 @@ public class Session {
     }
   }
 
-  private static void checkParams(byte[] in, int inOfs, int inLen, byte[] out, int outOfs, int outLen) {
-    checkInParams(in, inOfs, inLen);
-    checkOutParams(out, outOfs, outLen);
-  }
-
-  private static void checkInParams(byte[] in, int inOfs, int inLen) {
-    Functions.requireNonNull("in", in);
-    if (inOfs < 0 || inLen <= 0) {
-      throw new IllegalArgumentException("inOfs or inLen is invalid");
-    }
-    if (in.length < inOfs + inLen) {
-      throw new IllegalArgumentException("inOfs + inLen > in.length");
-    }
-  }
-
-  private static void checkOutParams(byte[] out, int outOfs, int outLen) {
-    Functions.requireNonNull("out", out);
-    if (outOfs < 0 || outLen <= 0) {
-      throw new IllegalArgumentException("outOfs or outLen is invalid");
-    }
-    if (out.length < outOfs + outLen) {
-      throw new IllegalArgumentException("outOfs + outLen > out.length");
-    }
+  private static byte[] toNonNull(byte[] bytes) {
+    return bytes == null ? new byte[0] : bytes;
   }
 
   private static class LruCache<K, V> {

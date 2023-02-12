@@ -28,7 +28,7 @@ public class GCM_PARAMS extends CkParams {
     params = new CK_GCM_PARAMS();
     params.pIv = requireNonNull("iv", iv);
     params.pAAD = aad;
-    params.ulTagBits = Functions.requireRange("tagBits", tagBits, 0, 128);
+    params.ulTagBits = Functions.requireAmong("tagBits", tagBits, 128, 120, 112, 104, 96, 64, 32);
   }
 
   @Override

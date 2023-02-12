@@ -27,7 +27,7 @@ public class CHACHA20_PARAMS extends CkParams {
   }
 
   @Override
-  public iaik.pkcs.pkcs11.wrapper.CK_CHACHA20_PARAMS getParams() {
+  public CK_CHACHA20_PARAMS getParams() {
     return params;
   }
 

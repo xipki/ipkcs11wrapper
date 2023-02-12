@@ -23,7 +23,7 @@ public class X9_42_DH1_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public Object getParams() {
+  public CK_X9_42_DH1_DERIVE_PARAMS getParams() {
     return params;
   }
 

@@ -8,6 +8,7 @@ package org.xipki.pkcs11.wrapper.attrs;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.wrapper.AttributeVector;
+import org.xipki.pkcs11.wrapper.Functions;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
 
 /**
@@ -64,6 +65,10 @@ public class AttributeArrayAttribute extends Attribute {
       return template;
     }
 
+    if (ckAttribute.pValue instanceof byte[]) {
+      System.out.println(Functions.toHex((byte[]) ckAttribute.pValue));
+    }
+    System.out.println();
     if (isNullValue() || ((CK_ATTRIBUTE[]) ckAttribute.pValue).length == 0) {
       return null;
     }
