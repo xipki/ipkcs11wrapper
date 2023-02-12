@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.xipki</groupId>
   <artifactId>ipkcs11wrapper</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <properties>
     <!--must match the version defined above-->
     <bundle.version>1.0.0.SNAPSHOT</bundle.version>
@@ -81,11 +81,6 @@
     </resources>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
@@ -293,7 +288,6 @@
         </plugins>
       </build>
     </profile>
-
   </profiles>
 </project>
 
