@@ -501,6 +501,8 @@ public class Functions {
     for (int i = 0; i < rOrSLen; i++) {
       if (sig[i] == 0) {
         derRLen--;
+      } else {
+        break;
       }
     }
 
@@ -515,6 +517,8 @@ public class Functions {
     for (int i = 0; i < rOrSLen; i++) {
       if (sig[rOrSLen + i] == 0) {
         derSLen--;
+      } else {
+        break;
       }
     }
 
