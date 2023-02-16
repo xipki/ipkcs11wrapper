@@ -94,7 +94,7 @@ public class Mechanism {
    */
   @Override
   public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:\n" + parameters;
+    return "    Mechanism: " + getName() + "\n    Parameters:" + (parameters == null ? " null" : "\n" + parameters);
   }
 
 }
