@@ -71,11 +71,11 @@ public class KeyPairTemplate {
     return this;
   }
 
-  public KeyPairTemplate label(String label) {
-    return label(label, label);
+  public KeyPairTemplate labels(String label) {
+    return labels(label, label);
   }
 
-  public KeyPairTemplate label(String privateKeyLabel, String publicKeyLabel) {
+  public KeyPairTemplate labels(String privateKeyLabel, String publicKeyLabel) {
     if (privateKeyLabel != null) {
       privateKey.label(privateKeyLabel);
     }
