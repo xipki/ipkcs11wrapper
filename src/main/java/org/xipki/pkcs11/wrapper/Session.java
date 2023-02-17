@@ -783,6 +783,27 @@ public class Session {
   }
 
   /**
+   * This method finalizes a digesting operation and returns the final result. Use this method, if
+   * you fed in the data using digestUpdate and/or digestKey. If you used the digest(byte[]) method,
+   * you need not (and shall not) call this method, because digest(byte[]) finalizes the digesting
+   * itself.
+   *
+   * @param out    buffer for the message digest
+   * @param outOfs buffer offset for the message digest
+   * @param outLen buffer size for the message digest
+   * @return the length of message digest
+   * @throws PKCS11Exception If calculating the final message digest failed.
+   */
+  public int digestFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
+    byte[] digest = pkcs11.C_DigestFinal(sessionHandle);
+    if (digest.length > outLen) {
+      throw new PKCS11Exception(PKCS11Constants.CKR_BUFFER_TOO_SMALL);
+    }
+    System.arraycopy(digest, 0, out, outOfs, digest.length);
+    return digest.length;
+  }
+
+  /**
    * Initializes a new signing operation. Use it for signatures and MACs. The application must call
    * this method before calling any other sign* operation. Before initializing a new operation, any
    * currently pending operation must be finalized using the appropriate *Final method (e.g.
@@ -843,6 +864,26 @@ public class Session {
   public void signUpdate(byte[] dataPart) throws PKCS11Exception {
     pkcs11.C_SignUpdate(sessionHandle, dataPart);
   }
+
+  /**
+   * This method can be used to sign multiple pieces of data; e.g. buffer-size pieces when reading
+   * the data from a stream. Signs the given data with the mechanism given to the signInit method.
+   * The application must call signFinal to get the final result of the signing after feeding in all
+   * data using this method.
+   *
+   * @param in    buffer containing the to-be-signed data
+   * @param inOfs buffer offset of the to-be-signed data
+   * @param inLen length of the to-be-signed data
+   * @throws PKCS11Exception If signing the data failed.
+   */
+  public void signUpdate(byte[] in, int inOfs, int inLen) throws PKCS11Exception {
+    if (inOfs == 0 && inLen == in.length) {
+      pkcs11.C_SignUpdate(sessionHandle, in);
+    } else {
+      pkcs11.C_SignUpdate(sessionHandle, Arrays.copyOfRange(in, inOfs, inOfs + inLen));
+    }
+  }
+
 
   /**
    * This method finalizes a signing operation and returns the final result. Use this method, if you
