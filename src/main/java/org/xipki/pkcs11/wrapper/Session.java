@@ -1308,6 +1308,7 @@ public class Session {
    *              If generating a new key-pair failed.
    */
   public PKCS11KeyPair generateKeyPair(Mechanism mechanism, KeyPairTemplate template) throws PKCS11Exception {
+    template.id();
     long[] objectHandles = pkcs11.C_GenerateKeyPair(sessionHandle, toCkMechanism(mechanism),
         toOutCKAttributes(template.publicKey()), toOutCKAttributes(template.privateKey()), useUtf8);
     return new PKCS11KeyPair(objectHandles[0], objectHandles[1]);

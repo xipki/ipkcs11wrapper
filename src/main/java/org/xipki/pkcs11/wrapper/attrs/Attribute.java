@@ -243,13 +243,24 @@ public abstract class Attribute {
     long type = ckAttribute.type;
     Object value = ckAttribute.pValue;
 
-    return    (type == PKCS11Constants.CKA_CLASS)            ? PKCS11Constants.ckoCodeToName((long) value)
-            : (type == PKCS11Constants.CKA_KEY_TYPE)         ? PKCS11Constants.ckkCodeToName((long) value)
-            : (type == PKCS11Constants.CKA_CERTIFICATE_TYPE)
-                  ? PKCS11Constants.codeToName(PKCS11Constants.Category.CKC, (long) value)
-            : (type == PKCS11Constants.CKA_HW_FEATURE_TYPE)
-                  ? PKCS11Constants.codeToName(PKCS11Constants.Category.CKH, (long) value)
-            : value.toString();
+    if (type == PKCS11Constants.CKA_CLASS) {
+      return PKCS11Constants.ckoCodeToName((long) value);
+    } else if (type == PKCS11Constants.CKA_KEY_TYPE) {
+      return PKCS11Constants.ckkCodeToName((long) value);
+    } else if (type == PKCS11Constants.CKA_CERTIFICATE_TYPE) {
+      return PKCS11Constants.codeToName(PKCS11Constants.Category.CKC, (long) value);
+    } else if (type == PKCS11Constants.CKA_HW_FEATURE_TYPE) {
+      return PKCS11Constants.codeToName(PKCS11Constants.Category.CKH, (long) value);
+    } else if (type == PKCS11Constants.CKA_CERTIFICATE_CATEGORY) {
+      long lvalue = (long) value;
+      return lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_UNSPECIFIED ? "UNSPECIFIED"
+          : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_TOKEN_USER   ? "TOKEN_USER"
+          : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_AUTHORITY    ? "AUTHORITY"
+          : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_OTHER_ENTITY ? "OTHER_ENTITY"
+          : Long.toString(lvalue);
+    } else {
+      return value.toString();
+    }
   }
 
   /**

@@ -1,5 +1,6 @@
 package org.xipki.pkcs11.wrapper;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
@@ -57,6 +58,17 @@ public class KeyPairTemplate {
     privateKey.endDate(endDate);
     publicKey.endDate(endDate);
     return this;
+  }
+
+
+  public byte[] id() throws PKCS11Exception {
+    byte[] privId = privateKey.id();
+    byte[] pubId = publicKey.id();
+    if (!Arrays.equals(privId, pubId)) {
+      // Private key and public key do not have the same CKA_ID
+      throw new PKCS11Exception(PKCS11Constants.CKR_TEMPLATE_INCONSISTENT);
+    }
+    return privId;
   }
 
   public KeyPairTemplate id(byte[] id) {
