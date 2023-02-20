@@ -80,7 +80,7 @@ public class AttributeArrayAttribute extends Attribute {
       Attribute attr = getInstance0(type);
       if (attr == null) {
         // ignore
-        System.err.println("Could not create attribute for the attribute type " + PKCS11Constants.ckaCodeToName(type));
+        System.err.println("Could not create attribute for the attribute type 0x" + Functions.toFullHex(type));
       } else {
         template.attr(attr.ckAttribute(ck_attribute).present(true));
       }
@@ -99,7 +99,7 @@ public class AttributeArrayAttribute extends Attribute {
       template = getValue();
     }
 
-    return (template == null) ? "<NULL_PTR>" : "\n" + template.toString("    ");
+    return (template == null) ? "<NULL_PTR>" : "\n" + template.toString(false, "    ");
   }
 
 }

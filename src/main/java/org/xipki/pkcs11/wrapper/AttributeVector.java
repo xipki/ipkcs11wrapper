@@ -165,14 +165,17 @@ public class AttributeVector {
 
   @Override
   public String toString() {
-    return toString("");
+    return toString(true, "");
   }
 
-  public String toString(String indent) {
+  public String toString(boolean withName, String indent) {
     StringBuilder sb = new StringBuilder(200);
-    sb.append(indent).append("Attribute Vector:");
+    String indent2 = indent;
+    if (withName) {
+      sb.append(indent).append("Attribute Vector:");
+      indent2 += "  ";
+    }
 
-    String indent2 = indent + "  ";
     for (Attribute attribute : attributes) {
       if (sb.length() > 0) {
         sb.append("\n");
