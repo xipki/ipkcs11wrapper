@@ -177,6 +177,10 @@ public class AttributeVector {
     }
 
     for (Attribute attribute : attributes) {
+      if (attribute.isNullValue()) {
+        continue;
+      }
+
       if (sb.length() > 0) {
         sb.append("\n");
       }

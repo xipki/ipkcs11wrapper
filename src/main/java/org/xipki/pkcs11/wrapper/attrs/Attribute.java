@@ -307,7 +307,7 @@ public abstract class Attribute {
     return ckAttribute.type;
   }
 
-  protected boolean isNullValue() {
+  public boolean isNullValue() {
     return ckAttribute == null || ckAttribute.pValue == null;
   }
 

@@ -421,7 +421,7 @@ public class Session {
    * @throws PKCS11Exception If initializing the find operation fails.
    */
   public void findObjectsInit(AttributeVector template) throws PKCS11Exception {
-    pkcs11.C_FindObjectsInit(sessionHandle, toOutCKAttributes(template), useUtf8);
+    pkcs11.C_FindObjectsInit(sessionHandle, toOutCKAttributes(template, true), useUtf8);
   }
 
   /**
@@ -1705,14 +1705,27 @@ public class Session {
   }
 
   private CK_ATTRIBUTE[] toOutCKAttributes(AttributeVector template) {
+    return toOutCKAttributes(template, false);
+  }
+
+  private CK_ATTRIBUTE[] toOutCKAttributes(AttributeVector template, boolean withoutNullValueAttr) {
     if (template == null) {
       return null;
     }
 
-    CK_ATTRIBUTE[] ret = template.toCkAttributes();
-    for (CK_ATTRIBUTE ckAttr : ret) {
+    CK_ATTRIBUTE[] ckAttrs = template.toCkAttributes();
+    List<CK_ATTRIBUTE> nonNullCkAttrs = null;
+    if (withoutNullValueAttr) {
+      nonNullCkAttrs = new ArrayList<>(ckAttrs.length);
+    }
+
+    for (CK_ATTRIBUTE ckAttr : ckAttrs) {
       if (ckAttr.pValue == null) {
         continue;
+      } else {
+        if (withoutNullValueAttr) {
+          nonNullCkAttrs.add(ckAttr);
+        }
       }
 
       if (ckAttr.type == PKCS11Constants.CKA_KEY_TYPE) {
@@ -1724,7 +1737,9 @@ public class Session {
         ckAttr.pValue = Functions.toOctetString((byte[]) ckAttr.pValue);
       }
     }
-    return ret;
+
+    return nonNullCkAttrs != null && nonNullCkAttrs.size() != ckAttrs.length
+        ? nonNullCkAttrs.toArray(new CK_ATTRIBUTE[0]) : ckAttrs;
   }
 
   private void postProcessGetAttribute(Attribute attr, long objectHandle, Attribute... otherAttrs) {
