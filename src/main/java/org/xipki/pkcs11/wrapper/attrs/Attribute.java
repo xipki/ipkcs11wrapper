@@ -273,7 +273,7 @@ public abstract class Attribute {
    */
   @Override
   public String toString() {
-    return toString(true, "");
+    return toString(true, 0, "");
   }
 
   /**
@@ -284,14 +284,21 @@ public abstract class Attribute {
    * @param withName
    *          If true, the string contains the attribute type name and the
    *          value. If false, it just contains the value.
+   * @param minNameLen Minimal length of the name.
    * @param indent The indent.
    * @return A string representation of this attribute.
    */
-  public String toString(boolean withName, String indent) {
-    StringBuilder sb = new StringBuilder(32).append(indent);
+  public String toString(boolean withName, int minNameLen, String indent) {
+    StringBuilder sb = new StringBuilder(Math.max(15, minNameLen) + 20).append(indent);
 
     if (withName) {
-      sb.append(PKCS11Constants.ckaCodeToName(ckAttribute.type)).append(": ");
+      String name = PKCS11Constants.ckaCodeToName(ckAttribute.type);
+      sb.append(name).append(": ");
+      if (name.length() < minNameLen) {
+        char[] padding = new char[minNameLen - name.length()];
+        Arrays.fill(padding, ' ');
+        sb.append(padding);
+      }
     }
 
     String valueString = present ? (sensitive ? "<Value is sensitive>" : getValueString()) : "<Attribute not present>";

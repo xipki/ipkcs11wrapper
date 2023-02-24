@@ -176,7 +176,20 @@ public class AttributeVector {
       indent2 += "  ";
     }
 
-    for (Attribute attribute : attributes) {
+    // sort the attributes to print
+    List<Attribute> copy = new ArrayList<>(attributes);
+    Collections.sort(copy, Comparator.comparingLong(Attribute::getType));
+
+    int nameLen = 0;
+    for (Attribute attribute : copy) {
+      if (!attribute.isNullValue()) {
+        nameLen = Math.max(nameLen, PKCS11Constants.ckaCodeToName(attribute.getType()).length());
+      }
+    }
+
+    nameLen = Math.min(nameLen, 30);
+
+    for (Attribute attribute : copy) {
       if (attribute.isNullValue()) {
         continue;
       }
@@ -185,7 +198,7 @@ public class AttributeVector {
         sb.append("\n");
       }
 
-      sb.append(attribute.toString(true, indent2));
+      sb.append(attribute.toString(true, nameLen, indent2));
     }
 
     return sb.toString();
