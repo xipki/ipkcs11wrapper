@@ -45,12 +45,17 @@ public class CCM_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_CCM_PARAMS:" +
-        "\n  ulDataLen: " + params.ulDataLen +
-        ptrToString("\n, pNonce:    ", params.pNonce) +
-        ptrToString("\n  pAAD:      ", params.pAAD) +
-        "\n  ulMacLen:  " + params.ulMacLen;
+  protected int getMaxFieldLen() {
+    return 9; // ulDataLen
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_CCM_PARAMS:" +
+        val2Str(indent, "ulDataLen", params.ulDataLen) +
+        ptr2str(indent, "pNonce", params.pNonce) +
+        ptr2str(indent, "pAAD", params.pAAD) +
+        val2Str(indent, "ulMacLen", params.ulMacLen);
   }
 
 }

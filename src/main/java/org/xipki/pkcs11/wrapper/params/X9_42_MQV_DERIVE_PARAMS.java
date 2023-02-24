@@ -33,14 +33,19 @@ public class X9_42_MQV_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_X9_42_MQV_DERIVE_PARAMS:" +
-        "\n  kdf:              " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKD, params.kdf) +
-        ptrToString("\n  pPublicData:      ", params.pPublicData) +
-        "\n  ulPrivateDataLen: " + params.ulPrivateDataLen +
-        "\n  hPrivateData:     " + params.hPrivateData +
-        ptrToString("\n  pPublicData2:     ", params.pPublicData2) +
-        "\n  hPublicKey:       " + params.hPublicKey;
+  protected int getMaxFieldLen() {
+    return 16; // ulPrivateDataLen
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_X9_42_MQV_DERIVE_PARAMS:" +
+        val2Str(indent, "kdf", PKCS11Constants.codeToName(PKCS11Constants.Category.CKD, params.kdf)) +
+        ptr2str(indent, "pPublicData", params.pPublicData) +
+        val2Str(indent, "ulPrivateDataLen", params.ulPrivateDataLen) +
+        val2Str(indent, "hPrivateData", params.hPrivateData) +
+        ptr2str(indent, "pPublicData2", params.pPublicData2) +
+        val2Str(indent, "hPublicKey", params.hPublicKey);
   }
 
 }

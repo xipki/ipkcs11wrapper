@@ -34,12 +34,18 @@ public class RSA_AES_KEY_WRAP_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_RSA_AES_KEY_WRAP_PARAMS:" +
-        "\n  AESKeyBits: " + params.ulAESKeyBits +
-        "\n  pOAEPParams:" +
-        "\n    source:      " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, params.pOAEPParams.source) +
-        ptrToString("\n    pSourceData: ", params.pOAEPParams.pSourceData);
+  protected int getMaxFieldLen() {
+    return 11; // pSourceData
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_RSA_AES_KEY_WRAP_PARAMS:" +
+        val2Str(indent, "AESKeyBits", params.ulAESKeyBits) +
+        "\n" + indent + "  pOAEPParams:" +
+        val2Str(indent + "  ", "source",
+            PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, params.pOAEPParams.source)) +
+        ptr2str(indent, "pSourceData", params.pOAEPParams.pSourceData);
   }
 
 }

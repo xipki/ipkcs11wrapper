@@ -5,6 +5,8 @@ package org.xipki.pkcs11.wrapper.params;
 
 import org.xipki.pkcs11.wrapper.Functions;
 
+import java.util.Arrays;
+
 /**
  * Every Parameters-class implements this interface through which the module.
  *
@@ -20,16 +22,48 @@ public abstract class CkParams {
    */
   public abstract Object getParams();
 
-  protected static String ptrToString(String prefix, byte[] data) {
-    if (prefix == null) {
-      prefix = "";
-    }
+  protected abstract int getMaxFieldLen();
 
-    return data == null ? prefix + "<NULL_PTR>" : Functions.toString(prefix, data);
+  public abstract String toString(String indent);
+
+  @Override
+  public final String toString() {
+    return toString("");
   }
 
-  protected static String ptrToString(char[] data) {
-    return data == null ? "<NULL_PTR>" : new String(data);
+  protected String ptr2str(String indent, String name, Object value) {
+    String prefix = "\n" + indent + "  ";
+    if (!name.isEmpty()) {
+      prefix += formatFieldName(name) + ": ";
+    }
+
+    if (value == null) {
+      return prefix + "<NULL_PTR>";
+    } else if (value instanceof byte[]) {
+      return Functions.toString(prefix, (byte[]) value);
+    } else if (value instanceof  char[]) {
+      return prefix + new String((char[]) value);
+    } else {
+      return prefix + value;
+    }
+  }
+
+  protected String val2Str(String indent, String name, Object value) {
+    String prefix = "\n" + indent + "  ";
+    if (!name.isEmpty()) {
+      prefix += formatFieldName(name) + ": ";
+    }
+    return prefix + value;
+  }
+
+  private String formatFieldName(String name) {
+    int maxFieldNameLen = getMaxFieldLen();
+    if (name.length() >= maxFieldNameLen) {
+      return name;
+    }
+    char[] prefix = new char[maxFieldNameLen - name.length()];
+    Arrays.fill(prefix, ' ');
+    return new String(prefix) + name;
   }
 
   protected static <T> T requireNonNull(String paramName, T param) {

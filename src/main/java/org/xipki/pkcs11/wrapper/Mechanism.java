@@ -94,7 +94,12 @@ public class Mechanism {
    */
   @Override
   public String toString() {
-    return "    Mechanism: " + getName() + "\n    Parameters:" + (parameters == null ? " null" : "\n" + parameters);
+    return toString("");
+  }
+
+  public String toString(String indent) {
+    return indent + "Mechanism: " + getName() + "\n" +
+        indent + "Parameters:" + (parameters == null ? " null" : "\n" + parameters.toString(indent + "  "));
   }
 
 }

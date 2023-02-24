@@ -55,14 +55,19 @@ public class ECDH2_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_ECDH2_DERIVE_PARAMS:" +
-        "\n  kdf:              " + codeToName(Category.CKD, params.kdf) +
-        ptrToString("\n  pPublicData:      ", params.pPublicData) +
-        ptrToString("\n  pSharedData:      ", params.pSharedData) +
-        "\n  ulPrivateDataLen: " + params.ulPrivateDataLen +
-        "\n  hPrivateData:     " + params.hPrivateData +
-        ptrToString("\n  pPublicData2:     ", params.pPublicData2);
+  protected int getMaxFieldLen() {
+    return 16; // ulPrivateDataLen
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_ECDH2_DERIVE_PARAMS:" +
+        val2Str(indent, "kdf", codeToName(Category.CKD, params.kdf)) +
+        ptr2str(indent, "pPublicData", params.pPublicData) +
+        ptr2str(indent, "pSharedData", params.pSharedData) +
+        val2Str(indent, "ulPrivateDataLen", params.ulPrivateDataLen) +
+        val2Str(indent, "hPrivateData", params.hPrivateData) +
+        ptr2str(indent, "pPublicData2", params.pPublicData2);
   }
 
 }

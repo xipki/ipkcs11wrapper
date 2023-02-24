@@ -28,11 +28,16 @@ public class X9_42_DH1_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_X9_42_DH2_DERIVE_PARAMS:" +
-        "\n  kdf:         " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKD, params.kdf) +
-        ptrToString("\n  pPublicData: ", params.pPublicData) +
-        ptrToString("\n  pOtherInfo:  ", params.pOtherInfo);
+  protected int getMaxFieldLen() {
+    return 11; // pPublicData
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_X9_42_DH2_DERIVE_PARAMS:" +
+        val2Str(indent, "kdf", PKCS11Constants.codeToName(PKCS11Constants.Category.CKD, params.kdf)) +
+        ptr2str(indent, "pPublicData", params.pPublicData) +
+        ptr2str(indent, "pOtherInfo", params.pOtherInfo);
   }
 
 }

@@ -51,13 +51,19 @@ public class PKCS5_PBKD2_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_PKCS5_PBKD2_PARAMS:" +
-        "\n  saltSource:      " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, params.saltSource) +
-        ptrToString("\n  pSaltSourceData: ", params.pSaltSourceData) +
-        "\n  iterations:      " + params.iterations +
-        "\n  prf:             " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKP_PRF, params.prf) +
-        ptrToString("\n  pPrfData:        ", params.pPrfData);
+  protected int getMaxFieldLen() {
+    return 16; // pSaltSourceData
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_PKCS5_PBKD2_PARAMS:" +
+        val2Str(indent, "saltSource",
+            PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, params.saltSource)) +
+        ptr2str(indent, "pSaltSourceData", params.pSaltSourceData) +
+        val2Str(indent, "iterations", params.iterations) +
+        val2Str(indent, "prf", PKCS11Constants.codeToName(PKCS11Constants.Category.CKP_PRF, params.prf)) +
+        ptr2str(indent, "pPrfData", params.pPrfData);
   }
 
 }

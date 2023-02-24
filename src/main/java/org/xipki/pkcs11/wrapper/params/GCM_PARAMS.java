@@ -37,11 +37,16 @@ public class GCM_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_GCM_PARAMS:" +
-        ptrToString("\n  pIv:       ", params.pIv) +
-        ptrToString("\n  pAAD:      ", params.pAAD) +
-        "\n  ulTagBits: " + params.ulTagBits;
+  protected int getMaxFieldLen() {
+    return 9; // ulTagBits
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_GCM_PARAMS:" +
+        ptr2str(indent, "pIv", params.pIv) +
+        ptr2str(indent, "pAAD", params.pAAD) +
+        val2Str(indent, "ulTagBits", params.ulTagBits);
   }
 
 }

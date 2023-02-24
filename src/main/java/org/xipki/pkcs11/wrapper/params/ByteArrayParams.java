@@ -24,8 +24,13 @@ public class ByteArrayParams extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "ByteArray Params: " + ptrToString("\n  ", bytes);
+  protected int getMaxFieldLen() {
+    return 0;
+  }
+
+  @Override
+  public String toString(String indent) {
+    return  indent + "ByteArray Params:\n" + Functions.toString(indent + "  ", bytes);
   }
 
 }

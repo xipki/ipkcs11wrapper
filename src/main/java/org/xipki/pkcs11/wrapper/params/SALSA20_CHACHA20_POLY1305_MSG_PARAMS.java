@@ -38,10 +38,15 @@ public class SALSA20_CHACHA20_POLY1305_MSG_PARAMS extends CkParams implements Ck
   }
 
   @Override
-  public String toString() {
-    return "CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS:" +
-        ptrToString("\n  pNonce: ", params.pNonce) +
-        ptrToString("\n  pTag:   ", params.pTag);
+  protected int getMaxFieldLen() {
+    return 6; // pNonce
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS:" +
+        ptr2str(indent, "pNonce", params.pNonce) +
+        ptr2str(indent, "pTag", params.pTag);
   }
 
 }

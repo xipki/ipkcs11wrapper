@@ -32,10 +32,15 @@ public class SALSA20_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_SALSA20_PARAMS: " +
-        ptrToString("\n  pBlockCounter: ", params.pBlockCounter) +
-        ptrToString("\n  pNonce:        ", params.pNonce);
+  protected int getMaxFieldLen() {
+    return 13; // pBlockCounter
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_SALSA20_PARAMS: " +
+        ptr2str(indent, "pBlockCounter", params.pBlockCounter) +
+        ptr2str(indent, "pNonce", params.pNonce);
   }
 
 }

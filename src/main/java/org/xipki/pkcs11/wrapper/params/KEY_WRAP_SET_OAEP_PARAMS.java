@@ -34,10 +34,15 @@ public class KEY_WRAP_SET_OAEP_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_KEY_WRAP_SET_OAEP_PARAMS:" +
-        "\n  bBC: 0x" + Integer.toHexString(0xFF & params.bBC) +
-        ptrToString("\n  pX:  ", params.pX);
+  protected int getMaxFieldLen() {
+    return 3; // bBC
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_KEY_WRAP_SET_OAEP_PARAMS:" +
+        val2Str(indent, "bBC", "0x" + Integer.toHexString(0xFF & params.bBC)) +
+        ptr2str(indent, "pX", params.pX);
   }
 
 }

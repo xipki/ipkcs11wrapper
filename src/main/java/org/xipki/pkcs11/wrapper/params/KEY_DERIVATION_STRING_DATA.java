@@ -31,9 +31,14 @@ public class KEY_DERIVATION_STRING_DATA extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_KEY_DERIVATION_STRING_DATA:" +
-        ptrToString("\n  pData: ", params.pData);
+  protected int getMaxFieldLen() {
+    return 5; // pData
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_KEY_DERIVATION_STRING_DATA:" +
+        ptr2str(indent, "pData", params.pData);
   }
 
 }

@@ -42,10 +42,15 @@ public class AES_CBC_ENCRYPT_DATA_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_AES_CBC_ENCRYPT_DATA_PARAMS: " +
-        ptrToString(" \n iv:    ", params.iv) +
-        ptrToString("\n  pData: ", params.pData);
+  protected int getMaxFieldLen() {
+    return 5; // pData
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_AES_CBC_ENCRYPT_DATA_PARAMS: " +
+        ptr2str(indent, "iv", params.iv) +
+        ptr2str(indent, "pData", params.pData);
   }
 
 }

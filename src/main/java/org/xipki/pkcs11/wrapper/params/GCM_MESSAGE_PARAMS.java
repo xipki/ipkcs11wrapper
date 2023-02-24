@@ -43,12 +43,18 @@ public class GCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_GCM_MESSAGE_PARAMS:" +
-        ptrToString("\n  IV:            ", params.pIv) +
-        ptrToString("\n  pTag:          ", params.pTag) +
-        "\n  ivGenerator:   " + PKCS11Constants.codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.ivGenerator) +
-        "\n  ulIvFixedBits: " + params.ulIvFixedBits;
+  protected int getMaxFieldLen() {
+    return 13; // ulIvFixedBits
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_GCM_MESSAGE_PARAMS:" +
+        ptr2str(indent, "IV", params.pIv) +
+        ptr2str(indent, "pTag", params.pTag) +
+        val2Str(indent, "ivGenerator",
+            PKCS11Constants.codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.ivGenerator)) +
+        val2Str(indent, "ulIvFixedBits", params.ulIvFixedBits);
   }
 
 }

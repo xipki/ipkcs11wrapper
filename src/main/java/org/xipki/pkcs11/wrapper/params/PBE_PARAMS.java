@@ -43,12 +43,17 @@ public class PBE_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_PBE_PARAMS:" +
-        "\n  pInitVector: " + ptrToString(params.pInitVector) +
-        "\n  pPassword: " + ptrToString(params.pPassword) +
-        "\n  pSalt: " + ptrToString(params.pSalt) +
-        "\n  ulIteration: " + params.ulIteration;
+  protected int getMaxFieldLen() {
+    return 11; // ulIteration
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_PBE_PARAMS:" +
+        ptr2str(indent, "pInitVector", params.pInitVector) +
+        ptr2str(indent, "pPassword", params.pPassword) +
+        ptr2str(indent, "pSalt", params.pSalt) +
+        ptr2str(indent, "ulIteration", params.ulIteration);
   }
 
 }

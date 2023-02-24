@@ -884,7 +884,6 @@ public class Session {
     }
   }
 
-
   /**
    * This method finalizes a signing operation and returns the final result. Use this method, if you
    * fed in the data using signUpdate. If you used the sign(byte[]) method, you need not (and shall

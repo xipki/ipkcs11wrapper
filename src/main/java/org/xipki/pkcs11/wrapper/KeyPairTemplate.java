@@ -60,7 +60,6 @@ public class KeyPairTemplate {
     return this;
   }
 
-
   public byte[] id() throws PKCS11Exception {
     byte[] privId = privateKey.id();
     byte[] pubId = publicKey.id();

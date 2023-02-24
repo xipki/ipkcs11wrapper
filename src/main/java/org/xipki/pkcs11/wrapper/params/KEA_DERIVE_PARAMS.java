@@ -43,12 +43,17 @@ public class KEA_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_KEA_DERIVE_PARAMS:" +
-        "\n  isSender:    " + params.isSender +
-        ptrToString("\n  pRandomA:    ", params.pRandomA) +
-        ptrToString("\n  pRandomB:    ", params.pRandomB) +
-        ptrToString("\n  pPublicData: ", params.pPublicData);
+  protected int getMaxFieldLen() {
+    return 11; // pPublicData
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_KEA_DERIVE_PARAMS:" +
+        val2Str(indent, "isSender", params.isSender) +
+        ptr2str(indent, "pRandomA", params.pRandomA) +
+        ptr2str(indent, "pRandomB", params.pRandomB) +
+        ptr2str(indent, "pPublicData", params.pPublicData);
   }
 
 }

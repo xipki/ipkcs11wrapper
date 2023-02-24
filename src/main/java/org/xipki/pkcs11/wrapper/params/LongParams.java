@@ -31,8 +31,13 @@ public class LongParams extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "Long Params: " + params;
+  protected int getMaxFieldLen() {
+    return 0;
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "Long Params: " + params;
   }
 
 }

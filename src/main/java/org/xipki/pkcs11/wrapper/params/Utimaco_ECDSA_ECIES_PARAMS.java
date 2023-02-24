@@ -58,15 +58,20 @@ public class Utimaco_ECDSA_ECIES_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_ECDSA_ECIES_PARAMS:" +
-        "\n  hashAlg:       " + PKCS11Constants.ckmCodeToName(params.hashAlg) +
-        "\n  cryptAlg:      " + PKCS11Constants.ckmCodeToName(params.cryptAlg) +
-        "\n  cryptOpt:      " + params.cryptOpt +
-        "\n  macAlg:        " + PKCS11Constants.ckmCodeToName(params.macAlg) +
-        "\n  mac options:   " + params.macOpt +
-        ptrToString("\n  sharedSecret1: ", params.pSharedSecret1) +
-        ptrToString("\n  sharedSecret2: ", params.pSharedSecret2);
+  protected int getMaxFieldLen() {
+    return 13; // sharedSecret1
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_ECDSA_ECIES_PARAMS:" +
+        val2Str(indent, "hashAlg", PKCS11Constants.ckmCodeToName(params.hashAlg)) +
+        val2Str(indent, "cryptAlg", PKCS11Constants.ckmCodeToName(params.cryptAlg)) +
+        val2Str(indent, "cryptOpt", params.cryptOpt) +
+        val2Str(indent, "macAlg", PKCS11Constants.ckmCodeToName(params.macAlg)) +
+        val2Str(indent, "mac options", params.macOpt) +
+        ptr2str(indent, "sharedSecret1", params.pSharedSecret1) +
+        ptr2str(indent, "sharedSecret2", params.pSharedSecret2);
   }
 
 }

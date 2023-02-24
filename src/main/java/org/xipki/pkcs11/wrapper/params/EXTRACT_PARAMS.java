@@ -22,8 +22,14 @@ public class EXTRACT_PARAMS extends LongParams {
   }
 
   @Override
-  public String toString() {
-    return "EXTRACT_PARAMS: " + getClass().getName() + "\n  Bit Index: " + params;
+  protected int getMaxFieldLen() {
+    return 9; // Bit Index
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "EXTRACT_PARAMS: " + getClass().getName() +
+        val2Str(indent, "Bit Index", params);
   }
 
 }

@@ -46,14 +46,19 @@ public class CCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_CCM_MESSAGE_PARAMS: " +
-        "\n  ulDataLen:        " + params.ulDataLen +
-        ptrToString("\n  pNonce:           ", params.pNonce) +
-        "\n  nonceGenerator:   " +
-            PKCS11Constants.codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.nonceGenerator) +
-        "\n  ulNonceFixedBits: " + params.ulNonceFixedBits +
-        ptrToString("\n  pMAC:             ", params.pMAC);
+  protected int getMaxFieldLen() {
+    return 16; // ulNonceFixedBits
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_CCM_MESSAGE_PARAMS:" +
+        val2Str(indent, "ulDataLen", params.ulDataLen) +
+        ptr2str(indent, "pNonce", params.pNonce) +
+        val2Str(indent, "nonceGenerator",
+            PKCS11Constants.codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.nonceGenerator)) +
+        val2Str(indent, "ulNonceFixedBits", params.ulNonceFixedBits) +
+        ptr2str(indent, "pMAC", params.pMAC);
   }
 
 }

@@ -32,10 +32,15 @@ public class CHACHA20_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_CHACHA20_PARAMS:" +
-        ptrToString("\n  BlockCounter: ", params.pBlockCounter) +
-        ptrToString("\n  pNonce:       ", params.pNonce);
+  protected int getMaxFieldLen() {
+    return 12; // BlockCounter
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_CHACHA20_PARAMS:" +
+        ptr2str(indent, "BlockCounter", params.pBlockCounter) +
+        ptr2str(indent, "pNonce", params.pNonce);
   }
 
 }

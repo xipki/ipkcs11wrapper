@@ -55,14 +55,19 @@ public class ECMQV_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public String toString() {
-    return "CK_ECMQV_DERIVE_PARAMS:" +
-        "\n  kdf:          " + codeToName(PKCS11Constants.Category.CKD, params.kdf) +
-        ptrToString("\n  pPublicData:  ", params.pPublicData) +
-        ptrToString("\n  pSharedData:  ", params.pSharedData) +
-        "\n  hPrivateData: " + params.hPrivateData +
-        ptrToString("\n  pPublicData2: ", params.pPublicData2) +
-        "\n  publicKey:    " + params.publicKey;
+  protected int getMaxFieldLen() {
+    return 12; // hPrivateData
+  }
+
+  @Override
+  public String toString(String indent) {
+    return indent + "CK_ECMQV_DERIVE_PARAMS:" +
+        val2Str(indent, "kdf", codeToName(PKCS11Constants.Category.CKD, params.kdf)) +
+        ptr2str(indent, "pPublicData", params.pPublicData) +
+        ptr2str(indent, "pSharedData", params.pSharedData) +
+        val2Str(indent, "hPrivateData", params.hPrivateData) +
+        ptr2str(indent, "pPublicData2", params.pPublicData2) +
+        val2Str(indent, "publicKey", params.publicKey);
   }
 
 }
