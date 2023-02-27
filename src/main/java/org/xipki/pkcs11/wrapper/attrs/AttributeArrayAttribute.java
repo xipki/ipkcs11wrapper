@@ -65,10 +65,6 @@ public class AttributeArrayAttribute extends Attribute {
       return template;
     }
 
-    if (ckAttribute.pValue instanceof byte[]) {
-      System.out.println(Functions.toHex((byte[]) ckAttribute.pValue));
-    }
-    System.out.println();
     if (isNullValue() || ((CK_ATTRIBUTE[]) ckAttribute.pValue).length == 0) {
       return null;
     }

@@ -68,7 +68,7 @@ public abstract class Attribute {
     String propFile = "org/xipki/pkcs11/wrapper/type-CKA.properties";
     Properties props = new Properties();
     try {
-      props.load(Functions.class.getClassLoader().getResourceAsStream(propFile));
+      props.load(Attribute.class.getClassLoader().getResourceAsStream(propFile));
       for (String name : props.stringPropertyNames()) {
         name = name.trim();
         String type = props.getProperty(name).trim();
@@ -257,7 +257,7 @@ public abstract class Attribute {
           : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_TOKEN_USER   ? "TOKEN_USER"
           : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_AUTHORITY    ? "AUTHORITY"
           : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_OTHER_ENTITY ? "OTHER_ENTITY"
-          : Long.toString(lvalue);
+          : "0x" + Functions.toFullHex(lvalue);
     } else {
       return value.toString();
     }
