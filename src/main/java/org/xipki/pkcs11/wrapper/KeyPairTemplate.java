@@ -161,12 +161,8 @@ public class KeyPairTemplate {
 
   @Override
   public String toString() {
-    String privText = privateKey.toString(false, "  ");
-    String pubText = publicKey.toString(false, "  ");
-    StringBuilder sb = new StringBuilder(20 + privText.length() + pubText.length());
-    sb.append("Private Key Template:\n").append(privText);
-    sb.append("Public Key Template:\n").append(pubText);
-    return sb.toString();
+    return "Private Key Template:\n" + privateKey.toString(false, "  ")
+        + "\nPublic Key Template:\n" + publicKey.toString(false, "  ");
   }
 
 }

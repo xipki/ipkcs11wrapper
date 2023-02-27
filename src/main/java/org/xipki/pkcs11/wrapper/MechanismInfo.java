@@ -116,9 +116,9 @@ public class MechanismInfo {
     long requiredMaxKeySize = requiredFeatures.getMaxKeySize();
     long requiredMinKeySize = requiredFeatures.getMinKeySize();
 
-    return (requiredMaxKeySize != 0 && requiredMaxKeySize > maxKeySize) ? false
-        :  (requiredMinKeySize != 0 && requiredMinKeySize < minKeySize) ? false
-        :  (requiredFeatures.flags & flags) == requiredFeatures.flags;
+    return (requiredMaxKeySize == 0 || requiredMaxKeySize <= maxKeySize)
+        && ((requiredMinKeySize == 0 || requiredMinKeySize >= minKeySize)
+        && (requiredFeatures.flags & flags) == requiredFeatures.flags);
   }
 
   /**

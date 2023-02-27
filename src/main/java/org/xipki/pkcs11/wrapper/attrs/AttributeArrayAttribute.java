@@ -9,13 +9,11 @@ package org.xipki.pkcs11.wrapper.attrs;
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.Functions;
-import org.xipki.pkcs11.wrapper.PKCS11Constants;
 
 /**
  * Objects of this class represent an attribute array of a PKCS#11 object
  * as specified by PKCS#11. This attribute is available since
  * cryptoki version 2.20.
- *
  *
  * @author Birgit Haas (SIC)
  * @author Lijun Liao (xipki)

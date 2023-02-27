@@ -178,7 +178,7 @@ public class AttributeVector {
 
     // sort the attributes to print
     List<Attribute> copy = new ArrayList<>(attributes);
-    Collections.sort(copy, Comparator.comparingLong(Attribute::getType));
+    copy.sort(Comparator.comparingLong(Attribute::getType));
 
     int nameLen = 0;
     for (Attribute attribute : copy) {
