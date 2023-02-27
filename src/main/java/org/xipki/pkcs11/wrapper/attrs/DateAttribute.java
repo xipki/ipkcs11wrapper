@@ -84,4 +84,14 @@ public class DateAttribute extends Attribute {
     return calendar.getTime();
   }
 
+  @Override
+  protected String getValueString() {
+    if (isNullValue()) {
+      return "<NULL_PTR>";
+    } else {
+      CK_DATE ckDate = (CK_DATE) ckAttribute.pValue;
+      return new String(ckDate.year) + "." + new String(ckDate.month) + "." + new String(ckDate.day);
+    }
+  }
+
 }
