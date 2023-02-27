@@ -14,7 +14,7 @@ Use ipkcs11wrapper in your project
   <dependency>
       <groupId>org.xipki</groupId>
       <artifactId>ipkcs11wrapper</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2-SNAPSHOT</version>
   </dependency>
   ```
 
