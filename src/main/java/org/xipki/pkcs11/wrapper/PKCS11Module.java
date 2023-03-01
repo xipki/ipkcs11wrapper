@@ -552,7 +552,7 @@ public class PKCS11Module {
               } else if ("EC_PRIVATEKEY_ECPOINT".equalsIgnoreCase(token)) {
                 vendorBehaviours.add(BEHAVIOUR_EC_PRIVATEKEY_ECPOINT);
               } else {
-                System.out.println("Ignored unknown vendor behaviour '" + token + "'.");
+                StaticLogger.warn("Ignored unknown vendor behaviour '" + token + "'.");
               }
             }
           }
@@ -592,7 +592,7 @@ public class PKCS11Module {
         } // end while
       }
     } catch (Exception e) {
-      System.err.println("error reading VENDOR code mapping, ignore it.");
+      StaticLogger.warn("error reading VENDOR code mapping, ignore it.");
     }
 
     withVendorCodeMap = !ckmGenericToVendorMap.isEmpty() || !ckkGenericToVendorMap.isEmpty();

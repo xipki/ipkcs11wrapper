@@ -9,6 +9,7 @@ package org.xipki.pkcs11.wrapper.attrs;
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.wrapper.StaticLogger;
 
 /**
  * Objects of this class represent an attribute array of a PKCS#11 object
@@ -74,7 +75,7 @@ public class AttributeArrayAttribute extends Attribute {
       Attribute attr = getInstance0(type);
       if (attr == null) {
         // ignore
-        System.err.println("Could not create attribute for the attribute type 0x" + Functions.toFullHex(type));
+        StaticLogger.warn("Could not create attribute for the attribute type 0x" + Functions.toFullHex(type));
       } else {
         template.attr(attr.ckAttribute(ck_attribute).present(true));
       }

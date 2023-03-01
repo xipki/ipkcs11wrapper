@@ -1281,7 +1281,7 @@ public final class PKCS11Constants {
           StringTokenizer tokens = new StringTokenizer(names, ",");
 
           if (!tokens.hasMoreTokens()) {
-            System.out.println("No name defined for code " + propName);
+            StaticLogger.warn("No name defined for code " + propName);
             continue;
           }
 
