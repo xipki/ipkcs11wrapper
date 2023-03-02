@@ -19,6 +19,8 @@ import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECPoint;
 import java.util.*;
 
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
+
 /**
  * Session objects are used to perform cryptographic operations on a token. The application gets a
  * Session object by calling openSession on a certain Token object. Having the session object, the
@@ -1494,26 +1496,6 @@ public class Session {
     return attr.getValue();
   }
 
-  public String getCkaLabel(long objectHandle) throws PKCS11Exception {
-    return getStringAttrValue(objectHandle, PKCS11Constants.CKA_LABEL);
-  }
-
-  public byte[] getCkaId(long objectHandle) throws PKCS11Exception {
-    return getByteArrayAttrValue(objectHandle, PKCS11Constants.CKA_ID);
-  }
-
-  public Long getCkaClass(long objectHandle) throws PKCS11Exception {
-    return getLongAttrValue(objectHandle, PKCS11Constants.CKA_CLASS);
-  }
-
-  public Long getCkaKeyType(long objectHandle) throws PKCS11Exception {
-    return getLongAttrValue(objectHandle, PKCS11Constants.CKA_KEY_TYPE);
-  }
-
-  public Long getCkaCertificateType(long objectHandle) throws PKCS11Exception {
-    return getLongAttrValue(objectHandle, PKCS11Constants.CKA_CERTIFICATE_TYPE);
-  }
-
   public Object getAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     Attribute attr = Attribute.getInstance(attributeType);
     doGetAttrValue(objectHandle, attr);
@@ -1525,17 +1507,21 @@ public class Session {
     for (long attrType : attributeTypes) {
       typeList.add(attrType);
     }
+    return getAttrValues(objectHandle, typeList);
+  }
 
-    if (typeList.contains(PKCS11Constants.CKA_EC_POINT) && !typeList.contains(PKCS11Constants.CKA_EC_PARAMS)) {
+  public AttributeVector getAttrValues(long objectHandle, List<Long> attributeTypes) throws PKCS11Exception {
+    if (attributeTypes.contains(PKCS11Constants.CKA_EC_POINT)
+        && !attributeTypes.contains(PKCS11Constants.CKA_EC_PARAMS)) {
       synchronized (module) {
         Boolean b = module.getEcPointFixNeeded();
         if (b == null || b) {
-          typeList.add(PKCS11Constants.CKA_EC_PARAMS);
+          attributeTypes.add(PKCS11Constants.CKA_EC_PARAMS);
         }
       }
     }
 
-    Attribute[] attrs = new Attribute[typeList.size()];
+    Attribute[] attrs = new Attribute[attributeTypes.size()];
     int index = 0;
 
     // we need to fix attributes EC_PARAMS and EC_POINT. Where EC_POINT needs EC_PARAMS,
@@ -1544,17 +1530,104 @@ public class Session {
                           PKCS11Constants.CKA_EC_PARAMS, PKCS11Constants.CKA_EC_POINT};
 
     for (long type : firstTypes) {
-      if (typeList.remove(type)) {
+      if (attributeTypes.remove(type)) {
         attrs[index++] =  Attribute.getInstance(type);
       }
     }
 
-    for (long type : typeList) {
+    for (long type : attributeTypes) {
       attrs[index++] =  Attribute.getInstance(type);
     }
 
     doGetAttrValues(objectHandle, attrs);
     return new AttributeVector(attrs);
+  }
+
+  public AttributeVector getDefaultAttrValues(long objectHandle) throws PKCS11Exception {
+    long objClass = getLongAttrValue(objectHandle, CKA_CLASS);
+    List<Long> ckaTypes = new LinkedList<>();
+    addCkaTypes(ckaTypes, CKA_LABEL, CKA_ID, CKA_TOKEN);
+
+    if (objClass == CKO_SECRET_KEY || objClass == CKO_PRIVATE_KEY) {
+      addCkaTypes(ckaTypes, CKA_ALLOWED_MECHANISMS, CKA_DECRYPT, CKA_EXTRACTABLE, CKA_KEY_GEN_MECHANISM,
+          CKA_NEVER_EXTRACTABLE, CKA_PRIVATE, CKA_SIGN, CKA_UNWRAP, CKA_UNWRAP_TEMPLATE, CKA_WRAP_WITH_TRUSTED);
+
+      AttributeVector attrs = getAttrValues(objectHandle, CKA_KEY_TYPE, CKA_SENSITIVE, CKA_ALWAYS_SENSITIVE);
+      long keyType = attrs.keyType();
+      Boolean sensitive = attrs.sensitive();
+      Boolean alwaysSensitive = attrs.alwaysSensitive();
+
+      boolean isSensitive = (sensitive == null) || sensitive;
+      if (alwaysSensitive != null) {
+        isSensitive |= alwaysSensitive;
+      }
+
+      if (objClass == CKO_SECRET_KEY) {
+        addCkaTypes(ckaTypes, CKA_ENCRYPT, CKA_TRUSTED, CKA_VERIFY, CKA_WRAP, CKA_WRAP_TEMPLATE);
+
+        if (!(keyType == CKK_DES || keyType == CKK_DES2 || keyType == CKK_DES3)) {
+          ckaTypes.add(CKA_VALUE_LEN);
+        }
+
+        if (!isSensitive) {
+          ckaTypes.add(CKA_VALUE);
+        }
+      } else {
+        addCkaTypes(ckaTypes, CKA_ALWAYS_AUTHENTICATE, CKA_SIGN_RECOVER);
+
+        if (keyType == CKK_RSA) {
+          addCkaTypes(ckaTypes, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+          if (!isSensitive) {
+            addCkaTypes(ckaTypes, CKA_PRIVATE_EXPONENT, CKA_PRIME_1, CKA_PRIME_2,
+                CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT);
+          }
+        } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY
+            || keyType == CKK_VENDOR_SM2) {
+          ckaTypes.add(CKA_EC_PARAMS);
+          if (!isSensitive) {
+            ckaTypes.add(CKA_VALUE);
+          }
+        } else if (keyType == CKK_DSA) {
+          addCkaTypes(ckaTypes, CKA_PRIME, CKA_SUBPRIME, CKA_BASE);
+          if (!isSensitive) {
+            ckaTypes.add(CKA_VALUE);
+          }
+        }
+      }
+
+      return getAttrValues(objectHandle, ckaTypes).class_(objClass).keyType(keyType)
+          .sensitive(sensitive).alwaysSensitive(alwaysSensitive);
+    } else if (objClass == CKO_PUBLIC_KEY) {
+      addCkaTypes(ckaTypes, CKA_ALLOWED_MECHANISMS, CKA_ENCRYPT, CKA_KEY_GEN_MECHANISM, CKA_TRUSTED,
+          CKA_VERIFY, CKA_VERIFY_RECOVER, CKA_WRAP, CKA_WRAP_TEMPLATE);
+      long keyType = getLongAttrValue(objectHandle, CKA_KEY_TYPE);
+      if (keyType == CKK_RSA) {
+        addCkaTypes(ckaTypes, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+      } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY
+          || keyType == CKK_VENDOR_SM2) {
+        addCkaTypes(ckaTypes, CKA_EC_PARAMS, CKA_EC_POINT);
+      } else if (keyType == CKK_DSA) {
+        addCkaTypes(ckaTypes, CKA_PRIME, CKA_SUBPRIME, CKA_BASE);
+      }
+
+      return getAttrValues(objectHandle, ckaTypes).class_(objClass).keyType(keyType);
+    } else if (objClass == CKO_CERTIFICATE) {
+      addCkaTypes(ckaTypes, CKA_TRUSTED, CKA_CERTIFICATE_CATEGORY, CKA_START_DATE, CKA_END_DATE);
+      long certType = getLongAttrValue(objectHandle, CKA_CERTIFICATE_TYPE);
+      if (certType == CKC_X_509) {
+        addCkaTypes(ckaTypes, CKA_VALUE, CKA_URL, CKA_ISSUER, CKA_SUBJECT, CKA_SERIAL_NUMBER,
+            CKA_HASH_OF_ISSUER_PUBLIC_KEY, CKA_HASH_OF_SUBJECT_PUBLIC_KEY);
+      }
+      return getAttrValues(objectHandle, ckaTypes).class_(objClass).certificateType(certType);
+    } else {
+      return getAttrValues(objectHandle, ckaTypes);
+    }
+  }
+
+  private static void addCkaTypes(List<Long> list, long... types) {
+    for (long type : types) {
+      list.add(type);
+    }
   }
 
   /**
@@ -1759,7 +1832,7 @@ public class Session {
 
         if (keyType == null) {
           try {
-            keyType = getCkaKeyType(objectHandle);
+            keyType = getLongAttrValue(objectHandle, CKA_KEY_TYPE);
           } catch (PKCS11Exception e2) {
           }
         }

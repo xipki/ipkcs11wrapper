@@ -8,7 +8,6 @@ public class StaticLogger {
     logger = logger_;
   }
 
-
   public static void info(String message) {
     if (logger != null) {
       logger.info(message);
