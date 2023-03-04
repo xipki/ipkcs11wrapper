@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * <p>
@@ -119,6 +120,8 @@ public class PKCS11Module {
 
   private final Set<Integer> vendorBehaviours = new HashSet<>();
 
+  private static final AtomicBoolean licensePrinted = new AtomicBoolean(false);
+
   /**
    * Create a new module that uses the given PKCS11 interface to interact with
    * the token.
@@ -142,6 +145,18 @@ public class PKCS11Module {
    *
    */
   public static PKCS11Module getInstance(String pkcs11ModulePath) throws IOException {
+    synchronized (licensePrinted) {
+      if (!licensePrinted.get()) {
+        StaticLogger.info(
+                "This product (ipkcs11wrapper) includes software (IAIK PKCS#11 wrapper version 1.6.8)\n"
+                + "developed by Stiftung SIC which is licensed under \"IAIK PKCS#11 Wrapper License\"- \n"
+                + "A copy of this license is downloadable under \n"
+                + "https://jce.iaik.tugraz.at/products/core-crypto-toolkits/pkcs11-wrapper/#License.\n"
+                + "All other parts are licensed under Apache License, version 2.");
+        licensePrinted.set(true);
+      }
+    }
+
     ensureLinkedAndInitialized();
     return new PKCS11Module(new PKCS11Implementation(Functions.requireNonNull("pkcs11ModulePath", pkcs11ModulePath)));
   }
