@@ -487,7 +487,7 @@ public class Functions {
     }
   }
 
-  static byte[] toX962DSASignature(byte[] sig) {
+  public static byte[] plainToX962DSASignature(byte[] sig) {
     if (sig.length % 2 != 0) {
       // invalid format, just returns sig.
       return sig;
@@ -569,11 +569,14 @@ public class Functions {
   }
 
   static byte[] fixECDSASignature(byte[] sig, int rOrSLen) {
-    try {
-      if (sig.length == 2 * rOrSLen || sig[0] != 0x30) {
-        return sig;
-      }
+    if (sig.length == 2 * rOrSLen || sig[0] != 0x30) {
+      return sig;
+    }
+    return x962ToPlainDSASignature(sig, rOrSLen);
+  }
 
+  public static byte[] x962ToPlainDSASignature(byte[] sig, int rOrSLen) {
+    try {
       AtomicInteger numLenBytes = new AtomicInteger();
 
       int ofs = 1;
