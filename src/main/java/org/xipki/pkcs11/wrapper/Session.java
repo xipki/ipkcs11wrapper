@@ -323,7 +323,7 @@ public class Session {
 
       byte[] ecPoint = new byte[1 + 2 * fieldSize];
       ecPoint[0] = 4;
-      System.arraycopy(wx, 0, ecPoint, 1 + fieldSize - wx.length,  wx.length);
+      System.arraycopy(wx, 0, ecPoint, 1 + fieldSize - wx.length, wx.length);
       System.arraycopy(wy, 0, ecPoint, ecPoint.length - wy.length, wy.length);
 
       template.ecPoint(ecPoint);
@@ -454,6 +454,15 @@ public class Session {
     pkcs11.C_FindObjectsFinal(sessionHandle);
   }
 
+  public long[] findObjectsSingle(AttributeVector template, int maxObjectCount) throws PKCS11Exception {
+    findObjectsInit(template);
+    try {
+      return findObjects(maxObjectCount);
+    } finally {
+      findObjectsFinal();
+    }
+  }
+
   /**
    * Initializes a new encryption operation. The application must call this method before calling
    * any other encrypt* operation. Before initializing a new operation, any currently pending
@@ -483,6 +492,11 @@ public class Session {
    */
   public byte[] encrypt(byte[] plaintext) throws PKCS11Exception {
     return toNonNull(pkcs11.C_Encrypt(sessionHandle, plaintext));
+  }
+
+  public byte[] encryptSingle(Mechanism mechanism, long keyHandle, byte[] plaintext) throws PKCS11Exception {
+    encryptInit(mechanism, keyHandle);
+    return encrypt(plaintext);
   }
 
   /**
@@ -623,6 +637,11 @@ public class Session {
     return toNonNull(pkcs11.C_Decrypt(sessionHandle, ciphertext));
   }
 
+  public byte[] decryptSingle(Mechanism mechanism, long keyHandle, byte[] ciphertext) throws PKCS11Exception {
+    decryptInit(mechanism, keyHandle);
+    return decrypt(ciphertext);
+  }
+
   /**
    * This method can be used to decrypt multiple pieces of data; e.g. buffer-size pieces when
    * reading the data from a stream. Decrypts the given data with the key and mechanism given to the
@@ -673,20 +692,20 @@ public class Session {
    *
    * @param params         The parameter object
    * @param associatedData The associated Data for AEAS Mechanisms
-   * @param plaintext      The plaintext getting encrypted
+   * @param ciphertext     The to-be-decrypted data
    * @return The ciphertext. Never returns {@code null}.
    * @throws PKCS11Exception If encrypting failed.
    */
-  public byte[] decryptMessage(CkParams params, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
+  public byte[] decryptMessage(CkParams params, byte[] associatedData, byte[] ciphertext) throws PKCS11Exception {
     return toNonNull(pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(params),
-            associatedData, plaintext, useUtf8));
+        associatedData, ciphertext, useUtf8));
   }
 
   /**
    * Starts a multi-part message-decryption operation.
    *
    * @param params         The parameter object
-   * @param associatedData The associated Data for AEAS Mechanisms
+   * @param associatedData The associated Data for AEAD Mechanisms
    * @throws PKCS11Exception in case of error.
    */
   public void decryptMessageBegin(CkParams params, byte[] associatedData) throws PKCS11Exception {
@@ -745,6 +764,11 @@ public class Session {
    */
   public byte[] digest(byte[] data) throws PKCS11Exception {
     return toNonNull(pkcs11.C_Digest(sessionHandle, data));
+  }
+
+  public byte[] digestSingle(Mechanism mechanism, byte[] data) throws PKCS11Exception {
+    digestInit(mechanism);
+    return digest(data);
   }
 
   /**
@@ -852,6 +876,11 @@ public class Session {
   public byte[] sign(byte[] data) throws PKCS11Exception {
     byte[] sigValue = pkcs11.C_Sign(sessionHandle, data);
     return toNonNull(fixSignOutput(sigValue));
+  }
+
+  public byte[] signSingle(Mechanism mechanism, long keyHandle, byte[] data) throws PKCS11Exception {
+    signInit(mechanism, keyHandle);
+    return sign(data);
   }
 
   /**
@@ -992,6 +1021,11 @@ public class Session {
     return toNonNull(pkcs11.C_SignRecover(sessionHandle, data));
   }
 
+  public byte[] signRecoverSingle(Mechanism mechanism, long keyHandle, byte[] data) throws PKCS11Exception {
+    signRecoverInit(mechanism, keyHandle);
+    return signRecover(data);
+  }
+
   /**
    * @param mechanism the mechanism parameter to use
    * @param keyHandle the key to sign the data with
@@ -1083,6 +1117,11 @@ public class Session {
     pkcs11.C_Verify(sessionHandle, data, fixSignatureToVerify(signature));
   }
 
+  public void verifySingle(Mechanism mechanism, long keyHandle, byte[] data, byte[] signature) throws PKCS11Exception {
+    verifyInit(mechanism, keyHandle);
+    verify(data, signature);
+  }
+
   /**
    * This method can be used to verify a signature with multiple pieces of data; e.g. buffer-size
    * pieces when reading the data from a stream. To verify the signature or MAC call verifyFinal
@@ -1140,6 +1179,11 @@ public class Session {
    */
   public byte[] verifyRecover(byte[] data) throws PKCS11Exception {
     return toNonNull(pkcs11.C_VerifyRecover(sessionHandle, data));
+  }
+
+  public byte[] verifyRecoverSingle(Mechanism mechanism, long keyHandle, byte[] data) throws PKCS11Exception {
+    verifyRecoverInit(mechanism, keyHandle);
+    return verifyRecover(data);
   }
 
   /**
