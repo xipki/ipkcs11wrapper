@@ -65,9 +65,7 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     }
 
     // initialize for encryption
-    session.encryptInit(encryptionMechanism, encryptionKey);
-
-    byte[] encryptedData = session.encrypt(rawData);
+    byte[] encryptedData = session.encryptSingle(encryptionMechanism, encryptionKey, rawData);
 
     LOG.info("##################################################");
     LOG.info("trying to decrypt");
@@ -79,9 +77,7 @@ public abstract class SymmEncryptDecrypt extends TestBase {
     }
 
     // initialize for decryption
-    session.decryptInit(decryptionMechanism, encryptionKey);
-
-    byte[] decryptedData = session.decrypt(encryptedData);
+    byte[] decryptedData = session.decryptSingle(decryptionMechanism, encryptionKey, encryptedData);
     Assert.assertArrayEquals(rawData, decryptedData);
   }
 

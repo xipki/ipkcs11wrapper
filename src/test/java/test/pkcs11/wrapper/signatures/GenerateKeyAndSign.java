@@ -45,9 +45,8 @@ public class GenerateKeyAndSign extends TestBase {
     LOG.info("Signing Data... ");
 
     Mechanism signatureMechanism = new Mechanism(CKM_RSA_PKCS);
-    session.signInit(signatureMechanism, generatedRSAPrivateKey);
     byte[] dataToBeSigned = "12345678901234567890123456789012345".getBytes();
-    byte[] signatureValue = session.sign(dataToBeSigned);
+    byte[] signatureValue = session.signSingle(signatureMechanism, generatedRSAPrivateKey, dataToBeSigned);
     LOG.info("Finished");
     LOG.info("Signature Value: {}", Functions.toHex(signatureValue));
     LOG.info("##################################################");

@@ -42,24 +42,19 @@ public class EdDSASignRawData extends SignatureTestBase {
     byte[] ecParams = new byte[] {0x06, 0x03, 0x2b, 0x65, 0x70};
 
     PKCS11KeyPair generatedKeyPair = generateEdDSAKeypair(token, session, ecParams, inToken);
-    long generatedPrivateKey = generatedKeyPair.getPrivateKey();
 
     LOG.info("##################################################");
     LOG.info("signing data");
     byte[] dataToBeSigned = randomBytes(1057); // hash value
 
-    // initialize for signing
-    session.signInit(signatureMechanism, generatedPrivateKey);
-
     // This signing operation is implemented in most of the drivers
-    byte[] signatureValue = session.sign(dataToBeSigned);
+    byte[] signatureValue = session.signSingle(signatureMechanism, generatedKeyPair.getPrivateKey(), dataToBeSigned);
     LOG.info("The signature value is: {}", Functions.toHex(signatureValue));
 
     // verify signature
     long generatedPublicKey = generatedKeyPair.getPublicKey();
-    session.verifyInit(signatureMechanism, generatedPublicKey);
     // error will be thrown if signature is invalid
-    session.verify(dataToBeSigned, signatureValue);
+    session.verifySingle(signatureMechanism, generatedPublicKey, dataToBeSigned, signatureValue);
 
     // verify with JCE
     jceVerifySignature("Ed25519", session, generatedPublicKey, CKK_EC_EDWARDS, dataToBeSigned, signatureValue);

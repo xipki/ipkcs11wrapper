@@ -55,19 +55,15 @@ public class RSAPKCSPSSSignRawData extends SignatureTestBase {
     MessageDigest md = MessageDigest.getInstance("SHA-256");
     byte[] hashValue = md.digest(dataToBeSigned);
 
-    // initialize for signing
-    session.signInit(signatureMechanism, generatedPrivateKey);
-
     // This signing operation is implemented in most of the drivers
-    byte[] signatureValue = session.sign(hashValue);
+    byte[] signatureValue = session.signSingle(signatureMechanism, generatedPrivateKey, hashValue);
 
     LOG.info("The signature value is: {}", new BigInteger(1, signatureValue).toString(16));
 
     // verify
     long generatedPublicKey = generatedKeyPair.getPublicKey();
-    session.verifyInit(signatureMechanism, generatedPublicKey);
     // error will be thrown if signature is invalid
-    session.verify(hashValue, signatureValue);
+    session.verifySingle(signatureMechanism, generatedPublicKey, hashValue, signatureValue);
 
     // verify with JCE
     jceVerifySignature("SHA256withRSAandMGF1", session, generatedPublicKey, CKK_RSA,

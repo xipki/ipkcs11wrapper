@@ -34,11 +34,7 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
 
           ConcurrentSessionBagEntry sessionBag = borrowSession();
           try {
-            Session session = sessionBag.value();
-            // initialize for signing
-            session.encryptInit(encryptMechanism, key);
-            // This signing operation is implemented in most of the drivers
-            session.encrypt(data);
+            sessionBag.value().encryptSingle(encryptMechanism, key, data);
           } finally {
             requiteSession(sessionBag);
           }

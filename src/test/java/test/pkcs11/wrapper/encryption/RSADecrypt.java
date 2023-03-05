@@ -46,12 +46,10 @@ public class RSADecrypt extends TestBase {
     long pubKey = keypair.getPublicKey();
 
     byte[] sessionKey = new byte[16];
-    session.encryptInit(encMech, pubKey);
-    byte[] encryptedSessionKey = session.encrypt(sessionKey);
+    byte[] encryptedSessionKey = session.encryptSingle(encMech, pubKey, sessionKey);
 
     // decrypt
-    session.decryptInit(encMech, privKey);
-    byte[] decryptedSessionKey = session.decrypt(encryptedSessionKey);
+    byte[] decryptedSessionKey = session.decryptSingle(encMech, privKey, encryptedSessionKey);
 
     Assert.assertArrayEquals(sessionKey, decryptedSessionKey);
     LOG.info("finished");

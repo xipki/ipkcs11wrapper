@@ -32,11 +32,7 @@ public abstract class SignExecutor extends Pkcs11Executor {
 
           ConcurrentSessionBagEntry sessionBag = borrowSession();
           try {
-            Session session = sessionBag.value();
-            // initialize for signing
-            session.signInit(signMechanism, keypair.getPrivateKey());
-            // This signing operation is implemented in most of the drivers
-            session.sign(data);
+            sessionBag.value().signSingle(signMechanism, keypair.getPrivateKey(), data);
           } finally {
             requiteSession(sessionBag);
           }

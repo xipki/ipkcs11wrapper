@@ -59,11 +59,9 @@ public class WrapUnwrapHmacKey extends TestBase {
     // be sure that your token can process the specified mechanism
     Mechanism signatureMechanism = getSupportedMechanism(token, CKM_SHA256_HMAC);
     // initialize for signing
-    session.signInit(signatureMechanism, hmacKey);
-
     byte[] rawData = randomBytes(1057);
 
-    byte[] macValue = session.sign(rawData);
+    byte[] macValue = session.signSingle(signatureMechanism, hmacKey, rawData);
 
     LOG.info("The MAC value is: " + new BigInteger(1, macValue).toString(16));
     LOG.info("##################################################");
@@ -88,9 +86,7 @@ public class WrapUnwrapHmacKey extends TestBase {
     LOG.info("verification of the MAC... ");
 
     // initialize for verification
-    session.verifyInit(signatureMechanism, unwrappedKey);
-
-    session.verify(rawData, macValue); // throws an exception upon
+    session.verifySingle(signatureMechanism, unwrappedKey, rawData, macValue); // throws an exception upon
     // unsuccessful verification
 
     LOG.info("##################################################");

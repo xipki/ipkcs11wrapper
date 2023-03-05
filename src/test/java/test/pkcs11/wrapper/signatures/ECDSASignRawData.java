@@ -52,19 +52,15 @@ public class ECDSASignRawData extends SignatureTestBase {
     MessageDigest md = MessageDigest.getInstance("SHA-256");
     byte[] hashValue = md.digest(dataToBeSigned);
 
-    // initialize for signing
-    session.signInit(signatureMechanism, generatedPrivateKey);
-
     // This signing operation is implemented in most of the drivers
-    byte[] signatureValue = session.sign(hashValue);
+    byte[] signatureValue = session.signSingle(signatureMechanism, generatedPrivateKey, hashValue);
 
     LOG.info("The signature value is: {}", Functions.toHex(signatureValue));
 
     // verify
     long generatedPublicKey = generatedKeyPair.getPublicKey();
-    session.verifyInit(signatureMechanism, generatedPublicKey);
     // error will be thrown if signature is invalid
-    session.verify(hashValue, signatureValue);
+    session.verifySingle(signatureMechanism, generatedPublicKey, hashValue, signatureValue);
 
     // verify with JCE
     jceVerifySignature("SHA256WithECDSA", session, generatedPublicKey, CKK_EC, dataToBeSigned,

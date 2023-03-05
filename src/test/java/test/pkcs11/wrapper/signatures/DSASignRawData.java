@@ -49,11 +49,8 @@ public class DSASignRawData extends SignatureTestBase {
     MessageDigest md = MessageDigest.getInstance("SHA-256");
     byte[] hashValue = md.digest(dataToBeSigned);
 
-    // initialize for signing
-    session.signInit(signatureMechanism, generatedKeyPair.getPrivateKey());
-
     // This signing operation is implemented in most of the drivers
-    byte[] signatureValue = session.sign(hashValue);
+    byte[] signatureValue = session.signSingle(signatureMechanism, generatedKeyPair.getPrivateKey(), hashValue);
     LOG.info("The signature value is : (len={}) {}", signatureValue.length, Functions.toHex(signatureValue));
 
     // verify with JCE
@@ -61,9 +58,8 @@ public class DSASignRawData extends SignatureTestBase {
         dataToBeSigned, Util.dsaSigPlainToX962(signatureValue));
 
     // verify with PKCS#11
-    session.verifyInit(signatureMechanism, generatedKeyPair.getPublicKey());
     // error will be thrown if signature is invalid
-    session.verify(hashValue, signatureValue);
+    session.verifySingle(signatureMechanism, generatedKeyPair.getPublicKey(), hashValue, signatureValue);
 
     LOG.info("##################################################");
   }

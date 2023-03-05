@@ -52,9 +52,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     Mechanism encryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD, new ByteArrayParams(encryptIV));
 
     // initialize for encryption
-    session.encryptInit(encryptionMechanism, encryptionKey);
-
-    byte[] encryptedData = session.encrypt(rawData);
+    byte[] encryptedData = session.encryptSingle(encryptionMechanism, encryptionKey, rawData);
 
     LOG.info("##################################################");
     LOG.info("generate secret wrapping key");
@@ -81,9 +79,7 @@ public class WrapUnwrapEncrKey extends TestBase {
     Mechanism decryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD, new ByteArrayParams(decryptIV));
 
     // initialize for decryption
-    session.decryptInit(decryptionMechanism, unwrappedKey);
-
-    byte[] decryptedData = session.decrypt(encryptedData);
+    byte[] decryptedData = session.decryptSingle(decryptionMechanism, unwrappedKey, encryptedData);
 
     Assert.assertArrayEquals(rawData, decryptedData);
 

@@ -58,17 +58,14 @@ public class MAC extends TestBase {
     Mechanism signatureMechanism = getSupportedMechanism(token, CKM_SHA256_HMAC);
     byte[] rawData = randomBytes(1057);
 
-    session.signInit(signatureMechanism, secretMACKey);
-    byte[] macValue = session.sign(rawData);
+    byte[] macValue = session.signSingle(signatureMechanism, secretMACKey, rawData);
     LOG.info("The MAC value is: {}", new BigInteger(1, macValue).toString(16));
 
     LOG.info("##################################################");
     LOG.info("verification of the MAC... ");
 
-    // initialize for verification
-    session.verifyInit(signatureMechanism, secretMACKey);
     // throws an exception upon unsuccessful verification
-    session.verify(rawData, macValue);
+    session.verifySingle(signatureMechanism, secretMACKey, rawData, macValue);
 
     LOG.info("##################################################");
   }
