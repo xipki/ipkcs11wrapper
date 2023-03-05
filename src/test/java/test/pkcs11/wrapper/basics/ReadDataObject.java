@@ -59,10 +59,7 @@ public class ReadDataObject extends TestBase {
       // print template
       LOG.info("{}", dataObjectTemplate);
 
-      // start find operation
-      session.findObjectsInit(dataObjectTemplate);
-
-      long[] foundDataObjects = session.findObjects(1); // find first
+      long[] foundDataObjects = session.findObjectsSingle(dataObjectTemplate, 1); // find first
 
       long dataObjectHandle;
       if (foundDataObjects.length > 0) {
@@ -76,8 +73,6 @@ public class ReadDataObject extends TestBase {
         // the label is not unique in general
         // foundDataObjects = session.findObjects(1); //find next
       }
-
-      session.findObjectsFinal();
     } finally {
       session.destroyObject(newDataHandle);
     }

@@ -108,10 +108,7 @@ public class ECGenerateKeyPair extends TestBase {
       // set the search template for the public key
       AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_EC).attr(CKA_ID, id);
 
-      session.findObjectsInit(exportPublicKeyTemplate);
-      long[] foundPublicKeys = session.findObjects(1);
-      session.findObjectsFinal();
-
+      long[] foundPublicKeys = session.findObjectsSingle(exportPublicKeyTemplate, 1);
       if (foundPublicKeys.length != 1) {
         LOG.error("Error: Cannot find the public key under the given ID!");
       } else {

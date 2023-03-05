@@ -92,8 +92,7 @@ public class ImportCertificate extends TestBase {
 
     byte[] objectID = null;
     if (searchTemplate != null) {
-      session.findObjectsInit(searchTemplate);
-      long[] foundKeyObjects = session.findObjects(1);
+      long[] foundKeyObjects = session.findObjectsSingle(searchTemplate, 1);
       if (foundKeyObjects.length > 0) {
         long foundKey = foundKeyObjects[0];
         objectID = session.getByteArrayAttrValue(foundKey, CKA_ID);
@@ -101,7 +100,6 @@ public class ImportCertificate extends TestBase {
       } else {
         LOG.info("found no corresponding key on the token.");
       }
-      session.findObjectsFinal();
     } else {
       LOG.info("private key is neither RSA, DSA nor DH.");
     }

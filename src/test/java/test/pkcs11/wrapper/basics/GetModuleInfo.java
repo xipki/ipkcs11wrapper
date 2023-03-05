@@ -89,26 +89,12 @@ public class GetModuleInfo extends TestBase {
     SessionInfo sessionInfo = session.getSessionInfo();
     LOG.info("using session: {}", sessionInfo);
 
-    int limit = 0, counter = 0;
-
-    session.findObjectsInit(null);
-    long[] objects = session.findObjects(1);
-    if (0 < objects.length) {
-      counter++;
-    }
-
-    while (objects.length > 0 && (0 == limit || counter < limit)) {
-      long object = objects[0];
-      LOG.info("--------------------------------------------------");
+    long[] objects = session.findObjectsSingle(null, 99999);
+    for (long object : objects) {
       LOG.info("Object with handle: {}", object);
-      LOG.info("--------------------------------------------------");
-      objects = session.findObjects(1);
-      counter++;
     }
-    session.findObjectsFinal();
 
     LOG.info("___________________________________________________");
-    LOG.info("found {} objects on this token", counter);
-    LOG.info("___________________________________________________");
+    LOG.info("found {} objects on this token", objects.length);
   }
 }

@@ -75,10 +75,7 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
       keypair = session.generateKeyPair(keypairGenMechanism, template);
 
       dataToVerify = TestBase.randomBytes(inputLen);
-      // initialize for signing
-      session.signInit(signMechanism, keypair.getPrivateKey());
-      // This signing operation is implemented in most of the drivers
-      signatureToVerify = session.sign(dataToVerify);
+      signatureToVerify = session.signSingle(signMechanism, keypair.getPrivateKey(), dataToVerify);
     } finally {
       requiteSession(sessionBag);
     }

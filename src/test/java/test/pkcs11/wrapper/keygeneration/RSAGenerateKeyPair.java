@@ -117,10 +117,7 @@ public class RSAGenerateKeyPair extends TestBase {
       // set the search template for the public key
       AttributeVector exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).id(id);
 
-      session.findObjectsInit(exportRsaPublicKeyTemplate);
-      long[] foundPublicKeys = session.findObjects(1);
-      session.findObjectsFinal();
-
+      long[] foundPublicKeys = session.findObjectsSingle(exportRsaPublicKeyTemplate, 1);
       if (foundPublicKeys.length != 1) {
         LOG.error("Error: Cannot find the public key under the given ID!");
       } else {
