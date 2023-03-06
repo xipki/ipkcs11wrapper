@@ -8,28 +8,76 @@ public class StaticLogger {
     logger = logger_;
   }
 
-  public static void info(String message) {
+  public static void error(String format, Object... arguments) {
     if (logger != null) {
-      logger.info(message);
+      logger.error(format, arguments);
     } else {
-      System.out.println("[INFO] " + message);
+      print("ERROR", format, arguments);
     }
   }
 
-  public static void warn(String message) {
+  public static void warn(String format, Object... arguments) {
     if (logger != null) {
-      logger.warn(message);
+      logger.warn(format, arguments);
     } else {
-      System.out.println("[WARN] " + message);
+      print("WARN", format, arguments);
     }
   }
 
-  public static void error(String message) {
+  public static void info(String format, Object... arguments) {
     if (logger != null) {
-      logger.error(message);
+      logger.info(format, arguments);
     } else {
-      System.out.println("[ERROR] " + message);
+      print("INFO", format, arguments);
     }
   }
 
+  public static void debug(String format, Object... arguments) {
+    if (logger != null) {
+      logger.debug(format, arguments);
+    }
+  }
+
+  public static boolean isWarnEnabled() {
+    return logger != null ? logger.isWarnEnabled() : true;
+  }
+
+  public static boolean isInfoEnabled() {
+    return logger != null ? logger.isInfoEnabled() : false;
+  }
+
+  public static boolean isDebugEnabled() {
+    return logger != null ? logger.isDebugEnabled() : false;
+  }
+
+  private static void print(String level, String format, Object... arguments) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("[").append(level).append("] ");
+    if (arguments == null || arguments.length == 0) {
+      System.out.println(sb.append(format));
+      return;
+    }
+
+    int fromIdx = 0;
+    for (int i = 0; i < arguments.length; i++) {
+      // search '{}' in format
+      int idx = format.indexOf("{}", fromIdx);
+      if (idx == -1) {
+        // reach end
+        sb.append(format, fromIdx, format.length());
+        fromIdx = format.length();
+        break;
+      } else {
+        sb.append(format, fromIdx, idx);
+        sb.append(arguments[i]);
+        fromIdx = idx + 2; // 2 = "{}".length().
+      }
+    }
+
+    if (fromIdx < format.length()) {
+      sb.append(format, fromIdx, format.length());
+    }
+
+    System.out.println(sb);
+  }
 }

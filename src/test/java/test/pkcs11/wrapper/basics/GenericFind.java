@@ -53,7 +53,6 @@ public class GenericFind extends TestBase {
       LOG.info("handle={}, label={}", object, getLabel(session, object));
     }
 
-
     LOG.info("##################################################\n{}",
         "Find corresponding certificates for private signature keys.");
 

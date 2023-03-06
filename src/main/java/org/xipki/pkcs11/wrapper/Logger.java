@@ -10,10 +10,18 @@ package org.xipki.pkcs11.wrapper;
  */
 public interface Logger {
 
-    void info(String msg);
+    void info(String format, Object... arguments);
 
-    void warn(String msg);
+    void warn(String format, Object... arguments);
 
-    void error(String msg);
+    void error(String format, Object... arguments);
+
+    void debug(String format, Object... arguments);
+
+    boolean isDebugEnabled();
+
+    boolean isInfoEnabled();
+
+    boolean isWarnEnabled();
 
 }

@@ -158,6 +158,7 @@ public class PKCS11Module {
     }
 
     ensureLinkedAndInitialized();
+    StaticLogger.info("PKCS11Module.getInstance: pkcs11ModulePath={}", pkcs11ModulePath);
     return new PKCS11Module(new PKCS11Implementation(Functions.requireNonNull("pkcs11ModulePath", pkcs11ModulePath)));
   }
 
@@ -229,6 +230,7 @@ public class PKCS11Module {
     wrapperInitArgs.flags |= PKCS11Constants.CKF_OS_LOCKING_OK;
 
     // pReserved of CK_C_INITIALIZE_ARGS not used yet, just set to standard conform UTF8
+    StaticLogger.info("C_Initialize: flags=0x{}", Functions.toFullHex(wrapperInitArgs.flags));
     pkcs11.C_Initialize(wrapperInitArgs, true);
 
     // Vendor code
@@ -404,9 +406,8 @@ public class PKCS11Module {
 
     boolean success = false;
     do {
-      String jarFilePath = system + architecture + releaseOrDebugDir;
-      File tempWrapperFile = null;
-      InputStream wrapperLibrary = classLoader.getResourceAsStream(jarFilePath + libName + osFileEnding);
+      String jarFilePath = system + architecture + releaseOrDebugDir + libName + osFileEnding;
+      InputStream wrapperLibrary = classLoader.getResourceAsStream(jarFilePath);
 
       if (wrapperLibrary == null) {
         if (trialCounter < WRAPPER_ARCH_PATH.length) {
@@ -419,6 +420,7 @@ public class PKCS11Module {
         }
       }
 
+      File tempWrapperFile = null;
       try {
         String directory = System.getProperty(PKCS11_TEMP_DIR, null);
         if (directory != null && !directory.isEmpty()) {
@@ -437,6 +439,8 @@ public class PKCS11Module {
         }
         tempWrapperFile.deleteOnExit();
 
+        StaticLogger.info("PKCS11Mdule.loadWrapperFromJar: copy file {} to {}",
+            jarFilePath, tempWrapperFile.getAbsolutePath());
         try {
           Files.copy(wrapperLibrary, tempWrapperFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } finally {
@@ -553,6 +557,7 @@ public class PKCS11Module {
             continue;
           }
 
+          StaticLogger.info("found <vendor> configuration: {}", block);
           // vendor behaviours
           if (block.vendorBehaviours != null) {
             StringTokenizer tokenizer = new StringTokenizer(block.vendorBehaviours, ":, \t");
@@ -671,6 +676,17 @@ public class PKCS11Module {
         }
       }
       return false;
+    }
+
+    @Override
+    public String toString() {
+      return "VendorConfBlock" +
+          "\n  modulePaths:      " + modulePaths +
+          "\n  manufacturerIDs:  " + manufacturerIDs +
+          "\n  descriptions:     " + descriptions +
+          "\n  versions:         " + versions +
+          "\n  vendorBehaviours: " + vendorBehaviours +
+          "\n  nameToCodeMap:    " + nameToCodeMap;
     }
   } // class VendorConfBlock
 

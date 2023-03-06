@@ -7,8 +7,10 @@
 package org.xipki.pkcs11.wrapper.attrs;
 
 import org.xipki.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.wrapper.PKCS11Constants;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * Objects of this class represent a byte-array attribute of a PKCS#11 object
@@ -86,7 +88,18 @@ public class ByteArrayAttribute extends Attribute {
     }
 
     byte[] value = (byte[]) ckAttribute.pValue;
-    return "byte[" + value.length + "]\n" + Functions.toString("    ", value);
+    String text = "byte[" + value.length + "]\n" + Functions.toString("    ", value);
+    if (type() != PKCS11Constants.CKA_EC_PARAMS) {
+      return text;
+    }
+
+    try {
+      String[] curveNames = Functions.getCurveNames(value);
+      String curveOid = Functions.decodeOid(value);
+      return text + "(" + curveOid + ", " + Arrays.toString(curveNames) + ")";
+    } catch (Exception e) {
+      return text;
+    }
   }
 
 }

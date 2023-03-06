@@ -185,6 +185,8 @@ public class Token {
         ? PKCS11Constants.CKF_SERIAL_SESSION | PKCS11Constants.CKF_RW_SESSION
         : PKCS11Constants.CKF_SERIAL_SESSION;
     long sessionHandle = slot.getModule().getPKCS11Module().C_OpenSession(slot.getSlotID(), flags, application, null);
+    StaticLogger.info("C_OpenSession: slotID={}, flags=0x{}, sessionHandle={}",
+        slot.getSlotID(), Functions.toFullHex(flags), sessionHandle);
     return new Session(this, sessionHandle);
   }
 

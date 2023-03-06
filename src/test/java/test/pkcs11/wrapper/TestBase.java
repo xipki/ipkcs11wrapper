@@ -75,6 +75,8 @@ public class TestBase {
   static {
     Properties props = new Properties();
     try {
+      StaticLogger.setLogger(TestLogger.INSTANCE);
+
       props.load(TestBase.class.getResourceAsStream("/pkcs11.properties"));
       modulePath = props.getProperty("module.path");
       modulePin = props.getProperty("module.pin");
