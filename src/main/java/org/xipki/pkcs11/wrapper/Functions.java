@@ -141,6 +141,10 @@ public class Functions {
     }
   }
 
+  public static byte[] encodeOid(String oid) {
+    return encodeOid(new ByteArrayOutputStream(10), oid);
+  }
+
   private static byte[] encodeOid(ByteArrayOutputStream out, String oid) {
     out.reset();
     String[] nodes = oid.split("\\.");
@@ -487,7 +491,7 @@ public class Functions {
     }
   }
 
-  public static byte[] plainToX962DSASignature(byte[] sig) {
+  public static byte[] dsaSigPlainToX962(byte[] sig) {
     if (sig.length % 2 != 0) {
       // invalid format, just returns sig.
       return sig;
@@ -572,10 +576,10 @@ public class Functions {
     if (sig.length == 2 * rOrSLen || sig[0] != 0x30) {
       return sig;
     }
-    return x962ToPlainDSASignature(sig, rOrSLen);
+    return dsaSigX962ToPlain(sig, rOrSLen);
   }
 
-  public static byte[] x962ToPlainDSASignature(byte[] sig, int rOrSLen) {
+  public static byte[] dsaSigX962ToPlain(byte[] sig, int rOrSLen) {
     try {
       AtomicInteger numLenBytes = new AtomicInteger();
 

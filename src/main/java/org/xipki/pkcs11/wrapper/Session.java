@@ -1042,11 +1042,11 @@ public class Session {
   private byte[] fixSignatureToVerify(byte[] signatureValue) {
     if (signatureType == SIGN_TYPE_ECDSA) {
       if (module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_ECDSA_SIGNATURE_X962)) {
-        return Functions.plainToX962DSASignature(signatureValue);
+        return Functions.dsaSigPlainToX962(signatureValue);
       }
     } else if (signatureType == SIGN_TYPE_SM2) {
       if (module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_SM2_SIGNATURE_X962)) {
-        return Functions.plainToX962DSASignature(signatureValue);
+        return Functions.dsaSigPlainToX962(signatureValue);
       }
     }
 
