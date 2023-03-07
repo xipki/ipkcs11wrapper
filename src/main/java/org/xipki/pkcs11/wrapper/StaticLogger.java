@@ -43,7 +43,7 @@ public class StaticLogger {
   }
 
   public static boolean isInfoEnabled() {
-    return logger != null ? logger.isInfoEnabled() : false;
+    return logger != null ? logger.isInfoEnabled() : true;
   }
 
   public static boolean isDebugEnabled() {
