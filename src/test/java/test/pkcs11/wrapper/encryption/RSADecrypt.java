@@ -3,12 +3,10 @@
 
 package test.pkcs11.wrapper.encryption;
 
-import test.pkcs11.wrapper.TestBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
-
-import java.util.Arrays;
+import test.pkcs11.wrapper.TestBase;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKF_DECRYPT;
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_RSA_PKCS;

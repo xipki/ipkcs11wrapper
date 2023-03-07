@@ -3,9 +3,9 @@
 
 package test.pkcs11.wrapper.signatures;
 
-import test.pkcs11.wrapper.util.Util;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
+import test.pkcs11.wrapper.util.Util;
 
 import java.security.MessageDigest;
 

@@ -3,14 +3,12 @@
 
 package test.pkcs11.wrapper.encryption;
 
-import test.pkcs11.wrapper.TestBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.CCM_PARAMS;
 import org.xipki.pkcs11.wrapper.params.CkParams;
-
-import java.util.Arrays;
+import test.pkcs11.wrapper.TestBase;
 
 /**
  * This demo program uses a PKCS#11 module to encrypt a given file and test if

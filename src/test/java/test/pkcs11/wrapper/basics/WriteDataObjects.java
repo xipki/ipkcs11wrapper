@@ -6,12 +6,12 @@
 
 package test.pkcs11.wrapper.basics;
 
-import test.pkcs11.wrapper.TestBase;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.PKCS11Exception;
 import org.xipki.pkcs11.wrapper.Session;
 import org.xipki.pkcs11.wrapper.Token;
+import test.pkcs11.wrapper.TestBase;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKO_DATA;
 

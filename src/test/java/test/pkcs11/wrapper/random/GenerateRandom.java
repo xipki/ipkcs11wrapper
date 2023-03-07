@@ -6,12 +6,12 @@
 
 package test.pkcs11.wrapper.random;
 
-import test.pkcs11.wrapper.TestBase;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.Functions;
 import org.xipki.pkcs11.wrapper.PKCS11Exception;
 import org.xipki.pkcs11.wrapper.Session;
 import org.xipki.pkcs11.wrapper.Token;
+import test.pkcs11.wrapper.TestBase;
 
 /**
  * This demo program uses a PKCS#11 module to produce random data.

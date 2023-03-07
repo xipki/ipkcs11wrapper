@@ -3,10 +3,10 @@
 
 package test.pkcs11.wrapper.keygeneration;
 
-import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
+import test.pkcs11.wrapper.TestBase;
+import test.pkcs11.wrapper.util.Util;
 
 import java.util.List;
 import java.util.Random;

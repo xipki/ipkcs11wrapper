@@ -9,7 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.codeToName;
 
 /**
  * This class contains only static methods. It is the place for all functions

@@ -3,10 +3,10 @@
 
 package test.pkcs11.wrapper.signatures;
 
-import test.pkcs11.wrapper.TestBase;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.BeforeClass;
 import org.xipki.pkcs11.wrapper.Session;
+import test.pkcs11.wrapper.TestBase;
 
 import java.security.PublicKey;
 import java.security.Security;

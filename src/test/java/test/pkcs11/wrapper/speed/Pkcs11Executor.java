@@ -3,13 +3,13 @@
 
 package test.pkcs11.wrapper.speed;
 
-import test.pkcs11.wrapper.util.Util;
 import org.slf4j.Logger;
 import org.xipki.pkcs11.wrapper.PKCS11Exception;
 import org.xipki.pkcs11.wrapper.Session;
 import org.xipki.pkcs11.wrapper.Token;
 import org.xipki.util.BenchmarkExecutor;
 import org.xipki.util.concurrent.ConcurrentBag;
+import test.pkcs11.wrapper.util.Util;
 
 import java.util.concurrent.TimeUnit;
 

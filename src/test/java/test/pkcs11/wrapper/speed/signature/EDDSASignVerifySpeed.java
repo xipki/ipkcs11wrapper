@@ -3,8 +3,6 @@
 
 package test.pkcs11.wrapper.speed.signature;
 
-import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.AttributeVector;
@@ -12,6 +10,8 @@ import org.xipki.pkcs11.wrapper.Mechanism;
 import org.xipki.pkcs11.wrapper.PKCS11Exception;
 import org.xipki.pkcs11.wrapper.Token;
 import org.xipki.util.BenchmarkExecutor;
+import test.pkcs11.wrapper.TestBase;
+import test.pkcs11.wrapper.util.Util;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 

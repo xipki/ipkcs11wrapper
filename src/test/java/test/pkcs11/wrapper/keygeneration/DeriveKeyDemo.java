@@ -6,9 +6,9 @@
 
 package test.pkcs11.wrapper.keygeneration;
 
-import test.pkcs11.wrapper.TestBase;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
+import test.pkcs11.wrapper.TestBase;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKK_AES;
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_AES_KEY_GEN;

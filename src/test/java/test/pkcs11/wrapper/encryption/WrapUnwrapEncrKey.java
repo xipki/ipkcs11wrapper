@@ -6,13 +6,11 @@
 
 package test.pkcs11.wrapper.encryption;
 
-import test.pkcs11.wrapper.TestBase;
 import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.ByteArrayParams;
-
-import java.util.Arrays;
+import test.pkcs11.wrapper.TestBase;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 

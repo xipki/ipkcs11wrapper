@@ -6,13 +6,13 @@
 
 package test.pkcs11.wrapper.basics;
 
-import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.MechanismInfo;
 import org.xipki.pkcs11.wrapper.Session;
 import org.xipki.pkcs11.wrapper.Token;
+import test.pkcs11.wrapper.TestBase;
+import test.pkcs11.wrapper.util.Util;
 
 import java.io.IOException;
 import java.io.InputStream;

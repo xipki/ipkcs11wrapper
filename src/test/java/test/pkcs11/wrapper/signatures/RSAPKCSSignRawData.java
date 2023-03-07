@@ -3,13 +3,13 @@
 
 package test.pkcs11.wrapper.signatures;
 
-import test.pkcs11.wrapper.util.Util;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.Mechanism;
 import org.xipki.pkcs11.wrapper.PKCS11KeyPair;
 import org.xipki.pkcs11.wrapper.Session;
 import org.xipki.pkcs11.wrapper.Token;
 import org.xipki.util.Hex;
+import test.pkcs11.wrapper.util.Util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
