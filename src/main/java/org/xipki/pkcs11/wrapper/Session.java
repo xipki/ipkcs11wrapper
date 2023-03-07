@@ -2563,7 +2563,7 @@ public class Session {
 
   private void debugError(String method, PKCS11Exception e) {
     if (StaticLogger.isDebugEnabled()) {
-      StaticLogger.debug(method + ": ERROR " + ckrCodeToName(e.getErrorCode()));
+      StaticLogger.debug("ERR " + method + ": " + ckrCodeToName(e.getErrorCode()));
     }
   }
 
