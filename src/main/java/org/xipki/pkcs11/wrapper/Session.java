@@ -372,7 +372,7 @@ public class Session {
             .modulus(template.modulus()).publicExponent(template.publicExponent()) // RSA
             .ecParams(template.ecParams()).ecPoint(template.ecPoint()) // EC
             .prime(template.prime()).subprime(template.subprime()).base(template.base()); // DSA
-        debugIn(method, "part of template={}", template);
+        debugIn(method, "part of template={}", logTemplate);
       } else {
         debugIn(method, "template={}", template);
       }
