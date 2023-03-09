@@ -40,7 +40,10 @@ public abstract class CkParams {
     if (value == null) {
       return prefix + "<NULL_PTR>";
     } else if (value instanceof byte[]) {
-      return Functions.toString(prefix, (byte[]) value);
+      char[] spaceIndent = new char[prefix.length() - 1]; // -1: the leading '\n'.
+      Arrays.fill(spaceIndent, ' ');
+      byte[] bytes = (byte[]) value;
+      return prefix + "byte[" + bytes.length + "]\n" + Functions.toString(new String(spaceIndent), bytes);
     } else if (value instanceof  char[]) {
       return prefix + new String((char[]) value);
     } else {
