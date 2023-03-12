@@ -10,8 +10,7 @@ import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
 
-import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKK_AES;
-import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_AES_KEY_GEN;
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * This demo program shows how to derive a DES3 key.
@@ -20,23 +19,14 @@ public class DeriveKeyDemo extends TestBase {
 
   @Test
   public void main() throws Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws PKCS11Exception {
-    Mechanism keyGenerationMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
+    Mechanism keyGenerationMechanism = getSupportedMechanism(CKM_AES_KEY_GEN, CKF_GENERATE);
 
     AttributeVector baseKeyTemplate = newSecretKey(CKK_AES).valueLen(32).token(false).derive(true)
         .token(false) // we only have a read-only session, thus we only create a session object
         .sensitive(true).extractable(true);
 
-    long baseKey = session.generateKey(keyGenerationMechanism, baseKeyTemplate);
+    PKCS11Token token = getToken();
+    long baseKey = token.generateKey(keyGenerationMechanism, baseKeyTemplate);
 
     LOG.info("Base key " + baseKey);
     LOG.info("derive key");

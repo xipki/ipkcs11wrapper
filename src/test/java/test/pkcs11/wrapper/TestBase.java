@@ -12,7 +12,6 @@ import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.CkParams;
 import org.xipki.util.Hex;
 import test.pkcs11.wrapper.util.KeyUtil;
-import test.pkcs11.wrapper.util.Util;
 
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -54,11 +53,7 @@ public class TestBase {
       + "738920F760012DD9389F35E0AA7C8528CE173934529397DABDFAA1E77AF83FAD"
       + "629AC102596885A06B5C670FFA838D37EB55FE7179A88F6FF927B37E0F827726", 16);
 
-  private static String modulePath;
-
-  private static String modulePin;
-
-  private static Integer slotIndex;
+  private static PKCS11Token token;
 
   private static PKCS11Module module;
 
@@ -78,15 +73,20 @@ public class TestBase {
       StaticLogger.setLogger(TestLogger.INSTANCE);
 
       props.load(TestBase.class.getResourceAsStream("/pkcs11.properties"));
-      modulePath = props.getProperty("module.path");
-      modulePin = props.getProperty("module.pin");
+      String modulePath = props.getProperty("module.path");
+      String modulePin = props.getProperty("module.pin");
       String str = props.getProperty("module.slotIndex");
-      slotIndex = (str == null) ? null : Integer.parseInt(str);
+      Integer slotIndex = (str == null) ? null : Integer.parseInt(str);
       module = PKCS11Module.getInstance(modulePath);
 
       speedThreads = Integer.getInteger("speed.threads", 2);
       speedDuration = System.getProperty("speed.duration", "3s");
       module.initialize();
+
+      boolean readOnly = false;
+
+      token = new PKCS11Token(selectToken(module, slotIndex),
+                  readOnly, (modulePin == null ? null : modulePin.toCharArray()));
 
       Runtime.getRuntime().addShutdownHook(new Thread() {
         public void run() {
@@ -103,24 +103,55 @@ public class TestBase {
     }
   }
 
-  protected char[] getModulePin() {
-    return modulePin.toCharArray();
-  }
-
-  protected Token getNonNullToken() throws PKCS11Exception {
-    Token token = getToken();
-    if (token == null) {
-      LOG.error("We have no token to proceed. Finished.");
-      throw new PKCS11Exception(CKR_DEVICE_ERROR);
+  /**
+   * Lists all available tokens of the given module and lets the user select
+   * one, if there is more than one available. Supports token preselection.
+   *
+   * @param pkcs11Module
+   *          The PKCS#11 module to use.
+   * @param slotIndex
+   *          The slot index, beginning with 0.
+   * @return The selected token or null, if no token is available or the user
+   *         canceled the action.
+   * @exception PKCS11Exception
+   *              If listing the tokens failed.
+   */
+  private static Token selectToken(PKCS11Module pkcs11Module, Integer slotIndex) throws TokenException {
+    if (pkcs11Module == null) {
+      throw new NullPointerException("Argument pkcs11Module must not be null.");
     }
-    return token;
+
+    Slot[] slots = pkcs11Module.getSlotList(true);
+    if (slots == null || slots.length == 0) {
+      return null;
+    } else if (slotIndex != null) {
+      if (slotIndex >= slots.length) {
+        return null;
+      } else {
+        Token token = slots[slotIndex].getToken();
+        if (!token.getTokenInfo().hasFlagBit(CKF_TOKEN_INITIALIZED)) {
+          throw new IllegalArgumentException("token is not initialized");
+        } else {
+          return token;
+        }
+      }
+    } else {
+      // return the first initialized token
+      for (Slot slot : slots) {
+        if (slot.getToken().getTokenInfo().hasFlagBit(CKF_TOKEN_INITIALIZED)) {
+          return slot.getToken();
+        }
+      }
+
+      throw new IllegalArgumentException("found no initialized token");
+    }
   }
 
-  protected Token getToken() throws PKCS11Exception {
+  public static PKCS11Token getToken() throws PKCS11Exception {
     if (initException != null) {
       throw initException;
     }
-    return Util.selectToken(module, slotIndex);
+    return token;
   }
 
   protected PKCS11Module getModule() {
@@ -128,22 +159,6 @@ public class TestBase {
       throw initException;
     }
     return module;
-  }
-
-  protected Session openReadOnlySession(Token token) throws PKCS11Exception {
-    return Util.openAuthorizedSession(token, false, modulePin == null ? null : modulePin.toCharArray());
-  }
-
-  protected Session openReadOnlySession() throws PKCS11Exception {
-    return openReadOnlySession(getToken());
-  }
-
-  protected Session openReadWriteSession(Token token) throws PKCS11Exception {
-    return Util.openAuthorizedSession(token, true, modulePin == null ? null : modulePin.toCharArray());
-  }
-
-  protected Session openReadWriteSession() throws PKCS11Exception {
-    return openReadWriteSession(getToken());
   }
 
   protected String getSpeedTestDuration() {
@@ -164,67 +179,64 @@ public class TestBase {
     return ret;
   }
 
-  protected void assertSupport(Token token, long mechCode) throws PKCS11Exception {
-    if (!Util.supports(token, mechCode)) {
-      String msg = "Mechanism " + ckmCodeToName(mechCode) + " is not supported";
+  protected void assertSupport(long mechCode, long flagBit) throws PKCS11Exception {
+    if (!token.supportsMechanism(mechCode, flagBit)) {
+      String msg = "Mechanism " + ckmCodeToName(mechCode) + " for " +
+          codeToName(Category.CKF_MECHANISM, flagBit) + "is not supported";
       LOG.error(msg);
       throw new PKCS11Exception(CKR_MECHANISM_INVALID);
     }
   }
 
-  protected Mechanism getSupportedMechanism(Token token, long mechCode) throws PKCS11Exception {
-    assertSupport(token, mechCode);
-    return new Mechanism(mechCode);
+  protected Mechanism getSupportedMechanism(long mechCode, long flagBit) throws PKCS11Exception {
+    return getSupportedMechanism(mechCode, flagBit, null);
   }
 
-  protected Mechanism getSupportedMechanism(Token token, long mechCode, CkParams parameters) throws PKCS11Exception {
-    assertSupport(token, mechCode);
+  protected Mechanism getSupportedMechanism(long mechCode, long flagBit, CkParams parameters) throws PKCS11Exception {
+    assertSupport(mechCode, flagBit);
     return new Mechanism(mechCode, parameters);
   }
 
-  protected PKCS11KeyPair generateRSAKeypair(Token token, Session session, int keysize, boolean inToken)
-      throws PKCS11Exception {
+  protected PKCS11KeyPair generateRSAKeypair(int keysize, boolean inToken) throws TokenException {
     // set the general attributes for the public key
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_RSA_PKCS_KEY_PAIR_GEN);
+    Mechanism keyPairGenMechanism = getSupportedMechanism(CKM_RSA_PKCS_KEY_PAIR_GEN, CKF_GENERATE_KEY_PAIR);
 
     KeyPairTemplate template = new KeyPairTemplate(CKK_RSA).token(inToken).id(id).signVerify(true);
     template.publicKey().modulusBits(keysize);
     template.privateKey().sensitive(true).private_(true);
 
-    return session.generateKeyPair(keyPairGenMechanism, template);
+    return token.generateKeyPair(keyPairGenMechanism, template);
   }
 
-  protected PKCS11KeyPair generateECKeypair(Token token, Session session, byte[] ecParams, boolean inToken)
-      throws PKCS11Exception {
-    return generateECKeypair(CKM_EC_KEY_PAIR_GEN, CKK_EC, token, session, ecParams, inToken);
+  protected PKCS11KeyPair generateECKeypair(byte[] ecParams, boolean inToken)
+      throws TokenException {
+    return generateECKeypair(CKM_EC_KEY_PAIR_GEN, CKK_EC, ecParams, inToken);
   }
 
-  protected PKCS11KeyPair generateEdDSAKeypair(Token token, Session session, byte[] ecParams, boolean inToken)
-      throws PKCS11Exception {
-    return generateECKeypair(CKM_EC_EDWARDS_KEY_PAIR_GEN, CKK_EC_EDWARDS, token, session, ecParams, inToken);
+  protected PKCS11KeyPair generateEdDSAKeypair(byte[] ecParams, boolean inToken) throws TokenException {
+    return generateECKeypair(CKM_EC_EDWARDS_KEY_PAIR_GEN, CKK_EC_EDWARDS, ecParams, inToken);
   }
 
   private PKCS11KeyPair generateECKeypair(
-      long keyGenMechanism, long keyType, Token token, Session session, byte[] ecParams, boolean inToken)
-      throws PKCS11Exception {
+      long keyGenMechanism, long keyType, byte[] ecParams, boolean inToken)
+      throws TokenException {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    Mechanism keyPairGenMechanism = getSupportedMechanism(token, keyGenMechanism);
+    Mechanism keyPairGenMechanism = getSupportedMechanism(keyGenMechanism, CKF_GENERATE_KEY_PAIR);
 
     KeyPairTemplate template = new KeyPairTemplate(keyType).token(inToken).id(id).signVerify(true);
     template.publicKey().ecParams(ecParams);
     template.privateKey().sensitive(true).private_(true);
 
-    return session.generateKeyPair(keyPairGenMechanism, template);
+    return token.generateKeyPair(keyPairGenMechanism, template);
   }
 
-  protected PKCS11KeyPair generateDSAKeypair(Token token, Session session, boolean inToken)
-      throws PKCS11Exception {
-    Mechanism keyPairGenMechanism = getSupportedMechanism(token, CKM_DSA_KEY_PAIR_GEN);
+  protected PKCS11KeyPair generateDSAKeypair(boolean inToken) throws TokenException {
+    Mechanism keyPairGenMechanism = getSupportedMechanism(CKM_DSA_KEY_PAIR_GEN, CKF_GENERATE_KEY_PAIR);
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
@@ -232,7 +244,7 @@ public class TestBase {
     template.publicKey().prime(DSA_P).subprime(DSA_Q).base(DSA_G);
     template.privateKey().sensitive(true).private_(true);
 
-    return session.generateKeyPair(keyPairGenMechanism, template);
+    return token.generateKeyPair(keyPairGenMechanism, template);
   }
 
   protected AttributeVector newSecretKey(long keyType) {
@@ -247,17 +259,17 @@ public class TestBase {
     return AttributeVector.newPrivateKey(keyType);
   }
 
-  protected static PublicKey generateJCEPublicKey(Session session, long p11Key, Long keyType)
-      throws InvalidKeySpecException, PKCS11Exception {
+  protected static PublicKey generateJCEPublicKey(long p11Key, Long keyType)
+      throws InvalidKeySpecException, TokenException {
     if (keyType == null) {
-      keyType = session.getLongAttrValue(p11Key, CKA_KEY_TYPE);
+      keyType = token.getAttrValues(p11Key, CKA_KEY_TYPE).keyType();
     }
 
     if (keyType == CKK_RSA) {
-      AttributeVector attrValues = session.getAttrValues(p11Key, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+      AttributeVector attrValues = token.getAttrValues(p11Key, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
       return KeyUtil.generateRSAPublicKey(new RSAPublicKeySpec(attrValues.modulus(), attrValues.publicExponent()));
     } else if (keyType == CKK_DSA) {
-      AttributeVector attrValues = session.getAttrValues(p11Key,
+      AttributeVector attrValues = token.getAttrValues(p11Key,
           CKA_VALUE, CKA_PRIME, CKA_SUBPRIME, CKA_BASE); // y, p, q, g
 
       DSAPublicKeySpec keySpec = new DSAPublicKeySpec(new BigInteger(1, attrValues.value()),
@@ -265,18 +277,12 @@ public class TestBase {
       return KeyUtil.generateDSAPublicKey(keySpec);
     } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS
         || keyType == CKK_EC_MONTGOMERY || keyType == CKK_VENDOR_SM2) {
-      byte[] encodedPoint = session.getByteArrayAttrValue(p11Key, CKA_EC_POINT);
-
-      byte[] ecParams;
-      try {
-        ecParams = session.getByteArrayAttrValue(p11Key, CKA_EC_PARAMS);
-      } catch (PKCS11Exception ex) {
-        if (keyType == CKK_VENDOR_SM2) {
-          // GMObjectIdentifiers.sm2p256v1.getEncoded();
-          ecParams = Hex.decode("06082a811ccf5501822d");
-        } else {
-          throw ex;
-        }
+      AttributeVector attrValues = token.getAttrValues(p11Key, CKA_EC_POINT, CKA_EC_PARAMS);
+      byte[] encodedPoint = attrValues.ecPoint();
+      byte[] ecParams = attrValues.ecParams();
+      if (ecParams == null && keyType == CKK_VENDOR_SM2) {
+        // GMObjectIdentifiers.sm2p256v1.getEncoded();
+        ecParams = Hex.decode("06082a811ccf5501822d");
       }
 
       if (keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY) {

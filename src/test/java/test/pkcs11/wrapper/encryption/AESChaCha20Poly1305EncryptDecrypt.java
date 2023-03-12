@@ -4,10 +4,7 @@
 package test.pkcs11.wrapper.encryption;
 
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.AttributeVector;
-import org.xipki.pkcs11.wrapper.Mechanism;
-import org.xipki.pkcs11.wrapper.PKCS11Exception;
-import org.xipki.pkcs11.wrapper.Token;
+import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.SALSA20_CHACHA20_POLY1305_PARAMS;
 import test.pkcs11.wrapper.TestBase;
 
@@ -31,7 +28,7 @@ public class AESChaCha20Poly1305EncryptDecrypt extends SymmEncryptDecrypt {
 
   @Test
   @Override
-  public void main() throws PKCS11Exception {
+  public void main() throws TokenException {
     // check whether supported in current JDK
     try {
       new SALSA20_CHACHA20_POLY1305_PARAMS(new byte[12], null);
@@ -44,13 +41,13 @@ public class AESChaCha20Poly1305EncryptDecrypt extends SymmEncryptDecrypt {
   }
 
   @Override
-  protected Mechanism getKeyGenMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, CKM_CHACHA20_KEY_GEN);
+  protected Mechanism getKeyGenMech() throws PKCS11Exception {
+    return getSupportedMechanism(CKM_CHACHA20_KEY_GEN, CKF_GENERATE);
   }
 
   @Override
-  protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, CKM_CHACHA20_POLY1305, new SALSA20_CHACHA20_POLY1305_PARAMS(iv, aad));
+  protected Mechanism getEncryptionMech() throws PKCS11Exception {
+    return getSupportedMechanism(CKM_CHACHA20_POLY1305, CKF_ENCRYPT, new SALSA20_CHACHA20_POLY1305_PARAMS(iv, aad));
   }
 
   @Override

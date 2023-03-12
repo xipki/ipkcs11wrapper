@@ -4,10 +4,7 @@
 package test.pkcs11.wrapper.encryption;
 
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.AttributeVector;
-import org.xipki.pkcs11.wrapper.Mechanism;
-import org.xipki.pkcs11.wrapper.PKCS11Exception;
-import org.xipki.pkcs11.wrapper.Token;
+import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.GCM_PARAMS;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
@@ -30,18 +27,18 @@ public class AESGCMEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Test
   @Override
-  public void main() throws PKCS11Exception {
+  public void main() throws TokenException {
     super.main();
   }
 
   @Override
-  protected Mechanism getKeyGenMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, CKM_AES_KEY_GEN);
+  protected Mechanism getKeyGenMech() throws PKCS11Exception {
+    return getSupportedMechanism(CKM_AES_KEY_GEN, CKF_GENERATE);
   }
 
   @Override
-  protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, CKM_AES_GCM, new GCM_PARAMS(iv, aad, 128));
+  protected Mechanism getEncryptionMech() throws PKCS11Exception {
+    return getSupportedMechanism(CKM_AES_GCM, CKF_ENCRYPT, new GCM_PARAMS(iv, aad, 128));
   }
 
   @Override

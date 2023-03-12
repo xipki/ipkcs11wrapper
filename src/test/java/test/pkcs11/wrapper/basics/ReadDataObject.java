@@ -18,24 +18,7 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 public class ReadDataObject extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    TokenInfo tokenInfo = token.getTokenInfo();
-
-    LOG.info("##################################################");
-    LOG.info("Information of Token:\n{}", tokenInfo);
-    LOG.info("##################################################");
-
-    // open a read-write user session
-    Session session = openReadWriteSession(token);
-    try {
-      main0(session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
     LOG.info("##################################################");
     LOG.info("searching for data object on the card using this search template... ");
 
@@ -44,7 +27,10 @@ public class ReadDataObject extends TestBase {
     // Create a new PKCS#11 object first
     AttributeVector newDataTemplate = new AttributeVector().class_(CKO_DATA).label(label)
         .value("hello world".getBytes());
-    long newDataHandle = session.createObject(newDataTemplate);
+
+    PKCS11Token token = getToken();
+
+    long newDataHandle = token.createObject(newDataTemplate);
 
     try {
       // create certificate object template
@@ -59,22 +45,20 @@ public class ReadDataObject extends TestBase {
       // print template
       LOG.info("{}", dataObjectTemplate);
 
-      long[] foundDataObjects = session.findObjectsSingle(dataObjectTemplate, 1); // find first
+      long[] foundDataObjects = token.findObjects(dataObjectTemplate, 1); // find first 1
 
       long dataObjectHandle;
       if (foundDataObjects.length > 0) {
         dataObjectHandle = foundDataObjects[0];
+        AttributeVector attrs = token.getAttrValues(dataObjectHandle, CKA_CLASS, CKA_LABEL);
         LOG.info("___________________________________________________");
         LOG.info("found this data object with handle: {}", dataObjectHandle);
-        LOG.info("  Class: {}", ckoCodeToName(session.getLongAttrValue(dataObjectHandle, CKA_CLASS)));
-        LOG.info("  Label: {}", session.getStringAttrValue(dataObjectHandle, CKA_LABEL));
+        LOG.info("  Class: {}", ckoCodeToName(attrs.class_()));
+        LOG.info("  Label: {}", attrs.label());
         LOG.info("___________________________________________________");
-        // FIXME, there may be more than one that matches the given template,
-        // the label is not unique in general
-        // foundDataObjects = session.findObjects(1); //find next
       }
     } finally {
-      session.destroyObject(newDataHandle);
+      token.destroyObject(newDataHandle);
     }
   }
 

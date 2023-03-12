@@ -5,14 +5,10 @@ package test.pkcs11.wrapper.speed.signature;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.AttributeVector;
-import org.xipki.pkcs11.wrapper.Mechanism;
-import org.xipki.pkcs11.wrapper.PKCS11Exception;
-import org.xipki.pkcs11.wrapper.Token;
+import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.RSA_PKCS_PSS_PARAMS;
 import org.xipki.util.BenchmarkExecutor;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -24,9 +20,9 @@ public class RSAPSSSignSpeed extends TestBase {
 
   private class MySignExecutor extends SignExecutor {
 
-    public MySignExecutor(Token token, char[] pin) throws PKCS11Exception {
+    public MySignExecutor() throws TokenException {
       super(ckmCodeToName(signMechanism) + " (2048) Sign Speed",
-          new Mechanism(keypairGenMechanism), token, pin, signMechanism2, 32);
+          new Mechanism(keypairGenMechanism), signMechanism2, 32);
     }
 
     @Override
@@ -43,9 +39,9 @@ public class RSAPSSSignSpeed extends TestBase {
 
   private class MyVerifyExecutor extends VerifyExecutor {
 
-    public MyVerifyExecutor(Token token, char[] pin) throws PKCS11Exception {
+    public MyVerifyExecutor() throws TokenException {
       super(ckmCodeToName(signMechanism) + " (2048) Verify Speed",
-          new Mechanism(keypairGenMechanism), token, pin, signMechanism2, 32);
+          new Mechanism(keypairGenMechanism), signMechanism2, 32);
     }
 
     @Override
@@ -79,25 +75,25 @@ public class RSAPSSSignSpeed extends TestBase {
   }
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    if (!Util.supports(token, keypairGenMechanism)) {
+  public void main() throws TokenException {
+    PKCS11Token token = getToken();
+    if (!token.supportsMechanism(keypairGenMechanism, CKF_GENERATE_KEY_PAIR)) {
       System.out.println(ckmCodeToName(keypairGenMechanism) + " is not supported, skip test");
       return;
     }
 
-    if (!Util.supports(token, signMechanism)) {
+    if (!token.supportsMechanism(signMechanism, CKF_SIGN)) {
       System.out.println(ckmCodeToName(signMechanism) + " is not supported, skip test");
       return;
     }
 
-    BenchmarkExecutor executor = new MySignExecutor(token, getModulePin());
+    BenchmarkExecutor executor = new MySignExecutor();
     executor.setThreads(getSpeedTestThreads());
     executor.setDuration(getSpeedTestDuration());
     executor.execute();
     Assert.assertEquals("Sign speed", 0, executor.getErrorAccout());
 
-    executor = new MyVerifyExecutor(token, getModulePin());
+    executor = new MyVerifyExecutor();
     executor.setThreads(getSpeedTestThreads());
     executor.setDuration(getSpeedTestDuration());
     executor.execute();

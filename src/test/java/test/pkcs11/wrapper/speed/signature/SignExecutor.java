@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
 import test.pkcs11.wrapper.speed.Pkcs11Executor;
 
 import java.util.Random;
@@ -29,14 +28,7 @@ public abstract class SignExecutor extends Pkcs11Executor {
       while (!stop()) {
         try {
           byte[] data = TestBase.randomBytes(inputLen);
-
-          ConcurrentSessionBagEntry sessionBag = borrowSession();
-          try {
-            sessionBag.value().signSingle(signMechanism, keypair.getPrivateKey(), data);
-          } finally {
-            requiteSession(sessionBag);
-          }
-
+          TestBase.getToken().sign(signMechanism, keypair.getPrivateKey(), data);
           account(1, 0);
         } catch (Throwable th) {
           System.err.println(th.getMessage());
@@ -55,9 +47,9 @@ public abstract class SignExecutor extends Pkcs11Executor {
   private final PKCS11KeyPair keypair;
 
   public SignExecutor(String description, Mechanism keypairGenMechanism,
-                      Token token, char[] pin, Mechanism signMechanism, int inputLen)
-          throws PKCS11Exception {
-    super(description, token, pin);
+                      Mechanism signMechanism, int inputLen)
+          throws TokenException {
+    super(description);
     this.signMechanism = signMechanism;
     this.inputLen = inputLen;
 
@@ -69,14 +61,7 @@ public abstract class SignExecutor extends Pkcs11Executor {
     template.privateKey().sensitive(true).private_(true);
 
     // generate keypair on token
-    ConcurrentSessionBagEntry sessionBag = borrowSession();
-    try {
-      Session session = sessionBag.value();
-      keypair = session.generateKeyPair(keypairGenMechanism, template);
-    } finally {
-      requiteSession(sessionBag);
-    }
-
+    keypair = TestBase.getToken().generateKeyPair(keypairGenMechanism, template);
   }
 
   protected abstract AttributeVector getMinimalPrivateKeyTemplate();
@@ -91,15 +76,12 @@ public abstract class SignExecutor extends Pkcs11Executor {
   @Override
   public void close() {
     if (keypair != null) {
-      ConcurrentSessionBagEntry sessionBag = borrowSession();
       try {
-        Session session = sessionBag.value();
-        session.destroyObject(keypair.getPrivateKey());
-        session.destroyObject(keypair.getPublicKey());
+        PKCS11Token token = TestBase.getToken();
+        token.destroyObject(keypair.getPrivateKey());
+        token.destroyObject(keypair.getPublicKey());
       } catch (Throwable th) {
         LOG.error("could not destroy generated objects", th);
-      } finally {
-        requiteSession(sessionBag);
       }
     }
 

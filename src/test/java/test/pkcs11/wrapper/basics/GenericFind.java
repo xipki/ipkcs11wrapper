@@ -7,10 +7,7 @@
 package test.pkcs11.wrapper.basics;
 
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.AttributeVector;
-import org.xipki.pkcs11.wrapper.PKCS11Exception;
-import org.xipki.pkcs11.wrapper.Session;
-import org.xipki.pkcs11.wrapper.Token;
+import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
@@ -21,24 +18,15 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 public class GenericFind extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    Session session = openReadOnlySession(token);
-    try {
-      main0(session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
     LOG.info("##################################################");
     LOG.info("Find all signature private keys.");
     AttributeVector signatureKeyTemplate = AttributeVector.newPrivateKey().attr(CKA_SIGN, true);
 
+    PKCS11Token token = getToken();
     // this find operation will find all objects that possess a CKA_SIGN
     // attribute with value true
-    long[] signatureKeys = session.findObjectsSingle(signatureKeyTemplate, 99999);
+    long[] signatureKeys = token.findObjects(signatureKeyTemplate, 99999);
 
     if (signatureKeys.length == 0) {
       LOG.info("There is no object with a CKA_SIGN attribute set to true.");
@@ -46,7 +34,7 @@ public class GenericFind extends TestBase {
     }
 
     for (long object : signatureKeys) {
-      LOG.info("handle={}, label={}", object, getLabel(session, object));
+      LOG.info("handle={}, label={}", object, getLabel(object));
     }
 
     LOG.info("##################################################\n{}",
@@ -54,13 +42,13 @@ public class GenericFind extends TestBase {
 
     // for each private signature key try to find a public key certificate with the same ID
     for (long privateSignatureKeyHandle : signatureKeys) {
-      byte[] id = session.getByteArrayAttrValue(privateSignatureKeyHandle, CKA_ID);
+      byte[] id = token.getAttrValues(privateSignatureKeyHandle, CKA_ID).id();
       AttributeVector certificateSearchTemplate = AttributeVector.newX509Certificate().id(id);
 
-      long[] foundCertificateObjects = session.findObjectsSingle(certificateSearchTemplate, 1);
+      long[] foundCertificateObjects = token.findObjects(certificateSearchTemplate, 1);
       if (foundCertificateObjects.length > 0) {
         LOG.info("The certificate for private signature key {} is (handle={}, label={})",
-            privateSignatureKeyHandle, foundCertificateObjects[0], getLabel(session, foundCertificateObjects[0]));
+            privateSignatureKeyHandle, foundCertificateObjects[0], getLabel(foundCertificateObjects[0]));
       } else {
         LOG.info("There is no certificate for private signature key {}", privateSignatureKeyHandle);
       }
@@ -69,8 +57,8 @@ public class GenericFind extends TestBase {
     LOG.info("found {} objects on this token", signatureKeys.length);
   }
 
-  private static String getLabel(Session session, long hObject) throws PKCS11Exception {
-    return session.getStringAttrValue(hObject, CKA_LABEL);
+  private static String getLabel(long hObject) throws TokenException {
+    return getToken().getAttrValues(hObject, CKA_LABEL).label();
   }
 
 }

@@ -6,7 +6,7 @@ package test.pkcs11.wrapper.speed.keygeneration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xipki.pkcs11.wrapper.*;
-import test.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
+import test.pkcs11.wrapper.TestBase;
 import test.pkcs11.wrapper.speed.Pkcs11Executor;
 
 import java.util.Random;
@@ -38,16 +38,9 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
             template.id(id);
           }
 
-          ConcurrentSessionBagEntry sessionBag = borrowSession();
-          PKCS11KeyPair keypair;
-          try {
-            Session session = sessionBag.value();
-            keypair = session.generateKeyPair(mechanism, template);
-            destroyObject(LOG, session, keypair.getPrivateKey());
-            destroyObject(LOG, session, keypair.getPublicKey());
-          } finally {
-            requiteSession(sessionBag);
-          }
+          PKCS11KeyPair keypair = TestBase.getToken().generateKeyPair(mechanism, template);
+          destroyObject(LOG, keypair.getPrivateKey());
+          destroyObject(LOG, keypair.getPublicKey());
 
           account(1, 0);
         } catch (Throwable th) {
@@ -64,9 +57,9 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
 
   private final boolean inToken;
 
-  public KeypairGenExecutor(String description, long mechnism, Token token, char[] pin, boolean inToken)
+  public KeypairGenExecutor(String description, long mechnism, boolean inToken)
       throws PKCS11Exception {
-    super(description, token, pin);
+    super(description);
     this.mechanism = new Mechanism(mechnism);
     this.inToken = inToken;
   }

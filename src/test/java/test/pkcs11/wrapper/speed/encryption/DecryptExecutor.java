@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
 import test.pkcs11.wrapper.speed.Pkcs11Executor;
 
 import java.util.Random;
@@ -29,15 +28,18 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
 
     @Override
     public void run() {
+      PKCS11Token token;
+      try {
+        token = TestBase.getToken();
+      } catch (PKCS11Exception e) {
+        account(1, 1);
+        return;
+      }
+
       while (!stop()) {
         try {
-          ConcurrentSessionBagEntry sessionBag = borrowSession();
-          try {
-            byte[] decryptedData = sessionBag.value().decryptSingle(encryptMechanism, key, dataToDecrypt);
-            Assert.assertArrayEquals(plainData, decryptedData);
-          } finally {
-            requiteSession(sessionBag);
-          }
+          byte[] decryptedData = token.decrypt(encryptMechanism, key, dataToDecrypt);
+          Assert.assertArrayEquals(plainData, decryptedData);
 
           account(1, 0);
         } catch (Throwable th) {
@@ -61,8 +63,8 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
   protected abstract AttributeVector getMinimalKeyTemplate();
 
   public DecryptExecutor(String description, Mechanism keyGenMechanism,
-                         Token token, char[] pin, Mechanism encryptMechanism, int inputLen) throws PKCS11Exception {
-    super(description, token, pin);
+                         Mechanism encryptMechanism, int inputLen) throws TokenException {
+    super(description);
     this.encryptMechanism = encryptMechanism;
     this.plainData = TestBase.randomBytes(inputLen);
 
@@ -72,15 +74,10 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
     AttributeVector keyTemplate = getMinimalKeyTemplate().sensitive(true).token(true)
         .id(id).encrypt(true).decrypt(true);
 
-    ConcurrentSessionBagEntry sessionBag = borrowSession();
-    try {
-      Session session = sessionBag.value();
-      key = session.generateKey(keyGenMechanism, keyTemplate);
+    PKCS11Token token = TestBase.getToken();
+    key = token.generateKey(keyGenMechanism, keyTemplate);
 
-      this.dataToDecrypt = session.encryptSingle(encryptMechanism, key, plainData);
-    } finally {
-      requiteSession(sessionBag);
-    }
+    this.dataToDecrypt = token.encrypt(encryptMechanism, key, plainData);
 
   }
 
@@ -92,14 +89,10 @@ public abstract class DecryptExecutor extends Pkcs11Executor {
   @Override
   public void close() {
     if (key != 0) {
-      ConcurrentSessionBagEntry sessionBag = borrowSession();
       try {
-        Session session = sessionBag.value();
-        session.destroyObject(key);
+        TestBase.getToken().destroyObject(key);
       } catch (Throwable th) {
         LOG.error("could not destroy generated objects", th);
-      } finally {
-        requiteSession(sessionBag);
       }
     }
 

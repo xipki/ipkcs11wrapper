@@ -8,14 +8,10 @@ package test.pkcs11.wrapper.speed.encryption;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.AttributeVector;
-import org.xipki.pkcs11.wrapper.Mechanism;
-import org.xipki.pkcs11.wrapper.PKCS11Exception;
-import org.xipki.pkcs11.wrapper.Token;
+import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.ByteArrayParams;
 import org.xipki.util.BenchmarkExecutor;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -27,9 +23,9 @@ public class TripleDESPadEncryptDecryptSpeed extends TestBase {
 
   private class MyEncryptExecutor extends EncryptExecutor {
 
-    public MyEncryptExecutor(Token token, char[] pin) throws PKCS11Exception {
+    public MyEncryptExecutor() throws TokenException {
       super(ckmCodeToName(encryptMechanism) + " Encrypt Speed",
-          getKeyGenMech(token), token, pin, getEncryptionMech(token), inputLen);
+          getKeyGenMech(), getEncryptionMech(), inputLen);
     }
 
     @Override
@@ -41,9 +37,9 @@ public class TripleDESPadEncryptDecryptSpeed extends TestBase {
 
   private class MyDecryptExecutor extends DecryptExecutor {
 
-    public MyDecryptExecutor(Token token, char[] pin) throws PKCS11Exception {
+    public MyDecryptExecutor() throws TokenException {
       super(ckmCodeToName(encryptMechanism) + " Decrypt Speed",
-          getKeyGenMech(token), token, pin, getEncryptionMech(token), inputLen);
+          getKeyGenMech(), getEncryptionMech(), inputLen);
     }
 
     @Override
@@ -67,12 +63,12 @@ public class TripleDESPadEncryptDecryptSpeed extends TestBase {
     iv = randomBytes(8);
   }
 
-  private Mechanism getKeyGenMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, keyGenMechanism);
+  private Mechanism getKeyGenMech() throws PKCS11Exception {
+    return getSupportedMechanism(keyGenMechanism, CKF_GENERATE);
   }
 
-  private Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, encryptMechanism, new ByteArrayParams(iv));
+  private Mechanism getEncryptionMech() throws PKCS11Exception {
+    return getSupportedMechanism(encryptMechanism, CKF_ENCRYPT, new ByteArrayParams(iv));
   }
 
   private AttributeVector getMinimalKeyTemplate0() {
@@ -80,26 +76,26 @@ public class TripleDESPadEncryptDecryptSpeed extends TestBase {
   }
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    if (!Util.supports(token, keyGenMechanism)) {
+  public void main() throws TokenException {
+    PKCS11Token token = getToken();
+    if (!token.supportsMechanism(keyGenMechanism, CKF_GENERATE)) {
       System.out.println(ckmCodeToName(keyGenMechanism) + " is not supported, skip test");
       return;
     }
 
-    if (!Util.supports(token, encryptMechanism)) {
+    if (!token.supportsMechanism(encryptMechanism, CKF_ENCRYPT)) {
       System.out.println(ckmCodeToName(encryptMechanism) + " is not supported, skip test");
       return;
     }
 
-    BenchmarkExecutor executor = new MyEncryptExecutor(token, getModulePin());
+    BenchmarkExecutor executor = new MyEncryptExecutor();
     executor.setThreads(getSpeedTestThreads());
     executor.setDuration(getSpeedTestDuration());
     executor.setUnit(inputUnit);
     executor.execute();
     Assert.assertEquals("Encrypt speed", 0, executor.getErrorAccout());
 
-    executor = new MyDecryptExecutor(token, getModulePin());
+    executor = new MyDecryptExecutor();
     executor.setThreads(getSpeedTestThreads());
     executor.setDuration(getSpeedTestDuration());
     executor.setUnit(inputUnit);

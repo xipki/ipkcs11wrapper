@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.speed.ConcurrentSessionBagEntry;
 import test.pkcs11.wrapper.speed.Pkcs11Executor;
 
 import java.util.Random;
@@ -29,13 +28,7 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
     public void run() {
       while (!stop()) {
         try {
-          ConcurrentSessionBagEntry sessionBag = borrowSession();
-          try {
-            sessionBag.value().verifySingle(signMechanism, keypair.getPublicKey(), dataToVerify, signatureToVerify);
-          } finally {
-            requiteSession(sessionBag);
-          }
-
+          TestBase.getToken().verify(signMechanism, keypair.getPublicKey(), dataToVerify, signatureToVerify);
           account(1, 0);
         } catch (Throwable th) {
           System.err.println(th.getMessage());
@@ -56,8 +49,8 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
   private final byte[] signatureToVerify;
 
   public VerifyExecutor(String description, Mechanism keypairGenMechanism,
-                        Token token, char[] pin, Mechanism signMechanism, int inputLen) throws PKCS11Exception {
-    super(description, token, pin);
+                        Mechanism signMechanism, int inputLen) throws TokenException {
+    super(description);
     this.signMechanism = signMechanism;
 
     // generate keypair on token
@@ -69,17 +62,11 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
     template.token(true).id(id).signVerify(true);
     template.privateKey().sensitive(true).private_(true);
 
-    ConcurrentSessionBagEntry sessionBag = borrowSession();
-    try {
-      Session session = sessionBag.value();
-      keypair = session.generateKeyPair(keypairGenMechanism, template);
+    PKCS11Token token = TestBase.getToken();
+    keypair = token.generateKeyPair(keypairGenMechanism, template);
 
-      dataToVerify = TestBase.randomBytes(inputLen);
-      signatureToVerify = session.signSingle(signMechanism, keypair.getPrivateKey(), dataToVerify);
-    } finally {
-      requiteSession(sessionBag);
-    }
-
+    dataToVerify = TestBase.randomBytes(inputLen);
+    signatureToVerify = token.sign(signMechanism, keypair.getPrivateKey(), dataToVerify);
   }
 
   protected abstract AttributeVector getMinimalPrivateKeyTemplate();
@@ -94,15 +81,12 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
   @Override
   public void close() {
     if (keypair != null) {
-      ConcurrentSessionBagEntry sessionBag = borrowSession();
       try {
-        Session session = sessionBag.value();
-        session.destroyObject(keypair.getPrivateKey());
-        session.destroyObject(keypair.getPublicKey());
+        PKCS11Token token = TestBase.getToken();
+        token.destroyObject(keypair.getPrivateKey());
+        token.destroyObject(keypair.getPublicKey());
       } catch (Throwable th) {
         LOG.error("could not destroy generated objects", th);
-      } finally {
-        requiteSession(sessionBag);
       }
     }
 

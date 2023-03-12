@@ -6,9 +6,7 @@ package test.pkcs11.wrapper.keygeneration;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 
-import java.util.List;
 import java.util.Random;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
@@ -19,37 +17,26 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 public class ECGenerateKeyPair extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
     LOG.info("##################################################");
     LOG.info("Generating new EC (curve secp256r1) key-pair... ");
 
+    PKCS11Token token = getToken();
     // first check out what attributes of the keys we may set
-    List<Long> supportedMechanisms = getMechanismList(token);
-
     MechanismInfo signatureMechanismInfo;
-    if (supportedMechanisms.contains(CKM_ECDSA)) {
+    if (token.supportsMechanism(CKM_ECDSA, CKF_SIGN)) {
       signatureMechanismInfo = token.getMechanismInfo(CKM_ECDSA);
     } else {
       signatureMechanismInfo = null;
     }
 
     final long mechCode = CKM_EC_KEY_PAIR_GEN;
-    if (!Util.supports(token, mechCode)) {
+    if (!token.supportsMechanism(mechCode, CKF_GENERATE_KEY_PAIR)) {
       System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
 
-    Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
+    Mechanism keyPairGenerationMechanism = getSupportedMechanism(mechCode, CKF_GENERATE_KEY_PAIR);
 
     byte[] id = new byte[20];
     new Random().nextBytes(id);
@@ -84,7 +71,7 @@ public class ECGenerateKeyPair extends TestBase {
       template.signVerify(true).decryptEncrypt(true);
     }
 
-    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(keyPairGenerationMechanism, template);
+    PKCS11KeyPair generatedKeyPair = token.generateKeyPair(keyPairGenerationMechanism, template);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
     // no we may work with the keys...
@@ -95,8 +82,9 @@ public class ECGenerateKeyPair extends TestBase {
       LOG.info("The private key is {}", generatedPrivateKey);
 
       LOG.info("##################################################");
-      byte[] encodedPoint = session.getByteArrayAttrValue(generatedPublicKey, CKA_EC_POINT);
-      byte[] curveOid = session.getByteArrayAttrValue(generatedPublicKey, CKA_EC_PARAMS);
+      AttributeVector attrs = token.getAttrValues(generatedPublicKey, CKA_EC_POINT, CKA_EC_PARAMS);
+      byte[] encodedPoint = attrs.ecPoint();
+      byte[] curveOid = attrs.ecParams();
 
       LOG.info("Public Key (Point): {}", Functions.toHex(encodedPoint));
       LOG.info("Public Key (Curve OID): {}", Functions.toHex(curveOid));
@@ -108,7 +96,7 @@ public class ECGenerateKeyPair extends TestBase {
       // set the search template for the public key
       AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_EC).attr(CKA_ID, id);
 
-      long[] foundPublicKeys = session.findObjectsSingle(exportPublicKeyTemplate, 1);
+      long[] foundPublicKeys = token.findObjects(exportPublicKeyTemplate, 1);
       if (foundPublicKeys.length != 1) {
         LOG.error("Error: Cannot find the public key under the given ID!");
       } else {
@@ -117,8 +105,8 @@ public class ECGenerateKeyPair extends TestBase {
 
       LOG.info("##################################################");
     } finally {
-      session.destroyObject(generatedPrivateKey);
-      session.destroyObject(generatedPublicKey);
+      token.destroyObject(generatedPrivateKey);
+      token.destroyObject(generatedPublicKey);
     }
 
   }

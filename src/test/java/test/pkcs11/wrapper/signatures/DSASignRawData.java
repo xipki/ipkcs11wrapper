@@ -5,7 +5,6 @@ package test.pkcs11.wrapper.signatures;
 
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
-import test.pkcs11.wrapper.util.Util;
 
 import java.security.MessageDigest;
 
@@ -18,30 +17,21 @@ public class DSASignRawData extends SignatureTestBase {
 
   @Test
   public void main() throws Exception {
-    Token token = getNonNullToken();
-    Session session = openReadOnlySession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws Exception {
     LOG.info("##################################################");
     LOG.info("generate signature key pair");
 
+    PKCS11Token token = getToken();
     final long mechCode = CKM_DSA;
-    if (!Util.supports(token, mechCode)) {
+    if (!token.supportsMechanism(mechCode, CKF_SIGN)) {
       System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism
-    Mechanism signatureMechanism = getSupportedMechanism(token, mechCode);
+    Mechanism signatureMechanism = getSupportedMechanism(mechCode, CKF_SIGN);
 
     final boolean inToken = false;
 
-    PKCS11KeyPair generatedKeyPair = generateDSAKeypair(token, session, inToken);
+    PKCS11KeyPair generatedKeyPair = generateDSAKeypair(inToken);
 
     LOG.info("##################################################");
     LOG.info("signing data");
@@ -50,16 +40,16 @@ public class DSASignRawData extends SignatureTestBase {
     byte[] hashValue = md.digest(dataToBeSigned);
 
     // This signing operation is implemented in most of the drivers
-    byte[] signatureValue = session.signSingle(signatureMechanism, generatedKeyPair.getPrivateKey(), hashValue);
+    byte[] signatureValue = token.sign(signatureMechanism, generatedKeyPair.getPrivateKey(), hashValue);
     LOG.info("The signature value is : (len={}) {}", signatureValue.length, Functions.toHex(signatureValue));
 
     // verify with JCE
-    jceVerifySignature("SHA256withDSA", session, generatedKeyPair.getPublicKey(), CKK_DSA,
-        dataToBeSigned, Util.dsaSigPlainToX962(signatureValue));
+    jceVerifySignature("SHA256withDSA", generatedKeyPair.getPublicKey(), CKK_DSA,
+        dataToBeSigned, Functions.dsaSigPlainToX962(signatureValue));
 
     // verify with PKCS#11
     // error will be thrown if signature is invalid
-    session.verifySingle(signatureMechanism, generatedKeyPair.getPublicKey(), hashValue, signatureValue);
+    token.verify(signatureMechanism, generatedKeyPair.getPublicKey(), hashValue, signatureValue);
 
     LOG.info("##################################################");
   }

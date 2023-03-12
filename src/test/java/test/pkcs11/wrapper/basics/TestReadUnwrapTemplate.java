@@ -13,29 +13,23 @@ public class TestReadUnwrapTemplate extends TestBase {
     }
   }
 
-  private void execute() throws PKCS11Exception {
-    PKCS11Module pkcs11Module = getModule();
-    Slot slot = pkcs11Module.getSlotList(true)[0];
-    Session session = openReadOnlySession(slot.getToken());
-    try {
-      AttributeVector template = AttributeVector.newAESSecretKey().valueLen(32)
-          .unwrapTemplate(new AttributeVector().sensitive(true).wrapWithTrusted(true).sign(false))
-          .wrapTemplate(new AttributeVector().keyType(PKCS11Constants.CKK_AES).wrapWithTrusted(true));
+  private void execute() throws TokenException {
+    PKCS11Token token = getToken();
+    AttributeVector template = AttributeVector.newAESSecretKey().valueLen(32)
+        .unwrapTemplate(new AttributeVector().sensitive(true).wrapWithTrusted(true).sign(false))
+        .wrapTemplate(new AttributeVector().keyType(PKCS11Constants.CKK_AES).wrapWithTrusted(true));
 
-      System.out.println("Template before generation\n" + template);
-      long handle = session.generateKey(new Mechanism(PKCS11Constants.CKM_AES_KEY_GEN), template);
+    System.out.println("Template before generation\n" + template);
+    long handle = token.generateKey(new Mechanism(PKCS11Constants.CKM_AES_KEY_GEN), template);
 
-      // test the read function
-      AttributeVector attrs = session.getAttrValues(handle, PKCS11Constants.CKA_UNWRAP_TEMPLATE,
-          PKCS11Constants.CKA_WRAP_TEMPLATE);
-      System.out.println("read unwrapTemplate: " + attrs.unwrapTemplate());
-      System.out.println("read wrapTemplate: " + attrs.wrapTemplate());
+    // test the read function
+    AttributeVector attrs = token.getAttrValues(handle, PKCS11Constants.CKA_UNWRAP_TEMPLATE,
+        PKCS11Constants.CKA_WRAP_TEMPLATE);
+    System.out.println("read unwrapTemplate: " + attrs.unwrapTemplate());
+    System.out.println("read wrapTemplate: " + attrs.wrapTemplate());
 
-      // remove object
-      session.destroyObject(handle);
-    } finally {
-      session.closeSession();
-    }
+    // remove object
+    token.destroyObject(handle);
   }
 
 }

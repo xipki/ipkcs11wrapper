@@ -9,7 +9,6 @@ package test.pkcs11.wrapper.keygeneration;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +16,6 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.List;
 import java.util.Random;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
@@ -28,38 +26,27 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 public class RSAGenerateKeyPair extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception, NoSuchAlgorithmException, InvalidKeySpecException {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session)
-      throws PKCS11Exception, NoSuchAlgorithmException, InvalidKeySpecException {
+  public void main() throws TokenException, NoSuchAlgorithmException, InvalidKeySpecException {
     LOG.info("##################################################");
     LOG.info("Generating new 2048 bit RSA key-pair... ");
 
-    // first check out what attributes of the keys we may set
-    List<Long> supportedMechanisms = getMechanismList(token);
+    PKCS11Token token = getToken();
 
+    // first check out what attributes of the keys we may set
     MechanismInfo signatureMechanismInfo =
-          supportedMechanisms.contains(CKM_RSA_PKCS) ? token.getMechanismInfo(CKM_RSA_PKCS)
-        : supportedMechanisms.contains(CKM_RSA_X_509) ? token.getMechanismInfo(CKM_RSA_X_509)
-        : supportedMechanisms.contains(CKM_RSA_9796) ? token.getMechanismInfo(CKM_RSA_9796)
-        : supportedMechanisms.contains(CKM_RSA_PKCS_OAEP) ? token.getMechanismInfo(CKM_RSA_PKCS_OAEP)
+          token.supportsMechanism(CKM_RSA_PKCS, CKF_SIGN) ? token.getMechanismInfo(CKM_RSA_PKCS)
+        : token.supportsMechanism(CKM_RSA_X_509, CKF_SIGN) ? token.getMechanismInfo(CKM_RSA_X_509)
+        : token.supportsMechanism(CKM_RSA_9796, CKF_SIGN) ? token.getMechanismInfo(CKM_RSA_9796)
+        : token.supportsMechanism(CKM_RSA_PKCS_PSS, CKF_SIGN) ? token.getMechanismInfo(CKM_RSA_PKCS_OAEP)
         : null;
 
     final long mechCode = CKM_RSA_PKCS_KEY_PAIR_GEN;
-    if (!Util.supports(token, mechCode)) {
+    if (token.supportsMechanism(mechCode, CKF_GENERATE_KEY_PAIR)) {
       System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
 
-    Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
+    Mechanism keyPairGenerationMechanism = getSupportedMechanism(mechCode, CKF_GENERATE_KEY_PAIR);
 
     byte[] id = new byte[20];
     new Random().nextBytes(id);
@@ -90,7 +77,7 @@ public class RSAGenerateKeyPair extends TestBase {
       template.signVerify(true).decryptEncrypt(true);
     }
 
-    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(keyPairGenerationMechanism, template);
+    PKCS11KeyPair generatedKeyPair = token.generateKeyPair(keyPairGenerationMechanism, template);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
     // no we may work with the keys...
@@ -102,7 +89,7 @@ public class RSAGenerateKeyPair extends TestBase {
       LOG.info("__________________________________________________");
 
       LOG.info("##################################################");
-      AttributeVector attrValues = session.getAttrValues(generatedPublicKey, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+      AttributeVector attrValues = token.getAttrValues(generatedPublicKey, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
       RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(attrValues.modulus(), attrValues.publicExponent());
 
       KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -117,7 +104,7 @@ public class RSAGenerateKeyPair extends TestBase {
       // set the search template for the public key
       AttributeVector exportRsaPublicKeyTemplate = newPublicKey(CKK_RSA).id(id);
 
-      long[] foundPublicKeys = session.findObjectsSingle(exportRsaPublicKeyTemplate, 1);
+      long[] foundPublicKeys = token.findObjects(exportRsaPublicKeyTemplate, 1);
       if (foundPublicKeys.length != 1) {
         LOG.error("Error: Cannot find the public key under the given ID!");
       } else {
@@ -126,8 +113,8 @@ public class RSAGenerateKeyPair extends TestBase {
 
       LOG.info("##################################################");
     } finally {
-      session.destroyObject(generatedPrivateKey);
-      session.destroyObject(generatedPublicKey);
+      token.destroyObject(generatedPrivateKey);
+      token.destroyObject(generatedPublicKey);
     }
 
   }

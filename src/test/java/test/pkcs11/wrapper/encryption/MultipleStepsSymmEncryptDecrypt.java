@@ -8,9 +8,9 @@ import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKA_TOKEN;
 
@@ -20,82 +20,63 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKA_TOKEN;
  */
 public abstract class MultipleStepsSymmEncryptDecrypt extends TestBase {
 
-  protected abstract Mechanism getKeyGenMech(Token token) throws PKCS11Exception;
+  protected abstract Mechanism getKeyGenMech() throws PKCS11Exception;
 
   protected abstract AttributeVector getKeyTemplate();
 
-  protected abstract Mechanism getEncryptionMech(Token token) throws PKCS11Exception;
+  protected abstract Mechanism getEncryptionMech() throws PKCS11Exception;
 
   @Test
-  public void main() throws PKCS11Exception, IOException {
-    Token token = getNonNullToken();
-
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws PKCS11Exception {
+  public void main() throws TokenException, IOException {
+    PKCS11Token token = getToken();
     LOG.info("##################################################");
     LOG.info("generate secret encryption/decryption key");
-    Mechanism keyMechanism = getKeyGenMech(token);
+    Mechanism keyMechanism = getKeyGenMech();
 
     AttributeVector keyTemplate = getKeyTemplate().attr(CKA_TOKEN, false);
 
-    long encryptionKey = session.generateKey(keyMechanism, keyTemplate);
+    long encryptionKey = token.generateKey(keyMechanism, keyTemplate);
     LOG.info("##################################################");
     LOG.info("encrypting data");
 
-    byte[] rawData = randomBytes(1024);
+    byte[] rawData = randomBytes(10240);
 
     // be sure that your token can process the specified mechanism
-    Mechanism encryptionMechanism = getEncryptionMech(token);
+    Mechanism encryptionMechanism = getEncryptionMech();
 
-    // initialize for encryption
-    session.encryptInit(encryptionMechanism, encryptionKey);
+    // encrypt
+    byte[] encryptedData;
+    {
+      ByteArrayInputStream plaintext = new ByteArrayInputStream(rawData);
+      ByteArrayOutputStream out = new ByteArrayOutputStream(rawData.length);
 
-    ByteArrayOutputStream bout = new ByteArrayOutputStream(rawData.length);
+      int outLen = token.encrypt(out, encryptionMechanism, encryptionKey, plaintext);
 
-    // update
-    for (int i = 0; i < rawData.length; i += 64) {
-      int inLen = Math.min(rawData.length - i, 64);
+      encryptedData = out.toByteArray();
 
-      byte[] res = session.encryptUpdate(Arrays.copyOfRange(rawData, i, i + inLen));
-      bout.write(res, 0, res.length);
+      if (encryptedData.length != outLen) {
+        throw new TokenException("encryptedData.length != outLen");
+      }
     }
 
-    // final
-    byte[] res = session.encryptFinal();
-    bout.write(res, 0, res.length);
-
-    byte[] encryptedData = bout.toByteArray();
-
+    // decrypt
     LOG.info("##################################################");
     LOG.info("trying to decrypt");
 
-    Mechanism decryptionMechanism = getEncryptionMech(token);
+    byte[] decryptedData;
+    {
+      Mechanism decryptionMechanism = getEncryptionMech();
+      ByteArrayInputStream ciphertextIn = new ByteArrayInputStream(encryptedData);
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    // initialize for decryption
-    session.decryptInit(decryptionMechanism, encryptionKey);
-
-    bout.reset();
-
-    // update
-    for (int i = 0; i < encryptedData.length; i += 64) {
-      int inLen = Math.min(encryptedData.length - i, 64);
-
-      res = session.decryptUpdate(Arrays.copyOfRange(encryptedData, i, i + inLen));
-      bout.write(res, 0, res.length);
+      int outLen = token.decrypt(out, decryptionMechanism, encryptionKey, ciphertextIn);
+      decryptedData = out.toByteArray();
+      if (decryptedData.length != outLen) {
+        throw new TokenException("decryptedData.length != outLen");
+      }
     }
 
     // final
-    res = session.decryptFinal();
-    bout.write(res, 0, res.length);
-
-    byte[] decryptedData = bout.toByteArray();
     Assert.assertArrayEquals(rawData, decryptedData);
   }
 

@@ -18,25 +18,13 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKK_GENERIC_SECRET;
 public class DeleteObject extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Session session) throws PKCS11Exception {
-    SessionInfo sessionInfo = session.getSessionInfo();
-    LOG.info("using session: {}", sessionInfo);
-
+  public void main() throws TokenException {
     // create a new object to be deleted later
     AttributeVector secKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(true).value(new byte[32]);
 
-    long secKeyHandle = session.createObject(secKeyTemplate);
-    session.destroyObject(secKeyHandle);
+    PKCS11Token token = getToken();
+    long secKeyHandle = token.createObject(secKeyTemplate);
+    token.destroyObject(secKeyHandle);
     LOG.info("deleted object");
   }
 

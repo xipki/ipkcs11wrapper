@@ -21,63 +21,55 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 public class WrapUnwrapEncrKey extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
     LOG.info("##################################################");
     LOG.info("generate secret encryption/decryption key");
-    Mechanism keyMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
+    Mechanism keyMechanism = getSupportedMechanism(CKM_AES_KEY_GEN, CKF_GENERATE);
 
     AttributeVector secretEncryptionKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true);
 
-    long encryptionKey = session.generateKey(keyMechanism, secretEncryptionKeyTemplate);
+    PKCS11Token token = getToken();
+
+    long encryptionKey = token.generateKey(keyMechanism, secretEncryptionKeyTemplate);
 
     byte[] rawData = randomBytes(1517);
 
     // be sure that your token can process the specified mechanism
-    Mechanism wrapMechanism = getSupportedMechanism(token, CKM_AES_KEY_WRAP);
+    Mechanism wrapMechanism = getSupportedMechanism(CKM_AES_KEY_WRAP, CKF_WRAP);
 
     byte[] encryptIV = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    Mechanism encryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD, new ByteArrayParams(encryptIV));
+    Mechanism encryptionMechanism = getSupportedMechanism(CKM_AES_CBC_PAD, CKF_ENCRYPT, new ByteArrayParams(encryptIV));
 
     // initialize for encryption
-    byte[] encryptedData = session.encryptSingle(encryptionMechanism, encryptionKey, rawData);
+    byte[] encryptedData = token.encrypt(encryptionMechanism, encryptionKey, rawData);
 
     LOG.info("##################################################");
     LOG.info("generate secret wrapping key");
 
-    Mechanism wrapKeyMechanism = getSupportedMechanism(token, CKM_AES_KEY_GEN);
+    Mechanism wrapKeyMechanism = getSupportedMechanism(CKM_AES_KEY_GEN, CKF_GENERATE);
     AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES).token(false).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).unwrap(true);
 
-    long wrappingKey = session.generateKey(wrapKeyMechanism, wrapKeyTemplate);
+    long wrappingKey = token.generateKey(wrapKeyMechanism, wrapKeyTemplate);
 
     LOG.info("wrapping key");
 
-    byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, encryptionKey);
+    byte[] wrappedKey = token.wrapKey(wrapMechanism, wrappingKey, encryptionKey);
     AttributeVector keyTemplate = newSecretKey(CKK_AES).decrypt(true).token(false);
 
     LOG.info("unwrapping key");
 
-    long unwrappedKey = session.unwrapKey(wrapMechanism, wrappingKey, wrappedKey, keyTemplate);
+    long unwrappedKey = token.unwrapKey(wrapMechanism, wrappingKey, wrappedKey, keyTemplate);
 
     LOG.info("##################################################");
     LOG.info("trying to decrypt");
 
     byte[] decryptIV = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    Mechanism decryptionMechanism = getSupportedMechanism(token, CKM_AES_CBC_PAD, new ByteArrayParams(decryptIV));
+    Mechanism decryptionMechanism = getSupportedMechanism(CKM_AES_CBC_PAD, CKF_DECRYPT, new ByteArrayParams(decryptIV));
 
     // initialize for decryption
-    byte[] decryptedData = session.decryptSingle(decryptionMechanism, unwrappedKey, encryptedData);
+    byte[] decryptedData = token.decrypt(decryptionMechanism, unwrappedKey, encryptedData);
 
     Assert.assertArrayEquals(rawData, decryptedData);
 

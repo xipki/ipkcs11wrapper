@@ -7,10 +7,7 @@
 package test.pkcs11.wrapper.basics;
 
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.AttributeVector;
-import org.xipki.pkcs11.wrapper.PKCS11Exception;
-import org.xipki.pkcs11.wrapper.Session;
-import org.xipki.pkcs11.wrapper.Token;
+import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKO_DATA;
@@ -21,17 +18,7 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKO_DATA;
 public class WriteDataObjects extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
     LOG.info("##################################################");
     // read the data from the file
     byte[] data = "hello world".getBytes();
@@ -49,10 +36,12 @@ public class WriteDataObjects extends TestBase {
     // print template
     LOG.info("{}", dataObjectTemplate);
 
+    PKCS11Token token = getToken();
+
     // create object
-    long newObject = session.createObject(dataObjectTemplate);
+    long newObject = token.createObject(dataObjectTemplate);
     // destroy after the creation
-    session.destroyObject(newObject);
+    token.destroyObject(newObject);
 
     LOG.info("##################################################");
   }

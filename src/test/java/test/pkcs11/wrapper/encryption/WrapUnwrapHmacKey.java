@@ -9,7 +9,6 @@ package test.pkcs11.wrapper.encryption;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -23,17 +22,8 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 public class WrapUnwrapHmacKey extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
+    PKCS11Token token = getToken();
     LOG.info("##################################################");
     AttributeVector secretMACKeyTemplate = newSecretKey(CKK_GENERIC_SECRET).token(false)
         .sign(true).verify(true).private_(true).sensitive(true).extractable(true);
@@ -41,27 +31,27 @@ public class WrapUnwrapHmacKey extends TestBase {
     long hmacKey;
     int keyBytesLen = 32;
     Mechanism keyMechanism = new Mechanism(CKM_GENERIC_SECRET_KEY_GEN);
-    if (Util.supports(token, keyMechanism.getMechanismCode())) {
+    if (token.supportsMechanism(keyMechanism.getMechanismCode(), CKF_GENERATE)) {
       LOG.info("generate secret MAC key");
       secretMACKeyTemplate.valueLen(keyBytesLen);
-      hmacKey = session.generateKey(keyMechanism, secretMACKeyTemplate);
+      hmacKey = token.generateKey(keyMechanism, secretMACKeyTemplate);
     } else {
       LOG.info("import secret MAC key (generation not supported)");
       byte[] keyValue = new byte[keyBytesLen];
       new SecureRandom().nextBytes(keyValue);
       secretMACKeyTemplate.value(keyValue);
 
-      hmacKey = session.createObject(secretMACKeyTemplate);
+      hmacKey = token.createObject(secretMACKeyTemplate);
     }
 
     LOG.info("##################################################");
 
     // be sure that your token can process the specified mechanism
-    Mechanism signatureMechanism = getSupportedMechanism(token, CKM_SHA256_HMAC);
+    Mechanism signatureMechanism = getSupportedMechanism(CKM_SHA256_HMAC, CKF_SIGN);
     // initialize for signing
     byte[] rawData = randomBytes(1057);
 
-    byte[] macValue = session.signSingle(signatureMechanism, hmacKey, rawData);
+    byte[] macValue = token.sign(signatureMechanism, hmacKey, rawData);
 
     LOG.info("The MAC value is: " + new BigInteger(1, macValue).toString(16));
     LOG.info("##################################################");
@@ -70,23 +60,23 @@ public class WrapUnwrapHmacKey extends TestBase {
     AttributeVector wrapKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
         .encrypt(true).decrypt(true).private_(true).sensitive(true).extractable(true).wrap(true).token(false);
 
-    long wrappingKey = session.generateKey(wrapKeyMechanism, wrapKeyTemplate);
+    long wrappingKey = token.generateKey(wrapKeyMechanism, wrapKeyTemplate);
 
     LOG.info("wrapping key");
 
     Mechanism wrapMechanism = new Mechanism(CKM_AES_KEY_WRAP);
-    byte[] wrappedKey = session.wrapKey(wrapMechanism, wrappingKey, hmacKey);
+    byte[] wrappedKey = token.wrapKey(wrapMechanism, wrappingKey, hmacKey);
     LOG.info("unwrapping key");
 
     AttributeVector keyTemplate = newSecretKey(CKK_GENERIC_SECRET).verify(true).token(false);
 
-    long unwrappedKey = session.unwrapKey(wrapMechanism, wrappingKey, wrappedKey, keyTemplate);
+    long unwrappedKey = token.unwrapKey(wrapMechanism, wrappingKey, wrappedKey, keyTemplate);
 
     LOG.info("##################################################");
     LOG.info("verification of the MAC... ");
 
     // initialize for verification
-    session.verifySingle(signatureMechanism, unwrappedKey, rawData, macValue); // throws an exception upon
+    token.verify(signatureMechanism, unwrappedKey, rawData, macValue); // throws an exception upon
     // unsuccessful verification
 
     LOG.info("##################################################");

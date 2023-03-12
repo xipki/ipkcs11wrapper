@@ -16,23 +16,13 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_RSA_PKCS;
 public class GenerateKeyAndSign extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
     LOG.info("##################################################");
     int keySize = 1024;
     LOG.info("Generating new {} bit RSA key-pair...", keySize);
 
     final boolean inToken = false;
-    PKCS11KeyPair generatedKeyPair = generateRSAKeypair(token, session, keySize, inToken);
+    PKCS11KeyPair generatedKeyPair = generateRSAKeypair(keySize, inToken);
     long generatedRSAPublicKey = generatedKeyPair.getPublicKey();
     long generatedRSAPrivateKey = generatedKeyPair.getPrivateKey();
     // no we may work with the keys...
@@ -46,7 +36,7 @@ public class GenerateKeyAndSign extends TestBase {
 
     Mechanism signatureMechanism = new Mechanism(CKM_RSA_PKCS);
     byte[] dataToBeSigned = "12345678901234567890123456789012345".getBytes();
-    byte[] signatureValue = session.signSingle(signatureMechanism, generatedRSAPrivateKey, dataToBeSigned);
+    byte[] signatureValue = getToken().sign(signatureMechanism, generatedRSAPrivateKey, dataToBeSigned);
     LOG.info("Finished");
     LOG.info("Signature Value: {}", Functions.toHex(signatureValue));
     LOG.info("##################################################");

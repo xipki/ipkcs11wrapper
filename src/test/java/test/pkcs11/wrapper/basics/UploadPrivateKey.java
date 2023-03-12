@@ -7,10 +7,7 @@
 package test.pkcs11.wrapper.basics;
 
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.AttributeVector;
-import org.xipki.pkcs11.wrapper.MechanismInfo;
-import org.xipki.pkcs11.wrapper.Session;
-import org.xipki.pkcs11.wrapper.Token;
+import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
 import test.pkcs11.wrapper.util.Util;
 
@@ -54,16 +51,6 @@ public class UploadPrivateKey extends TestBase {
 
   @Test
   public void main() throws Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws Exception {
     LOG.info("##################################################");
     LOG.info("Reading private key and certificate from: {}", p12ResourcePath);
     char[] filePassword = p12Password.toCharArray();
@@ -110,17 +97,18 @@ public class UploadPrivateKey extends TestBase {
     LOG.info("##################################################");
     LOG.info("creating private key object on the card... ");
 
+    PKCS11Token token = getToken();
+
     // check out what attributes of the keys we may set using the mechanism info
-    List<Long> supportedMechs = getMechanismList(token);
     MechanismInfo signatureMechanismInfo;
-    if (supportedMechs.contains(CKM_RSA_PKCS)) {
+    if (token.supportsMechanism(CKM_RSA_PKCS, CKF_SIGN)) {
       signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS);
-    } else if (supportedMechs.contains(CKM_RSA_X_509)) {
+    } else if (token.supportsMechanism(CKM_RSA_X_509, CKF_SIGN)) {
       signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_X_509);
-    } else if (supportedMechs.contains(CKM_RSA_9796)) {
+    } else if (token.supportsMechanism(CKM_RSA_9796, CKF_SIGN)) {
       signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_9796);
-    } else if (supportedMechs.contains(CKM_RSA_PKCS_OAEP)) {
-      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS_OAEP);
+    } else if (token.supportsMechanism(CKM_RSA_PKCS_PSS, CKF_SIGN)) {
+      signatureMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS_PSS);
     } else {
       signatureMechanismInfo = null;
     }
@@ -144,8 +132,7 @@ public class UploadPrivateKey extends TestBase {
         .label(keyLabel).id(newObjectID).subject(userCertificate.getSubjectX500Principal().getEncoded());
 
     if (keyUsage != null) {
-      // set the attributes in a way netscape does, this should work with most
-      // tokens
+      // set the attributes in a way netscape does, this should work with most tokens
       if (signatureMechanismInfo != null) {
         p11RsaPrivateKey
             .decrypt((keyUsage[dataEncipherment] || keyUsage[keyCertSign])
@@ -198,7 +185,7 @@ public class UploadPrivateKey extends TestBase {
 
     List<Long> newP1kcs11Objects = new ArrayList<>();
     try {
-      newP1kcs11Objects.add(session.createObject(p11RsaPrivateKey));
+      newP1kcs11Objects.add(token.createObject(p11RsaPrivateKey));
 
       LOG.info("##################################################");
       LOG.info("creating certificate object on the card... ");
@@ -212,10 +199,10 @@ public class UploadPrivateKey extends TestBase {
           .value(userCertificate.getEncoded());
 
       LOG.info("{}", certTemp);
-      newP1kcs11Objects.add(session.createObject(certTemp));
+      newP1kcs11Objects.add(token.createObject(certTemp));
     } finally {
       for (Long m : newP1kcs11Objects) {
-        session.destroyObject(m);
+        token.destroyObject(m);
       }
     }
 

@@ -6,9 +6,7 @@ package test.pkcs11.wrapper.keygeneration;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 
-import java.util.List;
 import java.util.Random;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
@@ -19,32 +17,21 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 public class DSAGenerateKeyPair extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
     LOG.info("##################################################");
     LOG.info("Generating new DSA key-pair... ");
 
-    // first check out what attributes of the keys we may set
-    List<Long> supportedMechanisms = getMechanismList(token);
+    PKCS11Token token = getToken();
 
     MechanismInfo signatureMechanismInfo;
-    if (supportedMechanisms.contains(CKM_DSA)) {
+    if (token.supportsMechanism(CKM_DSA, CKF_SIGN)) {
       signatureMechanismInfo = token.getMechanismInfo(CKM_DSA);
     } else {
       signatureMechanismInfo = null;
     }
 
     final long mechCode = CKM_DSA_KEY_PAIR_GEN;
-    if (!Util.supports(token, mechCode)) {
+    if (!token.supportsMechanism(mechCode, CKF_GENERATE_KEY_PAIR)) {
       System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
@@ -52,7 +39,7 @@ public class DSAGenerateKeyPair extends TestBase {
     byte[] id = new byte[20];
     new Random().nextBytes(id);
 
-    Mechanism keyPairGenerationMechanism = getSupportedMechanism(token, mechCode);
+    Mechanism keyPairGenerationMechanism = getSupportedMechanism(mechCode, CKF_GENERATE_KEY_PAIR);
     KeyPairTemplate template = new KeyPairTemplate(CKK_DSA).token(true).id(id);
 
     template.publicKey().prime(DSA_P).subprime(DSA_Q).base(DSA_G);
@@ -77,7 +64,7 @@ public class DSAGenerateKeyPair extends TestBase {
       template.signVerify(true).decryptEncrypt(true);
     }
 
-    PKCS11KeyPair generatedKeyPair = session.generateKeyPair(keyPairGenerationMechanism, template);
+    PKCS11KeyPair generatedKeyPair = token.generateKeyPair(keyPairGenerationMechanism, template);
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
     // no we may work with the keys...
@@ -88,7 +75,7 @@ public class DSAGenerateKeyPair extends TestBase {
       LOG.info("The private key is {}", generatedPrivateKey);
 
       LOG.info("##################################################");
-      byte[] value = session.getByteArrayAttrValue(generatedPublicKey, CKA_VALUE);
+      byte[] value = token.getAttrValues(generatedPublicKey, CKA_VALUE).value();
 
       LOG.info("Public Key (Value): {}", Functions.toHex(value));
 
@@ -99,7 +86,7 @@ public class DSAGenerateKeyPair extends TestBase {
       // set the search template for the public key
       AttributeVector exportPublicKeyTemplate = newPublicKey(CKK_DSA).attr(CKA_ID, id);
 
-      long[] foundPublicKeys = session.findObjectsSingle(exportPublicKeyTemplate, 1);
+      long[] foundPublicKeys = token.findObjects(exportPublicKeyTemplate, 1);
       if (foundPublicKeys.length != 1) {
         LOG.error("Error: Cannot find the public key under the given ID!");
       } else {
@@ -108,8 +95,8 @@ public class DSAGenerateKeyPair extends TestBase {
 
       LOG.info("##################################################");
     } finally {
-      session.destroyObject(generatedPrivateKey);
-      session.destroyObject(generatedPublicKey);
+      token.destroyObject(generatedPrivateKey);
+      token.destroyObject(generatedPublicKey);
     }
 
   }

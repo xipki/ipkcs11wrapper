@@ -4,12 +4,8 @@
 package test.pkcs11.wrapper.signatures;
 
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.Mechanism;
-import org.xipki.pkcs11.wrapper.PKCS11KeyPair;
-import org.xipki.pkcs11.wrapper.Session;
-import org.xipki.pkcs11.wrapper.Token;
+import org.xipki.pkcs11.wrapper.*;
 import org.xipki.util.Hex;
-import test.pkcs11.wrapper.util.Util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -23,28 +19,21 @@ public class RSAPKCSSignRawData extends SignatureTestBase {
 
   @Test
   public void main() throws Exception {
-    Token token = getNonNullToken();
-    Session session = openReadOnlySession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws Exception {
     LOG.info("##################################################");
     LOG.info("generate signature key pair");
     final long mechCode = CKM_RSA_PKCS;
-    if (!Util.supports(token, mechCode)) {
+
+    PKCS11Token token = getToken();
+
+    if (!token.supportsMechanism(mechCode, CKF_SIGN)) {
       System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
     }
     // be sure that your token can process the specified mechanism
-    Mechanism signatureMechanism = getSupportedMechanism(token, mechCode);
+    Mechanism signatureMechanism = getSupportedMechanism(mechCode, CKF_SIGN);
 
     final boolean inToken = false;
-    PKCS11KeyPair generatedKeyPair = generateRSAKeypair(token, session, 2048, inToken);
+    PKCS11KeyPair generatedKeyPair = generateRSAKeypair(2048, inToken);
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
 
     LOG.info("##################################################");
@@ -58,17 +47,17 @@ public class RSAPKCSSignRawData extends SignatureTestBase {
     System.arraycopy(hashValue, 0, digestInfo, digestInfoPrefix.length, hashValue.length);
 
     // This signing operation is implemented in most of the drivers
-    byte[] signatureValue = session.signSingle(signatureMechanism, generatedPrivateKey, digestInfo);
+    byte[] signatureValue = token.sign(signatureMechanism, generatedPrivateKey, digestInfo);
 
     LOG.info("The signature value is: {}", new BigInteger(1, signatureValue).toString(16));
 
     // verify
     long generatedPublicKey = generatedKeyPair.getPublicKey();
     // error will be thrown if signature is invalid
-    session.verifySingle(signatureMechanism, generatedPublicKey, digestInfo, signatureValue);
+    token.verify(signatureMechanism, generatedPublicKey, digestInfo, signatureValue);
 
     // verify with JCE
-    jceVerifySignature("SHA256withRSA", session, generatedPublicKey, CKK_RSA,
+    jceVerifySignature("SHA256withRSA", generatedPublicKey, CKK_RSA,
         dataToBeSigned, signatureValue);
 
     LOG.info("##################################################");

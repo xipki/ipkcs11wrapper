@@ -6,7 +6,6 @@ package test.pkcs11.wrapper.encryption;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.Mechanism;
 import org.xipki.pkcs11.wrapper.PKCS11Exception;
-import org.xipki.pkcs11.wrapper.Token;
 import org.xipki.pkcs11.wrapper.params.ByteArrayParams;
 import test.pkcs11.wrapper.TestBase;
 
@@ -24,13 +23,13 @@ public class TripleDESPadEncryptDecrypt extends SymmEncryptDecrypt {
   }
 
   @Override
-  protected Mechanism getKeyGenMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, CKM_DES3_KEY_GEN);
+  protected Mechanism getKeyGenMech() throws PKCS11Exception {
+    return getSupportedMechanism(CKM_DES3_KEY_GEN, CKF_GENERATE);
   }
 
   @Override
-  protected Mechanism getEncryptionMech(Token token) throws PKCS11Exception {
-    return getSupportedMechanism(token, CKM_DES3_CBC_PAD, new ByteArrayParams(iv));
+  protected Mechanism getEncryptionMech() throws PKCS11Exception {
+    return getSupportedMechanism(CKM_DES3_CBC_PAD, CKF_ENCRYPT, new ByteArrayParams(iv));
   }
 
   @Override

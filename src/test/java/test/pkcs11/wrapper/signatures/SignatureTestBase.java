@@ -5,7 +5,6 @@ package test.pkcs11.wrapper.signatures;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.BeforeClass;
-import org.xipki.pkcs11.wrapper.Session;
 import test.pkcs11.wrapper.TestBase;
 
 import java.security.PublicKey;
@@ -25,10 +24,10 @@ public class SignatureTestBase extends TestBase {
     }
   }
 
-  protected void jceVerifySignature(String algorithm, Session session, long publicKeyHandle, long keyType,
+  protected void jceVerifySignature(String algorithm, long publicKeyHandle, long keyType,
                                     byte[] data, byte[] signatureValue) throws Exception {
     // verify with JCE
-    PublicKey jcePublicKey = generateJCEPublicKey(session, publicKeyHandle, keyType);
+    PublicKey jcePublicKey = generateJCEPublicKey(publicKeyHandle, keyType);
     Signature signature = Signature.getInstance(algorithm, "BC");
     signature.initVerify(jcePublicKey);
     signature.update(data);

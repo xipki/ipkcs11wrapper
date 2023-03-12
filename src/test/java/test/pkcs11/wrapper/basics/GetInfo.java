@@ -12,7 +12,6 @@ import test.pkcs11.wrapper.TestBase;
 
 import java.util.List;
 
-import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKF_TOKEN_INITIALIZED;
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.ckmCodeToName;
 
 /**
@@ -26,7 +25,7 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.ckmCodeToName;
 public class GetInfo extends TestBase {
 
   @Test
-  public void main() throws PKCS11Exception {
+  public void main() throws TokenException {
     PKCS11Module pkcs11Module = getModule();
     ModuleInfo moduleInfo = pkcs11Module.getInfo();
     LOG.info("##################################################");
@@ -66,37 +65,6 @@ public class GetInfo extends TestBase {
       }
       LOG.info("___________________________________________________");
     }
-
-    LOG.info("##################################################");
-    LOG.info("listing objects on tokens");
-    for (Token token : tokens) {
-      LOG.info("___________________________________________________");
-      TokenInfo tokenInfo = token.getTokenInfo();
-      LOG.info("listing objects for token: {}", tokenInfo);
-      if (!tokenInfo.hasFlagBit(CKF_TOKEN_INITIALIZED)) {
-        LOG.info("token not initialized yet");
-        continue;
-      }
-
-      Session session = openReadOnlySession(token);
-      try {
-        main0(session);
-      } finally {
-        session.closeSession();
-      }
-    }
   }
 
-  private void main0(Session session) throws PKCS11Exception {
-    SessionInfo sessionInfo = session.getSessionInfo();
-    LOG.info("using session: {}", sessionInfo);
-
-    long[] objects = session.findObjectsSingle(null, 99999);
-    for (long object : objects) {
-      LOG.info("Object with handle: {}", object);
-    }
-
-    LOG.info("___________________________________________________");
-    LOG.info("found {} objects on this token", objects.length);
-  }
 }

@@ -39,23 +39,7 @@ public class ImportCertificate extends TestBase {
   private static final String resourceFile = "/demo_cert.der";
 
   @Test
-  public void main() throws PKCS11Exception, CertificateException, NoSuchAlgorithmException {
-    Token token = getNonNullToken();
-    TokenInfo tokenInfo = token.getTokenInfo();
-
-    LOG.info("##################################################");
-    LOG.info("Information of Token:\n{}", tokenInfo);
-    LOG.info("##################################################");
-
-    Session session = openReadWriteSession(token);
-    try {
-      main0(session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Session session) throws PKCS11Exception, CertificateException, NoSuchAlgorithmException {
+  public void main() throws TokenException, CertificateException, NoSuchAlgorithmException {
     LOG.info("Reading certificate from resource file: {}", resourceFile);
 
     // parse certificate
@@ -90,12 +74,13 @@ public class ImportCertificate extends TestBase {
       searchTemplate = null;
     }
 
+    PKCS11Token token = getToken();
     byte[] objectID = null;
     if (searchTemplate != null) {
-      long[] foundKeyObjects = session.findObjectsSingle(searchTemplate, 1);
+      long[] foundKeyObjects = token.findObjects(searchTemplate, 1);
       if (foundKeyObjects.length > 0) {
         long foundKey = foundKeyObjects[0];
-        objectID = session.getByteArrayAttrValue(foundKey, CKA_ID);
+        objectID = token.getAttrValues(foundKey, CKA_ID).id();
         LOG.info("found a corresponding key on the token:\n{}", foundKey);
       } else {
         LOG.info("found no corresponding key on the token.");
@@ -154,7 +139,7 @@ public class ImportCertificate extends TestBase {
 
         LOG.info("{}", pkcs11X509PublicKeyCertificate);
         LOG.info("___________________________________________________");
-        importedObjects.add(session.createObject(pkcs11X509PublicKeyCertificate));
+        importedObjects.add(token.createObject(pkcs11X509PublicKeyCertificate));
 
         if (certChain.size() > 0) {
           currentCertificate = (X509Certificate) certChain.iterator().next();
@@ -167,7 +152,7 @@ public class ImportCertificate extends TestBase {
     } finally {
       // delete the objects just created
       for (Long objHandle : importedObjects) {
-        session.destroyObject(objHandle);
+        token.destroyObject(objHandle);
       }
     }
 

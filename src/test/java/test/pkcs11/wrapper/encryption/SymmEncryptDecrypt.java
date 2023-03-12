@@ -16,66 +16,56 @@ import test.pkcs11.wrapper.TestBase;
  */
 public abstract class SymmEncryptDecrypt extends TestBase {
 
-  protected abstract Mechanism getKeyGenMech(Token token) throws PKCS11Exception;
+  protected abstract Mechanism getKeyGenMech() throws PKCS11Exception;
 
   protected abstract AttributeVector getKeyTemplate();
 
-  protected abstract Mechanism getEncryptionMech(Token token) throws PKCS11Exception;
+  protected abstract Mechanism getEncryptionMech() throws PKCS11Exception;
 
   @Test
-  public void main() throws PKCS11Exception {
-    Token token = getNonNullToken();
-
-    Session session = openReadWriteSession(token);
-    try {
-      main0(token, session);
-    } finally {
-      session.closeSession();
-    }
-  }
-
-  private void main0(Token token, Session session) throws PKCS11Exception {
+  public void main() throws TokenException {
     LOG.info("##################################################");
     LOG.info("generate secret encryption/decryption key");
 
     Mechanism keyMechanism;
     try {
-      keyMechanism = getKeyGenMech(token);
+      keyMechanism = getKeyGenMech();
     } catch (PKCS11Exception e) {
       LOG.info("unsupported by the HSM, skipping test");
       System.out.println("unsupported by the HSM, skipping test");
       return;
     }
 
+    PKCS11Token token = getToken();
     AttributeVector keyTemplate = getKeyTemplate().token(false);
 
-    long encryptionKey = session.generateKey(keyMechanism, keyTemplate);
+    long encryptionKey = token.generateKey(keyMechanism, keyTemplate);
     LOG.info("##################################################");
     LOG.info("encrypting data");
 
     byte[] rawData = randomBytes(1024);
 
     // be sure that your token can process the specified mechanism
-    Mechanism encryptionMechanism = getEncryptionMech(token);
+    Mechanism encryptionMechanism = getEncryptionMech();
     CkParams params = encryptionMechanism.getParameters();
     if (params instanceof CCM_PARAMS) {
       ((CCM_PARAMS) params).setDataLen(rawData.length);
     }
 
     // initialize for encryption
-    byte[] encryptedData = session.encryptSingle(encryptionMechanism, encryptionKey, rawData);
+    byte[] encryptedData = token.encrypt(encryptionMechanism, encryptionKey, rawData);
 
     LOG.info("##################################################");
     LOG.info("trying to decrypt");
 
-    Mechanism decryptionMechanism = getEncryptionMech(token);
+    Mechanism decryptionMechanism = getEncryptionMech();
     params = encryptionMechanism.getParameters();
     if (params instanceof CCM_PARAMS) {
       ((CCM_PARAMS) params).setDataLen(encryptedData.length - 16);
     }
 
     // initialize for decryption
-    byte[] decryptedData = session.decryptSingle(decryptionMechanism, encryptionKey, encryptedData);
+    byte[] decryptedData = token.decrypt(decryptionMechanism, encryptionKey, encryptedData);
     Assert.assertArrayEquals(rawData, decryptedData);
   }
 
