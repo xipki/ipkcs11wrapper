@@ -8,6 +8,8 @@ import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.SALSA20_CHACHA20_POLY1305_PARAMS;
 import test.pkcs11.wrapper.TestBase;
 
+import java.io.IOException;
+
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
@@ -28,7 +30,7 @@ public class AESChaCha20Poly1305EncryptDecrypt extends SymmEncryptDecrypt {
 
   @Test
   @Override
-  public void main() throws TokenException {
+  public void main() throws TokenException, IOException {
     // check whether supported in current JDK
     try {
       new SALSA20_CHACHA20_POLY1305_PARAMS(new byte[12], null);

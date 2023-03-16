@@ -3,9 +3,12 @@
 
 package test.pkcs11.wrapper.signatures;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import test.pkcs11.wrapper.util.Util;
+
+import java.io.ByteArrayInputStream;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -34,23 +37,44 @@ public class EdDSASignRawData extends SignatureTestBase {
 
     PKCS11KeyPair generatedKeyPair = generateEdDSAKeypair(ecParams, inToken);
 
-    LOG.info("##################################################");
-    LOG.info("signing data");
-    byte[] dataToBeSigned = randomBytes(1057); // hash value
+    int[] dataLens = {1057, 10570, 105700};
+    boolean[] asStreamModes = {false, true};
 
-    // This signing operation is implemented in most of the drivers
-    byte[] signatureValue = token.sign(signatureMechanism, generatedKeyPair.getPrivateKey(), dataToBeSigned);
-    LOG.info("The signature value is: {}", Functions.toHex(signatureValue));
+    for (int dataLen : dataLens) {
+      for (boolean asStream : asStreamModes) {
+        LOG.info("##################################################");
+        LOG.info("signing data");
+        byte[] dataToBeSigned = randomBytes(dataLen); // hash value
 
-    // verify signature
-    long generatedPublicKey = generatedKeyPair.getPublicKey();
-    // error will be thrown if signature is invalid
-    token.verify(signatureMechanism, generatedPublicKey, dataToBeSigned, signatureValue);
+        // This signing operation is implemented in most of the drivers
+        long generatedPrivateKey = generatedKeyPair.getPrivateKey();
+        byte[] signatureValue;
+        if (asStream) {
+          signatureValue = token.sign(signatureMechanism, generatedPrivateKey,
+              new ByteArrayInputStream(dataToBeSigned));
+        } else{
+          signatureValue = token.sign(signatureMechanism, generatedPrivateKey, dataToBeSigned);
+        }
+        LOG.info("The signature value is: {}", Functions.toHex(signatureValue));
 
-    // verify with JCE
-    jceVerifySignature("Ed25519", generatedPublicKey, CKK_EC_EDWARDS, dataToBeSigned, signatureValue);
+        // verify signature
+        long generatedPublicKey = generatedKeyPair.getPublicKey();
+        // error will be thrown if signature is invalid
+        boolean sigValid;
+        if (asStream) {
+          sigValid = token.verify(signatureMechanism, generatedPublicKey, new ByteArrayInputStream(dataToBeSigned),
+              signatureValue);
+        } else {
+          sigValid = token.verify(signatureMechanism, generatedPublicKey, dataToBeSigned, signatureValue);
+        }
+        Assert.assertTrue("signature verification result", sigValid);
 
-    LOG.info("##################################################");
+        // verify with JCE
+        jceVerifySignature("Ed25519", generatedPublicKey, CKK_EC_EDWARDS, dataToBeSigned, signatureValue);
+
+        LOG.info("##################################################");
+      }
+    }
   }
 
 }

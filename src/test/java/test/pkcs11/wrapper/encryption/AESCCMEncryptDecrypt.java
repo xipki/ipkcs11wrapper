@@ -7,7 +7,8 @@ import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.CCM_PARAMS;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
+
+import java.io.IOException;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -29,7 +30,7 @@ public class AESCCMEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Test
   @Override
-  public void main() throws TokenException {
+  public void main() throws TokenException, IOException {
     if (!getToken().supportsMechanism(CKM_AES_CCM, CKF_ENCRYPT)) {
       System.err.println("AES-CCM unsupported in the HSM, skip");
       return;

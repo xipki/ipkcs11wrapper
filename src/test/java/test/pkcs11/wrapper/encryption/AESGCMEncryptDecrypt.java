@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.GCM_PARAMS;
 
+import java.io.IOException;
+
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
@@ -27,7 +29,7 @@ public class AESGCMEncryptDecrypt extends SymmEncryptDecrypt {
 
   @Test
   @Override
-  public void main() throws TokenException {
+  public void main() throws TokenException, IOException {
     super.main();
   }
 

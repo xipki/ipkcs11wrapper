@@ -3,10 +3,12 @@
 
 package test.pkcs11.wrapper.signatures;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.RSA_PKCS_PSS_PARAMS;
 
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
@@ -24,7 +26,7 @@ public class RSAPKCSPSSSignRawData extends SignatureTestBase {
 
     PKCS11Token token = getToken();
 
-    final long mechCode = CKM_RSA_PKCS_PSS;
+    final long mechCode = CKM_SHA256_RSA_PKCS_PSS;
     if (!token.supportsMechanism(mechCode, CKF_SIGN)) {
       System.out.println("Unsupported mechanism " + ckmCodeToName(mechCode));
       return;
@@ -37,27 +39,45 @@ public class RSAPKCSPSSSignRawData extends SignatureTestBase {
     PKCS11KeyPair generatedKeyPair = generateRSAKeypair(2048, inToken);
     long generatedPrivateKey = generatedKeyPair.getPrivateKey();
 
-    LOG.info("##################################################");
-    LOG.info("signing data");
-    byte[] dataToBeSigned = randomBytes(1057); // hash value
-    MessageDigest md = MessageDigest.getInstance("SHA-256");
-    byte[] hashValue = md.digest(dataToBeSigned);
+    int[] dataLens = {1057, 10570, 105700};
+    boolean[] asStreamModes = {false, true};
 
-    // This signing operation is implemented in most of the drivers
-    byte[] signatureValue = token.sign(signatureMechanism, generatedPrivateKey, hashValue);
+    for (int dataLen : dataLens) {
+      for (boolean asStream : asStreamModes) {
+        LOG.info("##################################################");
+        LOG.info("signing data");
+        byte[] dataToBeSigned = randomBytes(dataLen); // hash value
 
-    LOG.info("The signature value is: {}", new BigInteger(1, signatureValue).toString(16));
+        // This signing operation is implemented in most of the drivers
+        byte[] signatureValue;
+        if (asStream) {
+          signatureValue = token.sign(signatureMechanism, generatedPrivateKey,
+              new ByteArrayInputStream(dataToBeSigned));
+        } else{
+          signatureValue = token.sign(signatureMechanism, generatedPrivateKey, dataToBeSigned);
+        }
 
-    // verify
-    long generatedPublicKey = generatedKeyPair.getPublicKey();
-    // error will be thrown if signature is invalid
-    token.verify(signatureMechanism, generatedPublicKey, hashValue, signatureValue);
+        LOG.info("The signature value is: {}", new BigInteger(1, signatureValue).toString(16));
 
-    // verify with JCE
-    jceVerifySignature("SHA256withRSAandMGF1", generatedPublicKey, CKK_RSA,
-        dataToBeSigned, signatureValue);
+        // verify
+        long generatedPublicKey = generatedKeyPair.getPublicKey();
+        // error will be thrown if signature is invalid
+        boolean sigValid;
+        if (asStream) {
+          sigValid = token.verify(signatureMechanism, generatedPublicKey, new ByteArrayInputStream(dataToBeSigned),
+              signatureValue);
+        } else {
+          sigValid = token.verify(signatureMechanism, generatedPublicKey, dataToBeSigned, signatureValue);
+        }
+        Assert.assertTrue("signature verification result", sigValid);
 
-    LOG.info("##################################################");
+        // verify with JCE
+        jceVerifySignature("SHA256withRSAandMGF1", generatedPublicKey, CKK_RSA,
+            dataToBeSigned, signatureValue);
+
+        LOG.info("##################################################");
+      }
+    }
   }
 
 }
