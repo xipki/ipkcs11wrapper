@@ -12,8 +12,9 @@ import iaik.pkcs.pkcs11.wrapper.PKCS11;
 import org.xipki.pkcs11.wrapper.attrs.*;
 import org.xipki.pkcs11.wrapper.params.CkMessageParams;
 import org.xipki.pkcs11.wrapper.params.CkParams;
+import org.xipki.pkcs11.wrapper.params.CkParamsWithExtra;
+import org.xipki.pkcs11.wrapper.params.ExtraParams;
 
-import java.math.BigInteger;
 import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECPoint;
@@ -100,6 +101,8 @@ public class Session {
   private int signatureType;
 
   private long signOrVerifyKeyHandle;
+
+  private ExtraParams signVerifyExtraParams;
 
   /**
    * Constructor taking the token and the session handle.
@@ -413,6 +416,13 @@ public class Session {
     return createObject(template);
   }
 
+  /**
+   * Create EC private key object in the PKCS#11 device.
+   * @param template Template of the EC private key.
+   * @param ecPoint The encoded EC-Point. May be null.
+   * @return object handle of the new EC private key.
+   * @throws TokenException if creating new object failed.
+   */
   public long createECPrivateKeyObject(AttributeVector template, byte[] ecPoint) throws PKCS11Exception {
     if (ecPoint != null && privateKeyWithEcPoint(template.keyType())) {
       template.ecPoint(ecPoint);
@@ -556,6 +566,31 @@ public class Session {
    *                         object parsing.
    */
   public long[] findObjects(int maxObjectCount) throws PKCS11Exception {
+    final int countPerCall = 1000;
+    if (maxObjectCount <= maxObjectCount) {
+      return findObjects0(maxObjectCount);
+    } else {
+      List<Long> list = new LinkedList<>();
+      for (int i = 0; i < maxObjectCount; i+= countPerCall) {
+        long[] handles = findObjects0(Math.min(countPerCall, maxObjectCount -i));
+        if (handles.length == 0) {
+          break;
+        }
+        for (long handle : handles) {
+          list.add(handle);
+        }
+      }
+
+      long[] ret = new long[list.size()];
+      int idx = 0;
+      for (Long handle : list) {
+        ret[idx++] = handle;
+      }
+      return ret;
+    }
+  }
+
+  private long[] findObjects0(int maxObjectCount) throws PKCS11Exception {
     final String method = "C_FindObjects";
     debugIn(method, "maxObjectCount={}", maxObjectCount);
     try {
@@ -586,6 +621,10 @@ public class Session {
       debugError(method, e);
       throw e;
     }
+  }
+
+  public long[] findAllObjectsSingle(AttributeVector template) throws PKCS11Exception {
+    return findObjectsSingle(template, Integer.MAX_VALUE);
   }
 
   public long[] findObjectsSingle(AttributeVector template, int maxObjectCount) throws PKCS11Exception {
@@ -1178,6 +1217,12 @@ public class Session {
     } else {
       signatureType = 0;
     }
+
+    if (mechanism.getParameters() instanceof CkParamsWithExtra) {
+      signVerifyExtraParams = ((CkParamsWithExtra) mechanism.getParameters()).getExtraParams();
+    } else {
+      signVerifyExtraParams = null;
+    }
   }
 
   /**
@@ -1292,21 +1337,28 @@ public class Session {
         }
 
         if (b == null || b) {
-          // get the ecParams
-          byte[] ecParams;
-          try {
-            ecParams = getByteArrayAttrValue(signOrVerifyKeyHandle, PKCS11Constants.CKA_EC_PARAMS);
-          } catch (PKCS11Exception e) {
-            StaticLogger.debug("error getting CKA_EC_PARAMS for key {}", signOrVerifyKeyHandle);
-            return signatureValue;
+          byte[] fixedSigValue;
+          if (signVerifyExtraParams != null) {
+            int rOrSLen = (signVerifyExtraParams.ecOrderBitSize() + 7) / 8;
+            fixedSigValue = Functions.fixECDSASignature(signatureValue, rOrSLen);
+          } else {
+            // get the ecParams
+            byte[] ecParams;
+            try {
+              ecParams = getAttrValues(signOrVerifyKeyHandle, PKCS11Constants.CKA_EC_PARAMS).ecParams();
+            } catch (PKCS11Exception e) {
+              StaticLogger.debug("error getting CKA_EC_PARAMS for key {}", signOrVerifyKeyHandle);
+              return signatureValue;
+            }
+
+            if (ecParams == null) {
+              StaticLogger.debug("found no CKA_EC_PARAMS for key {}", signOrVerifyKeyHandle);
+              return signatureValue;
+            }
+
+            fixedSigValue = Functions.fixECDSASignature(signatureValue, ecParams);
           }
 
-          if (ecParams == null) {
-            StaticLogger.debug("found no CKA_EC_PARAMS for key {}", signOrVerifyKeyHandle);
-            return signatureValue;
-          }
-
-          byte[] fixedSigValue = Functions.fixECDSASignature(signatureValue, ecParams);
           boolean fixed = !Arrays.equals(fixedSigValue, signatureValue);
           if (b == null) {
             StaticLogger.info("Set EcdsaSignatureFixNeeded to {}", b);
@@ -1727,7 +1779,7 @@ public class Session {
    * @param data
    *          the data to be verified
    * @param signature
-   *           NUll if there is data follow, the signature if its the last part of the signing operation
+   *           NUll if there is data follow, the signature if it is the last part of the signing operation
    * @throws PKCS11Exception
    *            if The Signature is invalid
    */
@@ -2089,42 +2141,8 @@ public class Session {
     return params == null ? null : params.getParams();
   }
 
-  public Integer getIntAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    Long value = getLongAttrValue(objectHandle, attributeType);
-    return value == null ? null : value.intValue();
-  }
-
-  public Long getLongAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    LongAttribute attr = new LongAttribute(attributeType);
-    doGetAttrValue(objectHandle, attr);
-    return attr.getValue();
-  }
-
   public String getStringAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
     CharArrayAttribute attr = new CharArrayAttribute(attributeType);
-    doGetAttrValue(objectHandle, attr);
-    return attr.getValue();
-  }
-
-  public BigInteger getBigIntAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    byte[] value = getByteArrayAttrValue(objectHandle, attributeType);
-    return value == null ? null : new BigInteger(1, value);
-  }
-
-  public byte[] getByteArrayAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    ByteArrayAttribute attr = new ByteArrayAttribute(attributeType);
-    doGetAttrValue(objectHandle, attr);
-    return attr.getValue();
-  }
-
-  public Boolean getBooleanAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    BooleanAttribute attr = new BooleanAttribute(attributeType);
-    doGetAttrValue(objectHandle, attr);
-    return attr.getValue();
-  }
-
-  public Object getAttrValue(long objectHandle, long attributeType) throws PKCS11Exception {
-    Attribute attr = Attribute.getInstance(attributeType);
     doGetAttrValue(objectHandle, attr);
     return attr.getValue();
   }
@@ -2171,7 +2189,7 @@ public class Session {
   }
 
   public AttributeVector getDefaultAttrValues(long objectHandle) throws PKCS11Exception {
-    long objClass = getLongAttrValue(objectHandle, CKA_CLASS);
+    long objClass = getAttrValues(objectHandle, CKA_CLASS).class_();
     List<Long> ckaTypes = new LinkedList<>();
     addCkaTypes(ckaTypes, CKA_LABEL, CKA_ID, CKA_TOKEN);
 
@@ -2227,7 +2245,7 @@ public class Session {
     } else if (objClass == CKO_PUBLIC_KEY) {
       addCkaTypes(ckaTypes, CKA_ALLOWED_MECHANISMS, CKA_ENCRYPT, CKA_KEY_GEN_MECHANISM, CKA_TRUSTED,
           CKA_VERIFY, CKA_VERIFY_RECOVER, CKA_WRAP, CKA_WRAP_TEMPLATE);
-      long keyType = getLongAttrValue(objectHandle, CKA_KEY_TYPE);
+      long keyType = getAttrValues(objectHandle, CKA_KEY_TYPE).keyType();
       if (keyType == CKK_RSA) {
         addCkaTypes(ckaTypes, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
       } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY
@@ -2240,7 +2258,7 @@ public class Session {
       return getAttrValues(objectHandle, ckaTypes).class_(objClass).keyType(keyType);
     } else if (objClass == CKO_CERTIFICATE) {
       addCkaTypes(ckaTypes, CKA_TRUSTED, CKA_CERTIFICATE_CATEGORY, CKA_START_DATE, CKA_END_DATE);
-      long certType = getLongAttrValue(objectHandle, CKA_CERTIFICATE_TYPE);
+      long certType = getAttrValues(objectHandle, CKA_CERTIFICATE_TYPE).certificateType();
       if (certType == CKC_X_509) {
         addCkaTypes(ckaTypes, CKA_VALUE, CKA_URL, CKA_ISSUER, CKA_SUBJECT, CKA_SERIAL_NUMBER,
             CKA_HASH_OF_ISSUER_PUBLIC_KEY, CKA_HASH_OF_SUBJECT_PUBLIC_KEY);
@@ -2459,7 +2477,7 @@ public class Session {
 
         if (keyType == null) {
           try {
-            keyType = getLongAttrValue(objectHandle, CKA_KEY_TYPE);
+            keyType = getAttrValues(objectHandle, CKA_KEY_TYPE).keyType();
           } catch (PKCS11Exception e2) {
           }
         }
