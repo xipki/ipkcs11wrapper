@@ -1,6 +1,15 @@
+// Copyright (c) 2023 xipki. All rights reserved.
+// License Apache License 2.0
+
 package org.xipki.pkcs11.wrapper.multipart;
 
 import org.xipki.pkcs11.wrapper.params.CkParams;
+
+/**
+ * Parameter-pair for the multipart operation SignMessage. Input is byte[].
+ *
+ * @author Lijun Liao (xipki)
+ */
 
 public class SignMessageBytesEntry {
 

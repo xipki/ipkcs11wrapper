@@ -542,7 +542,8 @@ public class PKCS11Token {
         ByteArrayOutputStream bout = new ByteArrayOutputStream(plaintext.length + 16);
         try {
           for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
-            byte[] ciphertextPart = session.encryptUpdate(copyOfLen(plaintext, ofs, Math.min(maxMessageSize, len - ofs)));
+            byte[] ciphertextPart = session.encryptUpdate(
+                                      copyOfLen(plaintext, ofs, Math.min(maxMessageSize, len - ofs)));
             bout.write(ciphertextPart, 0, ciphertextPart.length);
           }
         } finally {
@@ -626,7 +627,8 @@ public class PKCS11Token {
         ByteArrayOutputStream bout = new ByteArrayOutputStream(ciphertext.length);
         try {
           for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
-            byte[] plaintextPart = session.decryptUpdate(copyOfLen(ciphertext, ofs, Math.min(maxMessageSize, len - ofs)));
+            byte[] plaintextPart = session.decryptUpdate(
+                                      copyOfLen(ciphertext, ofs, Math.min(maxMessageSize, len - ofs)));
             bout.write(plaintextPart, 0, plaintextPart.length);
           }
         } finally {

@@ -1521,7 +1521,8 @@ public class Session {
     final String method = "C_SignMessageNext";
     debugIn(method, "params={}, data.length={}, isLastOperation={}", params, len(data), isLastOperation);
     try {
-      byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data, isLastOperation, useUtf8);
+      byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data,
+                            isLastOperation, useUtf8);
       return toNonNull(method, fixSignOutput(signature));
     } catch (PKCS11Exception e) {
       debugError(method, e);

@@ -5,10 +5,12 @@ package test.pkcs11.wrapper.speed.signature;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.*;
+import org.xipki.pkcs11.wrapper.AttributeVector;
+import org.xipki.pkcs11.wrapper.Mechanism;
+import org.xipki.pkcs11.wrapper.PKCS11Token;
+import org.xipki.pkcs11.wrapper.TokenException;
 import org.xipki.util.BenchmarkExecutor;
 import test.pkcs11.wrapper.TestBase;
-import test.pkcs11.wrapper.util.Util;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 

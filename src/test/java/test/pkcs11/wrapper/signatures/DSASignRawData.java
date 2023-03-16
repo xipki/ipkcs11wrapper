@@ -5,10 +5,12 @@ package test.pkcs11.wrapper.signatures;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.*;
+import org.xipki.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.wrapper.Mechanism;
+import org.xipki.pkcs11.wrapper.PKCS11KeyPair;
+import org.xipki.pkcs11.wrapper.PKCS11Token;
 
 import java.io.ByteArrayInputStream;
-import java.security.MessageDigest;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 

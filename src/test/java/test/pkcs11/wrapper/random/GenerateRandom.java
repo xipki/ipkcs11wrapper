@@ -7,7 +7,8 @@
 package test.pkcs11.wrapper.random;
 
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.*;
+import org.xipki.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.wrapper.TokenException;
 import test.pkcs11.wrapper.TestBase;
 
 /**

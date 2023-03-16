@@ -1,9 +1,16 @@
+// Copyright (c) 2023 xipki. All rights reserved.
+// License Apache License 2.0
+
 package org.xipki.pkcs11.wrapper;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * Template pair for the private key and public key.
+ * @author Lijun Liao
+ */
 public class KeyPairTemplate {
 
   private final AttributeVector privateKey;

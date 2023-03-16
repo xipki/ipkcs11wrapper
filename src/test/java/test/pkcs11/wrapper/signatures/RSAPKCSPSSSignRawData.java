@@ -5,12 +5,13 @@ package test.pkcs11.wrapper.signatures;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.*;
+import org.xipki.pkcs11.wrapper.Mechanism;
+import org.xipki.pkcs11.wrapper.PKCS11KeyPair;
+import org.xipki.pkcs11.wrapper.PKCS11Token;
 import org.xipki.pkcs11.wrapper.params.RSA_PKCS_PSS_PARAMS;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
-import java.security.MessageDigest;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 

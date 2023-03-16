@@ -1,5 +1,12 @@
+// Copyright (c) 2023 xipki. All rights reserved.
+// License Apache License 2.0
+
 package org.xipki.pkcs11.wrapper;
 
+/**
+ * A logger provide static logging-methods.
+ * @author Lijun Liao
+ */
 public class StaticLogger {
 
   private static Logger logger;

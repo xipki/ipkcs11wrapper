@@ -7,7 +7,9 @@
 package test.pkcs11.wrapper.basics;
 
 import org.junit.Test;
-import org.xipki.pkcs11.wrapper.*;
+import org.xipki.pkcs11.wrapper.AttributeVector;
+import org.xipki.pkcs11.wrapper.MechanismInfo;
+import org.xipki.pkcs11.wrapper.PKCS11Token;
 import test.pkcs11.wrapper.TestBase;
 import test.pkcs11.wrapper.util.Util;
 
