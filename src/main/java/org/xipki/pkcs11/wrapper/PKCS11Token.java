@@ -78,7 +78,7 @@ public class PKCS11Token {
    */
   public PKCS11Token(Token token, boolean readOnly, long userType, char[] userName, List<char[]> pins,
                      Integer numSessions) throws TokenException {
-    this.token = token;
+    this.token = Objects.requireNonNull(token, "token shall not be null");
     this.readOnly = readOnly;
     this.userType = userType;
     this.userName = userName;
@@ -250,9 +250,18 @@ public class PKCS11Token {
   }
 
   /**
+   * Get the token (slot) identifier of this token.
+   *
+   * @return the slot identifier of this token.
+   */
+  public long getTokenId() {
+    return token.getTokenID();
+  }
+
+  /**
    * Get the token that created this Session object.
    *
-   * @return The token of this session.
+   * @return The token.
    */
   public Token getToken() {
     return token;
@@ -519,6 +528,87 @@ public class PKCS11Token {
     } finally {
       sessions.requite(session0);
     }
+  }
+
+  /**
+   * Gets the {@link PKCS11Key} identified by the given {@link PKCS11KeyId}.
+   * @param keyId The key identifier.
+   * @return {@link PKCS11Key} identified by the given {@link PKCS11KeyId}.
+   * @throws TokenException If executing operation fails.
+   */
+  public PKCS11Key getKey(PKCS11KeyId keyId) throws TokenException {
+    if (keyId == null) {
+      return null;
+    }
+
+    ConcurrentBagEntry<Session> session0 = borrowSession();
+    Session session = session0.value();
+    try {
+      return getKey(session, keyId);
+    } finally {
+      sessions.requite(session0);
+    }
+  }
+
+  /**
+   * Gets the {@link PKCS11Key} of a key satisfying the given criteria.
+   * @param criteria The criteria. At one of the CKA_ID and CKA_LABEL must be set.
+   * @return {@link PKCS11Key} of a key satisfying the given criteria
+   * @throws TokenException If executing operation fails.
+   */
+  public PKCS11Key getKey(AttributeVector criteria) throws TokenException {
+    ConcurrentBagEntry<Session> session0 = borrowSession();
+    Session session = session0.value();
+    try {
+      PKCS11KeyId keyId = getKeyId(session, criteria);
+      return (keyId == null) ? null : getKey(session, keyId);
+    } finally {
+      sessions.requite(session0);
+    }
+  }
+
+  private PKCS11Key getKey(Session session, PKCS11KeyId keyId) throws TokenException {
+    long objClass = keyId.getObjectCLass();
+    long keyType = keyId.getKeyType();
+
+    List<Long> ckaTypes = new LinkedList<>();
+
+    if (objClass == CKO_SECRET_KEY || objClass == CKO_PRIVATE_KEY) {
+      addCkaTypes(ckaTypes, CKA_EXTRACTABLE, CKA_NEVER_EXTRACTABLE, CKA_PRIVATE,
+          CKA_DECRYPT, CKA_SIGN, CKA_UNWRAP, CKA_WRAP_WITH_TRUSTED, CKA_SENSITIVE, CKA_ALWAYS_SENSITIVE);
+
+      if (objClass == CKO_SECRET_KEY) {
+        addCkaTypes(ckaTypes, CKA_ENCRYPT, CKA_TRUSTED, CKA_VERIFY, CKA_WRAP);
+
+        if (!(keyType == CKK_DES || keyType == CKK_DES2 || keyType == CKK_DES3)) {
+          ckaTypes.add(CKA_VALUE_LEN);
+        }
+      } else {
+        addCkaTypes(ckaTypes, CKA_ALWAYS_AUTHENTICATE, CKA_SIGN_RECOVER);
+
+        if (keyType == CKK_RSA) {
+          addCkaTypes(ckaTypes, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+        } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY
+            || keyType == CKK_VENDOR_SM2) {
+          ckaTypes.add(CKA_EC_PARAMS);
+        } else if (keyType == CKK_DSA) {
+          addCkaTypes(ckaTypes, CKA_PRIME, CKA_SUBPRIME, CKA_BASE);
+        }
+      }
+    } else { // if (objClass == CKO_PUBLIC_KEY) {
+      addCkaTypes(ckaTypes, CKA_ENCRYPT, CKA_TRUSTED, CKA_VERIFY, CKA_VERIFY_RECOVER, CKA_WRAP);
+      if (keyType == CKK_RSA) {
+        addCkaTypes(ckaTypes, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
+      } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY
+          || keyType == CKK_VENDOR_SM2) {
+        addCkaTypes(ckaTypes, CKA_EC_PARAMS, CKA_EC_POINT);
+      } else if (keyType == CKK_DSA) {
+        addCkaTypes(ckaTypes, CKA_PRIME, CKA_SUBPRIME, CKA_BASE);
+      }
+    }
+
+    AttributeVector attrs = session.getAttrValues(keyId.getHandle(), ckaTypes);
+    return new PKCS11Key(keyId, attrs);
   }
 
   /**
@@ -1983,6 +2073,12 @@ public class PKCS11Token {
         mechanism == CKM_SHA384_HMAC_GENERAL || mechanism == CKM_SHA512_HMAC_GENERAL ||
         mechanism == CKM_SHA3_224_HMAC_GENERAL || mechanism == CKM_SHA3_256_HMAC_GENERAL ||
         mechanism == CKM_SHA3_384_HMAC_GENERAL || mechanism == CKM_SHA3_512_HMAC_GENERAL;
+  }
+
+  private static void addCkaTypes(List<Long> list, long... types) {
+    for (long type : types) {
+      list.add(type);
+    }
   }
 
 }

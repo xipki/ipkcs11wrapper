@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * method before calling any other method of the module.
  * This class contains slot and token management functions as defined by the
  * PKCS#11 standard.
- *
+ * <p>
  * All applications using this library will contain the following code.
  * <pre><code>
  *      PKCS11Module pkcs11Module = PKCS11Module.getInstance("cryptoki.dll");
