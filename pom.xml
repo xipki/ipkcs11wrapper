@@ -174,7 +174,7 @@
             <exclude>natives/**/debug/**</exclude>
           </excludes>
         </configuration>
-        <executions>
+        <!--executions>
           <execution>
             <id>jar-debug</id>
             <phase>package</phase>
@@ -200,7 +200,7 @@
               </archive>
             </configuration>
           </execution>
-        </executions>
+        </executions-->
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
