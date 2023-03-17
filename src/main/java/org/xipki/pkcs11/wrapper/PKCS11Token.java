@@ -522,22 +522,22 @@ public class PKCS11Token {
   }
 
   /**
-   * Gets the {@link PKCS11ObjectId} satisfying the given criteria.
+   * Gets the {@link PKCS11KeyId} of a key satisfying the given criteria.
    * @param criteria The criteria. At one of the CKA_ID and CKA_LABEL must be set.
-   * @return {@link PKCS11ObjectId} satisfying the given criteria
+   * @return {@link PKCS11KeyId} of a key satisfying the given criteria
    * @throws TokenException If executing operation fails.
    */
-  public PKCS11ObjectId getObjectId(AttributeVector criteria) throws TokenException {
+  public PKCS11KeyId getKeyId(AttributeVector criteria) throws TokenException {
     ConcurrentBagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
-      return getObjectId(session, criteria);
+      return getKeyId(session, criteria);
     } finally {
       sessions.requite(session0);
     }
   }
 
-  private PKCS11ObjectId getObjectId(Session session, AttributeVector criteria) throws TokenException {
+  private PKCS11KeyId getKeyId(Session session, AttributeVector criteria) throws TokenException {
     byte[] id = criteria.id();
     String label = criteria.label();
     if ((id == null || id.length == 0) && (label == null || label.isEmpty())) {
@@ -557,7 +557,7 @@ public class PKCS11Token {
       } else if (handles.length > 1) {
         throw new TokenException("found more than 1 key for the criteria " + criteria);
       } else {
-        return getObjectIdByHandle(session, handles[0]);
+        return getKeyIdByHandle(session, handles[0]);
       }
     }
 
@@ -580,16 +580,16 @@ public class PKCS11Token {
       throw new TokenException(("found more than 1 key of " + ckoCodeToName(oClass)
           + " for the criteria " + criteria.class_(null)));
     } else {
-      return getObjectIdByHandle(session, handles[0]);
+      return getKeyIdByHandle(session, handles[0]);
     }
   }
 
-  private PKCS11ObjectId getObjectIdByHandle(Session session, long hKey) throws TokenException {
+  private PKCS11KeyId getKeyIdByHandle(Session session, long hKey) throws TokenException {
     AttributeVector attrs = session.getAttrValues(hKey, CKA_CLASS, CKA_KEY_TYPE, CKA_ID, CKA_LABEL);
     long oClass = attrs.class_();
     long keyType = attrs.keyType();
     byte[] id = attrs.id();
-    PKCS11ObjectId ret = new PKCS11ObjectId(hKey, oClass, keyType, id, attrs.label());
+    PKCS11KeyId ret = new PKCS11KeyId(hKey, oClass, keyType, id, attrs.label());
     if (oClass == CKO_PRIVATE_KEY) {
       // find the public key
       long[] pubKeyHandles = session.findObjectsSingle(AttributeVector.newPublicKey(keyType).id(id), 2);

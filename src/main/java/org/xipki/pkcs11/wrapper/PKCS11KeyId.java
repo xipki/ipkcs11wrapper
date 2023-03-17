@@ -7,12 +7,12 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * Identifier of a PKCS#11 Object.
+ * Identifier of a PKCS#11 key Object.
  *
  * @author Lijun Liao (xipki)
  */
 
-public class PKCS11ObjectId {
+public class PKCS11KeyId {
 
   private final long handle;
 
@@ -37,7 +37,7 @@ public class PKCS11ObjectId {
    * @param id Identifier. Cannot be null or zero-length if label is {@code null} or blank.
    * @param label Label. Cannot be {@code null} and blank if id is null or zero-length.
    */
-  public PKCS11ObjectId(long handle, long objectClass, long keyType, byte[] id, String label) {
+  public PKCS11KeyId(long handle, long objectClass, long keyType, byte[] id, String label) {
     this.handle = handle;
     this.objectCLass = objectClass;
     this.keyType = keyType;
@@ -97,9 +97,9 @@ public class PKCS11ObjectId {
   @Override
   public boolean equals(Object obj) {
     if (this == obj) return true;
-    else if (!(obj instanceof PKCS11ObjectId)) return false;
+    else if (!(obj instanceof PKCS11KeyId)) return false;
 
-    PKCS11ObjectId other = (PKCS11ObjectId) obj;
+    PKCS11KeyId other = (PKCS11KeyId) obj;
     return handle == other.handle && Arrays.equals(id, other.id) && Objects.equals(label, other.label);
   }
 
