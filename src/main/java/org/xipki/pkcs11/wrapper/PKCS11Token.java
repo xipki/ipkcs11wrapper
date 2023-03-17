@@ -488,6 +488,121 @@ public class PKCS11Token {
   }
 
   /**
+   * Generate a unique CKA_ID.
+   * @param template The search criteria for the uniqueness.
+   * @param idLength Length of the CKA_ID.
+   * @param random random to generate the random CKA_ID.
+   * @return the unique CKA_ID.
+   * @throws TokenException If executing operation fails.
+   */
+  public byte[] generateUniqueId(AttributeVector template, int idLength, Random random) throws TokenException {
+    if (template != null && template.id() != null) {
+      throw new IllegalArgumentException("template shall not have CKA_ID");
+    }
+
+    if (template == null) {
+      template = new AttributeVector();
+    }
+
+    byte[] keyId = new byte[idLength];
+    template.id(keyId);
+
+    ConcurrentBagEntry<Session> session0 = borrowSession();
+    Session session = session0.value();
+    try {
+      while (true) {
+        random.nextBytes(keyId);
+        if (session.findObjectsSingle(template, 1).length == 0) {
+          return keyId;
+        }
+      }
+    } finally {
+      sessions.requite(session0);
+    }
+  }
+
+  /**
+   * Gets the {@link PKCS11ObjectId} satisfying the given criteria.
+   * @param criteria The criteria. At one of the CKA_ID and CKA_LABEL must be set.
+   * @return {@link PKCS11ObjectId} satisfying the given criteria
+   * @throws TokenException If executing operation fails.
+   */
+  public PKCS11ObjectId getObjectId(AttributeVector criteria) throws TokenException {
+    ConcurrentBagEntry<Session> session0 = borrowSession();
+    Session session = session0.value();
+    try {
+      return getObjectId(session, criteria);
+    } finally {
+      sessions.requite(session0);
+    }
+  }
+
+  private PKCS11ObjectId getObjectId(Session session, AttributeVector criteria) throws TokenException {
+    byte[] id = criteria.id();
+    String label = criteria.label();
+    if ((id == null || id.length == 0) && (label == null || label.isEmpty())) {
+      return null;
+    }
+
+    Long oClass = criteria.class_();
+    if (oClass != null) {
+      // CKA_CLASS is set in criteria
+      if (!(CKO_PRIVATE_KEY == oClass || CKO_PUBLIC_KEY == oClass || CKO_SECRET_KEY == oClass)) {
+        return null;
+      }
+
+      long[] handles = session.findObjectsSingle(criteria, 2);
+      if (handles.length == 0) {
+        return null;
+      } else if (handles.length > 1) {
+        throw new TokenException("found more than 1 key for the criteria " + criteria);
+      } else {
+        return getObjectIdByHandle(session, handles[0]);
+      }
+    }
+
+    // CKA_CLASS is not set in criteria
+    oClass = CKO_PRIVATE_KEY;
+    long[] handles = session.findObjectsSingle(criteria.class_(oClass), 2);
+    if (handles.length == 0) {
+      oClass = CKO_SECRET_KEY;
+      handles = session.findObjectsSingle(criteria.class_(oClass), 2);
+
+      if (handles.length == 0) {
+        oClass = CKO_PUBLIC_KEY;
+        handles = session.findObjectsSingle(criteria.class_(oClass), 2);
+      }
+    }
+
+    if (handles.length == 0) {
+      return null;
+    } else if (handles.length > 1) {
+      throw new TokenException(("found more than 1 key of " + ckoCodeToName(oClass)
+          + " for the criteria " + criteria.class_(null)));
+    } else {
+      return getObjectIdByHandle(session, handles[0]);
+    }
+  }
+
+  private PKCS11ObjectId getObjectIdByHandle(Session session, long hKey) throws TokenException {
+    AttributeVector attrs = session.getAttrValues(hKey, CKA_CLASS, CKA_KEY_TYPE, CKA_ID, CKA_LABEL);
+    long oClass = attrs.class_();
+    long keyType = attrs.keyType();
+    byte[] id = attrs.id();
+    PKCS11ObjectId ret = new PKCS11ObjectId(hKey, oClass, keyType, id, attrs.label());
+    if (oClass == CKO_PRIVATE_KEY) {
+      // find the public key
+      long[] pubKeyHandles = session.findObjectsSingle(AttributeVector.newPublicKey(keyType).id(id), 2);
+      if (pubKeyHandles.length == 1) {
+        ret.setPublicKeyHandle(pubKeyHandles[0]);
+      } else if (pubKeyHandles.length > 1) {
+        StaticLogger.warn("found more than 1 public key for the private key {}, ignore them.", hKey);
+      }
+    }
+    return ret;
+  }
+
+  /**
    * Finds all objects that match the template.
    *
    * @return An array of found objects. The maximum size of this array is maxObjectCount, the
