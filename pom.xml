@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.xipki</groupId>
   <artifactId>ipkcs11wrapper</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3</version>
   <properties>
     <!--must match the version defined above-->
     <bundle.version>1.0.3</bundle.version>
@@ -50,8 +50,8 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.62</version>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.72</version>
       <scope>test</scope>
     </dependency>
     <dependency>
