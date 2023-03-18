@@ -10,7 +10,7 @@ See also <https://github.com/xipki/ipkcs11wrapper/releases>
 - Release date: 2023/03/18
 - Session.java: log operations.
 - Corrected vendor behaviour of the TASS HSM
-- Add KCS11Token to wrap Session. Using this class the application do 
+- Add KCS11Token to wrap Session. Using this class the application does 
   not need to manage (login, logout, open session, etc.) the sessions.
 
 ## 1.0.2
