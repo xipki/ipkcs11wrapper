@@ -383,6 +383,7 @@ public class Session {
     try {
       long hObject = pkcs11.C_CreateObject(sessionHandle, toOutCKAttributes(template), useUtf8);
       debugOut(method, "hObject={}", hObject);
+      traceObject("created object", hObject);
       return hObject;
     } catch (PKCS11Exception e) {
       debugError(method, e);
@@ -464,6 +465,7 @@ public class Session {
     try {
       long hObject = pkcs11.C_CopyObject(sessionHandle, sourceObjectHandle, toOutCKAttributes(template), useUtf8);
       debugOut(method, "hObject={}", hObject);
+      traceObject("copied object", hObject);
       return hObject;
     } catch (PKCS11Exception e) {
       debugError(method, e);
@@ -491,6 +493,7 @@ public class Session {
     try {
       pkcs11.C_SetAttributeValue(sessionHandle, objectToUpdateHandle, toOutCKAttributes(template), useUtf8);
       debugOut(method);
+      traceObject("object (after settingAttributeValues)", objectToUpdateHandle);
     } catch (PKCS11Exception e) {
       debugError(method, e);
       throw e;
@@ -1923,6 +1926,7 @@ public class Session {
     try {
       long hKey = pkcs11.C_GenerateKey(sessionHandle, toCkMechanism(mechanism), toOutCKAttributes(template), useUtf8);
       debugOut(method, "hKey={}", hKey);
+      traceObject("generated key", hKey);
       return hKey;
     } catch (PKCS11Exception e) {
       debugError(method, e);
@@ -1953,6 +1957,8 @@ public class Session {
       PKCS11KeyPair rv = new PKCS11KeyPair(objectHandles[0], objectHandles[1]);
       debugOut(method, "hPublicKey={}, hPrivateKey={}",
           rv.getPublicKey(), rv.getPrivateKey());
+      traceObject("public  key of the generated keypair", rv.getPublicKey());
+      traceObject("private key of the generated keypair", rv.getPrivateKey());
       return rv;
     } catch (PKCS11Exception e) {
       debugError(method, e);
@@ -2012,6 +2018,7 @@ public class Session {
       long hKey = pkcs11.C_UnwrapKey(sessionHandle, toCkMechanism(mechanism),
           unwrappingKeyHandle, wrappedKey, toOutCKAttributes(keyTemplate), useUtf8);
       debugOut(method, "hKey={}", hKey);
+      traceObject("unwrapped key", hKey);
       return hKey;
     } catch (PKCS11Exception e) {
       debugError(method, e);
@@ -2043,6 +2050,7 @@ public class Session {
       long hKey = pkcs11.C_DeriveKey(sessionHandle, toCkMechanism(mechanism), baseKeyHandle,
           toOutCKAttributes(template), useUtf8);
       debugOut(method, "hKey={}", hKey);
+      traceObject("derived key", hKey);
       return hKey;
     } catch (PKCS11Exception e) {
       debugError(method, e);
@@ -2189,7 +2197,25 @@ public class Session {
     return new AttributeVector(attrs);
   }
 
+  /**
+   * Return the default attributes, but without attributes which contain the sensitive values.
+   * @param objectHandle the object handle.
+   * @return the attributes.
+   * @throws PKCS11Exception If getting attributes failed.
+   */
   public AttributeVector getDefaultAttrValues(long objectHandle) throws PKCS11Exception {
+    return getDefaultAttrValues(objectHandle, false);
+  }
+
+  /**
+   * Return the default attributes
+   * @param objectHandle the object handle.
+   * @param withSensitiveVAttributes whether to get the attributes which contain sensitive values.
+   * @return the attributes.
+   * @throws PKCS11Exception If getting attributes failed.
+   */
+  public AttributeVector getDefaultAttrValues(long objectHandle, boolean withSensitiveVAttributes)
+      throws PKCS11Exception {
     long objClass = getAttrValues(objectHandle, CKA_CLASS).class_();
     List<Long> ckaTypes = new LinkedList<>();
     addCkaTypes(ckaTypes, CKA_LABEL, CKA_ID, CKA_TOKEN);
@@ -2203,9 +2229,13 @@ public class Session {
       Boolean sensitive = attrs.sensitive();
       Boolean alwaysSensitive = attrs.alwaysSensitive();
 
-      boolean isSensitive = (sensitive == null) || sensitive;
-      if (alwaysSensitive != null) {
-        isSensitive |= alwaysSensitive;
+      boolean withSensitiveAttrs = withSensitiveVAttributes;
+      if (withSensitiveAttrs) {
+        boolean isSensitive = (sensitive == null) || sensitive;
+        if (alwaysSensitive != null) {
+          isSensitive |= alwaysSensitive;
+        }
+        withSensitiveAttrs = !isSensitive;
       }
 
       if (objClass == CKO_SECRET_KEY) {
@@ -2215,7 +2245,7 @@ public class Session {
           ckaTypes.add(CKA_VALUE_LEN);
         }
 
-        if (!isSensitive) {
+        if (withSensitiveAttrs) {
           ckaTypes.add(CKA_VALUE);
         }
       } else {
@@ -2223,19 +2253,19 @@ public class Session {
 
         if (keyType == CKK_RSA) {
           addCkaTypes(ckaTypes, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
-          if (!isSensitive) {
+          if (withSensitiveAttrs) {
             addCkaTypes(ckaTypes, CKA_PRIVATE_EXPONENT, CKA_PRIME_1, CKA_PRIME_2,
                 CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT);
           }
         } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY
             || keyType == CKK_VENDOR_SM2) {
           ckaTypes.add(CKA_EC_PARAMS);
-          if (!isSensitive) {
+          if (withSensitiveAttrs) {
             ckaTypes.add(CKA_VALUE);
           }
         } else if (keyType == CKK_DSA) {
           addCkaTypes(ckaTypes, CKA_PRIME, CKA_SUBPRIME, CKA_BASE);
-          if (!isSensitive) {
+          if (withSensitiveAttrs) {
             ckaTypes.add(CKA_VALUE);
           }
         }
@@ -2602,6 +2632,16 @@ public class Session {
 
   private byte[] toNonNull(byte[] bytes) {
     return (bytes == null) ? new byte[0] : bytes;
+  }
+
+  private void traceObject(String prefix, long hObject) {
+    if (StaticLogger.isTraceEnabled()) {
+      try {
+        StaticLogger.trace(prefix + ": handle=" + hObject + ", attributes\n" + getDefaultAttrValues(hObject));
+      } catch (PKCS11Exception e) {
+        StaticLogger.trace(prefix + ": reading object " + hObject + " failed with " + ckrCodeToName(e.getErrorCode()));
+      }
+    }
   }
 
 }

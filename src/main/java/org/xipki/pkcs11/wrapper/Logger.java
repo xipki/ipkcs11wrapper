@@ -18,10 +18,14 @@ public interface Logger {
 
     void debug(String format, Object... arguments);
 
+    void trace(String format, Object... arguments);
+
     boolean isDebugEnabled();
 
     boolean isInfoEnabled();
 
     boolean isWarnEnabled();
+
+    boolean isTraceEnabled();
 
 }

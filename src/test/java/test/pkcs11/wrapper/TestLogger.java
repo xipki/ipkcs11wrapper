@@ -30,6 +30,11 @@ public class TestLogger implements Logger {
   }
 
   @Override
+  public void trace(String format, Object... arguments) {
+    LOG.trace(format, arguments);
+  }
+
+  @Override
   public boolean isDebugEnabled() {
     return LOG.isDebugEnabled();
   }
@@ -42,6 +47,11 @@ public class TestLogger implements Logger {
   @Override
   public boolean isWarnEnabled() {
     return LOG.isWarnEnabled();
+  }
+
+  @Override
+  public boolean isTraceEnabled() {
+    return LOG.isTraceEnabled();
   }
 
 }

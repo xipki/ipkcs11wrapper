@@ -45,6 +45,12 @@ public class StaticLogger {
     }
   }
 
+  public static void trace(String format, Object... arguments) {
+    if (logger != null) {
+      logger.trace(format, arguments);
+    }
+  }
+
   public static boolean isWarnEnabled() {
     return logger != null ? logger.isWarnEnabled() : true;
   }
@@ -55,6 +61,10 @@ public class StaticLogger {
 
   public static boolean isDebugEnabled() {
     return logger != null ? logger.isDebugEnabled() : false;
+  }
+
+  public static boolean isTraceEnabled() {
+    return logger != null ? logger.isTraceEnabled() : false;
   }
 
   private static void print(String level, String format, Object... arguments) {
