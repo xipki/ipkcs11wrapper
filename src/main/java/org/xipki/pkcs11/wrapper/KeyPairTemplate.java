@@ -3,8 +3,8 @@
 
 package org.xipki.pkcs11.wrapper;
 
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -61,7 +61,7 @@ public class KeyPairTemplate {
     return this;
   }
 
-  public KeyPairTemplate endDate(Date endDate) {
+  public KeyPairTemplate endDate(Instant endDate) {
     privateKey.endDate(endDate);
     publicKey.endDate(endDate);
     return this;
@@ -142,7 +142,7 @@ public class KeyPairTemplate {
     return this;
   }
 
-  public KeyPairTemplate startDate(Date startDate) {
+  public KeyPairTemplate startDate(Instant startDate) {
     privateKey.startDate(startDate);
     publicKey.startDate(startDate);
     return this;

@@ -8,9 +8,9 @@ package org.xipki.pkcs11.wrapper;
 
 import iaik.pkcs.pkcs11.wrapper.CK_TOKEN_INFO;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -58,7 +58,7 @@ public class TokenInfo {
    * The current time on the token. This value only makes sense, if the token
    * contains a clock.
    */
-  private final Date time;
+  private final Instant time;
 
   private final CK_TOKEN_INFO ckTokenInfo;
 
@@ -79,12 +79,15 @@ public class TokenInfo {
     firmwareVersion = new Version(ckTokenInfo.firmwareVersion);
 
     this.ckTokenInfo = ckTokenInfo;
-
-    Date time = null;
+    Instant time = null;
     try {
-      SimpleDateFormat utc = new SimpleDateFormat("yyyyMMddhhmmss");
-      utc.setTimeZone(TimeZone.getTimeZone("UTC"));
-      time = utc.parse(new String(ckTokenInfo.utcTime, 0, ckTokenInfo.utcTime.length - 2));
+      int year   = Integer.parseInt(new String(ckTokenInfo.utcTime,  0, 4));
+      int month  = Integer.parseInt(new String(ckTokenInfo.utcTime,  4, 2));
+      int day    = Integer.parseInt(new String(ckTokenInfo.utcTime,  6, 2));
+      int hour   = Integer.parseInt(new String(ckTokenInfo.utcTime,  8, 2));
+      int minute = Integer.parseInt(new String(ckTokenInfo.utcTime, 10, 2));
+      int second = Integer.parseInt(new String(ckTokenInfo.utcTime, 12, 2));
+      time = ZonedDateTime.of(year, month, day, hour, minute, second, 0, ZoneOffset.UTC).toInstant();
     } catch (Exception ex) {
     }
     this.time = time;
@@ -242,7 +245,7 @@ public class TokenInfo {
    *
    * @return The current time on the token's clock.
    */
-  public Date getTime() {
+  public Instant getTime() {
     return time;
   }
 

@@ -12,6 +12,7 @@ import org.xipki.pkcs11.wrapper.Functions;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
 
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -145,7 +146,7 @@ public abstract class Attribute {
           ? new CharArrayAttribute(type).charArrayValue((char[]) value)
           : new CharArrayAttribute(type).stringValue((String) value);
     } else if (attrType == AttrType.DATE) {
-      return new DateAttribute(type).dateValue((Date) value);
+      return new DateAttribute(type).dateValue((Instant) value);
     } else if (attrType == AttrType.LONG || attrType == AttrType.MECHANISM) {
       LongAttribute attr = (attrType == AttrType.LONG) ? new LongAttribute(type) : new MechanismAttribute(type);
       return (value == null || value instanceof Long)

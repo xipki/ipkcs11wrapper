@@ -7,6 +7,7 @@ import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.wrapper.attrs.*;
 
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.*;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
@@ -459,12 +460,12 @@ public class AttributeVector {
     return attr(CKA_ENCRYPT, encrypt);
   }
 
-  public Date endDate() {
+  public Instant endDate() {
     Attribute attr = getAttribute(CKA_END_DATE);
     return attr == null ? null : ((DateAttribute) attr).getValue();
   }
 
-  public AttributeVector endDate(Date endDate) {
+  public AttributeVector endDate(Instant endDate) {
     return attr(CKA_END_DATE, endDate);
   }
 
@@ -990,12 +991,12 @@ public class AttributeVector {
     return attr(CKA_SIGN_RECOVER, signRecover);
   }
 
-  public Date startDate() {
+  public Instant startDate() {
     Attribute attr = getAttribute(CKA_START_DATE);
     return attr == null ? null : ((DateAttribute) attr).getValue();
   }
 
-  public AttributeVector startDate(Date startDate) {
+  public AttributeVector startDate(Instant startDate) {
     return attr(CKA_START_DATE, startDate);
   }
 

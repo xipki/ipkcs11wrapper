@@ -8,9 +8,9 @@ package org.xipki.pkcs11.wrapper.attrs;
 
 import iaik.pkcs.pkcs11.wrapper.CK_DATE;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 /**
  * Objects of this class represent a date attribute of a PKCS#11 object
@@ -39,17 +39,15 @@ public class DateAttribute extends Attribute {
    *          The date value to set. May be null.
    * @return a reference to this object.
    */
-  public DateAttribute dateValue(Date value) {
+  public DateAttribute dateValue(Instant value) {
     if (value == null) {
       ckAttribute.pValue = null;
     } else {
       //poor memory/performance behavior, consider alternatives
-      Calendar calendar = new GregorianCalendar();
-      calendar.setTime(value);
-      int year = calendar.get(Calendar.YEAR);
-      // month counting starts with zero
-      int month = calendar.get(Calendar.MONTH) + 1;
-      int day = calendar.get(Calendar.DAY_OF_MONTH);
+      ZonedDateTime utcTime = ZonedDateTime.ofInstant(value, ZoneOffset.UTC);
+      int year = utcTime.getYear();
+      int month = utcTime.getMonthValue();
+      int day = utcTime.getDayOfMonth();
 
       CK_DATE ckDate = new CK_DATE();
       ckAttribute.pValue = ckDate;
@@ -68,7 +66,7 @@ public class DateAttribute extends Attribute {
    * @return The date value of this attribute or null.
    */
   @Override
-  public Date getValue() {
+  public Instant getValue() {
     if (isNullValue()) {
       return null;
     }
@@ -77,11 +75,7 @@ public class DateAttribute extends Attribute {
     int year  = Integer.parseInt(new String(ckDate.year));
     int month = Integer.parseInt(new String(ckDate.month));
     int day   = Integer.parseInt(new String(ckDate.day));
-    // poor performance, consider alternatives
-    Calendar calendar = new GregorianCalendar();
-    // calendar starts months with 0
-    calendar.set(year, month - 1, day);
-    return calendar.getTime();
+    return ZonedDateTime.of(year, month, day, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();
   }
 
   @Override
