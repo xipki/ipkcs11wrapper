@@ -570,17 +570,18 @@ public class Session {
    */
   public long[] findObjects(int maxObjectCount) throws PKCS11Exception {
     final int countPerCall = 1000;
-    if (maxObjectCount <= maxObjectCount) {
+    if (maxObjectCount <= countPerCall) {
       return findObjects0(maxObjectCount);
     } else {
       List<Long> list = new LinkedList<>();
       for (int i = 0; i < maxObjectCount; i+= countPerCall) {
-        long[] handles = findObjects0(Math.min(countPerCall, maxObjectCount -i));
-        if (handles.length == 0) {
-          break;
-        }
+        int numObjects = Math.min(countPerCall, maxObjectCount - i);
+        long[] handles = findObjects0(numObjects);
         for (long handle : handles) {
           list.add(handle);
+        }
+        if (handles.length < numObjects) {
+          break;
         }
       }
 

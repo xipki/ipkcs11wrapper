@@ -79,16 +79,20 @@ public class TokenInfo {
     firmwareVersion = new Version(ckTokenInfo.firmwareVersion);
 
     this.ckTokenInfo = ckTokenInfo;
-    Instant time = null;
+    char[] utcTime = ckTokenInfo.utcTime;
+    Instant time ;
     try {
-      int year   = Integer.parseInt(new String(ckTokenInfo.utcTime,  0, 4));
-      int month  = Integer.parseInt(new String(ckTokenInfo.utcTime,  4, 2));
-      int day    = Integer.parseInt(new String(ckTokenInfo.utcTime,  6, 2));
-      int hour   = Integer.parseInt(new String(ckTokenInfo.utcTime,  8, 2));
-      int minute = Integer.parseInt(new String(ckTokenInfo.utcTime, 10, 2));
-      int second = Integer.parseInt(new String(ckTokenInfo.utcTime, 12, 2));
+      int year   = Integer.parseInt(new String(utcTime,  0, 4));
+      int month  = Integer.parseInt(new String(utcTime,  4, 2));
+      int day    = Integer.parseInt(new String(utcTime,  6, 2));
+      int hour   = Integer.parseInt(new String(utcTime,  8, 2));
+      int minute = Integer.parseInt(new String(utcTime, 10, 2));
+      int second = Integer.parseInt(new String(utcTime, 12, 2));
       time = ZonedDateTime.of(year, month, day, hour, minute, second, 0, ZoneOffset.UTC).toInstant();
     } catch (Exception ex) {
+      StaticLogger.warn("toke return invalid utcTime: {}, use system time",
+          utcTime == null ? "null" : new String(utcTime));
+      time = Instant.now();
     }
     this.time = time;
   }
