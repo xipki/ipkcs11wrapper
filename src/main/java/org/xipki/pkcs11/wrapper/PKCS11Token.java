@@ -676,8 +676,11 @@ public class PKCS11Token {
 
   private PKCS11KeyId getKeyIdByHandle(Session session, long hKey) throws TokenException {
     AttributeVector attrs = session.getAttrValues(hKey, CKA_CLASS, CKA_KEY_TYPE, CKA_ID, CKA_LABEL);
-    long oClass = attrs.class_();
-    long keyType = attrs.keyType();
+    Long oClass = attrs.class_();
+    Long keyType = attrs.keyType();
+    if (oClass == null || keyType == null) {
+      return null;
+    }
     byte[] id = attrs.id();
     PKCS11KeyId ret = new PKCS11KeyId(hKey, oClass, keyType, id, attrs.label());
     if (oClass == CKO_PRIVATE_KEY) {
