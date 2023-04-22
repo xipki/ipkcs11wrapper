@@ -32,7 +32,7 @@ public class GCM_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_GCM_PARAMS getParams() {
+  protected CK_GCM_PARAMS getParams0() {
     return params;
   }
 

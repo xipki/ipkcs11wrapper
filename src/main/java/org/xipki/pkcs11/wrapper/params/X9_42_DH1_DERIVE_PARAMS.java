@@ -4,7 +4,9 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_X9_42_DH1_DERIVE_PARAMS;
-import org.xipki.pkcs11.wrapper.PKCS11Constants;
+import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
+
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.codeToName;
 
 /**
  * Represents the CK_X9_42_DH1_DERIVE_PARAMS.
@@ -23,8 +25,12 @@ public class X9_42_DH1_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_X9_42_DH1_DERIVE_PARAMS getParams() {
-    return params;
+  protected CK_X9_42_DH1_DERIVE_PARAMS getParams0() {
+    CK_X9_42_DH1_DERIVE_PARAMS params0 = new CK_X9_42_DH1_DERIVE_PARAMS();
+    params0.kdf         = module.genericToVendor(Category.CKD, params.kdf);
+    params0.pPublicData = params.pPublicData;
+    params0.pOtherInfo  = params.pOtherInfo;
+    return params0;
   }
 
   @Override
@@ -35,7 +41,8 @@ public class X9_42_DH1_DERIVE_PARAMS extends CkParams {
   @Override
   public String toString(String indent) {
     return indent + "CK_X9_42_DH2_DERIVE_PARAMS:" +
-        val2Str(indent, "kdf", PKCS11Constants.codeToName(PKCS11Constants.Category.CKD, params.kdf)) +
+        val2Str(indent, "kdf", (module == null)
+            ? codeToName(Category.CKD, params.kdf) : module.codeToName(Category.CKD, params.kdf)) +
         ptr2str(indent, "pPublicData", params.pPublicData) +
         ptr2str(indent, "pOtherInfo", params.pOtherInfo);
   }

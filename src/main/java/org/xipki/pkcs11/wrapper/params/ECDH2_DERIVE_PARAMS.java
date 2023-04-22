@@ -50,8 +50,15 @@ public class ECDH2_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_ECDH2_DERIVE_PARAMS getParams() {
-    return params;
+  protected CK_ECDH2_DERIVE_PARAMS getParams0() {
+    CK_ECDH2_DERIVE_PARAMS params0 = new CK_ECDH2_DERIVE_PARAMS();
+    params0.kdf              = module.genericToVendor(Category.CKD, params.kdf);
+    params0.pPublicData      = params.pPublicData;
+    params0.pSharedData      = params.pSharedData;
+    params0.ulPrivateDataLen = params.ulPrivateDataLen;
+    params0.hPrivateData     = params.hPrivateData;
+    params0.pPublicData2     = params.pPublicData2;
+    return params0;
   }
 
   @Override
@@ -62,7 +69,8 @@ public class ECDH2_DERIVE_PARAMS extends CkParams {
   @Override
   public String toString(String indent) {
     return indent + "CK_ECDH2_DERIVE_PARAMS:" +
-        val2Str(indent, "kdf", codeToName(Category.CKD, params.kdf)) +
+        val2Str(indent, "kdf", (module == null)
+            ? codeToName(Category.CKD, params.kdf) : module.codeToName(Category.CKD, params.kdf)) +
         ptr2str(indent, "pPublicData", params.pPublicData) +
         ptr2str(indent, "pSharedData", params.pSharedData) +
         val2Str(indent, "ulPrivateDataLen", params.ulPrivateDataLen) +

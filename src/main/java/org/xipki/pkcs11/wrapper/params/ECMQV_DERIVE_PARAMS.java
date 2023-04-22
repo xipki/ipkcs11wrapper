@@ -4,7 +4,7 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ECMQV_DERIVE_PARAMS;
-import org.xipki.pkcs11.wrapper.PKCS11Constants;
+import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.codeToName;
 
@@ -50,8 +50,16 @@ public class ECMQV_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_ECMQV_DERIVE_PARAMS getParams() {
-    return params;
+  protected CK_ECMQV_DERIVE_PARAMS getParams0() {
+    CK_ECMQV_DERIVE_PARAMS params0 = new CK_ECMQV_DERIVE_PARAMS();
+    params0.kdf              = module.genericToVendor(Category.CKD, params.kdf);
+    params0.pPublicData      = params.pPublicData;
+    params0.pSharedData      = params.pSharedData;
+    params0.ulPrivateDataLen = params.ulPrivateDataLen;
+    params0.hPrivateData     = params.hPrivateData;
+    params0.pPublicData2     = params.pPublicData2;
+    params0.publicKey        = params.publicKey;
+    return params0;
   }
 
   @Override
@@ -62,7 +70,8 @@ public class ECMQV_DERIVE_PARAMS extends CkParams {
   @Override
   public String toString(String indent) {
     return indent + "CK_ECMQV_DERIVE_PARAMS:" +
-        val2Str(indent, "kdf", codeToName(PKCS11Constants.Category.CKD, params.kdf)) +
+        val2Str(indent, "kdf", (module == null)
+            ? codeToName(Category.CKD, params.kdf) : module.codeToName(Category.CKD, params.kdf)) +
         ptr2str(indent, "pPublicData", params.pPublicData) +
         ptr2str(indent, "pSharedData", params.pSharedData) +
         val2Str(indent, "hPrivateData", params.hPrivateData) +

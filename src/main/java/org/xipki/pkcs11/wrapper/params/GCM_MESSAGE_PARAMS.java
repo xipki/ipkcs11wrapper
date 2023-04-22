@@ -33,7 +33,7 @@ public class GCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
   }
 
   @Override
-  public CK_GCM_MESSAGE_PARAMS getParams() {
+  protected CK_GCM_MESSAGE_PARAMS getParams0() {
     return params;
   }
 

@@ -26,7 +26,7 @@ public class KEY_DERIVATION_STRING_DATA extends CkParams {
   }
 
   @Override
-  public CK_KEY_DERIVATION_STRING_DATA getParams() {
+  protected CK_KEY_DERIVATION_STRING_DATA getParams0() {
     return params;
   }
 

@@ -29,7 +29,7 @@ public class KEY_WRAP_SET_OAEP_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_KEY_WRAP_SET_OAEP_PARAMS getParams() {
+  protected CK_KEY_WRAP_SET_OAEP_PARAMS getParams0() {
     return params;
   }
 

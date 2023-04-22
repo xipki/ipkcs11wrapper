@@ -5,6 +5,7 @@ package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ECDSA_ECIES_PARAMS;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
+import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
 /**
  * Represents Utimaco's vendor CK_ECDSA_ECIES_PARAMS, which is used in
@@ -53,8 +54,16 @@ public class Utimaco_ECDSA_ECIES_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_ECDSA_ECIES_PARAMS getParams() {
-    return params;
+  protected CK_ECDSA_ECIES_PARAMS getParams0() {
+    CK_ECDSA_ECIES_PARAMS params0 = new CK_ECDSA_ECIES_PARAMS();
+    params0.hashAlg        = module.genericToVendor(Category.CKM, params.hashAlg);
+    params0.cryptAlg       = module.genericToVendor(Category.CKM, params.cryptAlg);;
+    params0.cryptOpt       = params.cryptOpt;
+    params0.macAlg         = module.genericToVendor(Category.CKM, params.macAlg);;
+    params0.macOpt         = params.macOpt;
+    params0.pSharedSecret1 = params.pSharedSecret1;
+    params0.pSharedSecret2 = params.pSharedSecret2;
+    return params0;
   }
 
   @Override

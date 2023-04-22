@@ -25,11 +25,11 @@ public class RSA_AES_KEY_WRAP_PARAMS extends CkParams {
   public RSA_AES_KEY_WRAP_PARAMS(int AESKeyBits, RSA_PKCS_OAEP_PARAMS OAEPParams) {
     params = new CK_RSA_AES_KEY_WRAP_PARAMS();
     params.ulAESKeyBits = AESKeyBits;
-    params.pOAEPParams = OAEPParams.getParams();
+    params.pOAEPParams = OAEPParams.getParams0();
   }
 
   @Override
-  public CK_RSA_AES_KEY_WRAP_PARAMS getParams() {
+  protected CK_RSA_AES_KEY_WRAP_PARAMS getParams0() {
     return params;
   }
 

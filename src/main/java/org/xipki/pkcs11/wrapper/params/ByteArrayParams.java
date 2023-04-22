@@ -19,7 +19,7 @@ public class ByteArrayParams extends CkParams {
   }
 
   @Override
-  public byte[] getParams() {
+  protected byte[] getParams0() {
     return bytes;
   }
 

@@ -38,7 +38,7 @@ public class KEA_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_KEA_DERIVE_PARAMS getParams() {
+  protected CK_KEA_DERIVE_PARAMS getParams0() {
     return params;
   }
 

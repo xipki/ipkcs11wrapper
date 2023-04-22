@@ -324,21 +324,39 @@ public class PKCS11Module {
     return vendorBehaviours.contains(vendorBehavior);
   }
 
-  long genericToVendor(PKCS11Constants.Category category, long genericCode) {
+  public long genericToVendor(PKCS11Constants.Category category, long genericCode) {
     if (vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
-      return map == null ? map.genericToVendor(genericCode) : genericCode;
+      return map != null ? map.genericToVendor(genericCode) : genericCode;
     } else {
       return genericCode;
     }
   }
 
-  long vendorToGeneric(PKCS11Constants.Category category, long vendorCode) {
+  public long vendorToGeneric(PKCS11Constants.Category category, long vendorCode) {
     if (vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
-      return map == null ? map.vendorToGeneric(vendorCode) : vendorCode;
+      return map != null ? map.vendorToGeneric(vendorCode) : vendorCode;
     } else {
       return vendorCode;
+    }
+  }
+
+  public String codeToName(PKCS11Constants.Category category, long code) {
+    if (vendorMaps != null) {
+      VendorMap map = vendorMaps.get(category);
+      return map != null ? map.codeToName(code) : PKCS11Constants.codeToName(category, code);
+    } else {
+      return PKCS11Constants.codeToName(category, code);
+    }
+  }
+
+  public Long nameToCode(PKCS11Constants.Category category, String name) {
+    if (vendorMaps != null) {
+      VendorMap map = vendorMaps.get(category);
+      return map != null ? map.nameToCode(name) : PKCS11Constants.nameToCode(category, name);
+    } else {
+      return PKCS11Constants.nameToCode(category, name);
     }
   }
 
@@ -545,7 +563,8 @@ public class PKCS11Module {
           } else if (name.equalsIgnoreCase("module.version")) {
             block.versions = textList;
           }
-        } else if (line.startsWith("CKK_") || line.startsWith("CKM_")) {
+        } else if (line.startsWith("CKD_") || line.startsWith("CKG_") ||
+            line.startsWith("CKK_") || line.startsWith("CKM_") || line.startsWith("CKR_")) {
           int idx = line.indexOf(' ');
           if (idx != -1) {
             block.nameToCodeMap.put(line.substring(0, idx).trim(), line.substring(idx + 1).trim());
@@ -581,8 +600,6 @@ public class PKCS11Module {
             break;
           }
 
-          // For better performance, this line should be in the if-block. But we put
-          // it here explicitly to make sure that all vendor blocks ar configured correctly.
           if (!block.matches(modulePath, manufacturerID, libraryDescription, libraryVersion)) {
             continue;
           }
@@ -624,6 +641,9 @@ public class PKCS11Module {
             } else if (name.startsWith("CKM_")) {
               ckmMap.addNameCode(name, code);
             } else if (name.startsWith("CKR_")) {
+              if (ckrCodeNameMap == null) {
+                ckrCodeNameMap = new HashMap<>();
+              }
               ckrCodeNameMap.put(parseCode(code), name);
             } else {
               throw new IllegalStateException("Unknown name in vendor block: " + name);
@@ -632,8 +652,13 @@ public class PKCS11Module {
 
           VendorMap[] maps = {ckdMap, ckgMap, ckkMap, ckmMap};
           for (VendorMap map : maps) {
+            if (vendorMaps == null) {
+              vendorMaps = new HashMap<>();
+            }
             vendorMaps.put(map.category, map);
           }
+
+          break;
         } // end while
       }
     } catch (Exception e) {
@@ -664,18 +689,18 @@ public class PKCS11Module {
 
     void addNameCode(String name, String code) {
       long lCode = parseCode(code);
+      codeNameMap.put(lCode, name);
+      nameCodeMap.put(name, lCode);
+
       Long genericCode = PKCS11Constants.nameToCode(category, name);
-      if (genericCode == null) {
-        codeNameMap.put(lCode, name);
-        nameCodeMap.put(name, lCode);
-      } else {
+      if (genericCode != null) {
         genericToVendorMap.put(genericCode, lCode);
         vendorToGenericMap.put(lCode, genericCode);
       }
     }
 
     boolean isEmpty() {
-      return genericToVendorMap.isEmpty() && codeNameMap.isEmpty();
+      return codeNameMap.isEmpty();
     }
 
     long genericToVendor(long genericCode) {
@@ -687,11 +712,19 @@ public class PKCS11Module {
     }
 
     public String codeToName(long code) {
-      return codeNameMap.get(code);
+      String name = codeNameMap.get(code);
+      if (name == null) {
+        name = PKCS11Constants.codeToName(category, code);
+      }
+      return name;
     }
 
     public Long nameToCode(String name) {
-      return nameCodeMap.get(name);
+      Long code = nameCodeMap.get(name);
+      if (code == null) {
+        code = PKCS11Constants.nameToCode(category, name);
+      }
+      return code;
     }
 
   }

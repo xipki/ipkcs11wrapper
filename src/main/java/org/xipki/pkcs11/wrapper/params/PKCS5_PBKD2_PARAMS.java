@@ -46,7 +46,7 @@ public class PKCS5_PBKD2_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_PKCS5_PBKD2_PARAMS getParams() {
+  protected CK_PKCS5_PBKD2_PARAMS getParams0() {
     return params;
   }
 

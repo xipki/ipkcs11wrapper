@@ -4,6 +4,7 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import org.xipki.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.wrapper.PKCS11Module;
 
 import java.util.Arrays;
 
@@ -14,17 +15,36 @@ import java.util.Arrays;
  */
 public abstract class CkParams {
 
+  protected PKCS11Module module;
+
   /**
    * Get this parameters object as an object of the corresponding *_PARAMS
    * class of the iaik.pkcs.pkcs11.wrapper package.
    *
    * @return The object of the corresponding *_PARAMS class.
    */
-  public abstract Object getParams();
+  public final Object getParams() {
+    if (module == null) {
+      throw new IllegalStateException("module is not set");
+    }
+    return getParams0();
+  }
+
+  /**
+   * Get this parameters object as an object of the corresponding *_PARAMS
+   * class of the iaik.pkcs.pkcs11.wrapper package.
+   *
+   * @return The object of the corresponding *_PARAMS class.
+   */
+  protected abstract Object getParams0();
 
   protected abstract int getMaxFieldLen();
 
   public abstract String toString(String indent);
+
+  public void setModule(PKCS11Module module) {
+    this.module = module;
+  }
 
   @Override
   public final String toString() {

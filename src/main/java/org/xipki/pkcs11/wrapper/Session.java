@@ -666,9 +666,10 @@ public class Session {
    */
   public void encryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_EncryptInit";
+    mechanism.setModule(module);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_EncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_EncryptInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -757,9 +758,10 @@ public class Session {
    */
   public void messageEncryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_MessageEncryptInit";
+    mechanism.setModule(module);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_MessageEncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_MessageEncryptInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -876,9 +878,10 @@ public class Session {
    */
   public void decryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_DecryptInit";
+    mechanism.setModule(module);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_DecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_DecryptInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -967,9 +970,10 @@ public class Session {
    */
   public void messageDecryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_MessageDecryptInit";
+    mechanism.setModule(module);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_MessageDecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_MessageDecryptInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -1075,9 +1079,10 @@ public class Session {
    */
   public void digestInit(Mechanism mechanism) throws PKCS11Exception {
     final String method = "C_DigestInit";
+    mechanism.setModule(module);
     debugIn(method, "mechanism={}", mechanism);
     try {
-      pkcs11.C_DigestInit(sessionHandle, toCkMechanism(mechanism), useUtf8);
+      pkcs11.C_DigestInit(sessionHandle, mechanism.toCkMechanism(), useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -1207,10 +1212,11 @@ public class Session {
    */
   public void signInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_SignInit";
+    mechanism.setModule(module);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     initSignVerify(mechanism, keyHandle);
     try {
-      pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_SignInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -1433,9 +1439,10 @@ public class Session {
    */
   public void signRecoverInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_SignRecoverInit";
+    mechanism.setModule(module);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_SignRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_SignRecoverInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -1475,10 +1482,11 @@ public class Session {
    */
   public void messageSignInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_MessageSignInit";
+    mechanism.setModule(module);
     initSignVerify(mechanism, keyHandle);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_MessageSignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_MessageSignInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -1579,10 +1587,11 @@ public class Session {
    */
   public void verifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_VerifyInit";
+    mechanism.setModule(module);
     initSignVerify(mechanism, keyHandle);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_VerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_VerifyInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -1680,9 +1689,10 @@ public class Session {
    */
   public void verifyRecoverInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_VerifyRecoverInit";
+    mechanism.setModule(module);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_VerifyRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_VerifyRecoverInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -1729,10 +1739,11 @@ public class Session {
    */
   public void messageVerifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_MessageVerifyInit";
+    mechanism.setModule(module);
     initSignVerify(mechanism, keyHandle);
     debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
-      pkcs11.C_MessageVerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
+      pkcs11.C_MessageVerifyInit(sessionHandle, mechanism.toCkMechanism(), keyHandle, useUtf8);
       debugOut(method);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
@@ -1934,9 +1945,10 @@ public class Session {
    */
   public long generateKey(Mechanism mechanism, AttributeVector template) throws PKCS11Exception {
     final String method = "C_GenerateKey";
+    mechanism.setModule(module);
     debugIn(method, "mechanism={}, template={}", mechanism, template);
     try {
-      long hKey = pkcs11.C_GenerateKey(sessionHandle, toCkMechanism(mechanism), toOutCKAttributes(template), useUtf8);
+      long hKey = pkcs11.C_GenerateKey(sessionHandle, mechanism.toCkMechanism(), toOutCKAttributes(template), useUtf8);
       debugOut(method, "hKey={}", hKey);
       traceObject("generated key", hKey);
       return hKey;
@@ -1962,9 +1974,10 @@ public class Session {
    */
   public PKCS11KeyPair generateKeyPair(Mechanism mechanism, KeyPairTemplate template) throws PKCS11Exception {
     final String method = "C_GenerateKeyPair";
+    mechanism.setModule(module);
     debugIn(method, "mechanism={}, template={}", mechanism, template);
     try {
-      long[] objectHandles = pkcs11.C_GenerateKeyPair(sessionHandle, toCkMechanism(mechanism),
+      long[] objectHandles = pkcs11.C_GenerateKeyPair(sessionHandle, mechanism.toCkMechanism(),
           toOutCKAttributes(template.publicKey()), toOutCKAttributes(template.privateKey()), useUtf8);
       PKCS11KeyPair rv = new PKCS11KeyPair(objectHandles[0], objectHandles[1]);
       debugOut(method, "hPublicKey={}, hPrivateKey={}",
@@ -1993,11 +2006,12 @@ public class Session {
    */
   public byte[] wrapKey(Mechanism mechanism, long wrappingKeyHandle, long keyHandle) throws PKCS11Exception {
     final String method = "C_WrapKey";
+    mechanism.setModule(module);
     debugIn(method, "wrappingKeyHandle={}, keyHandle={}, mechanism={}",
         wrappingKeyHandle, keyHandle, mechanism);
     try {
       return toNonNull(method,
-          pkcs11.C_WrapKey(sessionHandle, toCkMechanism(mechanism), wrappingKeyHandle, keyHandle, useUtf8));
+          pkcs11.C_WrapKey(sessionHandle, mechanism.toCkMechanism(), wrappingKeyHandle, keyHandle, useUtf8));
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
       throw module.convertException(e);
@@ -2024,10 +2038,11 @@ public class Session {
   public long unwrapKey(Mechanism mechanism, long unwrappingKeyHandle, byte[] wrappedKey,
                         AttributeVector keyTemplate) throws PKCS11Exception {
     final String method = "C_UnwrapKey";
+    mechanism.setModule(module);
     debugIn(method, "unwrappingKeyHandle={}, wrappedKey.length={}, mechanism={}, template={}",
         unwrappingKeyHandle, len(wrappedKey), mechanism, keyTemplate);
     try {
-      long hKey = pkcs11.C_UnwrapKey(sessionHandle, toCkMechanism(mechanism),
+      long hKey = pkcs11.C_UnwrapKey(sessionHandle, mechanism.toCkMechanism(),
           unwrappingKeyHandle, wrappedKey, toOutCKAttributes(keyTemplate), useUtf8);
       debugOut(method, "hKey={}", hKey);
       traceObject("unwrapped key", hKey);
@@ -2057,9 +2072,10 @@ public class Session {
    */
   public long deriveKey(Mechanism mechanism, long baseKeyHandle, AttributeVector template) throws PKCS11Exception {
     final String method = "C_DeriveKey";
+    mechanism.setModule(module);
     debugIn(method, "baseKeyHandle={}, mechanism={}, template={}", baseKeyHandle, mechanism, template);
     try {
-      long hKey = pkcs11.C_DeriveKey(sessionHandle, toCkMechanism(mechanism), baseKeyHandle,
+      long hKey = pkcs11.C_DeriveKey(sessionHandle, mechanism.toCkMechanism(), baseKeyHandle,
           toOutCKAttributes(template), useUtf8);
       debugOut(method, "hKey={}", hKey);
       traceObject("derived key", hKey);
@@ -2159,33 +2175,6 @@ public class Session {
   @Override
   public String toString() {
     return "Session Handle: 0x" + Long.toHexString(sessionHandle) +  "\nToken: " + token;
-  }
-
-  private CK_MECHANISM toCkMechanism(Mechanism mechanism) {
-    CK_MECHANISM ckMechanism = mechanism.toCkMechanism();
-    long code = ckMechanism.mechanism;
-    ckMechanism.mechanism = module.genericToVendor(Category.CKM, code);
-    Object ckParams = ckMechanism.pParameter;
-    if (ckParams != null) {
-      if (ckParams instanceof CK_RSA_PKCS_PSS_PARAMS) {
-        CK_RSA_PKCS_PSS_PARAMS params = (CK_RSA_PKCS_PSS_PARAMS) ckParams;
-        params.hashAlg = module.genericToVendor(Category.CKM, params.hashAlg);
-        params.mgf = module.genericToVendor(Category.CKG_MGF, params.mgf);
-      } else if (ckParams instanceof CK_RSA_AES_KEY_WRAP_PARAMS) {
-        CK_RSA_AES_KEY_WRAP_PARAMS params = (CK_RSA_AES_KEY_WRAP_PARAMS) ckParams;
-        params.pOAEPParams.hashAlg = module.genericToVendor(Category.CKM, params.pOAEPParams.hashAlg);
-        params.pOAEPParams.mgf = module.genericToVendor(Category.CKG_MGF, params.pOAEPParams.mgf);
-      } else if (ckParams instanceof KdfParams) {
-        KdfParams params = (KdfParams) ckParams;
-        params.kdf = module.genericToVendor(Category.CKD, params.kdf);
-      } else if (ckParams instanceof CK_ECDSA_ECIES_PARAMS) {
-        CK_ECDSA_ECIES_PARAMS params = (CK_ECDSA_ECIES_PARAMS) ckParams;
-        params.cryptAlg = module.genericToVendor(Category.CKM, params.cryptAlg);
-        params.hashAlg = module.genericToVendor(Category.CKM, params.hashAlg);
-        params.macAlg = module.genericToVendor(Category.CKM, params.macAlg);
-      }
-    }
-    return ckMechanism;
   }
 
   private Object toCkParameters(CkParams params) {

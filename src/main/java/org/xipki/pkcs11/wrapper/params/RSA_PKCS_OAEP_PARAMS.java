@@ -46,8 +46,13 @@ public class RSA_PKCS_OAEP_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_RSA_PKCS_OAEP_PARAMS getParams() {
-    return params;
+  protected CK_RSA_PKCS_OAEP_PARAMS getParams0() {
+    CK_RSA_PKCS_OAEP_PARAMS params0 = new CK_RSA_PKCS_OAEP_PARAMS();
+    params0.hashAlg     = module.genericToVendor(Category.CKM, params.hashAlg);
+    params0.mgf         = module.genericToVendor(Category.CKG_MGF, params.mgf);
+    params0.source      = params.source;
+    params0.pSourceData = params.pSourceData;
+    return params0;
   }
 
   @Override
@@ -58,8 +63,10 @@ public class RSA_PKCS_OAEP_PARAMS extends CkParams {
   @Override
   public String toString(String indent) {
     return indent + "CK_RSA_PKCS_OAEP_PARAMS:" +
-        val2Str(indent, "hashAlg", ckmCodeToName(params.hashAlg)) +
-        val2Str(indent, "mgf", codeToName(PKCS11Constants.Category.CKG_MGF, params.mgf)) +
+        val2Str(indent, "hashAlg", (module == null
+            ? ckmCodeToName(params.hashAlg) : module.codeToName(Category.CKM, params.hashAlg))) +
+        val2Str(indent, "mgf", (module == null
+            ? codeToName(Category.CKG_MGF, params.mgf) : module.codeToName(Category.CKG_MGF, params.mgf))) +
         val2Str(indent, "source", codeToName(Category.CKZ, params.source)) +
         ptr2str(indent, "pSourceData", params.pSourceData);
   }

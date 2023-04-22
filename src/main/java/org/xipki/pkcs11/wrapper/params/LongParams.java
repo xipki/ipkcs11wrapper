@@ -16,7 +16,7 @@ public class LongParams extends CkParams {
   protected final long params;
 
   /**
-   * Create a new ObjectHandleParameters object using the given object.
+   * Create a new LongParams object using the given object.
    *
    * @param params
    *          The params.
@@ -26,7 +26,7 @@ public class LongParams extends CkParams {
   }
 
   @Override
-  public Long getParams() {
+  protected Long getParams0() {
     return params;
   }
 

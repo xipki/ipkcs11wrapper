@@ -6,7 +6,7 @@
 
 package org.xipki.pkcs11.wrapper;
 
-import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM;
+import iaik.pkcs.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.CkParams;
 
 /**
@@ -17,6 +17,8 @@ import org.xipki.pkcs11.wrapper.params.CkParams;
  * @author Lijun Liao (xipki)
  */
 public class Mechanism {
+
+  private PKCS11Module module;
 
   /**
    * The code of the mechanism as defined in PKCS11Constants (or pkcs11t.h
@@ -50,6 +52,13 @@ public class Mechanism {
     this.parameters = parameters;
   }
 
+  public void setModule(PKCS11Module module) {
+    this.module = module;
+    if (parameters != null) {
+      parameters.setModule(module);
+    }
+  }
+
   /**
    * Get the parameters object of this mechanism.
    *
@@ -75,12 +84,17 @@ public class Mechanism {
    * @return The name of this mechanism.
    */
   public String getName() {
-    return PKCS11Constants.ckmCodeToName(mechanismCode);
+    return module == null ? PKCS11Constants.ckmCodeToName(mechanismCode)
+        : module.codeToName(PKCS11Constants.Category.CKM, mechanismCode);
   }
 
   CK_MECHANISM toCkMechanism() {
+    if (module == null) {
+      throw new IllegalStateException("module is not set");
+    }
+
     CK_MECHANISM ckMechanism = new CK_MECHANISM();
-    ckMechanism.mechanism = mechanismCode;
+    ckMechanism.mechanism = module.genericToVendor(PKCS11Constants.Category.CKM, mechanismCode);
     if (parameters != null) {
       ckMechanism.pParameter = parameters.getParams();
     }

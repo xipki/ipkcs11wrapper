@@ -36,7 +36,7 @@ public class CCM_PARAMS extends CkParams {
   }
 
   @Override
-  public CK_CCM_PARAMS getParams() {
+  protected CK_CCM_PARAMS getParams0() {
     return params;
   }
 
