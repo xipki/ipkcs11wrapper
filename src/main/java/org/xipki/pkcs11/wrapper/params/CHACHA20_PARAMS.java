@@ -27,7 +27,7 @@ public class CHACHA20_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_CHACHA20_PARAMS getParams0() {
+  public CK_CHACHA20_PARAMS getParams() {
     return params;
   }
 

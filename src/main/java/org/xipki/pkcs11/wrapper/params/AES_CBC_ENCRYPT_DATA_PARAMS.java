@@ -37,7 +37,7 @@ public class AES_CBC_ENCRYPT_DATA_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_AES_CBC_ENCRYPT_DATA_PARAMS getParams0() {
+  public CK_AES_CBC_ENCRYPT_DATA_PARAMS getParams() {
     return params;
   }
 

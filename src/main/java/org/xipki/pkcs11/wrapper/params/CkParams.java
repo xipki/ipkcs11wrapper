@@ -17,17 +17,10 @@ public abstract class CkParams {
 
   protected PKCS11Module module;
 
-  /**
-   * Get this parameters object as an object of the corresponding *_PARAMS
-   * class of the iaik.pkcs.pkcs11.wrapper package.
-   *
-   * @return The object of the corresponding *_PARAMS class.
-   */
-  public final Object getParams() {
+  protected final void assertModuleSet() {
     if (module == null) {
       throw new IllegalStateException("module is not set");
     }
-    return getParams0();
   }
 
   /**
@@ -36,7 +29,7 @@ public abstract class CkParams {
    *
    * @return The object of the corresponding *_PARAMS class.
    */
-  protected abstract Object getParams0();
+  public abstract Object getParams();
 
   protected abstract int getMaxFieldLen();
 

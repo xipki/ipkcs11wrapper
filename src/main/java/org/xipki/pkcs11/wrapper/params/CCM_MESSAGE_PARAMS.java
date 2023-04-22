@@ -36,7 +36,7 @@ public class CCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
   }
 
   @Override
-  protected CK_CCM_MESSAGE_PARAMS getParams0() {
+  public CK_CCM_MESSAGE_PARAMS getParams() {
     return params;
   }
 

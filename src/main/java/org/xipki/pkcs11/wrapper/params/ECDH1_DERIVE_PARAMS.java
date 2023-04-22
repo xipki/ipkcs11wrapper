@@ -38,7 +38,8 @@ public class ECDH1_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_ECDH1_DERIVE_PARAMS getParams0() {
+  public CK_ECDH1_DERIVE_PARAMS getParams() {
+    assertModuleSet();
     CK_ECDH1_DERIVE_PARAMS params0 = new CK_ECDH1_DERIVE_PARAMS();
     params0.kdf         = module.genericToVendor(Category.CKD, params.kdf);
     params0.pPublicData = params.pPublicData;

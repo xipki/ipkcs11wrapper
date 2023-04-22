@@ -28,7 +28,7 @@ public class SALSA20_CHACHA20_POLY1305_MSG_PARAMS extends CkParams implements Ck
   }
 
   @Override
-  protected CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS getParams0() {
+  public CK_SALSA20_CHACHA20_POLY1305_MSG_PARAMS getParams() {
     return params;
   }
 

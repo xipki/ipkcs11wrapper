@@ -50,7 +50,8 @@ public class ECMQV_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_ECMQV_DERIVE_PARAMS getParams0() {
+  public CK_ECMQV_DERIVE_PARAMS getParams() {
+    assertModuleSet();
     CK_ECMQV_DERIVE_PARAMS params0 = new CK_ECMQV_DERIVE_PARAMS();
     params0.kdf              = module.genericToVendor(Category.CKD, params.kdf);
     params0.pPublicData      = params.pPublicData;

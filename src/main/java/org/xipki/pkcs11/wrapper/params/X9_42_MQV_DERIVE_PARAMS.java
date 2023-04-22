@@ -31,7 +31,8 @@ public class X9_42_MQV_DERIVE_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_X9_42_DHMQV_DERIVE_PARAMS getParams0() {
+  public CK_X9_42_DHMQV_DERIVE_PARAMS getParams() {
+    assertModuleSet();
     CK_X9_42_DHMQV_DERIVE_PARAMS params0 = new CK_X9_42_DHMQV_DERIVE_PARAMS();
     params0.kdf              = module.genericToVendor(Category.CKD, params.kdf);
     params0.pOtherInfo       = params.pOtherInfo;

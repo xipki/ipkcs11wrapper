@@ -25,7 +25,7 @@ public class CkParamsWithExtra extends CkParams {
   }
 
   @Override
-  protected Object getParams0() {
+  public Object getParams() {
     return (ckParams == null) ? null : ckParams.getParams();
   }
 

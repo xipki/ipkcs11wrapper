@@ -27,7 +27,7 @@ public class SALSA20_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_SALSA20_PARAMS getParams0() {
+  public CK_SALSA20_PARAMS getParams() {
     return params;
   }
 

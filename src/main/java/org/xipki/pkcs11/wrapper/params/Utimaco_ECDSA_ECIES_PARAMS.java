@@ -54,7 +54,8 @@ public class Utimaco_ECDSA_ECIES_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_ECDSA_ECIES_PARAMS getParams0() {
+  public CK_ECDSA_ECIES_PARAMS getParams() {
+    assertModuleSet();
     CK_ECDSA_ECIES_PARAMS params0 = new CK_ECDSA_ECIES_PARAMS();
     params0.hashAlg        = module.genericToVendor(Category.CKM, params.hashAlg);
     params0.cryptAlg       = module.genericToVendor(Category.CKM, params.cryptAlg);;

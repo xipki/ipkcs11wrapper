@@ -29,7 +29,8 @@ public class MechanismParams extends CkParams {
   }
 
   @Override
-  protected Long getParams0() {
+  public Long getParams() {
+    assertModuleSet();
     return module.genericToVendor(Category.CKM, params);
   }
 

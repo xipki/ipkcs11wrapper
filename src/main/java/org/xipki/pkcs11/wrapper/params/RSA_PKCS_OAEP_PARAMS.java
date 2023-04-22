@@ -46,7 +46,8 @@ public class RSA_PKCS_OAEP_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_RSA_PKCS_OAEP_PARAMS getParams0() {
+  public CK_RSA_PKCS_OAEP_PARAMS getParams() {
+    assertModuleSet();
     CK_RSA_PKCS_OAEP_PARAMS params0 = new CK_RSA_PKCS_OAEP_PARAMS();
     params0.hashAlg     = module.genericToVendor(Category.CKM, params.hashAlg);
     params0.mgf         = module.genericToVendor(Category.CKG_MGF, params.mgf);

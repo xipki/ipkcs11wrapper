@@ -30,7 +30,7 @@ public class SALSA20_CHACHA20_POLY1305_PARAMS extends CkParams implements CkMess
   }
 
   @Override
-  protected CK_SALSA20_CHACHA20_POLY1305_PARAMS getParams0() {
+  public CK_SALSA20_CHACHA20_POLY1305_PARAMS getParams() {
     return params;
   }
 

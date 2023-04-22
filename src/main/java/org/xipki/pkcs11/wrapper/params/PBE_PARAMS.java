@@ -38,7 +38,7 @@ public class PBE_PARAMS extends CkParams {
   }
 
   @Override
-  protected CK_PBE_PARAMS getParams0() {
+  public CK_PBE_PARAMS getParams() {
     return params;
   }
 

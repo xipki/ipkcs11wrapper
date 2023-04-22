@@ -26,7 +26,7 @@ public class LongParams extends CkParams {
   }
 
   @Override
-  protected Long getParams0() {
+  public Long getParams() {
     return params;
   }
 
