@@ -98,7 +98,11 @@ public class Slot {
    *              If reading the information fails.
    */
   public SlotInfo getSlotInfo() throws PKCS11Exception {
-    return new SlotInfo(module.getPKCS11Module().C_GetSlotInfo(slotID));
+    try {
+      return new SlotInfo(module.getPKCS11Module().C_GetSlotInfo(slotID));
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
   }
 
   /**

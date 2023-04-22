@@ -6,14 +6,9 @@
 
 package org.xipki.pkcs11.wrapper;
 
-import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
-import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM;
-import iaik.pkcs.pkcs11.wrapper.PKCS11;
+import iaik.pkcs.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.attrs.*;
-import org.xipki.pkcs11.wrapper.params.CkMessageParams;
-import org.xipki.pkcs11.wrapper.params.CkParams;
-import org.xipki.pkcs11.wrapper.params.CkParamsWithExtra;
-import org.xipki.pkcs11.wrapper.params.ExtraParams;
+import org.xipki.pkcs11.wrapper.params.*;
 
 import java.security.PublicKey;
 import java.security.interfaces.ECPublicKey;
@@ -133,9 +128,9 @@ public class Session {
     try {
       pkcs11.C_InitPIN(sessionHandle, pin, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -152,9 +147,9 @@ public class Session {
     try {
       pkcs11.C_SetPIN(sessionHandle, oldPin, newPin, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -169,9 +164,9 @@ public class Session {
     try {
       pkcs11.C_CloseSession(sessionHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -191,7 +186,11 @@ public class Session {
    * @throws PKCS11Exception If getting the information failed.
    */
   public SessionInfo getSessionInfo() throws PKCS11Exception {
+    try {
     return new SessionInfo(pkcs11.C_GetSessionInfo(sessionHandle));
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
   }
 
   /**
@@ -206,9 +205,9 @@ public class Session {
     try {
       pkcs11.C_SessionCancel(sessionHandle, flags);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -238,7 +237,11 @@ public class Session {
    * @throws PKCS11Exception If saving the state fails or is not possible.
    */
   public byte[] getOperationState() throws PKCS11Exception {
-    return pkcs11.C_GetOperationState(sessionHandle);
+    try {
+      return pkcs11.C_GetOperationState(sessionHandle);
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
   }
 
   /**
@@ -257,7 +260,11 @@ public class Session {
    */
   public void setOperationState(byte[] operationState, long encryptionKeyHandle, long authenticationKeyHandle)
       throws PKCS11Exception {
-    pkcs11.C_SetOperationState(sessionHandle, operationState, encryptionKeyHandle, authenticationKeyHandle);
+    try {
+      pkcs11.C_SetOperationState(sessionHandle, operationState, encryptionKeyHandle, authenticationKeyHandle);
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
   }
 
   public void setSessionHandle(long sessionHandle) {
@@ -290,9 +297,9 @@ public class Session {
     try {
       pkcs11.C_Login(sessionHandle, userType, pin, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -315,9 +322,9 @@ public class Session {
     try {
       pkcs11.C_LoginUser(sessionHandle, userType, pin, username, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -332,9 +339,9 @@ public class Session {
     try {
       pkcs11.C_Logout(sessionHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -385,9 +392,9 @@ public class Session {
       debugOut(method, "hObject={}", hObject);
       traceObject("created object", hObject);
       return hObject;
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -467,9 +474,9 @@ public class Session {
       debugOut(method, "hObject={}", hObject);
       traceObject("copied object", hObject);
       return hObject;
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -494,9 +501,9 @@ public class Session {
       pkcs11.C_SetAttributeValue(sessionHandle, objectToUpdateHandle, toOutCKAttributes(template), useUtf8);
       debugOut(method);
       traceObject("object (after settingAttributeValues)", objectToUpdateHandle);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -514,9 +521,9 @@ public class Session {
     try {
       pkcs11.C_DestroyObject(sessionHandle, objectHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -529,7 +536,11 @@ public class Session {
    * @throws PKCS11Exception If determining the size fails.
    */
   public long getObjectSize(long objectHandle) throws PKCS11Exception {
-    return pkcs11.C_GetObjectSize(sessionHandle, objectHandle);
+    try {
+      return pkcs11.C_GetObjectSize(sessionHandle, objectHandle);
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
   }
 
   /**
@@ -548,9 +559,9 @@ public class Session {
     try {
       pkcs11.C_FindObjectsInit(sessionHandle, toOutCKAttributes(template, true), useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -603,9 +614,9 @@ public class Session {
         debugOut(method, "hObjects={}", Arrays.toString(hObjects));
       }
       return hObjects;
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -621,9 +632,9 @@ public class Session {
     try {
       pkcs11.C_FindObjectsFinal(sessionHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -659,9 +670,9 @@ public class Session {
     try {
       pkcs11.C_EncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -680,9 +691,9 @@ public class Session {
     debugIn(method, "plaintext.length={}", len(plaintext));
     try {
       return toNonNull(method, pkcs11.C_Encrypt(sessionHandle, plaintext));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -706,9 +717,9 @@ public class Session {
     debugIn(method, "plaintextPat.length={}", len(plaintextPat));
     try {
       return toNonNull(method, pkcs11.C_EncryptUpdate(sessionHandle, plaintextPat));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -725,9 +736,9 @@ public class Session {
     debugIn(method);
     try {
       return toNonNull(method, pkcs11.C_EncryptFinal(sessionHandle));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -750,9 +761,9 @@ public class Session {
     try {
       pkcs11.C_MessageEncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -779,9 +790,9 @@ public class Session {
       }
 
       return toNonNull(method, rv);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -799,9 +810,9 @@ public class Session {
     try {
       pkcs11.C_EncryptMessageBegin(sessionHandle, toCkParameters(params), associatedData, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -827,9 +838,9 @@ public class Session {
     try {
       return toNonNull(method, pkcs11.C_EncryptMessageNext(sessionHandle, paramObject, plaintext,
           isLastOperation ? PKCS11Constants.CKF_END_OF_MESSAGE : 0, useUtf8));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -844,9 +855,9 @@ public class Session {
     try {
       pkcs11.C_MessageEncryptFinal(sessionHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -869,9 +880,9 @@ public class Session {
     try {
       pkcs11.C_DecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -890,9 +901,9 @@ public class Session {
     debugIn(method, "ciphertext.length={}", len(ciphertext));
     try {
       return toNonNull(method, pkcs11.C_Decrypt(sessionHandle, ciphertext));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -916,9 +927,9 @@ public class Session {
     debugIn(method, "ciphertextPart.length={}", len(ciphertextPart));
     try {
       return toNonNull(method, pkcs11.C_DecryptUpdate(sessionHandle, ciphertextPart));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -935,9 +946,9 @@ public class Session {
     debugIn(method);
     try {
       return toNonNull(method, pkcs11.C_DecryptFinal(sessionHandle));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -960,9 +971,9 @@ public class Session {
     try {
       pkcs11.C_MessageDecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -984,9 +995,9 @@ public class Session {
     try {
       return toNonNull(method, pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(params),
           associatedData, ciphertext, useUtf8));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1003,9 +1014,9 @@ public class Session {
     try {
       pkcs11.C_DecryptMessageBegin(sessionHandle, toCkParameters(params), associatedData, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1028,9 +1039,9 @@ public class Session {
     try {
       return toNonNull(method, pkcs11.C_DecryptMessageNext(sessionHandle, toCkParameters(params),
           ciphertext, isLastOperation ? PKCS11Constants.CKF_END_OF_MESSAGE : 0, useUtf8));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1045,9 +1056,9 @@ public class Session {
     try {
       pkcs11.C_MessageDecryptFinal(sessionHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1068,9 +1079,9 @@ public class Session {
     try {
       pkcs11.C_DigestInit(sessionHandle, toCkMechanism(mechanism), useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1088,9 +1099,9 @@ public class Session {
     debugIn(method, "data.length={}", len(data));
     try {
       return toNonNull(method, pkcs11.C_Digest(sessionHandle, data));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1114,9 +1125,9 @@ public class Session {
     try {
       pkcs11.C_DigestUpdate(sessionHandle, dataPart);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1133,9 +1144,9 @@ public class Session {
     try {
       pkcs11.C_DigestKey(sessionHandle, keyHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1153,9 +1164,9 @@ public class Session {
     debugIn(method);
     try {
       return toNonNull(method, pkcs11.C_DigestFinal(sessionHandle));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1174,7 +1185,7 @@ public class Session {
   public int digestFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     byte[] digest = digestFinal();
     if (digest.length > outLen) {
-      throw new PKCS11Exception(PKCS11Constants.CKR_BUFFER_TOO_SMALL);
+      throw new PKCS11Exception(PKCS11Constants.CKR_BUFFER_TOO_SMALL, "CKR_BUFFER_TOO_SMALL");
     }
     System.arraycopy(digest, 0, out, outOfs, digest.length);
     return digest.length;
@@ -1201,9 +1212,9 @@ public class Session {
     try {
       pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1243,11 +1254,11 @@ public class Session {
     debugIn(method, "data.length={}", len(data));
     try {
       byte[] sigValue = pkcs11.C_Sign(sessionHandle, data);
-      debugOut(method, "rv.length={]", len(sigValue));
+      debugOut(method, "rv.length={}", len(sigValue));
       return toNonNull(fixSignOutput(sigValue));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1271,9 +1282,9 @@ public class Session {
     try {
       pkcs11.C_SignUpdate(sessionHandle, dataPart);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1298,9 +1309,9 @@ public class Session {
         pkcs11.C_SignUpdate(sessionHandle, Arrays.copyOfRange(in, inOfs, inOfs + inLen));
       }
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1318,11 +1329,11 @@ public class Session {
     debugIn(method);
     try {
       byte[] sigValue = pkcs11.C_SignFinal(sessionHandle);
-      debugOut(method, "rv.length={]", len(sigValue));
+      debugOut(method, "rv.length={}", len(sigValue));
       return toNonNull(fixSignOutput(sigValue));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1426,9 +1437,9 @@ public class Session {
     try {
       pkcs11.C_SignRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1446,9 +1457,9 @@ public class Session {
     debugIn(method, "data.length={}", len(data));
     try {
       return toNonNull(method, pkcs11.C_SignRecover(sessionHandle, data));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1469,9 +1480,9 @@ public class Session {
     try {
       pkcs11.C_MessageSignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1486,9 +1497,9 @@ public class Session {
     debugIn(method, "params={}, data.length={}", params, len(data));
     try {
       return toNonNull(method, pkcs11.C_SignMessage(sessionHandle, toCkParameters(params), data, useUtf8));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1505,9 +1516,9 @@ public class Session {
     try {
       pkcs11.C_SignMessageBegin(sessionHandle, toCkParameters(params), useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1528,9 +1539,9 @@ public class Session {
       byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data,
                             isLastOperation, useUtf8);
       return toNonNull(method, fixSignOutput(signature));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1546,9 +1557,9 @@ public class Session {
     try {
       pkcs11.C_MessageSignFinal(sessionHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1573,9 +1584,9 @@ public class Session {
     try {
       pkcs11.C_VerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1598,9 +1609,9 @@ public class Session {
     try {
       pkcs11.C_Verify(sessionHandle, data, realSig);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1623,9 +1634,9 @@ public class Session {
     try {
       pkcs11.C_VerifyUpdate(sessionHandle, dataPart);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1648,9 +1659,9 @@ public class Session {
     try {
       pkcs11.C_VerifyFinal(sessionHandle, realSig);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1673,9 +1684,9 @@ public class Session {
     try {
       pkcs11.C_VerifyRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1694,9 +1705,9 @@ public class Session {
     debugIn(method, "data.length={}", len(data));
     try {
       return toNonNull(method, pkcs11.C_VerifyRecover(sessionHandle, data));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1723,9 +1734,9 @@ public class Session {
     try {
       pkcs11.C_MessageVerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1747,9 +1758,9 @@ public class Session {
     try {
       pkcs11.C_VerifyMessage(sessionHandle, toCkParameters(params), data, fixSignatureToVerify(signature), useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1767,9 +1778,9 @@ public class Session {
     try {
       pkcs11.C_VerifyMessageBegin(sessionHandle, toCkParameters(params), useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1794,9 +1805,9 @@ public class Session {
     try {
       pkcs11.C_VerifyMessageNext(sessionHandle, toCkParameters(params), data, fixSignatureToVerify(signature), useUtf8);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1811,9 +1822,9 @@ public class Session {
     try {
       pkcs11.C_MessageVerifyFinal(sessionHandle);
       debugOut(method);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1833,9 +1844,9 @@ public class Session {
     debugIn(method, "part.length={}", len(part));
     try {
       return toNonNull(method, pkcs11.C_DigestEncryptUpdate(sessionHandle, part));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1856,9 +1867,9 @@ public class Session {
     debugIn(method, "part.length={}", len(part));
     try {
       return toNonNull(method, pkcs11.C_DecryptDigestUpdate(sessionHandle, part));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1878,9 +1889,9 @@ public class Session {
     debugIn(method, "part.length={}", len(part));
     try {
       return toNonNull(method, pkcs11.C_SignEncryptUpdate(sessionHandle, part));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1901,9 +1912,9 @@ public class Session {
     debugIn(method, "encryptedPart.length={}", len(encryptedPart));
     try {
       return toNonNull(method, pkcs11.C_DecryptVerifyUpdate(sessionHandle, encryptedPart));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1929,9 +1940,9 @@ public class Session {
       debugOut(method, "hKey={}", hKey);
       traceObject("generated key", hKey);
       return hKey;
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1961,9 +1972,9 @@ public class Session {
       traceObject("public  key of the generated keypair", rv.getPublicKey());
       traceObject("private key of the generated keypair", rv.getPrivateKey());
       return rv;
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -1987,9 +1998,9 @@ public class Session {
     try {
       return toNonNull(method,
           pkcs11.C_WrapKey(sessionHandle, toCkMechanism(mechanism), wrappingKeyHandle, keyHandle, useUtf8));
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -2021,9 +2032,9 @@ public class Session {
       debugOut(method, "hKey={}", hKey);
       traceObject("unwrapped key", hKey);
       return hKey;
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -2053,9 +2064,9 @@ public class Session {
       debugOut(method, "hKey={}", hKey);
       traceObject("derived key", hKey);
       return hKey;
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -2068,7 +2079,11 @@ public class Session {
    *              If mixing in the seed failed.
    */
   public void seedRandom(byte[] seed) throws PKCS11Exception {
-    pkcs11.C_SeedRandom(sessionHandle, seed);
+    try {
+      pkcs11.C_SeedRandom(sessionHandle, seed);
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
   }
 
   /**
@@ -2087,9 +2102,9 @@ public class Session {
     try {
       pkcs11.C_GenerateRandom(sessionHandle, randomBytesBuffer);
       return toNonNull(method, randomBytesBuffer);
-    } catch (PKCS11Exception e) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       debugError(method, e);
-      throw e;
+      throw module.convertException(e);
     }
   }
 
@@ -2101,7 +2116,11 @@ public class Session {
    *              Throws always an PKCS11Excption.
    */
   public void getFunctionStatus() throws PKCS11Exception {
-    pkcs11.C_GetFunctionStatus(sessionHandle);
+    try {
+      pkcs11.C_GetFunctionStatus(sessionHandle);
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
   }
 
   /**
@@ -2112,7 +2131,11 @@ public class Session {
    *              Throws always an PKCS11Excption.
    */
   public void cancelFunction() throws PKCS11Exception {
-    pkcs11.C_CancelFunction(sessionHandle);
+    try {
+      pkcs11.C_CancelFunction(sessionHandle);
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
   }
 
   /**
@@ -2141,8 +2164,26 @@ public class Session {
   private CK_MECHANISM toCkMechanism(Mechanism mechanism) {
     CK_MECHANISM ckMechanism = mechanism.toCkMechanism();
     long code = ckMechanism.mechanism;
-    if ((code & PKCS11Constants.CKM_VENDOR_DEFINED) != 0) {
-      ckMechanism.mechanism = module.ckmGenericToVendor(code);
+    ckMechanism.mechanism = module.genericToVendor(Category.CKM, code);
+    Object ckParams = ckMechanism.pParameter;
+    if (ckParams != null) {
+      if (ckParams instanceof CK_RSA_PKCS_PSS_PARAMS) {
+        CK_RSA_PKCS_PSS_PARAMS params = (CK_RSA_PKCS_PSS_PARAMS) ckParams;
+        params.hashAlg = module.genericToVendor(Category.CKM, params.hashAlg);
+        params.mgf = module.genericToVendor(Category.CKG_MGF, params.mgf);
+      } else if (ckParams instanceof CK_RSA_AES_KEY_WRAP_PARAMS) {
+        CK_RSA_AES_KEY_WRAP_PARAMS params = (CK_RSA_AES_KEY_WRAP_PARAMS) ckParams;
+        params.pOAEPParams.hashAlg = module.genericToVendor(Category.CKM, params.pOAEPParams.hashAlg);
+        params.pOAEPParams.mgf = module.genericToVendor(Category.CKG_MGF, params.pOAEPParams.mgf);
+      } else if (ckParams instanceof KdfParams) {
+        KdfParams params = (KdfParams) ckParams;
+        params.kdf = module.genericToVendor(Category.CKD, params.kdf);
+      } else if (ckParams instanceof CK_ECDSA_ECIES_PARAMS) {
+        CK_ECDSA_ECIES_PARAMS params = (CK_ECDSA_ECIES_PARAMS) ckParams;
+        params.cryptAlg = module.genericToVendor(Category.CKM, params.cryptAlg);
+        params.hashAlg = module.genericToVendor(Category.CKM, params.hashAlg);
+        params.macAlg = module.genericToVendor(Category.CKM, params.macAlg);
+      }
     }
     return ckMechanism;
   }
@@ -2222,7 +2263,7 @@ public class Session {
     addCkaTypes(ckaTypes, CKA_LABEL, CKA_ID, CKA_TOKEN);
 
     if (objClass == CKO_SECRET_KEY || objClass == CKO_PRIVATE_KEY) {
-      addCkaTypes(ckaTypes, CKA_ALLOWED_MECHANISMS, CKA_DECRYPT, CKA_EXTRACTABLE, CKA_KEY_GEN_MECHANISM,
+      addCkaTypes(ckaTypes, CKA_ALLOWED_MECHANISMS, CKA_DECRYPT, CKA_DERIVE, CKA_EXTRACTABLE, CKA_KEY_GEN_MECHANISM,
           CKA_NEVER_EXTRACTABLE, CKA_PRIVATE, CKA_SIGN, CKA_UNWRAP, CKA_UNWRAP_TEMPLATE, CKA_WRAP_WITH_TRUSTED);
 
       AttributeVector attrs = getAttrValues(objectHandle, CKA_KEY_TYPE, CKA_SENSITIVE, CKA_ALWAYS_SENSITIVE);
@@ -2338,8 +2379,8 @@ public class Session {
     PKCS11Exception delayedEx = null;
     try {
       pkcs11.C_GetAttributeValue(sessionHandle, objectHandle, attributeTemplateList, useUtf8);
-    } catch (PKCS11Exception ex) {
-      delayedEx = ex;
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception ex) {
+      delayedEx = module.convertException(ex);
     }
 
     for (int i = 0; i < attributes.length; i++) {
@@ -2424,7 +2465,7 @@ public class Session {
       pkcs11.C_GetAttributeValue(sessionHandle, objectHandle, attributeTemplateList, useUtf8);
 
       attribute.ckAttribute(attributeTemplateList[0]).present(true).sensitive(false);
-    } catch (PKCS11Exception ex) {
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception ex) {
       long ec = ex.getErrorCode();
       if (ec == PKCS11Constants.CKR_ATTRIBUTE_TYPE_INVALID) {
         if (attribute.getType() == PKCS11Constants.CKA_EC_PARAMS) {
@@ -2444,7 +2485,7 @@ public class Session {
         attribute.present(false).sensitive(false).getCkAttribute().pValue = null;
       } else {
         // there was a different error that we should propagate
-        throw ex;
+        throw module.convertException(ex);
       }
     }
 
@@ -2479,9 +2520,7 @@ public class Session {
 
       if (ckAttr.type == PKCS11Constants.CKA_KEY_TYPE) {
         long value = (long) ckAttr.pValue;
-        if ((value & PKCS11Constants.CKK_VENDOR_DEFINED) != 0L) {
-          ckAttr.pValue = module.ckkGenericToVendor(value);
-        }
+        ckAttr.pValue = module.genericToVendor(Category.CKK, value);
       } else if (ckAttr.type == PKCS11Constants.CKA_EC_POINT) {
         ckAttr.pValue = Functions.toOctetString((byte[]) ckAttr.pValue);
       }
@@ -2533,20 +2572,18 @@ public class Session {
 
     if (type == PKCS11Constants.CKA_KEY_TYPE) {
       long value = (long) ckAttr.pValue;
-      if ((value & PKCS11Constants.CKK_VENDOR_DEFINED) != 0L && !PKCS11Constants.isUnavailableInformation(value)) {
-        ckAttr.pValue = module.ckkVendorToGeneric(value);
+      if (!PKCS11Constants.isUnavailableInformation(value)) {
+        ckAttr.pValue = module.vendorToGeneric(Category.CKK, value);
       }
     } else if (type == PKCS11Constants.CKA_KEY_GEN_MECHANISM) {
       long value = (long) ckAttr.pValue;
-      if ((value & PKCS11Constants.CKM_VENDOR_DEFINED) != 0L && !PKCS11Constants.isUnavailableInformation(value)) {
-        ckAttr.pValue = module.ckmVendorToGeneric(value);
+      if (!PKCS11Constants.isUnavailableInformation(value)) {
+        ckAttr.pValue = module.vendorToGeneric(Category.CKM, value);
       }
     } else if (type == PKCS11Constants.CKA_ALLOWED_MECHANISMS) {
       long[] mechs = ((MechanismArrayAttribute) attr).getValue();
       for (long mech : mechs) {
-        if ((mech & PKCS11Constants.CKM_VENDOR_DEFINED) != 0L) {
-          ckAttr.pValue = module.ckmVendorToGeneric(mech);
-        }
+        ckAttr.pValue = module.vendorToGeneric(Category.CKM, mech);
       }
     } else if (type == PKCS11Constants.CKA_EC_POINT) {
       Boolean b = module.getEcPointFixNeeded();
@@ -2611,9 +2648,9 @@ public class Session {
     }
   }
 
-  private void debugError(String method, PKCS11Exception e) {
+  private void debugError(String method, iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
     if (StaticLogger.isDebugEnabled()) {
-      StaticLogger.debug("ERR " + method + ": " + ckrCodeToName(e.getErrorCode()));
+      StaticLogger.debug("ERR " + method + ": " + module.ckrCodeToName(e.getErrorCode()));
     }
   }
 
@@ -2640,7 +2677,7 @@ public class Session {
       try {
         StaticLogger.trace(prefix + ": handle=" + hObject + ", attributes\n" + getDefaultAttrValues(hObject));
       } catch (PKCS11Exception e) {
-        StaticLogger.trace(prefix + ": reading object " + hObject + " failed with " + ckrCodeToName(e.getErrorCode()));
+        StaticLogger.trace(prefix + ": reading object " + hObject + " failed with " + e.getErrorName());
       }
     }
   }

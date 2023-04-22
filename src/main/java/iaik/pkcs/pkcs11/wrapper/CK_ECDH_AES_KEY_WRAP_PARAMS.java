@@ -17,7 +17,7 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * @author Patrick Schuster (SIC)
  */
-public class CK_ECDH_AES_KEY_WRAP_PARAMS {
+public class CK_ECDH_AES_KEY_WRAP_PARAMS extends KdfParams {
     /**
      * <B>PKCS#11:</B>
      * <PRE>
@@ -25,14 +25,6 @@ public class CK_ECDH_AES_KEY_WRAP_PARAMS {
      * </PRE>
      */
     public long ulAESKeyBits;
-
-    /**
-     * <B>PKCS#11:</B>
-     * <PRE>
-     * CK_EC_KDF_TYPE     kdf;
-     * </PRE>
-     */
-    public long kdf;
 
     /**
      * <B>PKCS#11:</B>

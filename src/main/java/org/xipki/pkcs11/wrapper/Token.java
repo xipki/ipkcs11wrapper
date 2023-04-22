@@ -102,7 +102,11 @@ public class Token {
    *              If reading the information fails.
    */
   public TokenInfo getTokenInfo() throws PKCS11Exception {
-    return new TokenInfo(slot.getModule().getPKCS11Module().C_GetTokenInfo(slot.getSlotID()));
+    try {
+      return new TokenInfo(slot.getModule().getPKCS11Module().C_GetTokenInfo(slot.getSlotID()));
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw slot.getModule().convertException(e);
+    }
   }
 
   /**
@@ -117,12 +121,16 @@ public class Token {
    */
   public long[] getMechanismList() throws PKCS11Exception {
     PKCS11Module module = slot.getModule();
-    long[] mechanisms = module.getPKCS11Module().C_GetMechanismList(slot.getSlotID());
+    long[] mechanisms;
+    try {
+      mechanisms = module.getPKCS11Module().C_GetMechanismList(slot.getSlotID());
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw slot.getModule().convertException(e);
+    }
+
     for (int i = 0; i < mechanisms.length; i++) {
       long code = mechanisms[i];
-      if ((code & PKCS11Constants.CKM_VENDOR_DEFINED) != 0L) {
-        mechanisms[i] = module.ckmVendorToGeneric(code);
-      }
+      mechanisms[i] = module.vendorToGeneric(PKCS11Constants.Category.CKM, code);
     }
 
     return mechanisms;
@@ -141,10 +149,14 @@ public class Token {
    */
   public MechanismInfo getMechanismInfo(long mechanism) throws PKCS11Exception {
     if ((mechanism & PKCS11Constants.CKM_VENDOR_DEFINED) != 0L) {
-      mechanism = slot.getModule().ckmGenericToVendor(mechanism);
+      mechanism = slot.getModule().genericToVendor(PKCS11Constants.Category.CKM, mechanism);
     }
 
-    return new MechanismInfo(slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism));
+    try {
+      return new MechanismInfo(slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism));
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw slot.getModule().convertException(e);
+    }
   }
 
   /**
@@ -184,7 +196,14 @@ public class Token {
     long flags = rwSession
         ? PKCS11Constants.CKF_SERIAL_SESSION | PKCS11Constants.CKF_RW_SESSION
         : PKCS11Constants.CKF_SERIAL_SESSION;
-    long sessionHandle = slot.getModule().getPKCS11Module().C_OpenSession(slot.getSlotID(), flags, application, null);
+    PKCS11Module module = slot.getModule();
+    long sessionHandle;
+    try {
+      sessionHandle = module.getPKCS11Module().C_OpenSession(slot.getSlotID(), flags, application, null);
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      throw module.convertException(e);
+    }
+
     StaticLogger.info("C_OpenSession: slotID={}, flags=0x{}, sessionHandle={}",
         slot.getSlotID(), Functions.toFullHex(flags), sessionHandle);
     return new Session(this, sessionHandle);

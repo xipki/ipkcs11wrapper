@@ -22,18 +22,7 @@ package iaik.pkcs.pkcs11.wrapper;
  * </pre>
  * @author Karl Scheibelhofer (SIC)
  */
-public class CK_X9_42_DHMQV_DERIVE_PARAMS {
-
-  /**
-   * <B>PKCS#11:</B>
-   *
-   * <PRE>
-   * CK_X9_42_DH_KDF_TYPE kdf;
-   * </PRE>
-   *
-   * .
-   */
-  public long kdf;
+public class CK_X9_42_DHMQV_DERIVE_PARAMS extends KdfParams {
 
   /**
    * <B>PKCS#11:</B>

@@ -72,7 +72,7 @@ public class KeyPairTemplate {
     byte[] pubId = publicKey.id();
     if (!Arrays.equals(privId, pubId)) {
       // Private key and public key do not have the same CKA_ID
-      throw new PKCS11Exception(PKCS11Constants.CKR_TEMPLATE_INCONSISTENT);
+      throw new PKCS11Exception(PKCS11Constants.CKR_TEMPLATE_INCONSISTENT, "CKR_TEMPLATE_INCONSISTENT");
     }
     return privId;
   }

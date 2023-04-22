@@ -184,7 +184,7 @@ public class TestBase {
       String msg = "Mechanism " + ckmCodeToName(mechCode) + " for " +
           codeToName(Category.CKF_MECHANISM, flagBit) + "is not supported";
       LOG.error(msg);
-      throw new PKCS11Exception(CKR_MECHANISM_INVALID);
+      throw new PKCS11Exception(CKR_MECHANISM_INVALID, "CKR_MECHANISM_INVALID");
     }
   }
 

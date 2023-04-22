@@ -21,15 +21,23 @@ public class PKCS11Exception extends TokenException {
    */
   private final long errorCode;
 
+  private final String errorName;
+
   /**
    * Constructor taking the error code as defined for the CKR_* constants
    * in PKCS#11.
    *
    * @param errorCode
    *          The PKCS#11 error code (return value).
+   * @param name
+   *          The error name.
    */
-  public PKCS11Exception(long errorCode) {
-    super(PKCS11Constants.ckrCodeToName(errorCode));
+  public PKCS11Exception(long errorCode, String name) {
+    super(name);
+    if (name == null || name.isEmpty()) {
+      throw new IllegalArgumentException("name must not be null or blank.");
+    }
+    this.errorName = name;
     this.errorCode = errorCode;
   }
 
@@ -40,6 +48,10 @@ public class PKCS11Exception extends TokenException {
    */
   public long getErrorCode() {
     return errorCode;
+  }
+
+  public String getErrorName() {
+    return errorName;
   }
 
 }

@@ -25,16 +25,7 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * @author Stiftung SIC (SIC)
  */
-public class CK_ECMQV_DERIVE_PARAMS {
-
-  /**
-   * key derivation function used on the shared secret value
-   *
-   * <PRE>
-   * CK_EC_KDF_TYPE kdf;
-   * </PRE>
-   */
-  public long kdf;
+public class CK_ECMQV_DERIVE_PARAMS extends KdfParams {
 
   /**
    * some data shared between the two parties
@@ -46,7 +37,7 @@ public class CK_ECMQV_DERIVE_PARAMS {
   public byte[] pSharedData;
 
   /**
-   * pointer to other partyâs first EC public key value
+   * pointer to other party's first EC public key value
    *
    * <PRE>
    * CK_ULONG ulPublicDataLen;
@@ -74,7 +65,7 @@ public class CK_ECMQV_DERIVE_PARAMS {
   public long hPrivateData;
 
   /**
-   * pointer to other partyâs second EC public key value
+   * pointer to other party's second EC public key value
    *
    * <PRE>
    * CK_ULONG ulPublicDataLen2;
@@ -84,7 +75,7 @@ public class CK_ECMQV_DERIVE_PARAMS {
   public byte[] pPublicData2;
 
   /**
-   * Handle to the first partyâs ephemeral public key
+   * Handle to the first party's ephemeral public key
    *
    * <PRE>
    * CK_OBJECT_HANDLE publicKey;

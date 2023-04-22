@@ -3,6 +3,8 @@
 
 package iaik.pkcs.pkcs11.wrapper;
 
+import org.xipki.pkcs11.wrapper.PKCS11Constants;
+
 /**
  * This is the superclass of all checked exceptions used by this package. An
  * Exception of this class indicates that a function call to the underlying
@@ -14,9 +16,10 @@ package iaik.pkcs.pkcs11.wrapper;
  *
  * @author Karl Scheibelhofer (SIC)
  * @version 1.0
- * @deprecated Use #org.xipki.pkcs11.PKCS11Exception instead.
  */
-public class PKCS11Exception extends org.xipki.pkcs11.wrapper.PKCS11Exception {
+public class PKCS11Exception extends Exception {
+
+  private final long errorCode;
 
   /**
    * Constructor taking the error code as defined for the CKR_* constants
@@ -26,7 +29,17 @@ public class PKCS11Exception extends org.xipki.pkcs11.wrapper.PKCS11Exception {
    *          The PKCS#11 error code (return value).
    */
   public PKCS11Exception(long errorCode) {
-    super(errorCode);
+    super(PKCS11Constants.ckrCodeToName(errorCode));
+    this.errorCode = errorCode;
+  }
+
+  /**
+   * Returns the PKCS#11 error code.
+   *
+   * @return The error code; e.g. 0x00000030.
+   */
+  public long getErrorCode() {
+    return errorCode;
   }
 
 }
