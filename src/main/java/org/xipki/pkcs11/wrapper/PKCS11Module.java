@@ -591,7 +591,7 @@ public class PKCS11Module {
       Version libraryVersion = moduleInfo.getLibraryVersion();
 
       String confPath = System.getProperty("org.xipki.pkcs11.vendor.conf");
-      InputStream in = (confPath != null) ? Files.newInputStream(Paths.get(modulePath))
+      InputStream in = (confPath != null) ? Files.newInputStream(Paths.get(confPath))
           : PKCS11Module.class.getClassLoader().getResourceAsStream("org/xipki/pkcs11/wrapper/vendor.conf");
       try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
         while (true) {
