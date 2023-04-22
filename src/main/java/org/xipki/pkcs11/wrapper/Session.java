@@ -666,7 +666,7 @@ public class Session {
    */
   public void encryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_EncryptInit";
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_EncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -757,7 +757,7 @@ public class Session {
    */
   public void messageEncryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_MessageEncryptInit";
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_MessageEncryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -806,7 +806,7 @@ public class Session {
    */
   public void encryptMessageBegin(CkParams params, byte[] associatedData) throws PKCS11Exception {
     final String method = "C_EncryptMessageBegin";
-    debugIn(method, "params={}, associatedData.length={}", params, len(associatedData));
+    debugIn(method, "associatedData.length={}, params={}", len(associatedData), params);
     try {
       pkcs11.C_EncryptMessageBegin(sessionHandle, toCkParameters(params), associatedData, useUtf8);
       debugOut(method);
@@ -834,7 +834,7 @@ public class Session {
       ((CkMessageParams) params).setValuesFromPKCS11Object(paramObject);
     }
     final String method = "C_EncryptMessageNext";
-    debugIn(method, "params={}, plaintext.length={}, isLastOperation={}", params, len(plaintext), isLastOperation);
+    debugIn(method, "plaintext.length={}, isLastOperation={}, params={}", len(plaintext), isLastOperation, params);
     try {
       return toNonNull(method, pkcs11.C_EncryptMessageNext(sessionHandle, paramObject, plaintext,
           isLastOperation ? PKCS11Constants.CKF_END_OF_MESSAGE : 0, useUtf8));
@@ -876,7 +876,7 @@ public class Session {
    */
   public void decryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_DecryptInit";
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_DecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -967,7 +967,7 @@ public class Session {
    */
   public void messageDecryptInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_MessageDecryptInit";
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_MessageDecryptInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -990,8 +990,8 @@ public class Session {
    */
   public byte[] decryptMessage(CkParams params, byte[] associatedData, byte[] ciphertext) throws PKCS11Exception {
     final String method = "C_DecryptMessage";
-    debugIn(method, "params={}, associatedData.length={}, ciphertext.length={}",
-        params, len(associatedData), len(ciphertext));
+    debugIn(method, "associatedData.length={}, ciphertext.length={}, params={}",
+        len(associatedData), len(ciphertext), params);
     try {
       return toNonNull(method, pkcs11.C_DecryptMessage(sessionHandle, toCkParameters(params),
           associatedData, ciphertext, useUtf8));
@@ -1010,7 +1010,7 @@ public class Session {
    */
   public void decryptMessageBegin(CkParams params, byte[] associatedData) throws PKCS11Exception {
     final String method = "C_DecryptMessageBegin";
-    debugIn(method, "params={}, associatedData.length={}", params, len(associatedData));
+    debugIn(method, "associatedData.length={}, params={}", len(associatedData), params);
     try {
       pkcs11.C_DecryptMessageBegin(sessionHandle, toCkParameters(params), associatedData, useUtf8);
       debugOut(method);
@@ -1034,8 +1034,8 @@ public class Session {
   public byte[] decryptMessageNext(CkParams params, byte[] ciphertext, boolean isLastOperation)
       throws PKCS11Exception {
     final String method = "C_DecryptMessageNext";
-    debugIn(method, "params={}, ciphertext.length={}, isLastOperation={}",
-        params, len(ciphertext), isLastOperation);
+    debugIn(method, "ciphertext.length={}, isLastOperation={}, params={}",
+        len(ciphertext), isLastOperation, params);
     try {
       return toNonNull(method, pkcs11.C_DecryptMessageNext(sessionHandle, toCkParameters(params),
           ciphertext, isLastOperation ? PKCS11Constants.CKF_END_OF_MESSAGE : 0, useUtf8));
@@ -1207,7 +1207,7 @@ public class Session {
    */
   public void signInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_SignInit";
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     initSignVerify(mechanism, keyHandle);
     try {
       pkcs11.C_SignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
@@ -1433,7 +1433,7 @@ public class Session {
    */
   public void signRecoverInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_SignRecoverInit";
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_SignRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -1476,7 +1476,7 @@ public class Session {
   public void messageSignInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_MessageSignInit";
     initSignVerify(mechanism, keyHandle);
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_MessageSignInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -1494,7 +1494,7 @@ public class Session {
    */
   public byte[] signMessage(CkParams params, byte[] data) throws PKCS11Exception {
     final String method = "C_SignMessage";
-    debugIn(method, "params={}, data.length={}", params, len(data));
+    debugIn(method, "data.length={}, params={}", len(data), params);
     try {
       return toNonNull(method, pkcs11.C_SignMessage(sessionHandle, toCkParameters(params), data, useUtf8));
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
@@ -1534,7 +1534,7 @@ public class Session {
    */
   public byte[] signMessageNext(CkParams params, byte[] data, boolean isLastOperation) throws PKCS11Exception {
     final String method = "C_SignMessageNext";
-    debugIn(method, "params={}, data.length={}, isLastOperation={}", params, len(data), isLastOperation);
+    debugIn(method, "data.length={}, isLastOperation={}, params={}", len(data), isLastOperation, params);
     try {
       byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data,
                             isLastOperation, useUtf8);
@@ -1580,7 +1580,7 @@ public class Session {
   public void verifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_VerifyInit";
     initSignVerify(mechanism, keyHandle);
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_VerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -1680,7 +1680,7 @@ public class Session {
    */
   public void verifyRecoverInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_VerifyRecoverInit";
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_VerifyRecoverInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -1730,7 +1730,7 @@ public class Session {
   public void messageVerifyInit(Mechanism mechanism, long keyHandle) throws PKCS11Exception {
     final String method = "C_MessageVerifyInit";
     initSignVerify(mechanism, keyHandle);
-    debugIn(method, "mechanism={}, keyHandle={}", mechanism, keyHandle);
+    debugIn(method, "keyHandle={}, mechanism={}", keyHandle, mechanism);
     try {
       pkcs11.C_MessageVerifyInit(sessionHandle, toCkMechanism(mechanism), keyHandle, useUtf8);
       debugOut(method);
@@ -1754,7 +1754,7 @@ public class Session {
    */
   public void verifyMessage(CkParams params, byte[] data, byte[] signature) throws PKCS11Exception {
     final String method = "C_VerifyMessage";
-    debugIn(method, "params={}, data.length={}, signature.length={}", params, len(data), len(signature));
+    debugIn(method, "data.length={}, signature.length={}, params={}", len(data), len(signature), params);
     try {
       pkcs11.C_VerifyMessage(sessionHandle, toCkParameters(params), data, fixSignatureToVerify(signature), useUtf8);
       debugOut(method);
@@ -1801,7 +1801,7 @@ public class Session {
    */
   public void verifyMessageNext(CkParams params, byte[] data, byte[] signature) throws PKCS11Exception {
     final String method = "C_VerifyMessageNext";
-    debugIn(method, "params={}, data.length={}, signature.length={}", params, len(data), len(signature));
+    debugIn(method, "data.length={}, signature.length={}, params={}", len(data), len(signature), params);
     try {
       pkcs11.C_VerifyMessageNext(sessionHandle, toCkParameters(params), data, fixSignatureToVerify(signature), useUtf8);
       debugOut(method);
@@ -1993,8 +1993,8 @@ public class Session {
    */
   public byte[] wrapKey(Mechanism mechanism, long wrappingKeyHandle, long keyHandle) throws PKCS11Exception {
     final String method = "C_WrapKey";
-    debugIn(method, "mechanism={}, wrappingKeyHandle={}, keyHandle={}",
-        mechanism, wrappingKeyHandle, keyHandle);
+    debugIn(method, "wrappingKeyHandle={}, keyHandle={}, mechanism={}",
+        wrappingKeyHandle, keyHandle, mechanism);
     try {
       return toNonNull(method,
           pkcs11.C_WrapKey(sessionHandle, toCkMechanism(mechanism), wrappingKeyHandle, keyHandle, useUtf8));
@@ -2024,8 +2024,8 @@ public class Session {
   public long unwrapKey(Mechanism mechanism, long unwrappingKeyHandle, byte[] wrappedKey,
                         AttributeVector keyTemplate) throws PKCS11Exception {
     final String method = "C_UnwrapKey";
-    debugIn(method, "mechanism={}, unwrappingKeyHandle={}, wrappedKey.length={}, template={}",
-        mechanism, unwrappingKeyHandle, len(wrappedKey), keyTemplate);
+    debugIn(method, "unwrappingKeyHandle={}, wrappedKey.length={}, mechanism={}, template={}",
+        unwrappingKeyHandle, len(wrappedKey), mechanism, keyTemplate);
     try {
       long hKey = pkcs11.C_UnwrapKey(sessionHandle, toCkMechanism(mechanism),
           unwrappingKeyHandle, wrappedKey, toOutCKAttributes(keyTemplate), useUtf8);
@@ -2057,7 +2057,7 @@ public class Session {
    */
   public long deriveKey(Mechanism mechanism, long baseKeyHandle, AttributeVector template) throws PKCS11Exception {
     final String method = "C_DeriveKey";
-    debugIn(method, "mechanism={}, baseKeyHandle={}, template={}", mechanism, baseKeyHandle, template);
+    debugIn(method, "baseKeyHandle={}, mechanism={}, template={}", baseKeyHandle, mechanism, template);
     try {
       long hKey = pkcs11.C_DeriveKey(sessionHandle, toCkMechanism(mechanism), baseKeyHandle,
           toOutCKAttributes(template), useUtf8);
