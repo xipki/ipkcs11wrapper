@@ -782,6 +782,7 @@ public class Session {
    */
   public byte[] encryptMessage(CkParams params, byte[] associatedData, byte[] plaintext) throws PKCS11Exception {
     final String method = "C_EncryptMessage";
+    setModule(params);
     Object paramObject = toCkParameters(params);
     debugIn(method, "associatedData.length={}, plaintext.length", len(associatedData), len(plaintext));
     try {
@@ -808,6 +809,7 @@ public class Session {
    */
   public void encryptMessageBegin(CkParams params, byte[] associatedData) throws PKCS11Exception {
     final String method = "C_EncryptMessageBegin";
+    setModule(params);
     debugIn(method, "associatedData.length={}, params={}", len(associatedData), params);
     try {
       pkcs11.C_EncryptMessageBegin(sessionHandle, toCkParameters(params), associatedData, useUtf8);
@@ -831,6 +833,7 @@ public class Session {
    */
   public byte[] encryptMessageNext(CkParams params, byte[] plaintext, boolean isLastOperation)
       throws PKCS11Exception {
+    setModule(params);
     Object paramObject = toCkParameters(params);
     if (params instanceof CkMessageParams) {
       ((CkMessageParams) params).setValuesFromPKCS11Object(paramObject);
@@ -994,6 +997,7 @@ public class Session {
    */
   public byte[] decryptMessage(CkParams params, byte[] associatedData, byte[] ciphertext) throws PKCS11Exception {
     final String method = "C_DecryptMessage";
+    setModule(params);
     debugIn(method, "associatedData.length={}, ciphertext.length={}, params={}",
         len(associatedData), len(ciphertext), params);
     try {
@@ -1014,6 +1018,7 @@ public class Session {
    */
   public void decryptMessageBegin(CkParams params, byte[] associatedData) throws PKCS11Exception {
     final String method = "C_DecryptMessageBegin";
+    setModule(params);
     debugIn(method, "associatedData.length={}, params={}", len(associatedData), params);
     try {
       pkcs11.C_DecryptMessageBegin(sessionHandle, toCkParameters(params), associatedData, useUtf8);
@@ -1038,6 +1043,7 @@ public class Session {
   public byte[] decryptMessageNext(CkParams params, byte[] ciphertext, boolean isLastOperation)
       throws PKCS11Exception {
     final String method = "C_DecryptMessageNext";
+    setModule(params);
     debugIn(method, "ciphertext.length={}, isLastOperation={}, params={}",
         len(ciphertext), isLastOperation, params);
     try {
@@ -1502,6 +1508,7 @@ public class Session {
    */
   public byte[] signMessage(CkParams params, byte[] data) throws PKCS11Exception {
     final String method = "C_SignMessage";
+    setModule(params);
     debugIn(method, "data.length={}, params={}", len(data), params);
     try {
       return toNonNull(method, pkcs11.C_SignMessage(sessionHandle, toCkParameters(params), data, useUtf8));
@@ -1520,6 +1527,7 @@ public class Session {
    */
   public void signMessageBegin(CkParams params) throws PKCS11Exception {
     final String method = "C_SignMessageBegin";
+    setModule(params);
     debugIn(method, "params={}", params);
     try {
       pkcs11.C_SignMessageBegin(sessionHandle, toCkParameters(params), useUtf8);
@@ -1542,6 +1550,7 @@ public class Session {
    */
   public byte[] signMessageNext(CkParams params, byte[] data, boolean isLastOperation) throws PKCS11Exception {
     final String method = "C_SignMessageNext";
+    setModule(params);
     debugIn(method, "data.length={}, isLastOperation={}, params={}", len(data), isLastOperation, params);
     try {
       byte[] signature = pkcs11.C_SignMessageNext(sessionHandle, toCkParameters(params), data,
@@ -1765,6 +1774,7 @@ public class Session {
    */
   public void verifyMessage(CkParams params, byte[] data, byte[] signature) throws PKCS11Exception {
     final String method = "C_VerifyMessage";
+    setModule(params);
     debugIn(method, "data.length={}, signature.length={}, params={}", len(data), len(signature), params);
     try {
       pkcs11.C_VerifyMessage(sessionHandle, toCkParameters(params), data, fixSignatureToVerify(signature), useUtf8);
@@ -1785,6 +1795,7 @@ public class Session {
    */
   public void verifyMessageBegin(CkParams params) throws PKCS11Exception {
     final String method = "C_VerifyMessageBegin";
+    setModule(params);
     debugIn(method, "params={}", params);
     try {
       pkcs11.C_VerifyMessageBegin(sessionHandle, toCkParameters(params), useUtf8);
@@ -1812,6 +1823,7 @@ public class Session {
    */
   public void verifyMessageNext(CkParams params, byte[] data, byte[] signature) throws PKCS11Exception {
     final String method = "C_VerifyMessageNext";
+    setModule(params);
     debugIn(method, "data.length={}, signature.length={}, params={}", len(data), len(signature), params);
     try {
       pkcs11.C_VerifyMessageNext(sessionHandle, toCkParameters(params), data, fixSignatureToVerify(signature), useUtf8);
@@ -2640,6 +2652,12 @@ public class Session {
   private void debugError(String method, iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
     if (StaticLogger.isDebugEnabled()) {
       StaticLogger.debug("ERR " + method + ": " + module.ckrCodeToName(e.getErrorCode()));
+    }
+  }
+
+  private void setModule(CkParams params) {
+    if (params != null) {
+      params.setModule(module);
     }
   }
 
