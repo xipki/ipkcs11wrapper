@@ -107,20 +107,8 @@ public class PKCS11Token {
     sessions.add(new ConcurrentBagEntry<>(session));
   }
 
-  public String codeToName(PKCS11Constants.Category category, long code) {
-    return token.getSlot().getModule().codeToName(category, code);
-  }
-
-  public Long nameToCode(PKCS11Constants.Category category, String name) {
-    return token.getSlot().getModule().nameToCode(category, name);
-  }
-
-  public long genericToVendorCode(PKCS11Constants.Category category, long genericCode) {
-    return token.getSlot().getModule().genericToVendorCode(category, genericCode);
-  }
-
-  public long vendorToGenericCode(PKCS11Constants.Category category, long vendorCode) {
-    return token.getSlot().getModule().vendorToGenericCode(category, vendorCode);
+  public PKCS11Module getModule() {
+    return token.getSlot().getModule();
   }
 
   public void setTimeOutWaitNewSession(int timeOutWaitNewSessionMs) {

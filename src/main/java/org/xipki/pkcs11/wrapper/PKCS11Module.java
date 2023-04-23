@@ -9,6 +9,7 @@ package org.xipki.pkcs11.wrapper;
 import iaik.pkcs.pkcs11.wrapper.CK_C_INITIALIZE_ARGS;
 import iaik.pkcs.pkcs11.wrapper.PKCS11;
 import iaik.pkcs.pkcs11.wrapper.PKCS11Implementation;
+import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -108,11 +109,9 @@ public class PKCS11Module {
 
   private Boolean sm2SignatureFixNeeded;
 
-  private Map<PKCS11Constants.Category, VendorMap> vendorMaps;
+  private Map<Category, VendorMap> vendorMaps;
 
   private CurveOidPair[] vendorCurvePairs;
-
-  private Map<Long, String> ckrCodeNameMap;
 
   private final Set<Integer> vendorBehaviours = new HashSet<>();
 
@@ -326,7 +325,7 @@ public class PKCS11Module {
     return vendorBehaviours.contains(vendorBehavior);
   }
 
-  public long genericToVendorCode(PKCS11Constants.Category category, long genericCode) {
+  public long genericToVendorCode(Category category, long genericCode) {
     if (vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
       return map != null ? map.genericToVendor(genericCode) : genericCode;
@@ -335,7 +334,7 @@ public class PKCS11Module {
     }
   }
 
-  public long vendorToGenericCode(PKCS11Constants.Category category, long vendorCode) {
+  public long vendorToGenericCode(Category category, long vendorCode) {
     if (vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
       return map != null ? map.vendorToGeneric(vendorCode) : vendorCode;
@@ -344,7 +343,7 @@ public class PKCS11Module {
     }
   }
 
-  public String codeToName(PKCS11Constants.Category category, long code) {
+  public String codeToName(Category category, long code) {
     if (vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
       return map != null ? map.codeToName(code) : PKCS11Constants.codeToName(category, code);
@@ -353,18 +352,13 @@ public class PKCS11Module {
     }
   }
 
-  public Long nameToCode(PKCS11Constants.Category category, String name) {
+  public Long nameToCode(Category category, String name) {
     if (vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
       return map != null ? map.nameToCode(name) : PKCS11Constants.nameToCode(category, name);
     } else {
       return PKCS11Constants.nameToCode(category, name);
     }
-  }
-
-  String ckrCodeToName(long code) {
-    String name = ckrCodeNameMap != null ? ckrCodeNameMap.get(code) : null;
-    return name != null ? name : PKCS11Constants.ckrCodeToName(code);
   }
 
   byte[] genericToVendorCurve(byte[] genericCurveOid) {
@@ -400,7 +394,7 @@ public class PKCS11Module {
   }
 
   public PKCS11Exception convertException(iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
-    String name = ckrCodeToName(e.getErrorCode());
+    String name = codeToName(Category.CKR, e.getErrorCode());
     return new PKCS11Exception(e.getErrorCode(), name);
   }
 
@@ -653,10 +647,12 @@ public class PKCS11Module {
             }
           }
 
-          VendorMap ckdMap = new VendorMap(PKCS11Constants.Category.CKD);
-          VendorMap ckgMap = new VendorMap(PKCS11Constants.Category.CKG_MGF);
-          VendorMap ckkMap = new VendorMap(PKCS11Constants.Category.CKK);
-          VendorMap ckmMap = new VendorMap(PKCS11Constants.Category.CKM);
+          VendorMap ckdMap = new VendorMap(Category.CKD);
+          VendorMap ckgMap = new VendorMap(Category.CKG_MGF);
+          VendorMap ckkMap = new VendorMap(Category.CKK);
+          VendorMap ckmMap = new VendorMap(Category.CKM);
+          VendorMap ckrMap = new VendorMap(Category.CKR);
+          VendorMap ckuMap = new VendorMap(Category.CKU);
 
           for (Map.Entry<String, String> entry : block.nameToCodeMap.entrySet()) {
             String name = entry.getKey().toUpperCase(Locale.ROOT);
@@ -670,16 +666,15 @@ public class PKCS11Module {
             } else if (name.startsWith("CKM_")) {
               ckmMap.addNameCode(name, code);
             } else if (name.startsWith("CKR_")) {
-              if (ckrCodeNameMap == null) {
-                ckrCodeNameMap = new HashMap<>();
-              }
-              ckrCodeNameMap.put(parseCode(code), name);
+              ckrMap.addNameCode(name, code);
+            } else if (name.startsWith("CKU_")) {
+              ckuMap.addNameCode(name, code);
             } else {
               throw new IllegalStateException("Unknown name in vendor block: " + name);
             }
           } // end for
 
-          VendorMap[] maps = {ckdMap, ckgMap, ckkMap, ckmMap};
+          VendorMap[] maps = {ckdMap, ckgMap, ckkMap, ckmMap, ckrMap, ckuMap};
           for (VendorMap map : maps) {
             if (vendorMaps == null) {
               vendorMaps = new HashMap<>();
@@ -721,10 +716,13 @@ public class PKCS11Module {
 
     private final Map<String, Long> nameCodeMap      = new HashMap<>();
 
-    private PKCS11Constants.Category category;
+    private final Category category;
 
-    VendorMap(PKCS11Constants.Category category) {
+    private final boolean overwriteAllowed;
+
+    VendorMap(Category category) {
       this.category = category;
+      overwriteAllowed = category != Category.CKR && category != Category.CKU;
     }
 
     void addNameCode(String name, String code) {
@@ -734,8 +732,14 @@ public class PKCS11Module {
 
       Long genericCode = PKCS11Constants.nameToCode(category, name);
       if (genericCode != null) {
-        genericToVendorMap.put(genericCode, lCode);
-        vendorToGenericMap.put(lCode, genericCode);
+        if (genericCode != lCode) {
+          if (overwriteAllowed) {
+            genericToVendorMap.put(genericCode, lCode);
+            vendorToGenericMap.put(lCode, genericCode);
+          } else {
+            throw new IllegalArgumentException("Redefinition of " + name + " is not permitted");
+          }
+        }
       }
     }
 

@@ -2653,7 +2653,7 @@ public class Session {
 
   private void debugError(String method, iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
     if (StaticLogger.isDebugEnabled()) {
-      StaticLogger.debug("ERR " + method + ": " + module.ckrCodeToName(e.getErrorCode()));
+      StaticLogger.debug("ERR " + method + ": " + module.codeToName(Category.CKR, e.getErrorCode()));
     }
   }
 
