@@ -784,7 +784,7 @@ public class Session {
     final String method = "C_EncryptMessage";
     setModule(params);
     Object paramObject = toCkParameters(params);
-    debugIn(method, "associatedData.length={}, plaintext.length", len(associatedData), len(plaintext));
+    debugIn(method, "associatedData.length={}, plaintext.length={}", len(associatedData), len(plaintext));
     try {
       byte[] rv = pkcs11.C_EncryptMessage(sessionHandle, paramObject, associatedData, plaintext, useUtf8);
 
@@ -2519,11 +2519,13 @@ public class Session {
         }
       }
 
-      if (ckAttr.type == PKCS11Constants.CKA_KEY_TYPE) {
+      if (ckAttr.type == CKA_KEY_TYPE) {
         long value = (long) ckAttr.pValue;
-        ckAttr.pValue = module.genericToVendor(Category.CKK, value);
-      } else if (ckAttr.type == PKCS11Constants.CKA_EC_POINT) {
+        ckAttr.pValue = module.genericToVendorCode(Category.CKK, value);
+      } else if (ckAttr.type == CKA_EC_POINT) {
         ckAttr.pValue = Functions.toOctetString((byte[]) ckAttr.pValue);
+      } else if (ckAttr.type == CKA_EC_PARAMS) {
+        ckAttr.pValue = module.genericToVendorCurve((byte[]) ckAttr.pValue);
       }
     }
 
@@ -2562,6 +2564,8 @@ public class Session {
         if (ecParams[0] != 0x06) { // 06: OBJECT IDENTIFIER
           ckAttr.pValue = Functions.fixECParams((byte[]) ckAttr.pValue);
         }
+
+        ckAttr.pValue = module.vendorToGenericCurve((byte[]) ckAttr.pValue);
       }
 
       return;
@@ -2574,17 +2578,17 @@ public class Session {
     if (type == PKCS11Constants.CKA_KEY_TYPE) {
       long value = (long) ckAttr.pValue;
       if (!PKCS11Constants.isUnavailableInformation(value)) {
-        ckAttr.pValue = module.vendorToGeneric(Category.CKK, value);
+        ckAttr.pValue = module.vendorToGenericCode(Category.CKK, value);
       }
     } else if (type == PKCS11Constants.CKA_KEY_GEN_MECHANISM) {
       long value = (long) ckAttr.pValue;
       if (!PKCS11Constants.isUnavailableInformation(value)) {
-        ckAttr.pValue = module.vendorToGeneric(Category.CKM, value);
+        ckAttr.pValue = module.vendorToGenericCode(Category.CKM, value);
       }
     } else if (type == PKCS11Constants.CKA_ALLOWED_MECHANISMS) {
       long[] mechs = ((MechanismArrayAttribute) attr).getValue();
       for (long mech : mechs) {
-        ckAttr.pValue = module.vendorToGeneric(Category.CKM, mech);
+        ckAttr.pValue = module.vendorToGenericCode(Category.CKM, mech);
       }
     } else if (type == PKCS11Constants.CKA_EC_POINT) {
       Boolean b = module.getEcPointFixNeeded();

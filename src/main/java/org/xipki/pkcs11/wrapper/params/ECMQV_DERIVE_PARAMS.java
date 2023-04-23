@@ -53,7 +53,7 @@ public class ECMQV_DERIVE_PARAMS extends CkParams {
   public CK_ECMQV_DERIVE_PARAMS getParams() {
     assertModuleSet();
     CK_ECMQV_DERIVE_PARAMS params0 = new CK_ECMQV_DERIVE_PARAMS();
-    params0.kdf              = module.genericToVendor(Category.CKD, params.kdf);
+    params0.kdf              = module.genericToVendorCode(Category.CKD, params.kdf);
     params0.pPublicData      = params.pPublicData;
     params0.pSharedData      = params.pSharedData;
     params0.ulPrivateDataLen = params.ulPrivateDataLen;

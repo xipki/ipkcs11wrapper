@@ -40,8 +40,8 @@ public class RSA_PKCS_PSS_PARAMS extends CkParams {
   public CK_RSA_PKCS_PSS_PARAMS getParams() {
     assertModuleSet();
     CK_RSA_PKCS_PSS_PARAMS params0 = new CK_RSA_PKCS_PSS_PARAMS();
-    params0.hashAlg     = module.genericToVendor(Category.CKM, params.hashAlg);
-    params0.mgf         = module.genericToVendor(Category.CKG_MGF, params.mgf);
+    params0.hashAlg     = module.genericToVendorCode(Category.CKM, params.hashAlg);
+    params0.mgf         = module.genericToVendorCode(Category.CKG_MGF, params.mgf);
     params0.sLen        = params.sLen;
     return params0;
   }

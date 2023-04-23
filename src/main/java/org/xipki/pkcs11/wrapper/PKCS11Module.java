@@ -110,6 +110,8 @@ public class PKCS11Module {
 
   private Map<PKCS11Constants.Category, VendorMap> vendorMaps;
 
+  private CurveOidPair[] vendorCurvePairs;
+
   private Map<Long, String> ckrCodeNameMap;
 
   private final Set<Integer> vendorBehaviours = new HashSet<>();
@@ -324,7 +326,7 @@ public class PKCS11Module {
     return vendorBehaviours.contains(vendorBehavior);
   }
 
-  public long genericToVendor(PKCS11Constants.Category category, long genericCode) {
+  public long genericToVendorCode(PKCS11Constants.Category category, long genericCode) {
     if (vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
       return map != null ? map.genericToVendor(genericCode) : genericCode;
@@ -333,7 +335,7 @@ public class PKCS11Module {
     }
   }
 
-  public long vendorToGeneric(PKCS11Constants.Category category, long vendorCode) {
+  public long vendorToGenericCode(PKCS11Constants.Category category, long vendorCode) {
     if (vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
       return map != null ? map.vendorToGeneric(vendorCode) : vendorCode;
@@ -363,6 +365,28 @@ public class PKCS11Module {
   String ckrCodeToName(long code) {
     String name = ckrCodeNameMap != null ? ckrCodeNameMap.get(code) : null;
     return name != null ? name : PKCS11Constants.ckrCodeToName(code);
+  }
+
+  byte[] genericToVendorCurve(byte[] genericCurveOid) {
+    if (vendorCurvePairs != null) {
+      for (CurveOidPair pair : vendorCurvePairs) {
+        if (Arrays.equals(pair.genericOid, genericCurveOid)) {
+          return pair.vendorOid;
+        }
+      }
+    }
+    return genericCurveOid;
+  }
+
+  byte[] vendorToGenericCurve(byte[] vendorCurveOid) {
+    if (vendorCurvePairs != null) {
+      for (CurveOidPair pair : vendorCurvePairs) {
+        if (Arrays.equals(pair.vendorOid, vendorCurveOid)) {
+          return pair.genericOid;
+        }
+      }
+    }
+    return vendorCurveOid;
   }
 
   /**
@@ -575,6 +599,11 @@ public class PKCS11Module {
           if (!value.isEmpty()) {
             block.vendorBehaviours = value;
           }
+        } else if (line.startsWith("CURVE_")) {
+          int idx = line.indexOf(' ');
+          String genericOid = line.substring(6, idx).trim();
+          String vendorOid = line.substring(idx + 1).trim();
+          block.curveMap.put(genericOid, vendorOid);
         }
       }
     }
@@ -658,6 +687,17 @@ public class PKCS11Module {
             vendorMaps.put(map.category, map);
           }
 
+          List<CurveOidPair> curveOidPairs = new ArrayList<>();
+          for (Map.Entry<String, String> entry : block.curveMap.entrySet()) {
+            CurveOidPair pair = new CurveOidPair();
+            pair.genericOid = Functions.encodeOid(entry.getKey());
+            pair.vendorOid  = Functions.encodeOid(entry.getValue());
+            curveOidPairs.add(pair);
+          }
+
+          if (!curveOidPairs.isEmpty()) {
+            this.vendorCurvePairs = curveOidPairs.toArray(new CurveOidPair[0]);
+          }
           break;
         } // end while
       }
@@ -729,6 +769,11 @@ public class PKCS11Module {
 
   }
 
+  private static class CurveOidPair {
+     private byte[] genericOid;
+     private byte[] vendorOid;
+  }
+
   private static final class VendorConfBlock {
     private List<String> modulePaths;
     private List<String> manufacturerIDs;
@@ -736,6 +781,8 @@ public class PKCS11Module {
     private List<String> versions;
     private String vendorBehaviours;
     private final Map<String, String> nameToCodeMap = new HashMap<>();
+
+    private final Map<String, String> curveMap = new HashMap<>();
 
     void validate() throws IOException {
       if (isEmpty(modulePaths) && isEmpty(manufacturerIDs) && isEmpty(descriptions)) {
@@ -797,7 +844,8 @@ public class PKCS11Module {
           "\n  descriptions:     " + descriptions +
           "\n  versions:         " + versions +
           "\n  vendorBehaviours: " + vendorBehaviours +
-          "\n  nameToCodeMap:    " + nameToCodeMap;
+          "\n  nameToCodeMap:    " + nameToCodeMap +
+          "\n  curveMap:         " + curveMap;
     }
   } // class VendorConfBlock
 

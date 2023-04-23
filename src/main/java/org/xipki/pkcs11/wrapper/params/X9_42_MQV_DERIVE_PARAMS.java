@@ -3,7 +3,6 @@
 
 package org.xipki.pkcs11.wrapper.params;
 
-import iaik.pkcs.pkcs11.wrapper.CK_X9_42_DH2_DERIVE_PARAMS;
 import iaik.pkcs.pkcs11.wrapper.CK_X9_42_DHMQV_DERIVE_PARAMS;
 import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
@@ -34,7 +33,7 @@ public class X9_42_MQV_DERIVE_PARAMS extends CkParams {
   public CK_X9_42_DHMQV_DERIVE_PARAMS getParams() {
     assertModuleSet();
     CK_X9_42_DHMQV_DERIVE_PARAMS params0 = new CK_X9_42_DHMQV_DERIVE_PARAMS();
-    params0.kdf              = module.genericToVendor(Category.CKD, params.kdf);
+    params0.kdf              = module.genericToVendorCode(Category.CKD, params.kdf);
     params0.pOtherInfo       = params.pOtherInfo;
     params0.pPublicData      = params.pPublicData;
     params0.ulPrivateDataLen = params.ulPrivateDataLen;

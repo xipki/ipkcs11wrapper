@@ -130,7 +130,7 @@ public class Token {
 
     for (int i = 0; i < mechanisms.length; i++) {
       long code = mechanisms[i];
-      mechanisms[i] = module.vendorToGeneric(PKCS11Constants.Category.CKM, code);
+      mechanisms[i] = module.vendorToGenericCode(PKCS11Constants.Category.CKM, code);
     }
 
     return mechanisms;
@@ -148,14 +148,13 @@ public class Token {
    *              supported by this token.
    */
   public MechanismInfo getMechanismInfo(long mechanism) throws PKCS11Exception {
-    if ((mechanism & PKCS11Constants.CKM_VENDOR_DEFINED) != 0L) {
-      mechanism = slot.getModule().genericToVendor(PKCS11Constants.Category.CKM, mechanism);
-    }
+    PKCS11Module module = slot.getModule();
+    mechanism = module.genericToVendorCode(PKCS11Constants.Category.CKM, mechanism);
 
     try {
-      return new MechanismInfo(slot.getModule().getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism));
+      return new MechanismInfo(module.getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism));
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
-      throw slot.getModule().convertException(e);
+      throw module.convertException(e);
     }
   }
 

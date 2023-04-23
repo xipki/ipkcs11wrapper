@@ -94,7 +94,7 @@ public class Mechanism {
     }
 
     CK_MECHANISM ckMechanism = new CK_MECHANISM();
-    ckMechanism.mechanism = module.genericToVendor(PKCS11Constants.Category.CKM, mechanismCode);
+    ckMechanism.mechanism = module.genericToVendorCode(PKCS11Constants.Category.CKM, mechanismCode);
     if (parameters != null) {
       ckMechanism.pParameter = parameters.getParams();
     }

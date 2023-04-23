@@ -32,7 +32,7 @@ public class X9_42_DH2_DERIVE_PARAMS extends CkParams {
   public CK_X9_42_DH2_DERIVE_PARAMS getParams() {
     assertModuleSet();
     CK_X9_42_DH2_DERIVE_PARAMS params0 = new CK_X9_42_DH2_DERIVE_PARAMS();
-    params0.kdf              = module.genericToVendor(Category.CKD, params.kdf);
+    params0.kdf              = module.genericToVendorCode(Category.CKD, params.kdf);
     params0.pOtherInfo       = params.pOtherInfo;
     params0.pPublicData      = params.pPublicData;
     params0.ulPrivateDataLen = params.ulPrivateDataLen;
