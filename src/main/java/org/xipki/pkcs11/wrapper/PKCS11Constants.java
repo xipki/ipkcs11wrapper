@@ -1285,8 +1285,10 @@ public final class PKCS11Constants {
             continue;
           }
 
-          long code = (propName.startsWith("0x") || propName.startsWith("0X"))
-              ? Long.parseLong(propName.substring(2), 16) : Long.parseLong(propName);
+          Long code = Functions.parseLong(propName);
+          if (code == null) {
+            throw new IllegalStateException("invalid code '" + propName + "'");
+          }
 
           if (codeNameMap.containsKey(code)) {
             throw new IllegalStateException("duplicated definition of " + prefix + ": " + Functions.toFullHex(code));
@@ -1359,6 +1361,11 @@ public final class PKCS11Constants {
    * @return The code representation of the given name.
    */
   public static Long nameToCode(Category category, String name) {
+    Long code = Functions.parseLong(name);
+    if (code != null) {
+      return code;
+    }
+
     CodeNameMap map = codeNameMaps.get(category);
     if (map == null) {
       throw new IllegalArgumentException("Unknown category " + category);

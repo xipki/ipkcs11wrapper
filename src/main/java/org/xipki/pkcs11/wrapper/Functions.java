@@ -227,6 +227,28 @@ public class Functions {
     return Hex.decode(encoded);
   }
 
+  public static Long parseLong(String text) {
+    if (text.startsWith("0x") || text.startsWith("0X")) {
+      return Long.parseLong(text.substring(2), 16);
+    } else {
+      boolean isNumber = true;
+      boolean withSign = text.startsWith("-");
+      for (int i = (withSign ? 1 : 0); i < text.length(); i++) {
+        char c = text.charAt(i);
+        if (c > '9' || c < '0') {
+          isNumber = false;
+          break;
+        }
+      }
+
+      if (isNumber) {
+        return Long.parseLong(text);
+      } else {
+        return null;
+      }
+    }
+  }
+
   public static <T> T requireNonNull(String paramName, T param) {
     if (param == null) {
       throw new NullPointerException("Argument '" + paramName + "' must not be null.");
