@@ -289,21 +289,22 @@ public class TokenInfo {
 
   public String toString(String indent) {
     final String ni = "\n" + indent;
-    String text = indent + "Manufacturer ID:      " + manufacturerID +
-        ni + "Model:                " + model +
-        ni + "Serial Number:        " + serialNumber +
-        ni + "Max Session Count:    " + mct(getMaxSessionCount()) +
-        ni + "Session Count:        " + ct(getSessionCount()) +
-        ni + "Max RW Session Count: " + mct(getMaxRwSessionCount()) +
-        ni + "RW Session Count:     " + ct(getRwSessionCount()) +
-        ni + "PIN Length:           [" + getMinPinLen() + ", " + getMaxPinLen() + "]" +
-        ni + "Total Private Memory: " + ct(getTotalPrivateMemory()) +
-        ni + "Free Private Memory:  " + ct(getFreePrivateMemory()) +
-        ni + "Total Public Memory:  " + ct(getTotalPublicMemory()) +
-        ni + "Free Public Memory:   " + ct(getFreePublicMemory()) +
-        ni + "Hardware Version:     " + hardwareVersion +
-        ni + "Firmware Version:     " + firmwareVersion +
-        ni + "Time:                 " + time;
+    String text = indent + "Label:           " + label +
+        ni + "Manufacturer ID: " + manufacturerID +
+        ni + "Model:           " + model +
+        ni + "Serial Number:   " + serialNumber +
+        ni + "PIN Length:      [" + getMinPinLen() + ", " + getMaxPinLen() + "]" +
+        ni + "Time:            " + time +
+        ni + "Versions         [Hardware: " + hardwareVersion +
+            ", Firmware: " + firmwareVersion + "]" +
+        ni + "Session Counts   [#: " + ct(getSessionCount()) +
+            ", #Max: "   + mct(getMaxSessionCount()) +
+            ", #Max RW: " + mct(getMaxRwSessionCount()) +
+            ", #RW: "    + ct(getRwSessionCount()) + "]" +
+        ni + "Memories         [Total Private: " + ct(getTotalPrivateMemory()) +
+            ", Free Private: " + ct(getFreePrivateMemory()) +
+            ", Total Public: " + ct(getTotalPublicMemory()) +
+            ", Free Public: " + ct(getFreePublicMemory()) + "]";
 
     return text + "\n" + Functions.toStringFlags(Category.CKF_TOKEN, indent + "Flags: ", ckTokenInfo.flags,
         CKF_RNG,                    CKF_WRITE_PROTECTED,        CKF_LOGIN_REQUIRED,

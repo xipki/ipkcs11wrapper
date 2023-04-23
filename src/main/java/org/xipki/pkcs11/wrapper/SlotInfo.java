@@ -141,10 +141,10 @@ public class SlotInfo {
 
   public String toString(String indent) {
     String ni = "\n" + indent;
-    String text = indent + "Slot Description: " + slotDescription +
+    String text = indent + "Description:     " + slotDescription +
         ni + "Manufacturer ID: " + manufacturerID +
-        ni + "Hardware Version: " + hardwareVersion +
-        ni + "Firmware Version: " + firmwareVersion;
+        ni + "Versions:        [Hardware: " + hardwareVersion +
+        ", Firmware: " + firmwareVersion + "]";
     return text + "\n" + Functions.toStringFlags(PKCS11Constants.Category.CKF_TOKEN, indent + "Flags: ", flags,
         PKCS11Constants.CKF_TOKEN_PRESENT, PKCS11Constants.CKF_REMOVABLE_DEVICE, PKCS11Constants.CKF_HW_SLOT);
   }
