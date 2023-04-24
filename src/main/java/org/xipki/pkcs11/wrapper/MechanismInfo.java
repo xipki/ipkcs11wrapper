@@ -8,6 +8,8 @@ package org.xipki.pkcs11.wrapper;
 
 import iaik.pkcs.pkcs11.wrapper.CK_MECHANISM_INFO;
 
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
+
 /**
  * Objects of this class provide information about a certain mechanism that a
  * token implements.
@@ -134,19 +136,15 @@ public class MechanismInfo {
   public String toString(String indent) {
     String text = indent + "  Key-Size: [" + minKeySize + ", " + maxKeySize + "]\n";
 
-    return text + Functions.toStringFlags(PKCS11Constants.Category.CKF_MECHANISM, indent + "  Flags: ", flags,
-        PKCS11Constants.CKF_HW,             PKCS11Constants.CKF_MESSAGE_ENCRYPT, PKCS11Constants.CKF_MESSAGE_DECRYPT,
-        PKCS11Constants.CKF_MESSAGE_SIGN,   PKCS11Constants.CKF_MESSAGE_VERIFY,  PKCS11Constants.CKF_MULTI_MESSAGE,
-        PKCS11Constants.CKF_FIND_OBJECTS,
+    return text + Functions.toStringFlags(Category.CKF_MECHANISM, indent + "  Flags: ", flags,
+        CKF_HW,             CKF_MESSAGE_ENCRYPT, CKF_MESSAGE_DECRYPT, CKF_MESSAGE_SIGN,
+        CKF_MESSAGE_VERIFY, CKF_MULTI_MESSAGE,   CKF_FIND_OBJECTS,
 
-        PKCS11Constants.CKF_ENCRYPT,        PKCS11Constants.CKF_DECRYPT,       PKCS11Constants.CKF_DIGEST,
-        PKCS11Constants.CKF_SIGN,           PKCS11Constants.CKF_SIGN_RECOVER,  PKCS11Constants.CKF_VERIFY,
-        PKCS11Constants.CKF_VERIFY_RECOVER, PKCS11Constants.CKF_GENERATE,      PKCS11Constants.CKF_GENERATE_KEY_PAIR,
-        PKCS11Constants.CKF_WRAP,           PKCS11Constants.CKF_UNWRAP,        PKCS11Constants.CKF_DERIVE,
+        CKF_ENCRYPT,        CKF_DECRYPT,  CKF_DIGEST,            CKF_SIGN, CKF_SIGN_RECOVER, CKF_VERIFY,
+        CKF_VERIFY_RECOVER, CKF_GENERATE, CKF_GENERATE_KEY_PAIR, CKF_WRAP, CKF_UNWRAP,       CKF_DERIVE,
 
-        PKCS11Constants.CKF_EC_F_P,        PKCS11Constants.CKF_EC_F_2M,      PKCS11Constants.CKF_EC_ECPARAMETERS,
-        PKCS11Constants.CKF_EC_OID,        PKCS11Constants.CKF_EC_UNCOMPRESS, PKCS11Constants.CKF_EC_COMPRESS,
-        PKCS11Constants.CKF_EC_CURVENAME);
+        CKF_EC_F_P,        CKF_EC_F_2M,     CKF_EC_ECPARAMETERS, CKF_EC_OID,
+        CKF_EC_UNCOMPRESS, CKF_EC_COMPRESS, PKCS11Constants.     CKF_EC_CURVENAME);
   }
 
 }

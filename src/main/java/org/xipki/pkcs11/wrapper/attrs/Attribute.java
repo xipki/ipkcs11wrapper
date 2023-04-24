@@ -9,11 +9,12 @@ package org.xipki.pkcs11.wrapper.attrs;
 import iaik.pkcs.pkcs11.wrapper.CK_ATTRIBUTE;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.Functions;
-import org.xipki.pkcs11.wrapper.PKCS11Constants;
 
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
+
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
 /**
  * This is the base-class for all types of attributes. In general, all PKCS#11
@@ -73,7 +74,7 @@ public abstract class Attribute {
       for (String name : props.stringPropertyNames()) {
         name = name.trim();
         String type = props.getProperty(name).trim();
-        Long code = PKCS11Constants.ckaNameToCode(name);
+        Long code = ckaNameToCode(name);
         if (code == null) {
           throw new IllegalStateException("unknown CKA: " + name);
         }
@@ -113,7 +114,7 @@ public abstract class Attribute {
   public static Attribute getInstance(long type) {
     Attribute attr = getInstance0(type);
     if (attr == null) {
-      throw new IllegalArgumentException("Unknown attribute type " + PKCS11Constants.ckaCodeToName(type));
+      throw new IllegalArgumentException("Unknown attribute type " + ckaCodeToName(type));
     }
 
     return attr;
@@ -156,7 +157,7 @@ public abstract class Attribute {
     } else if (attrType == AttrType.ATTRIBUTEARRAY) {
       return new AttributeArrayAttribute(type).attributeArrayValue((AttributeVector) value);
     } else {
-      throw new IllegalStateException("unknown attribute type " + PKCS11Constants.ckaCodeToName(type));
+      throw new IllegalStateException("unknown attribute type " + ckaCodeToName(type));
     }
   }
 
@@ -244,20 +245,20 @@ public abstract class Attribute {
     long type = ckAttribute.type;
     Object value = ckAttribute.pValue;
 
-    if (type == PKCS11Constants.CKA_CLASS) {
-      return PKCS11Constants.ckoCodeToName((long) value);
-    } else if (type == PKCS11Constants.CKA_KEY_TYPE) {
-      return PKCS11Constants.ckkCodeToName((long) value);
-    } else if (type == PKCS11Constants.CKA_CERTIFICATE_TYPE) {
-      return PKCS11Constants.codeToName(PKCS11Constants.Category.CKC, (long) value);
-    } else if (type == PKCS11Constants.CKA_HW_FEATURE_TYPE) {
-      return PKCS11Constants.codeToName(PKCS11Constants.Category.CKH, (long) value);
-    } else if (type == PKCS11Constants.CKA_CERTIFICATE_CATEGORY) {
+    if (type == CKA_CLASS) {
+      return ckoCodeToName((long) value);
+    } else if (type == CKA_KEY_TYPE) {
+      return ckkCodeToName((long) value);
+    } else if (type == CKA_CERTIFICATE_TYPE) {
+      return codeToName(Category.CKC, (long) value);
+    } else if (type == CKA_HW_FEATURE_TYPE) {
+      return codeToName(Category.CKH, (long) value);
+    } else if (type == CKA_CERTIFICATE_CATEGORY) {
       long lvalue = (long) value;
-      return lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_UNSPECIFIED ? "UNSPECIFIED"
-          : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_TOKEN_USER   ? "TOKEN_USER"
-          : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_AUTHORITY    ? "AUTHORITY"
-          : lvalue == PKCS11Constants.CK_CERTIFICATE_CATEGORY_OTHER_ENTITY ? "OTHER_ENTITY"
+      return lvalue == CK_CERTIFICATE_CATEGORY_UNSPECIFIED ? "UNSPECIFIED"
+          : lvalue == CK_CERTIFICATE_CATEGORY_TOKEN_USER   ? "TOKEN_USER"
+          : lvalue == CK_CERTIFICATE_CATEGORY_AUTHORITY    ? "AUTHORITY"
+          : lvalue == CK_CERTIFICATE_CATEGORY_OTHER_ENTITY ? "OTHER_ENTITY"
           : "0x" + Functions.toFullHex(lvalue);
     } else {
       return value.toString();
@@ -293,7 +294,7 @@ public abstract class Attribute {
     StringBuilder sb = new StringBuilder(Math.max(15, minNameLen) + 20).append(indent);
 
     if (withName) {
-      String name = PKCS11Constants.ckaCodeToName(ckAttribute.type);
+      String name = ckaCodeToName(ckAttribute.type);
       sb.append(name).append(": ");
       if (name.length() < minNameLen) {
         char[] padding = new char[minNameLen - name.length()];

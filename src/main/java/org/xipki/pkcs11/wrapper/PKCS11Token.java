@@ -1852,7 +1852,7 @@ public class PKCS11Token {
    */
   @Override
   public String toString() {
-    return "User type: " + PKCS11Constants.codeToName(Category.CKU, userType) +
+    return "User type: " + codeToName(Category.CKU, userType) +
         "\nUser name: " + (userName == null ? "null" : new String(userName)) +
         "\nMaximal session count: " + maxSessionCount +
         "\nRead only: " + readOnly +
@@ -2049,7 +2049,7 @@ public class PKCS11Token {
       if (ckr == CKR_USER_ALREADY_LOGGED_IN) {
         StaticLogger.info("user already logged in");
       } else {
-        StaticLogger.warn("login failed as {}: {}", userText, PKCS11Constants.ckrCodeToName(ckr));
+        StaticLogger.warn("login failed as {}: {}", userText, ckrCodeToName(ckr));
         throw ex;
       }
     }
