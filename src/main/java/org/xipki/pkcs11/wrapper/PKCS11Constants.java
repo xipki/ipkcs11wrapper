@@ -906,6 +906,7 @@ public final class PKCS11Constants {
   public static final long CKM_AES_KEY_WRAP                         = 0x00002109L;
   public static final long CKM_AES_KEY_WRAP_PAD                     = 0x0000210AL;
   public static final long CKM_AES_KEY_WRAP_KWP                     = 0x0000210BL;
+  public static final long CKM_AES_KEY_WRAP_PKCS7                   = 0x0000210CL;
 
   public static final long CKM_RSA_PKCS_TPM_1_1                     = 0x00004001L;
   public static final long CKM_RSA_PKCS_OAEP_TPM_1_1                = 0x00004002L;
