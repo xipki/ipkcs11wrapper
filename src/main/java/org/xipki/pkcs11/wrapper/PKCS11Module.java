@@ -647,40 +647,28 @@ public class PKCS11Module {
             }
           }
 
-          VendorMap ckdMap = new VendorMap(Category.CKD);
-          VendorMap ckgMap = new VendorMap(Category.CKG_MGF);
-          VendorMap ckkMap = new VendorMap(Category.CKK);
-          VendorMap ckmMap = new VendorMap(Category.CKM);
-          VendorMap ckrMap = new VendorMap(Category.CKR);
-          VendorMap ckuMap = new VendorMap(Category.CKU);
+          Category[] categories = {Category.CKD, Category.CKG_MGF, Category.CKK,
+              Category.CKM, Category.CKP_PRF, Category.CKR, Category.CKU};
+          for (Category category : categories) {
+            vendorMaps.put(category, new VendorMap(category));
+          }
 
           for (Map.Entry<String, String> entry : block.nameToCodeMap.entrySet()) {
             String name = entry.getKey().toUpperCase(Locale.ROOT);
-            String code = entry.getValue().toUpperCase(Locale.ROOT);
-            if (name.startsWith("CKD_")) {
-              ckdMap.addNameCode(name, code);
-            } else if (name.startsWith("CKG_")) {
-              ckgMap.addNameCode(name, code);
-            } else if (name.startsWith("CKK_")) {
-              ckkMap.addNameCode(name, code);
-            } else if (name.startsWith("CKM_")) {
-              ckmMap.addNameCode(name, code);
-            } else if (name.startsWith("CKR_")) {
-              ckrMap.addNameCode(name, code);
-            } else if (name.startsWith("CKU_")) {
-              ckuMap.addNameCode(name, code);
-            } else {
+            Category category = name.startsWith("CKD_") ? Category.CKD
+                : name.startsWith("CKG_") ? Category.CKG_MGF
+                : name.startsWith("CKK_") ? Category.CKK
+                : name.startsWith("CKM_") ? Category.CKM
+                : name.startsWith("CKP_") ? Category.CKP_PRF
+                : name.startsWith("CKR_") ? Category.CKR
+                : name.startsWith("CKU_") ? Category.CKU : null;
+
+            if (category == null) {
               throw new IllegalStateException("Unknown name in vendor block: " + name);
             }
-          } // end for
 
-          VendorMap[] maps = {ckdMap, ckgMap, ckkMap, ckmMap, ckrMap, ckuMap};
-          for (VendorMap map : maps) {
-            if (vendorMaps == null) {
-              vendorMaps = new HashMap<>();
-            }
-            vendorMaps.put(map.category, map);
-          }
+            vendorMaps.get(category).addNameCode(name, entry.getValue().toUpperCase(Locale.ROOT));
+          } // end for
 
           List<CurveOidPair> curveOidPairs = new ArrayList<>();
           for (Map.Entry<String, String> entry : block.curveMap.entrySet()) {

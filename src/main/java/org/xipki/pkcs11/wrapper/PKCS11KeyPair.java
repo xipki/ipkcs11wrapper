@@ -10,7 +10,6 @@ package org.xipki.pkcs11.wrapper;
  * This class does not correspond to any PKCS#11 object. It is only a pair of
  * a private key and a public key.
  *
- * @author Karl Scheibelhofer (SIC)
  * @author Lijun Liao (xipki)
  */
 public class PKCS11KeyPair {
