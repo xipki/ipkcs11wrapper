@@ -97,8 +97,13 @@ public class PKCS11Token {
     StaticLogger.info("tokenMaxSessionCount={}, maxSessionCount={}", tokenMaxSessionCount, this.maxSessionCount);
 
     for (long mech : token.getMechanismList()) {
-      MechanismInfo mechInfo = token.getMechanismInfo(mech);
-      mechanisms.put(mech, mechInfo);
+      try {
+        MechanismInfo mechInfo = token.getMechanismInfo(mech);
+        mechanisms.put(mech, mechInfo);
+      } catch (Exception e) {
+        StaticLogger.warn("error getMechanism for {} (0x{}): {}",
+            token.getSlot().getModule().codeToName(Category.CKM, mech), Functions.toFullHex(mech), e.getMessage());
+      }
     }
 
     // login
