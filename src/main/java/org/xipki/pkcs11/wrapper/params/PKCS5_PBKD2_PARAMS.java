@@ -3,7 +3,6 @@
 
 package org.xipki.pkcs11.wrapper.params;
 
-import iaik.pkcs.pkcs11.wrapper.CK_ECDH1_DERIVE_PARAMS;
 import iaik.pkcs.pkcs11.wrapper.CK_PKCS5_PBKD2_PARAMS;
 import org.xipki.pkcs11.wrapper.Functions;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
