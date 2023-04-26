@@ -2522,8 +2522,6 @@ public class Session {
         ckAttr.pValue = module.genericToVendorCode(Category.CKK, value);
       } else if (ckAttr.type == CKA_EC_POINT) {
         ckAttr.pValue = Functions.toOctetString((byte[]) ckAttr.pValue);
-      } else if (ckAttr.type == CKA_EC_PARAMS) {
-        ckAttr.pValue = module.genericToVendorCurve((byte[]) ckAttr.pValue);
       }
     }
 
@@ -2562,8 +2560,6 @@ public class Session {
         if (ecParams[0] != 0x06) { // 06: OBJECT IDENTIFIER
           ckAttr.pValue = Functions.fixECParams((byte[]) ckAttr.pValue);
         }
-
-        ckAttr.pValue = module.vendorToGenericCurve((byte[]) ckAttr.pValue);
       }
 
       return;

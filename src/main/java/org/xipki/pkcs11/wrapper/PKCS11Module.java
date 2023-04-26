@@ -111,8 +111,6 @@ public class PKCS11Module {
 
   private Map<Category, VendorMap> vendorMaps;
 
-  private CurveOidPair[] vendorCurvePairs;
-
   private final Set<Integer> vendorBehaviours = new HashSet<>();
 
   private static final AtomicBoolean licensePrinted = new AtomicBoolean(false);
@@ -344,7 +342,7 @@ public class PKCS11Module {
   }
 
   public String codeToName(Category category, long code) {
-    if (vendorMaps != null) {
+    if ((code & 0x80000000) != 0 && vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
       return map != null ? map.codeToName(code) : PKCS11Constants.codeToName(category, code);
     } else {
@@ -359,28 +357,6 @@ public class PKCS11Module {
     } else {
       return PKCS11Constants.nameToCode(category, name);
     }
-  }
-
-  byte[] genericToVendorCurve(byte[] genericCurveOid) {
-    if (vendorCurvePairs != null) {
-      for (CurveOidPair pair : vendorCurvePairs) {
-        if (Arrays.equals(pair.genericOid, genericCurveOid)) {
-          return pair.vendorOid;
-        }
-      }
-    }
-    return genericCurveOid;
-  }
-
-  byte[] vendorToGenericCurve(byte[] vendorCurveOid) {
-    if (vendorCurvePairs != null) {
-      for (CurveOidPair pair : vendorCurvePairs) {
-        if (Arrays.equals(pair.vendorOid, vendorCurveOid)) {
-          return pair.genericOid;
-        }
-      }
-    }
-    return vendorCurveOid;
   }
 
   /**
@@ -593,11 +569,8 @@ public class PKCS11Module {
           if (!value.isEmpty()) {
             block.vendorBehaviours = value;
           }
-        } else if (line.startsWith("CURVE_")) {
-          int idx = line.indexOf(' ');
-          String genericOid = line.substring(6, idx).trim();
-          String vendorOid = line.substring(idx + 1).trim();
-          block.curveMap.put(genericOid, vendorOid);
+        } else {
+          StaticLogger.warn("vendor.conf: ignore line " + line);
         }
       }
     }
@@ -670,17 +643,6 @@ public class PKCS11Module {
             vendorMaps.get(category).addNameCode(name, entry.getValue().toUpperCase(Locale.ROOT));
           } // end for
 
-          List<CurveOidPair> curveOidPairs = new ArrayList<>();
-          for (Map.Entry<String, String> entry : block.curveMap.entrySet()) {
-            CurveOidPair pair = new CurveOidPair();
-            pair.genericOid = Functions.encodeOid(entry.getKey());
-            pair.vendorOid  = Functions.encodeOid(entry.getValue());
-            curveOidPairs.add(pair);
-          }
-
-          if (!curveOidPairs.isEmpty()) {
-            this.vendorCurvePairs = curveOidPairs.toArray(new CurveOidPair[0]);
-          }
           break;
         } // end while
       }
@@ -706,11 +668,8 @@ public class PKCS11Module {
 
     private final Category category;
 
-    private final boolean overwriteAllowed;
-
     VendorMap(Category category) {
       this.category = category;
-      overwriteAllowed = category != Category.CKR && category != Category.CKU;
     }
 
     void addNameCode(String name, String code) {
@@ -720,13 +679,10 @@ public class PKCS11Module {
 
       Long genericCode = PKCS11Constants.nameToCode(category, name);
       if (genericCode != null) {
-        if (genericCode != lCode) {
-          if (overwriteAllowed) {
-            genericToVendorMap.put(genericCode, lCode);
-            vendorToGenericMap.put(lCode, genericCode);
-          } else {
-            throw new IllegalArgumentException("Redefinition of " + name + " is not permitted");
-          }
+        // only vendor code is allowed to be overwritten.
+        if ((genericCode & 0x80000000) != 0 && genericCode != lCode) {
+          genericToVendorMap.put(genericCode, lCode);
+          vendorToGenericMap.put(lCode, genericCode);
         }
       }
     }
@@ -761,11 +717,6 @@ public class PKCS11Module {
 
   }
 
-  private static class CurveOidPair {
-     private byte[] genericOid;
-     private byte[] vendorOid;
-  }
-
   private static final class VendorConfBlock {
     private List<String> modulePaths;
     private List<String> manufacturerIDs;
@@ -773,8 +724,6 @@ public class PKCS11Module {
     private List<String> versions;
     private String vendorBehaviours;
     private final Map<String, String> nameToCodeMap = new HashMap<>();
-
-    private final Map<String, String> curveMap = new HashMap<>();
 
     void validate() throws IOException {
       if (isEmpty(modulePaths) && isEmpty(manufacturerIDs) && isEmpty(descriptions)) {
@@ -836,8 +785,7 @@ public class PKCS11Module {
           "\n  descriptions:     " + descriptions +
           "\n  versions:         " + versions +
           "\n  vendorBehaviours: " + vendorBehaviours +
-          "\n  nameToCodeMap:    " + nameToCodeMap +
-          "\n  curveMap:         " + curveMap;
+          "\n  nameToCodeMap:    " + nameToCodeMap;
     }
   } // class VendorConfBlock
 
