@@ -7,6 +7,8 @@ import iaik.pkcs.pkcs11.wrapper.CK_ECDSA_ECIES_PARAMS;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
 import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_VENDOR_DEFINED;
+
 /**
  * Represents Utimaco's vendor CK_ECDSA_ECIES_PARAMS, which is used in
  * Utimaco's vendor mechanism CKM_ECDSA_ECIES
@@ -55,16 +57,29 @@ public class Utimaco_ECDSA_ECIES_PARAMS extends CkParams {
 
   @Override
   public CK_ECDSA_ECIES_PARAMS getParams() {
-    assertModuleSet();
-    CK_ECDSA_ECIES_PARAMS params0 = new CK_ECDSA_ECIES_PARAMS();
-    params0.hashAlg        = module.genericToVendorCode(Category.CKM, params.hashAlg);
-    params0.cryptAlg       = module.genericToVendorCode(Category.CKM, params.cryptAlg);;
-    params0.cryptOpt       = params.cryptOpt;
-    params0.macAlg         = module.genericToVendorCode(Category.CKM, params.macAlg);;
-    params0.macOpt         = params.macOpt;
-    params0.pSharedSecret1 = params.pSharedSecret1;
-    params0.pSharedSecret2 = params.pSharedSecret2;
-    return params0;
+    if (module == null || ((params.hashAlg & CKM_VENDOR_DEFINED) == 0)
+        && (params.cryptAlg & CKM_VENDOR_DEFINED) == 0 && (params.macAlg & CKM_VENDOR_DEFINED) == 0) {
+      return params;
+    } else {
+      long newHashAlg = module.genericToVendorCode(Category.CKM, params.hashAlg);
+      long newCryptAlg = module.genericToVendorCode(Category.CKM, params.cryptAlg);
+      ;
+      long newMacAlg = module.genericToVendorCode(Category.CKM, params.macAlg);
+      ;
+      if (newHashAlg == params.hashAlg && newCryptAlg == params.cryptAlg && newMacAlg == params.macAlg) {
+        return params;
+      } else {
+        CK_ECDSA_ECIES_PARAMS params0 = new CK_ECDSA_ECIES_PARAMS();
+        params0.hashAlg = newHashAlg;
+        params0.cryptAlg = newCryptAlg;
+        params0.cryptOpt = params.cryptOpt;
+        params0.macAlg = newMacAlg;
+        params0.macOpt = params.macOpt;
+        params0.pSharedSecret1 = params.pSharedSecret1;
+        params0.pSharedSecret2 = params.pSharedSecret2;
+        return params0;
+      }
+    }
   }
 
   @Override

@@ -6,6 +6,7 @@ package org.xipki.pkcs11.wrapper.params;
 import iaik.pkcs.pkcs11.wrapper.CK_ECMQV_DERIVE_PARAMS;
 import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_VENDOR_DEFINED;
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.codeToName;
 
 /**
@@ -51,16 +52,24 @@ public class ECMQV_DERIVE_PARAMS extends CkParams {
 
   @Override
   public CK_ECMQV_DERIVE_PARAMS getParams() {
-    assertModuleSet();
-    CK_ECMQV_DERIVE_PARAMS params0 = new CK_ECMQV_DERIVE_PARAMS();
-    params0.kdf              = module.genericToVendorCode(Category.CKD, params.kdf);
-    params0.pPublicData      = params.pPublicData;
-    params0.pSharedData      = params.pSharedData;
-    params0.ulPrivateDataLen = params.ulPrivateDataLen;
-    params0.hPrivateData     = params.hPrivateData;
-    params0.pPublicData2     = params.pPublicData2;
-    params0.publicKey        = params.publicKey;
-    return params0;
+    if (module == null || (params.kdf & CKM_VENDOR_DEFINED) == 0) {
+      return params;
+    } else {
+      long newKdf = module.genericToVendorCode(Category.CKD, params.kdf);
+      if (newKdf == params.kdf) {
+        return params;
+      } else {
+        CK_ECMQV_DERIVE_PARAMS params0 = new CK_ECMQV_DERIVE_PARAMS();
+        params0.kdf = newKdf;
+        params0.pPublicData = params.pPublicData;
+        params0.pSharedData = params.pSharedData;
+        params0.ulPrivateDataLen = params.ulPrivateDataLen;
+        params0.hPrivateData = params.hPrivateData;
+        params0.pPublicData2 = params.pPublicData2;
+        params0.publicKey = params.publicKey;
+        return params0;
+      }
+    }
   }
 
   @Override

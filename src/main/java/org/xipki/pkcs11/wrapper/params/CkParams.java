@@ -17,12 +17,6 @@ public abstract class CkParams {
 
   protected PKCS11Module module;
 
-  protected final void assertModuleSet() {
-    if (module == null) {
-      throw new IllegalStateException("module is not set");
-    }
-  }
-
   /**
    * Get this parameters object as an object of the corresponding *_PARAMS
    * class of the iaik.pkcs.pkcs11.wrapper package.

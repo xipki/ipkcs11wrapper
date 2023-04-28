@@ -6,6 +6,8 @@ package org.xipki.pkcs11.wrapper.params;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
 import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
+import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_VENDOR_DEFINED;
+
 /**
  * This class encapsulates parameters CK_LONG.
  *
@@ -30,8 +32,11 @@ public class MechanismParams extends CkParams {
 
   @Override
   public Long getParams() {
-    assertModuleSet();
-    return module.genericToVendorCode(Category.CKM, params);
+    if (module == null || (params & CKM_VENDOR_DEFINED) == 0) {
+      return params;
+    } else {
+      return module.genericToVendorCode(Category.CKM, params);
+    }
   }
 
   @Override
