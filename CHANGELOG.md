@@ -2,6 +2,9 @@
 
 See also <https://github.com/xipki/ipkcs11wrapper/releases>
 
+## 1.0.6
+- Release date: 2023/mm/dd
+
 ## 1.0.5
 - Release date: 2023/04/29
 - Bugfix: Fixed OutOfMemory Exception in findObjects(int num) with large num.

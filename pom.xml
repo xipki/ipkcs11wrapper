@@ -10,10 +10,10 @@
   </parent>
   <groupId>org.xipki</groupId>
   <artifactId>ipkcs11wrapper</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6-SNAPSHOT</version>
   <properties>
     <!--must match the version defined above-->
-    <bundle.version>1.0.5</bundle.version>
+    <bundle.version>1.0.6</bundle.version>
     <test.excludes>**/*Speed.java</test.excludes>
   </properties>
   <licenses>
