@@ -690,6 +690,9 @@ public class PKCS11Token {
   /**
    * Finds all objects that match the template.
    *
+   * @param template The object that serves as a template for searching. If this object is null, the find
+   *                 operation will find all objects that this session can see. Notice, that only a user
+   *                 session will see private objects.
    * @return An array of found objects. The maximum size of this array is maxObjectCount, the
    * minimum length is 0. Never returns null.
    * @throws TokenException if finding objects failed.
@@ -706,6 +709,9 @@ public class PKCS11Token {
   /**
    * Finds objects that match the template.
    *
+   * @param template The object that serves as a template for searching. If this object is null, the find
+   *                 operation will find all objects that this session can see. Notice, that only a user
+   *                 session will see private objects.
    * @param maxObjectCount Specifies how many objects to return with this call.
    * @return An array of found objects. The maximum size of this array is maxObjectCount, the
    * minimum length is 0. Never returns null.
@@ -767,6 +773,7 @@ public class PKCS11Token {
    * @param plaintext  Input-stream of the to-be-encrypted data
    * @return length of the encrypted data.
    * @throws TokenException If encrypting the data failed.
+   * @throws IOException if reading data from the plaintext stream failed or writing to the ciphertext stream failed.
    */
   public int encrypt(OutputStream out, Mechanism mechanism, long keyHandle, InputStream plaintext)
       throws TokenException, IOException {
@@ -852,6 +859,7 @@ public class PKCS11Token {
    * @param ciphertext Input-stream of the to-be-encrypted data
    * @return length of the decrypted data.
    * @throws TokenException If decrypting the data failed.
+   * @throws IOException if reading data from the ciphertext stream failed or writing to the plaintext stream failed.
    */
   public int decrypt(OutputStream out, Mechanism mechanism, long keyHandle, InputStream ciphertext)
       throws TokenException, IOException {

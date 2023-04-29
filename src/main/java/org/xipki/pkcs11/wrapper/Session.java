@@ -429,6 +429,7 @@ public class Session {
    * @param template Template of the EC private key.
    * @param ecPoint The encoded EC-Point. May be null.
    * @return object handle of the new EC private key.
+   * @throws PKCS11Exception If creating the object fails for some reason.
    */
   public long createECPrivateKeyObject(AttributeVector template, byte[] ecPoint) throws PKCS11Exception {
     if (ecPoint != null && privateKeyWithEcPoint(template.keyType())) {
