@@ -52,19 +52,19 @@ public class StaticLogger {
   }
 
   public static boolean isWarnEnabled() {
-    return logger != null ? logger.isWarnEnabled() : true;
+    return logger == null || logger.isWarnEnabled();
   }
 
   public static boolean isInfoEnabled() {
-    return logger != null ? logger.isInfoEnabled() : true;
+    return logger == null || logger.isInfoEnabled();
   }
 
   public static boolean isDebugEnabled() {
-    return logger != null ? logger.isDebugEnabled() : false;
+    return logger != null && logger.isDebugEnabled();
   }
 
   public static boolean isTraceEnabled() {
-    return logger != null ? logger.isTraceEnabled() : false;
+    return logger != null && logger.isTraceEnabled();
   }
 
   private static void print(String level, String format, Object... arguments) {
@@ -76,7 +76,7 @@ public class StaticLogger {
     }
 
     int fromIdx = 0;
-    for (int i = 0; i < arguments.length; i++) {
+    for (Object argument : arguments) {
       // search '{}' in format
       int idx = format.indexOf("{}", fromIdx);
       if (idx == -1) {
@@ -86,7 +86,7 @@ public class StaticLogger {
         break;
       } else {
         sb.append(format, fromIdx, idx);
-        sb.append(arguments[i]);
+        sb.append(argument);
         fromIdx = idx + 2; // 2 = "{}".length().
       }
     }

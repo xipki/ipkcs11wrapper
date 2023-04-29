@@ -40,7 +40,7 @@ import static java.util.concurrent.locks.LockSupport.parkNanos;
  * ThreadLocal lists can be "stolen" when the borrowing thread has none
  * of its own.  It is a "lock-less" implementation using a specialized
  * AbstractQueuedLongSynchronizer to manage cross-thread signaling.
- *
+ * <p>
  * Note that items that are "borrowed" from the bag are not actually
  * removed from any collection, so garbage collection will not occur
  * even if the reference is abandoned.  Thus care must be taken to
@@ -61,10 +61,10 @@ public class ConcurrentBag<T extends ConcurrentBagEntry> implements AutoCloseabl
 
   private final SynchronousQueue<T> handoffQueue;
 
-  int STATE_NOT_IN_USE = 0;
-  int STATE_IN_USE = 1;
-  int STATE_REMOVED = -1;
-  int STATE_RESERVED = -2;
+  static final int STATE_NOT_IN_USE = 0;
+  static final int STATE_IN_USE = 1;
+  static final int STATE_REMOVED = -1;
+  static final int STATE_RESERVED = -2;
 
   /**
    * Construct a ConcurrentBag with the specified listener.
@@ -241,7 +241,7 @@ public class ConcurrentBag<T extends ConcurrentBagEntry> implements AutoCloseabl
    * borrowing.  It is primarily used when wanting to operate on items
    * returned by the <code>values(int)</code> method.  Items that are
    * reserved can be removed from the bag via <code>remove(T)</code>
-   * without the need to unreserve them.  Items that are not removed
+   * without the need to un-reserve them.  Items that are not removed
    * from the bag can be make available for borrowing again by calling
    * the <code>unreserve(T)</code> method.
    *

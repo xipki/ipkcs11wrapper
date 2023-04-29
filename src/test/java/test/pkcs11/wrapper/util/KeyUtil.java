@@ -24,8 +24,6 @@ import java.security.spec.DSAPublicKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Key utility class.
@@ -33,17 +31,12 @@ import java.util.Map;
 
 public class KeyUtil {
 
-  private static final Map<String, KeyFactory> KEY_FACTORIES = new HashMap<>();
-
   private KeyUtil() {
   }
 
   public static DSAPublicKey generateDSAPublicKey(DSAPublicKeySpec keySpec) throws InvalidKeySpecException {
     Args.notNull(keySpec, "keySpec");
-    KeyFactory kf = getKeyFactory("DSA");
-    synchronized (kf) {
-      return (DSAPublicKey) kf.generatePublic(keySpec);
-    }
+    return (DSAPublicKey) getKeyFactory("DSA").generatePublic(keySpec);
   }
 
   private static KeyFactory getKeyFactory(String algorithm) throws InvalidKeySpecException {
@@ -51,19 +44,11 @@ public class KeyUtil {
     if ("ECDSA".equals(alg)) {
       alg = "EC";
     }
-    synchronized (KEY_FACTORIES) {
-      KeyFactory kf = KEY_FACTORIES.get(alg);
-      if (kf != null) {
-        return kf;
-      }
 
-      try {
-        kf = KeyFactory.getInstance(alg, "BC");
-      } catch (NoSuchAlgorithmException | NoSuchProviderException ex) {
-        throw new InvalidKeySpecException("could not find KeyFactory for " + algorithm + ": " + ex.getMessage());
-      }
-      KEY_FACTORIES.put(algorithm, kf);
-      return kf;
+    try {
+      return KeyFactory.getInstance(alg, "BC");
+    } catch (NoSuchAlgorithmException | NoSuchProviderException ex) {
+      throw new InvalidKeySpecException("could not find KeyFactory for " + algorithm + ": " + ex.getMessage());
     }
   }
 
@@ -93,18 +78,12 @@ public class KeyUtil {
       throw new InvalidKeySpecException("unsupported key algorithm: " + aid);
     }
 
-    KeyFactory kf = getKeyFactory(algorithm);
-    synchronized (kf) {
-      return kf.generatePublic(keyspec);
-    }
+    return getKeyFactory(algorithm).generatePublic(keyspec);
   }
 
   public static RSAPublicKey generateRSAPublicKey(RSAPublicKeySpec keySpec) throws InvalidKeySpecException {
     Args.notNull(keySpec, "keySpec");
-    KeyFactory kf = getKeyFactory("RSA");
-    synchronized (kf) {
-      return (RSAPublicKey) kf.generatePublic(keySpec);
-    }
+    return (RSAPublicKey) getKeyFactory("RSA").generatePublic(keySpec);
   }
 
   public static ECPublicKey createECPublicKey(byte[] encodedAlgorithmIdParameters, byte[] encodedPoint)

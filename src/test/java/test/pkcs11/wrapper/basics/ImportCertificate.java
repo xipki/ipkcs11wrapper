@@ -108,8 +108,8 @@ public class ImportCertificate extends TestBase {
         byte[] encodedSubject = subjectName.getEncoded();
         byte[] encodedIssuer = issuerName.getEncoded();
 
-        String subjectCommonName = Util.getCommontName(subjectName);
-        String issuerCommonName = Util.getCommontName(issuerName);
+        String subjectCommonName = Util.getCommonName(subjectName);
+        String issuerCommonName = Util.getCommonName(issuerName);
         String label = subjectCommonName + "'s " +
             ((issuerCommonName != null) ? issuerCommonName + " " : "") + "Certificate";
 

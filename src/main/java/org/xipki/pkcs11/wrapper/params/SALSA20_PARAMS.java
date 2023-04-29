@@ -17,7 +17,7 @@ public class SALSA20_PARAMS extends CkParams {
   /**
    * Create a new SALSA20_PARAMS object with the given attributes.
    *
-   * @param blockCounter the Blockcounter
+   * @param blockCounter the Block counter
    * @param nonce    the nonce
    */
   public SALSA20_PARAMS(byte[] blockCounter, byte[] nonce) {

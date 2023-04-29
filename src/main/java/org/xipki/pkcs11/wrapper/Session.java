@@ -23,7 +23,7 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 /**
  * Session objects are used to perform cryptographic operations on a token. The application gets a
  * Session object by calling openSession on a certain Token object. Having the session object, the
- * application may log-in the user, if required.
+ * application may login the user, if required.
  *
  * <pre>
  * <code>
@@ -81,7 +81,7 @@ public class Session {
   /**
    * The token to perform the operations on.
    */
-  protected Token token;
+  protected final Token token;
 
   /**
    * True, if UTF8 encoding is used as character encoding for character array attributes and PINs.
@@ -196,7 +196,7 @@ public class Session {
   /**
    * terminates active session based operations.
    *
-   * @throws PKCS11Exception If terminiating operations failed
+   * @throws PKCS11Exception If terminating operations failed
    */
   public void sessionCancel() throws PKCS11Exception {
     final String method = "C_SessionCancel";
@@ -429,7 +429,6 @@ public class Session {
    * @param template Template of the EC private key.
    * @param ecPoint The encoded EC-Point. May be null.
    * @return object handle of the new EC private key.
-   * @throws TokenException if creating new object failed.
    */
   public long createECPrivateKeyObject(AttributeVector template, byte[] ecPoint) throws PKCS11Exception {
     if (ecPoint != null && privateKeyWithEcPoint(template.keyType())) {
@@ -481,7 +480,7 @@ public class Session {
   }
 
   /**
-   * Gets all present attributes of the given template object an writes them to the object to update
+   * Gets all present attributes of the given template object and writes them to the object to update
    * on the token (or in the session). Both parameters may refer to the same Java object. This is
    * possible, because this method only needs the object handle of the objectToUpdate, and gets the
    * attributes to set from the template. This means, an application can get the object using
@@ -490,9 +489,9 @@ public class Session {
    * values as modified in the Java object.
    *
    * @param objectToUpdateHandle The attributes of this object get updated.
-   * @param template             This methods gets all present attributes of this template object and set this
+   * @param template             Gets all present attributes of this template object and sets this
    *                             attributes at the objectToUpdate.
-   * @throws PKCS11Exception If updateing the attributes fails. All or no attributes are updated.
+   * @throws PKCS11Exception If updating the attributes fails. All or no attributes are updated.
    */
   public void setAttributeValues(long objectToUpdateHandle, AttributeVector template) throws PKCS11Exception {
     final String method = "C_SetAttributeValue";
@@ -545,7 +544,7 @@ public class Session {
 
   /**
    * Initializes a find operations that provides means to find objects by passing a template object.
-   * This method get all set attributes of the template object ans searches for all objects on the
+   * This method get all set attributes of the template object and searches for all objects on the
    * token that match with these attributes.
    *
    * @param template The object that serves as a template for searching. If this object is null, the find
@@ -568,8 +567,8 @@ public class Session {
   /**
    * Finds objects that match the template object passed to findObjectsInit. The application must
    * call findObjectsInit before calling this method. With maxObjectCount the application can
-   * specifay how many objects to return at once; i.e. the application can get all found objects by
-   * susequent calls to this method like maxObjectCount(1) until it receives an empty array (this
+   * specify how many objects to return at once; i.e. the application can get all found objects by
+   * subsequent calls to this method like maxObjectCount(1) until it receives an empty array (this
    * method never returns null!).
    *
    * @param maxObjectCount Specifies how many objects to return with this call.
@@ -680,7 +679,7 @@ public class Session {
   /**
    * Encrypts the given data with the key and mechanism given to the encryptInit method. This method
    * finalizes the current encryption operation; i.e. the application need (and should) not call
-   * encryptFinal() after this call. For encrypting multiple pices of data use encryptUpdate and
+   * encryptFinal() after this call. For encrypting multiple pieces of data use encryptUpdate and
    * encryptFinal.
    *
    * @param plaintext the to-be-encrypted data
@@ -725,7 +724,7 @@ public class Session {
   }
 
   /**
-   * This method finalizes an encrpytion operation and returns the final result. Use this method, if
+   * This method finalizes an encryption operation and returns the final result. Use this method, if
    * you fed in the data using encryptUpdate. If you used the encrypt(byte[]) method, you need not
    * (and shall not) call this method, because encrypt(byte[]) finalizes the encryption itself.
    *
@@ -775,7 +774,7 @@ public class Session {
    * not finalize the encryption-operation
    *
    * @param params         The parameter object
-   * @param associatedData The associated Data for AEAS Mechanisms
+   * @param associatedData The associated Data for AEAD Mechanisms
    * @param plaintext      The plaintext getting encrypted
    * @return The ciphertext. Never returns {@code null}.
    * @throws PKCS11Exception If encrypting failed.
@@ -800,11 +799,11 @@ public class Session {
   }
 
   /**
-   * Starts a multi-part message-encryption operation. Can only be called when an encryption operation has been
+   * Starts a multipart message-encryption operation. Can only be called when an encryption operation has been
    * initialized before.
    *
    * @param params         The IV or nonce
-   * @param associatedData The associated Data for AEAS Mechanisms
+   * @param associatedData The associated Data for AEAD Mechanisms
    * @throws PKCS11Exception in case of error.
    */
   public void encryptMessageBegin(CkParams params, byte[] associatedData) throws PKCS11Exception {
@@ -821,13 +820,13 @@ public class Session {
   }
 
   /**
-   * Encrypts one part of a multi-part encryption operation. The multi-part operation must have been started
-   * with encryptMessageBegin before calling this function. If the isLastOperation is set, the multi-part operation
+   * Encrypts one part of a multipart encryption operation. The multipart operation must have been started
+   * with encryptMessageBegin before calling this function. If the isLastOperation is set, the multipart operation
    * finishes and if present the TAG or MAC is returned in the parameters.
    *
    * @param params          The parameter object
-   * @param plaintext       The associated Data for AEAS Mechanisms
-   * @param isLastOperation If this is the last part of the multi-part message encryption, this should be true
+   * @param plaintext       The associated Data for AEAD Mechanisms
+   * @param isLastOperation If this is the last part of the multipart message encryption, this should be true
    * @return The encrypted message part. Never returns {@code null}.
    * @throws PKCS11Exception in case of error.
    */
@@ -990,7 +989,7 @@ public class Session {
    * not finalize the decryption-operation
    *
    * @param params         The parameter object
-   * @param associatedData The associated Data for AEAS Mechanisms
+   * @param associatedData The associated Data for AEAD Mechanisms
    * @param ciphertext     The to-be-decrypted data
    * @return The ciphertext. Never returns {@code null}.
    * @throws PKCS11Exception If encrypting failed.
@@ -1010,7 +1009,7 @@ public class Session {
   }
 
   /**
-   * Starts a multi-part message-decryption operation.
+   * Starts a multipart message-decryption operation.
    *
    * @param params         The parameter object
    * @param associatedData The associated Data for AEAD Mechanisms
@@ -1030,13 +1029,13 @@ public class Session {
   }
 
   /**
-   * Decrypts one part of a multi-part decryption operation. The multi-part operation must have been started
-   * with decryptMessageBegin before calling this function. If the isLastOperation is set, the multi-part operation
+   * Decrypts one part of a multipart decryption operation. The multipart operation must have been started
+   * with decryptMessageBegin before calling this function. If the isLastOperation is set, the multipart operation
    * finishes.
    *
    * @param params          The parameter object
    * @param ciphertext      The ciphertext getting decrypted
-   * @param isLastOperation If this is the last part of the multi-part message encryption, this should be true
+   * @param isLastOperation If this is the last part of the multipart message encryption, this should be true
    * @return the decrypted message part. Never returns {@code null}.
    * @throws PKCS11Exception in case of error.
    */
@@ -1056,7 +1055,7 @@ public class Session {
   }
 
   /**
-   * finishes multi-part message decryption operation.
+   * finishes multipart message decryption operation.
    *
    * @throws PKCS11Exception in case of error.
    */
@@ -1255,7 +1254,7 @@ public class Session {
   /**
    * Signs the given data with the key and mechanism given to the signInit method. This method
    * finalizes the current signing operation; i.e. the application need (and should) not call
-   * signFinal() after this call. For signing multiple pices of data use signUpdate and signFinal.
+   * signFinal() after this call. For signing multiple pieces of data use signUpdate and signFinal.
    *
    * @param data The data to sign.
    * @return The signed data. Never returns {@code null}.
@@ -1388,7 +1387,7 @@ public class Session {
 
           boolean fixed = !Arrays.equals(fixedSigValue, signatureValue);
           if (b == null) {
-            StaticLogger.info("Set EcdsaSignatureFixNeeded to {}", b);
+            StaticLogger.info("Set EcdsaSignatureFixNeeded to {}", fixed);
             module.setEcdsaSignatureFixNeeded(fixed);
           }
           return fixedSigValue;
@@ -1405,7 +1404,7 @@ public class Session {
           byte[] fixedSigValue = Functions.fixECDSASignature(signatureValue, 32);
           boolean fixed = !Arrays.equals(fixedSigValue, signatureValue);
           if (b == null) {
-            StaticLogger.info("Set Sm2SignatureFixNeeded to {}", b);
+            StaticLogger.info("Set Sm2SignatureFixNeeded to {}", fixed);
             module.setSm2SignatureFixNeeded(fixed);
           }
           return fixedSigValue;
@@ -1612,7 +1611,7 @@ public class Session {
    * Verifies the given signature against the given data with the key and mechanism given to the
    * verifyInit method. This method finalizes the current verification operation; i.e. the
    * application need (and should) not call verifyFinal() after this call. For verifying with
-   * multiple pices of data use verifyUpdate and verifyFinal. This method throws an exception, if
+   * multiple pieces of data use verifyUpdate and verifyFinal. This method throws an exception, if
    * the verification of the signature fails.
    *
    * @param data      The data that was signed.
@@ -1688,7 +1687,7 @@ public class Session {
    * must call this method before calling verifyRecover. Before initializing a new operation, any
    * currently pending operation must be finalized using the appropriate *Final method (e.g.
    * digestFinal()). This method requires the mechanism to use for verification and the key for this
-   * oepration. The key must have set its verify-recover flag. For the mechanism the application may
+   * operation. The key must have set its verify-recover flag. For the mechanism the application may
    * use a constant defined in the Mechanism class. Notice that the key and the mechanism must be
    * compatible; i.e. you cannot use a DES key with the RSA mechanism.
    *
@@ -1786,7 +1785,7 @@ public class Session {
   }
 
   /**
-   * Begins a multi-part message verification operation.
+   * Begins a multipart message verification operation.
    * MessageVerifyInit must previously been called on the session
    *
    * @param params
@@ -2066,7 +2065,7 @@ public class Session {
   }
 
   /**
-   * Derives a new key from a specified base key unsing the given mechanism. After deriving a new
+   * Derives a new key from a specified base key using the given mechanism. After deriving a new
    * key from the base key, a new key object is created and a representation of it is returned. The
    * application can provide a template key to set certain attributes of the new key object.
    *
@@ -2141,7 +2140,7 @@ public class Session {
    * CKR_FUNCTION_NOT_PARALLEL.
    *
    * @exception PKCS11Exception
-   *              Throws always an PKCS11Excption.
+   *              Throws always a PKCS11Exception.
    */
   public void getFunctionStatus() throws PKCS11Exception {
     try {
@@ -2156,7 +2155,7 @@ public class Session {
    * CKR_FUNCTION_NOT_PARALLEL.
    *
    * @exception PKCS11Exception
-   *              Throws always an PKCS11Excption.
+   *              Throws always a PKCS11Exception.
    */
   public void cancelFunction() throws PKCS11Exception {
     try {
@@ -2167,8 +2166,8 @@ public class Session {
   }
 
   /**
-   * Determines if this session is a R/W session.
-   * @return true if this is a R/W session, false otherwise.
+   * Determines if this session is an R/W session.
+   * @return true if this is an R/W session, false otherwise.
    * @throws PKCS11Exception in case of error.
    */
   public boolean isRwSession() throws PKCS11Exception {
@@ -2580,8 +2579,8 @@ public class Session {
         ckAttr.pValue = module.vendorToGenericCode(Category.CKM, value);
       }
     } else if (type == CKA_ALLOWED_MECHANISMS) {
-      long[] mechs = ((MechanismArrayAttribute) attr).getValue();
-      for (long mech : mechs) {
+      long[] mechanisms = ((MechanismArrayAttribute) attr).getValue();
+      for (long mech : mechanisms) {
         ckAttr.pValue = module.vendorToGenericCode(Category.CKM, mech);
       }
     } else if (type == CKA_EC_POINT) {

@@ -18,7 +18,7 @@ import java.math.BigInteger;
  */
 public class Util {
 
-  public static String getCommontName(X500Principal name) {
+  public static String getCommonName(X500Principal name) {
     return getRdnValue(name, "CN");
   }
 

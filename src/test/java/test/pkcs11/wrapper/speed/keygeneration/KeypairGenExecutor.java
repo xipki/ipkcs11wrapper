@@ -57,10 +57,10 @@ public abstract class KeypairGenExecutor extends Pkcs11Executor {
 
   private final boolean inToken;
 
-  public KeypairGenExecutor(String description, long mechnism, boolean inToken)
+  public KeypairGenExecutor(String description, long mechanism, boolean inToken)
       throws PKCS11Exception {
     super(description);
-    this.mechanism = new Mechanism(mechnism);
+    this.mechanism = new Mechanism(mechanism);
     this.inToken = inToken;
   }
 

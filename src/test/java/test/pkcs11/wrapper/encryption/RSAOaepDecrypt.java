@@ -27,8 +27,8 @@ public class RSAOaepDecrypt extends TestBase {
     Mechanism encMech = getSupportedMechanism(CKM_RSA_PKCS_OAEP,CKF_DECRYPT,  params);
 
     final boolean inToken = false;
-    final int keysize = 2048;
-    PKCS11KeyPair keypair = generateRSAKeypair(keysize, inToken);
+    final int keySize = 2048;
+    PKCS11KeyPair keypair = generateRSAKeypair(keySize, inToken);
     long privKey = keypair.getPrivateKey();
     long pubKey = keypair.getPublicKey();
 

@@ -13,8 +13,7 @@
 /bin/
 target/
 
-# OS Files #
-.DS_Store
+# Java Files #
 *.class
 # Package Files #
 #*.jar

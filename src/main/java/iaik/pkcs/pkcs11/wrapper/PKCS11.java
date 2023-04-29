@@ -23,7 +23,7 @@ public interface PKCS11 {
    * C_Initialize initializes the Cryptoki library. (General-purpose)
    *
    * @param pInitArgs
-   *          if pInitArgs is not NULL it gets casted to CK_C_INITIALIZE_ARGS_PTR and dereferenced
+   *          if pInitArgs is not NULL it gets cast to CK_C_INITIALIZE_ARGS_PTR and dereferenced
    *          (PKCS#11 param: CK_VOID_PTR pInitArgs)
    * @param useUtf8 use UTF-8 encoding
    * @exception PKCS11Exception
@@ -134,7 +134,7 @@ public interface PKCS11 {
    * @param slotID
    *          ID of the token's slot (PKCS#11 param: CK_SLOT_ID slotID)
    * @param pPin
-   *          the SO's initial PIN and the length in bytes of the PIN (PKCS#11 param: CK_CHAR_PTR
+   *          the so's initial PIN and the length in bytes of the PIN (PKCS#11 param: CK_CHAR_PTR
    *          pPin, CK_ULONG ulPinLen)
    * @param pLabel
    *          32-byte token label (blank padded) (PKCS#11 param: CK_UTF8CHAR_PTR pLabel)
@@ -608,7 +608,7 @@ public interface PKCS11 {
    *          CK_ULONG ulPlaintextLen)
    *
    * @param flags
-   *          either 0 for continuing the multi-part encryption operation or CKF_END_OF_MESSAGE if this call is the
+   *          either 0 for continuing the multipart encryption operation or CKF_END_OF_MESSAGE if this call is the
    *          last part of the operation
    *
    * @param useUtf8 use UTF-8 encoding
@@ -689,7 +689,7 @@ public interface PKCS11 {
   byte[] C_DecryptFinal(long hSession) throws PKCS11Exception;
 
   /**
-   * C_MessageDecryptInit initializes an decryption operation for Messages.
+   * C_MessageDecryptInit initializes a decryption operation for Messages.
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -721,7 +721,7 @@ public interface PKCS11 {
    *          CK_ULONG ulCiphertextLen)
    *
    * @param useUtf8 use UTF-8 encoding
-   * @return the plaintext and the plaintext's length (PKCS#11 param: CK_BYTE_PTR
+   * @return the plaintext and the its length (PKCS#11 param: CK_BYTE_PTR
    *         pPlaintext, CK_ULONG_PTR PlaintextLen)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
@@ -766,7 +766,7 @@ public interface PKCS11 {
    *          CK_ULONG ulCiphertextLen)
    *
    * @param flags
-   *          either 0 for continuing the multi-part decryption operation or CKF_END_OF_MESSAGE if this call is the
+   *          either 0 for continuing the multipart decryption operation or CKF_END_OF_MESSAGE if this call is the
    *          last part of the operation
    *
    * @param useUtf8 use UTF-8 encoding
@@ -836,7 +836,7 @@ public interface PKCS11 {
   void C_DigestUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
 
   /**
-   * C_DigestKey continues a multi-part message-digesting operation, by digesting the value of a
+   * C_DigestKey continues a multipart message-digesting operation, by digesting the value of a
    * secret key as part of the data already digested. (Message digesting)
    *
    * @param hSession
@@ -863,14 +863,14 @@ public interface PKCS11 {
 
   /*
    * ****************************************************************************
-   * Signing and MACing
+   * Sign and MAC
    * ****************************************************************************
    */
 
   /**
    * C_SignInit initializes a signature (private key encryption) operation, where the signature is
    * (will be) an appendix to the data, and plaintext cannot be recovered from the signature.
-   * (Signing and MACing)
+   * (Sign and MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -886,8 +886,8 @@ public interface PKCS11 {
 
   /**
    * C_Sign signs (encrypts with private key) data in a single part, where the signature is (will
-   * be) an appendix to the data, and plaintext cannot be recovered from the signature. (Signing and
-   * MACing)
+   * be) an appendix to the data, and plaintext cannot be recovered from the signature. (Sign and
+   * MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -903,8 +903,8 @@ public interface PKCS11 {
 
   /**
    * C_SignUpdate continues a multiple-part signature operation, where the signature is (will be) an
-   * appendix to the data, and plaintext cannot be recovered from the signature. (Signing and
-   * MACing)
+   * appendix to the data, and plaintext cannot be recovered from the signature. (Sign and
+   * MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -918,8 +918,8 @@ public interface PKCS11 {
   void C_SignUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
 
   /**
-   * C_SignFinal finishes a multiple-part signature operation, returning the signature. (Signing and
-   * MACing)
+   * C_SignFinal finishes a multiple-part signature operation, returning the signature. (Sign and
+   * MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -933,7 +933,7 @@ public interface PKCS11 {
 
   /**
    * C_SignRecoverInit initializes a signature operation, where the data can be recovered from the
-   * signature. (Signing and MACing)
+   * signature. (Sign and MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -949,7 +949,7 @@ public interface PKCS11 {
 
   /**
    * C_SignRecover signs data in a single operation, where the data can be recovered from the
-   * signature. (Signing and MACing)
+   * signature. (Sign and MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -983,7 +983,7 @@ public interface PKCS11 {
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
    * @param pParameter
-   *          the machanism parameter (PKCS#11 CK_VOID_PTR pParameter, CK_ULONG ulParameterLen)
+   *          the mechanism parameter (PKCS#11 CK_VOID_PTR pParameter, CK_ULONG ulParameterLen)
    * @param pData
    *          the data to sign and the data's length (PKCS#11 param: CK_BYTE_PTR pData, CK_ULONG
    *          ulDataLen)
@@ -1001,7 +1001,7 @@ public interface PKCS11 {
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
    * @param pParameter
-   *          the machanism parameter (PKCS#11 CK_VOID_PTR pParameter, CK_ULONG ulParameterLen)
+   *          the mechanism parameter (PKCS#11 CK_VOID_PTR pParameter, CK_ULONG ulParameterLen)
    * @param useUtf8 use UTF-8 encoding
    * @throws PKCS11Exception If function returns other value than CKR_OK.
    */
@@ -1014,7 +1014,7 @@ public interface PKCS11 {
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
    * @param pParameter
-   *          the machanism parameter (PKCS#11 CK_VOID_PTR pParameter, CK_ULONG ulParameterLen)
+   *          the mechanism parameter (PKCS#11 CK_VOID_PTR pParameter, CK_ULONG ulParameterLen)
    * @param pData
    *          the data to sign and the data's length (PKCS#11 param: CK_BYTE_PTR pData, CK_ULONG
    *          ulDataLen)
@@ -1028,7 +1028,7 @@ public interface PKCS11 {
                            boolean useUtf8) throws PKCS11Exception;
 
   /**
-   * C_MessageSignFinal finishes a message-based signing process.
+   * C_MessageSignFinal finishes a message-based Sign process.
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -1045,8 +1045,8 @@ public interface PKCS11 {
 
   /**
    * C_VerifyInit initializes a verification operation, where the signature is an appendix to the
-   * data, and plaintext cannot cannot be recovered from the signature (e.g. DSA). (Signing and
-   * MACing)
+   * data, and plaintext cannot be recovered from the signature (e.g. DSA). (Sign and
+   * MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -1062,7 +1062,7 @@ public interface PKCS11 {
 
   /**
    * C_Verify verifies a signature in a single-part operation, where the signature is an appendix to
-   * the data, and plaintext cannot be recovered from the signature. (Signing and MACing)
+   * the data, and plaintext cannot be recovered from the signature. (Sign and MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -1080,8 +1080,8 @@ public interface PKCS11 {
 
   /**
    * C_VerifyUpdate continues a multiple-part verification operation, where the signature is an
-   * appendix to the data, and plaintext cannot be recovered from the signature. (Signing and
-   * MACing)
+   * appendix to the data, and plaintext cannot be recovered from the signature. (Sign and
+   * MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -1095,8 +1095,8 @@ public interface PKCS11 {
   void C_VerifyUpdate(long hSession, byte[] pPart) throws PKCS11Exception;
 
   /**
-   * C_VerifyFinal finishes a multiple-part verification operation, checking the signature. (Signing
-   * and MACing)
+   * C_VerifyFinal finishes a multiple-part verification operation, checking the signature. (Sign
+   * and MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -1111,7 +1111,7 @@ public interface PKCS11 {
 
   /**
    * C_VerifyRecoverInit initializes a signature verification operation, where the data is recovered
-   * from the signature. (Signing and MACing)
+   * from the signature. (Sign and MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -1127,7 +1127,7 @@ public interface PKCS11 {
 
   /**
    * C_VerifyRecover verifies a signature in a single-part operation, where the data is recovered
-   * from the signature. (Signing and MACing)
+   * from the signature. (Sign and MAC)
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -1198,7 +1198,7 @@ public interface PKCS11 {
       throws PKCS11Exception;
 
   /**
-   * C_MessageSignFinal finishes a message-based signing process.
+   * C_MessageSignFinal finishes a message-based Sign process.
    *
    * @param hSession
    *          the session's handle (PKCS#11 param: CK_SESSION_HANDLE hSession)
@@ -1248,7 +1248,7 @@ public interface PKCS11 {
   byte[] C_DecryptDigestUpdate(long hSession, byte[] pEncryptedPart) throws PKCS11Exception;
 
   /**
-   * C_SignEncryptUpdate continues a multiple-part signing and encryption operation. (Dual-function
+   * C_SignEncryptUpdate continues a multiple-part Sign and encryption operation. (Dual-function
    * cryptographic operations)
    *
    * @param hSession
@@ -1473,7 +1473,7 @@ public interface PKCS11 {
    *          blocking/nonblocking flag (PKCS#11 param: CK_FLAGS flags)
    * @param pReserved
    *          reserved. Should be null (PKCS#11 param: CK_VOID_PTR pReserved)
-   * @return the slot ID where the event occured (PKCS#11 param: CK_SLOT_ID_PTR pSlot)
+   * @return the slot ID where the event occurred (PKCS#11 param: CK_SLOT_ID_PTR pSlot)
    * @exception PKCS11Exception
    *              If function returns other value than CKR_OK.
    *
@@ -1481,7 +1481,7 @@ public interface PKCS11 {
   long C_WaitForSlotEvent(long flags, Object pReserved) throws PKCS11Exception;
 
   /**
-   * This method can be used to cleanup this object. Made to enable explicit cleanup, because
+   * This method can be used to clean up this object. Made to enable explicit cleanup, because
    * garbage collection using System.gc() does not always collect the free object immediately.
    *
    * @exception Throwable

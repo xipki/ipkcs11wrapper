@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 public class ConcurrentBagEntry<T> {
 
   @SuppressWarnings({ "unused" })
-  private volatile int state = 0; // Don't delete me, will be used by the stateUpdater
+  private volatile int state = 0; // Don't delete me and add final declaration, will be used by the stateUpdater
 
   private static final AtomicIntegerFieldUpdater<ConcurrentBagEntry> stateUpdater;
 

@@ -17,7 +17,7 @@ public class CHACHA20_PARAMS extends CkParams {
   /**
    * Create a new CHACHA20_PARAMS object with the given attributes.
    *
-   * @param blockCounter the Blockcounter
+   * @param blockCounter the Block counter
    * @param nonce       the nonce
    */
   public CHACHA20_PARAMS(byte[] blockCounter, byte[] nonce) {

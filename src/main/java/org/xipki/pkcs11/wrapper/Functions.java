@@ -721,7 +721,7 @@ public class Functions {
 
     // weierstrauss curve.
     if (ecPoint.length == 2 * fieldSize) {
-      // HSM returns x_coord. || y_coord.
+      // HSM returns x_coordinate || y_coordinate
       byte[] ecPoint2 = new byte[1 + ecPoint.length];
       ecPoint2[0] = (byte) 4;
       System.arraycopy(ecPoint, 0, ecPoint2, 1, ecPoint.length);
@@ -730,12 +730,12 @@ public class Functions {
       byte encodingByte = ecPoint[0];
       if (encodingByte == 0x04) {
         if (len == 1 + 2 * fieldSize) {
-          // HSM returns 04 || x_coord. || y_coord.
+          // HSM returns 04 || x_coordinate. || y_coordinate.
           return ecPoint;
         }
       } else if (encodingByte == 0x02 || encodingByte == 0x03) {
         if (len == 1 + fieldSize) {
-          // HSM returns <02 or 03> || x_coord.
+          // HSM returns <02 or 03> || x_coordinate.
           return ecPoint;
         }
       }

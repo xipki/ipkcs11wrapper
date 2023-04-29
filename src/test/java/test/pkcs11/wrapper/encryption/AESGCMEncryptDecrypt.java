@@ -3,14 +3,10 @@
 
 package test.pkcs11.wrapper.encryption;
 
-import org.junit.Test;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.Mechanism;
 import org.xipki.pkcs11.wrapper.PKCS11Exception;
-import org.xipki.pkcs11.wrapper.TokenException;
 import org.xipki.pkcs11.wrapper.params.GCM_PARAMS;
-
-import java.io.IOException;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -28,12 +24,6 @@ public class AESGCMEncryptDecrypt extends SymmEncryptDecrypt {
     iv = randomBytes(12);
     aad = new byte[20];
     // aad = "hello".getBytes();
-  }
-
-  @Test
-  @Override
-  public void main() throws TokenException, IOException {
-    super.main();
   }
 
   @Override

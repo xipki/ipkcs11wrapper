@@ -28,7 +28,6 @@ import java.util.function.UnaryOperator;
  *
  * @author Brett Wooldridge
  */
-@SuppressWarnings("NullableProblems")
 public final class FastList<T> implements List<T>, RandomAccess, Serializable {
   private static final long serialVersionUID = -4598088075242913858L;
 

@@ -5,7 +5,6 @@ package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_X9_42_DH1_DERIVE_PARAMS;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
-import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 

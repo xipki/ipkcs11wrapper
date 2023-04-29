@@ -12,7 +12,7 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_VENDOR_DEFINED;
 /**
  * Represents Utimaco's vendor CK_ECDSA_ECIES_PARAMS, which is used in
  * Utimaco's vendor mechanism CKM_ECDSA_ECIES
- *
+ * <p>
  * hashAlg:<br>
  * CKM_SHA_1, CKM_SHA224, CKM_SHA256, CKM_SHA384,
  * CKM_SHA512, CKM_RIPEMD160, CKM_MD5
@@ -24,7 +24,7 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_VENDOR_DEFINED;
  *
  * cryptOpt:<br>
  * Key Length of cryptAlg . (0 for CKM_ECDSA_ECIES_XOR )
- *
+ * <p>
  * macAlg: <br>
  * CKM_SHA_1_HMAC, CKM_SHA224_HMAC, CKM_SHA256_HMAC,
  * CKM_SHA384_HMAC, CKM_SHA512_HMAC, CKM_MD5_HMAC,
@@ -63,9 +63,7 @@ public class Utimaco_ECDSA_ECIES_PARAMS extends CkParams {
     } else {
       long newHashAlg = module.genericToVendorCode(Category.CKM, params.hashAlg);
       long newCryptAlg = module.genericToVendorCode(Category.CKM, params.cryptAlg);
-      ;
       long newMacAlg = module.genericToVendorCode(Category.CKM, params.macAlg);
-      ;
       if (newHashAlg == params.hashAlg && newCryptAlg == params.cryptAlg && newMacAlg == params.macAlg) {
         return params;
       } else {

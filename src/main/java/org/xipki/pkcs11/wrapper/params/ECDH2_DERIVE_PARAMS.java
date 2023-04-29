@@ -27,7 +27,7 @@ public class ECDH2_DERIVE_PARAMS extends CkParams {
    * @param sharedData
    *          The data shared between the two parties.
    * @param publicData
-   *          The other partie's public key value.
+   *          The other party's public key value.
    * @param privateDataLength
    *          The length in bytes of the second EC private key.
    * @param privateDataHandle

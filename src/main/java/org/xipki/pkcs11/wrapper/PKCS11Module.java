@@ -342,7 +342,7 @@ public class PKCS11Module {
   }
 
   public String codeToName(Category category, long code) {
-    if ((code & 0x80000000) != 0 && vendorMaps != null) {
+    if ((code & PKCS11Constants.CKM_VENDOR_DEFINED) != 0 && vendorMaps != null) {
       VendorMap map = vendorMaps.get(category);
       return map != null ? map.codeToName(code) : PKCS11Constants.codeToName(category, code);
     } else {
@@ -481,7 +481,7 @@ public class PKCS11Module {
         }
         tempWrapperFile.deleteOnExit();
 
-        StaticLogger.info("PKCS11Mdule.loadWrapperFromJar: copy file {} to {}",
+        StaticLogger.info("PKCS11oModule.loadWrapperFromJar: copy file {} to {}",
             jarFilePath, tempWrapperFile.getAbsolutePath());
         try {
           Files.copy(wrapperLibrary, tempWrapperFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -532,7 +532,9 @@ public class PKCS11Module {
         block = new VendorConfBlock();
         inBlock = true;
       } else if (line.startsWith("</vendor>")) {
-        block.validate();
+        if (block != null) {
+          block.validate();
+        }
         return block;
       } else if (inBlock) {
         if (line.startsWith("module.")) {
@@ -589,6 +591,10 @@ public class PKCS11Module {
       String confPath = System.getProperty("org.xipki.pkcs11.vendor.conf");
       InputStream in = (confPath != null) ? Files.newInputStream(Paths.get(confPath))
           : PKCS11Module.class.getClassLoader().getResourceAsStream("org/xipki/pkcs11/wrapper/vendor.conf");
+      if (in == null) {
+        throw new IOException("found no file org/xipki/pkcs11/wrapper/vendor.conf");
+      }
+
       try (BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
         while (true) {
           VendorConfBlock block = readVendorBlock(br);
@@ -674,16 +680,16 @@ public class PKCS11Module {
 
     void addNameCode(String name, String code) {
       long lCode = parseCode(code);
-      codeNameMap.put(lCode, name);
-      nameCodeMap.put(name, lCode);
-
       Long genericCode = PKCS11Constants.nameToCode(category, name);
       if (genericCode != null) {
         // only vendor code is allowed to be overwritten.
-        if ((genericCode & 0x80000000) != 0 && genericCode != lCode) {
+        if ((genericCode & PKCS11Constants.CKM_VENDOR_DEFINED) != 0 && genericCode != lCode) {
           genericToVendorMap.put(genericCode, lCode);
           vendorToGenericMap.put(lCode, genericCode);
         }
+      } else {
+        codeNameMap.put(lCode, name);
+        nameCodeMap.put(name, lCode);
       }
     }
 
@@ -732,9 +738,9 @@ public class PKCS11Module {
     }
 
     boolean matches(String modulePath, String manufacturerID, String libraryDescription, Version libraryVersion) {
-      if ((!isEmpty(modulePaths)     && !contains(modulePaths,     Paths.get(modulePath).getFileName().toString())) ||
-          (!isEmpty(manufacturerIDs) && !contains(manufacturerIDs, manufacturerID)) ||
-          (!isEmpty(descriptions)    && !contains(descriptions,    libraryDescription))) {
+      if ((!isEmpty(modulePaths)     && notContains(modulePaths,     Paths.get(modulePath).getFileName().toString())) ||
+          (!isEmpty(manufacturerIDs) && notContains(manufacturerIDs, manufacturerID)) ||
+          (!isEmpty(descriptions)    && notContains(descriptions,    libraryDescription))) {
         return false;
       }
 
@@ -767,14 +773,14 @@ public class PKCS11Module {
       return c == null || c.isEmpty();
     }
 
-    private static boolean contains(List<String> list, String str) {
+    private static boolean notContains(List<String> list, String str) {
       str = str.toLowerCase(Locale.ROOT);
       for (String s : list) {
         if (str.contains(s)) {
-          return true;
+          return false;
         }
       }
-      return false;
+      return true;
     }
 
     @Override

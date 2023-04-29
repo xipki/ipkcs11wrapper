@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.Mechanism;
 import org.xipki.pkcs11.wrapper.PKCS11Token;
+import org.xipki.pkcs11.wrapper.params.AES_CBC_ENCRYPT_DATA_PARAMS;
 import test.pkcs11.wrapper.TestBase;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
@@ -36,20 +37,18 @@ public class DeriveKeyDemo extends TestBase {
     AttributeVector derivedKeyTemplate = newSecretKey(CKK_AES).valueLen(16)
         .token(false).sensitive(true).extractable(true);
 
-    /*
     byte[] iv = new byte[16];
     byte[] data = new byte[32];
 
-    AesCbcEncryptDataParameters param = new AesCbcEncryptDataParameters(iv, data);
-    Mechanism mechanism = getSupportedMechanism(token, CKM_AES_CBC_ENCRYPT_DATA);
-    mechanism.setParameters(param);
+    AES_CBC_ENCRYPT_DATA_PARAMS param = new AES_CBC_ENCRYPT_DATA_PARAMS(iv, data);
+    Mechanism mechanism = getSupportedMechanism(CKM_AES_CBC_ENCRYPT_DATA, CKF_DERIVE);
+    mechanism = new Mechanism(mechanism.getMechanismCode(), param);
 
     LOG.info("Derivation Mechanism: {}", mechanism);
 
-    long derivedKey = session.deriveKey(mechanism, baseKey, derivedKeyTemplate);
+    long derivedKey = token.deriveKey(mechanism, baseKey, derivedKeyTemplate);
 
     LOG.info("Derived key: {}", derivedKey);
-     */
   }
 
 }

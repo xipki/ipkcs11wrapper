@@ -113,7 +113,7 @@ public class CK_TOKEN_INFO {
    * CK_ULONG ulSessionCount;
    * </PRE>
    */
-  public long ulSessionCount; /* sess. now open */
+  public long ulSessionCount; /* session now open */
 
   /**
    * <B>PKCS#11:</B>
@@ -131,7 +131,7 @@ public class CK_TOKEN_INFO {
    * CK_ULONG ulRwSessionCount;
    * </PRE>
    */
-  public long ulRwSessionCount; /* R/W sess. now open */
+  public long ulRwSessionCount; /* R/W session now open */
 
   /**
    * <B>PKCS#11:</B>

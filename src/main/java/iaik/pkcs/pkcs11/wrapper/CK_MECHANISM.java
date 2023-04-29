@@ -40,10 +40,4 @@ public class CK_MECHANISM {
    */
   public Object pParameter;
 
-  /*
-   * ulParameterLen was changed from CK_USHORT to CK_ULONG for v2.0
-   */
-  // CK_ULONG ulParameterLen; /* in bytes */
-  // public long ulParameterLen; /* in bytes */
-
 }

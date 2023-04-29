@@ -44,12 +44,11 @@ public class PKCS11KeyId {
     if (id == null || id.length == 0) {
       this.id = null;
       this.idHex = null;
-      this.label = label;
     } else {
       this.id = id;
       this.idHex = Functions.toHex(id);
-      this.label = label;
     }
+    this.label = label;
   }
 
   public long getKeyType() {

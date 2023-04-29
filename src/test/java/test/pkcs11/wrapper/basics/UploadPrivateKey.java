@@ -48,8 +48,6 @@ public class UploadPrivateKey extends TestBase {
   private static final int keyAgreement      = 4;
   private static final int keyCertSign       = 5;
   private static final int cRLSign           = 6;
-  // private static final int encipherOnly      = 7;
-  // private static final int decipherOnly      = 8;
 
   @Test
   public void main() throws Exception {
@@ -89,7 +87,7 @@ public class UploadPrivateKey extends TestBase {
     Certificate[] certificateChain = keystore.getCertificateChain(keyAlias);
 
     X509Certificate userCertificate = (X509Certificate) certificateChain[0];
-    String userCommonName = Util.getCommontName(userCertificate.getSubjectX500Principal());
+    String userCommonName = Util.getCommonName(userCertificate.getSubjectX500Principal());
     MessageDigest sha1 = MessageDigest.getInstance("SHA1");
     byte[] encodedCert = userCertificate.getEncoded();
     byte[] certificateFingerprint = sha1.digest(encodedCert);

@@ -4,9 +4,9 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_RSA_PKCS_PSS_PARAMS;
+import org.xipki.pkcs11.wrapper.PKCS11Constants;
 import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
 
-import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_VENDOR_DEFINED;
 
 /**
@@ -64,9 +64,11 @@ public class RSA_PKCS_PSS_PARAMS extends CkParams {
   public String toString(String indent) {
     return indent + "CK_RSA_PKCS_PSS_PARAMS:" +
         val2Str(indent, "hashAlg", (module == null
-            ? ckmCodeToName(params.hashAlg) : module.codeToName(Category.CKM, params.hashAlg))) +
+            ? PKCS11Constants.ckmCodeToName(params.hashAlg)
+            : module.codeToName(Category.CKM, params.hashAlg))) +
         val2Str(indent, "mgf", (module == null
-            ? codeToName(Category.CKG_MGF, params.mgf) : module.codeToName(Category.CKG_MGF, params.mgf))) +
+            ? PKCS11Constants.codeToName(Category.CKG_MGF, params.mgf)
+            : module.codeToName(Category.CKG_MGF, params.mgf))) +
         val2Str(indent, "sLen", params.sLen);
   }
 

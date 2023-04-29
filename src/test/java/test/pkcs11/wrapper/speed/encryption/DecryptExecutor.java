@@ -13,7 +13,7 @@ import test.pkcs11.wrapper.speed.Pkcs11Executor;
 import java.util.Random;
 
 /**
- * Decryptor executor base class.
+ * Decryption executor base class.
  */
 public abstract class DecryptExecutor extends Pkcs11Executor {
 

@@ -13,13 +13,13 @@ package iaik.pkcs.pkcs11.wrapper;
  * typedef struct CK_ECDSA_ECIES_PARAMS {// used by CKM_ECDSA_ECIES
  *   unsigned long int   hashAlg;          // hash algorithm used e.g. CKM_SHA_1
  *   unsigned long int   cryptAlg;         // crypt algorithm used for crypt/decrypt e.g. CKM_AES_ECB
- *   unsigned long int   cryptOpt;         // keysize of crypt algo (0 for CKM_ECDSA_ECIES_XOR)
+ *   unsigned long int   cryptOpt;         // key size of crypt algo (0 for CKM_ECDSA_ECIES_XOR)
  *   unsigned long int   macAlg;           // mac algorithm used e.g. CKM_SHA_1_HMAC
- *   unsigned long int   macOpt;           // keysize of mac algo (always 0)
- *   unsigned char      *pSharedSecret1;  // optional shared secret 1 included in hash calculation
- *   unsigned long int   ulSharetSecret1;  // length of shared secret 1
- *   unsigned char      *pSharedSecret2;  // optional shared secret 2 included in mac calculation
- *   unsigned long int   ulSharetSecret2;  // lentgh of shared secret 2
+ *   unsigned long int   macOpt;           // key size of mac algo (always 0)
+ *   unsigned char      *pSharedSecret1;   // optional shared secret 1 included in hash calculation
+ *   unsigned long int   ulSharedSecret1;  // length of shared secret 1
+ *   unsigned char      *pSharedSecret2;   // optional shared secret 2 included in mac calculation
+ *   unsigned long int   ulSharedSecret2;  // length of shared secret 2
  * }
  * </PRE>
  *
@@ -35,7 +35,7 @@ public class CK_ECDSA_ECIES_PARAMS {
 
     /**
      * optional shared secret 1 included in hash calculation.
-     *
+     * <p>
      * <B>PKCS#11:</B>
      *
      * <PRE>
@@ -48,7 +48,7 @@ public class CK_ECDSA_ECIES_PARAMS {
 
     /**
      * optional shared secret 2 included in hash calculation.
-     *
+     * <p>
      * <B>PKCS#11:</B>
      *
      * <PRE>

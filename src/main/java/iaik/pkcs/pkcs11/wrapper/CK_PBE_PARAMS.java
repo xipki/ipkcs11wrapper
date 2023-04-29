@@ -4,7 +4,7 @@
 package iaik.pkcs.pkcs11.wrapper;
 
 /**
- * class CK_PBE_PARAMS provides all of the necessary information required byte the CKM_PBE
+ * class CK_PBE_PARAMS provides all the necessary information required byte the CKM_PBE
  * mechanisms and the CKM_PBA_SHA1_WITH_SHA1_HMAC mechanism.
  * <p>
  * <B>PKCS#11 structure:</B>
