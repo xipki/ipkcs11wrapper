@@ -122,16 +122,6 @@ public class AttributeVector {
     return Collections.unmodifiableList(attributes);
   }
 
-  AttributeVector copyWithoutByteArrayAttributes() {
-    AttributeVector copy = new AttributeVector();
-    for (Attribute attr : attributes) {
-      if (!(attr instanceof ByteArrayAttribute)) {
-        copy.attr(attr);
-      }
-    }
-    return copy;
-  }
-
   public CK_ATTRIBUTE[] toCkAttributes() {
     List<CK_ATTRIBUTE> attributeList = new ArrayList<>();
     for (Attribute attribute : attributes) {
@@ -1160,6 +1150,18 @@ public class AttributeVector {
 
   public AttributeVector wrapWithTrusted(Boolean wrapWithTrusted) {
     return attr(CKA_WRAP_WITH_TRUSTED, wrapWithTrusted);
+  }
+
+  public AttributeVector attributesAsSensitive(long... ckaTypes) {
+    for (Attribute attr : attributes) {
+      for (long type : ckaTypes) {
+        if (attr.type() == type) {
+          attr.sensitive(true);
+          break;
+        }
+      }
+    }
+    return this;
   }
 
 }

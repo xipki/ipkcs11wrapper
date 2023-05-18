@@ -377,15 +377,10 @@ public class Session {
     if (StaticLogger.isDebugEnabled()) {
       long objClass = template.class_();
       if (objClass == CKO_PRIVATE_KEY || objClass == CKO_SECRET_KEY) {
-        AttributeVector logTemplate = template.copyWithoutByteArrayAttributes();
-        logTemplate.id(template.id())
-            .modulus(template.modulus()).publicExponent(template.publicExponent()) // RSA
-            .ecParams(template.ecParams()).ecPoint(template.ecPoint()) // EC
-            .prime(template.prime()).subprime(template.subprime()).base(template.base()); // DSA
-        debugIn(method, "part of template={}", logTemplate);
-      } else {
-        debugIn(method, "template={}", template);
+        template.attributesAsSensitive(CKA_VALUE, // secret key, DSA, EC
+            CKA_PRIVATE_EXPONENT, CKA_PRIME_1, CKA_PRIME_2, CKA_EXPONENT_1, CKA_EXPONENT_2, CKA_COEFFICIENT); // RSA
       }
+      debugIn(method, "template={}", template);
     }
     try {
       long hObject = pkcs11.C_CreateObject(sessionHandle, toOutCKAttributes(template), useUtf8);
