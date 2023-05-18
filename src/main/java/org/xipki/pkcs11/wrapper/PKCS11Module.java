@@ -94,6 +94,11 @@ public class PKCS11Module {
   static final int BEHAVIOUR_SM2_PRIVATEKEY_ECPOINT = 4;
 
   /**
+   * Ignore the non-zero ulDeviceError in the SessionInfo.
+   */
+  static final int BEHAVIOUR_IGNORE_DEVICE_ERROR = 5;
+
+  /**
    * Interface to the underlying PKCS#11 module.
    */
   private final PKCS11Implementation pkcs11;
@@ -108,6 +113,8 @@ public class PKCS11Module {
   private Boolean ecdsaSignatureFixNeeded;
 
   private Boolean sm2SignatureFixNeeded;
+
+  private boolean ignoreDeviceErrorInSessionInfo;
 
   private Map<Category, VendorMap> vendorMaps;
 
@@ -559,7 +566,7 @@ public class PKCS11Module {
           } else if (name.equalsIgnoreCase("module.version")) {
             block.versions = textList;
           }
-        } else if (line.startsWith("CKD_") || line.startsWith("CKG_") ||
+        } else if (line.startsWith("CKD_") || line.startsWith("CKG_") || line.startsWith("CKU_") ||
             line.startsWith("CKK_") || line.startsWith("CKM_") || line.startsWith("CKR_")) {
           int idx = line.indexOf(' ');
           if (idx != -1) {
@@ -620,6 +627,8 @@ public class PKCS11Module {
                 vendorBehaviours.add(BEHAVIOUR_SM2_PRIVATEKEY_ECPOINT);
               } else if ("EC_PRIVATEKEY_ECPOINT".equalsIgnoreCase(token)) {
                 vendorBehaviours.add(BEHAVIOUR_EC_PRIVATEKEY_ECPOINT);
+              } else if ("IGNORE_DEVICE_ERROR".equalsIgnoreCase(token)) {
+                vendorBehaviours.add(BEHAVIOUR_IGNORE_DEVICE_ERROR);
               } else {
                 StaticLogger.warn("Ignored unknown vendor behaviour '" + token + "'.");
               }

@@ -1899,18 +1899,33 @@ public class PKCS11Token {
   }
 
   private ConcurrentBagEntry<Session> borrowSession() throws TokenException {
-    return borrowSession(true, 0, 0);
+    return borrowSession(true);
   }
 
   private ConcurrentBagEntry<Session> borrowNoLoginSession() throws TokenException {
-    return borrowSession(false, 0, 0);
+    return borrowSession(false);
   }
 
-  private ConcurrentBagEntry<Session> borrowSession(boolean login, int retries, long maxTimeMs) throws TokenException {
+  private ConcurrentBagEntry<Session> borrowSession(boolean login) throws TokenException {
+    long maxTimeMs = clock.millis() + timeOutWaitNewSessionMs;
+    int maxTries = maxSessionCount + 1;
+    for (int retries = 0; retries < maxTries; retries++) {
+      ConcurrentBagEntry<Session> sessionBagEntry = borrowSession(login, maxTimeMs);
+      if (sessionBagEntry != null) {
+        if (retries != 0) {
+          StaticLogger.info("Borrowed session after " + (retries + 1) + " tries.");
+        }
+        return sessionBagEntry;
+      }
+    }
+
+    throw new TokenException("could not borrow session after " + maxTries + " tries.");
+  }
+
+  private ConcurrentBagEntry<Session> borrowSession(boolean login, long maxTimeMs) throws TokenException {
     if (maxTimeMs == 0) {
       maxTimeMs = clock.millis() + timeOutWaitNewSessionMs;
     }
-
     ConcurrentBagEntry<Session> session = null;
     synchronized (sessions) {
       if (countSessions.get() < maxSessionCount) {
@@ -1956,8 +1971,10 @@ public class PKCS11Token {
       if (sessionActive && sessionInfo != null) {
         long deviceError = sessionInfo.getDeviceError();
         if (deviceError != 0) {
-          sessionActive = false;
-          StaticLogger.error("device has error {}", deviceError);
+          if (!getModule().hasVendorBehaviour(PKCS11Module.BEHAVIOUR_IGNORE_DEVICE_ERROR)) {
+            sessionActive = false;
+            StaticLogger.error("device has error {}", deviceError);
+          }
         }
       }
 
@@ -1965,13 +1982,7 @@ public class PKCS11Token {
         requiteSession = false;
         sessions.remove(session);
         countSessions.decrementAndGet();
-        if (retries < maxSessionCount) {
-          ConcurrentBagEntry<Session> session2 = borrowSession(login, retries + 1, maxTimeMs);
-          StaticLogger.info("borrowed session after " + (retries + 1) + " tries.");
-          return session2;
-        } else {
-          throw new TokenException("could not borrow session after " + (retries + 1) + " tries.");
-        }
+        return null;
       }
 
       if (login) {
