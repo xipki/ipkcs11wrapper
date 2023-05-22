@@ -99,6 +99,16 @@ public class PKCS11Module {
   static final int BEHAVIOUR_IGNORE_DEVICE_ERROR = 5;
 
   /**
+   * The CKA_EC_PARAMS for CKK_EC_EDWARDS accepts only name instead OID.
+   */
+  static final int BEHAVIOUR_EC_PARAMS_NAME_ONLY_EDWARDS = 6;
+
+  /**
+   * The CKA_EC_PARAMS for CKK_EC_EDWARDS accepts only name instead OID.
+   */
+  static final int BEHAVIOUR_EC_PARAMS_NAME_ONLY_MONTGOMERY = 7;
+
+  /**
    * Interface to the underlying PKCS#11 module.
    */
   private final PKCS11Implementation pkcs11;
@@ -114,9 +124,7 @@ public class PKCS11Module {
 
   private Boolean sm2SignatureFixNeeded;
 
-  private boolean ignoreDeviceErrorInSessionInfo;
-
-  private Map<Category, VendorMap> vendorMaps;
+  private Map<Category, VendorMap> vendorMaps = new HashMap<>();
 
   private final Set<Integer> vendorBehaviours = new HashSet<>();
 
@@ -331,21 +339,13 @@ public class PKCS11Module {
   }
 
   public long genericToVendorCode(Category category, long genericCode) {
-    if (vendorMaps != null) {
-      VendorMap map = vendorMaps.get(category);
-      return map != null ? map.genericToVendor(genericCode) : genericCode;
-    } else {
-      return genericCode;
-    }
+    VendorMap map = vendorMaps.get(category);
+    return map != null ? map.genericToVendor(genericCode) : genericCode;
   }
 
   public long vendorToGenericCode(Category category, long vendorCode) {
-    if (vendorMaps != null) {
-      VendorMap map = vendorMaps.get(category);
-      return map != null ? map.vendorToGeneric(vendorCode) : vendorCode;
-    } else {
-      return vendorCode;
-    }
+    VendorMap map = vendorMaps.get(category);
+    return map != null ? map.vendorToGeneric(vendorCode) : vendorCode;
   }
 
   public String codeToName(Category category, long code) {
@@ -358,12 +358,8 @@ public class PKCS11Module {
   }
 
   public Long nameToCode(Category category, String name) {
-    if (vendorMaps != null) {
-      VendorMap map = vendorMaps.get(category);
-      return map != null ? map.nameToCode(name) : PKCS11Constants.nameToCode(category, name);
-    } else {
-      return PKCS11Constants.nameToCode(category, name);
-    }
+    VendorMap map = vendorMaps.get(category);
+    return map != null ? map.nameToCode(name) : PKCS11Constants.nameToCode(category, name);
   }
 
   /**
@@ -629,6 +625,10 @@ public class PKCS11Module {
                 vendorBehaviours.add(BEHAVIOUR_EC_PRIVATEKEY_ECPOINT);
               } else if ("IGNORE_DEVICE_ERROR".equalsIgnoreCase(token)) {
                 vendorBehaviours.add(BEHAVIOUR_IGNORE_DEVICE_ERROR);
+              } else if ("EC_PARAMS_NAME_ONLY_EDWARDS".equalsIgnoreCase(token)) {
+                vendorBehaviours.add(BEHAVIOUR_EC_PARAMS_NAME_ONLY_EDWARDS);
+              } else if ("EC_PARAMS_NAME_ONLY_MONTGOMERY".equalsIgnoreCase(token)) {
+                vendorBehaviours.add(BEHAVIOUR_EC_PARAMS_NAME_ONLY_MONTGOMERY);
               } else {
                 StaticLogger.warn("Ignored unknown vendor behaviour '" + token + "'.");
               }

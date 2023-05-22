@@ -1971,7 +1971,9 @@ public class PKCS11Token {
       if (sessionActive && sessionInfo != null) {
         long deviceError = sessionInfo.getDeviceError();
         if (deviceError != 0) {
-          if (!getModule().hasVendorBehaviour(PKCS11Module.BEHAVIOUR_IGNORE_DEVICE_ERROR)) {
+          if (getModule().hasVendorBehaviour(PKCS11Module.BEHAVIOUR_IGNORE_DEVICE_ERROR)) {
+            StaticLogger.warn("ignore device error {}", deviceError);
+          } else {
             sessionActive = false;
             StaticLogger.error("device has error {}", deviceError);
           }

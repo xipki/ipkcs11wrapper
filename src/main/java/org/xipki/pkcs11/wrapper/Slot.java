@@ -40,6 +40,8 @@ public class Slot {
    */
   private boolean useUtf8Encoding = true;
 
+  private final Token token;
+
   /**
    * The constructor that takes a reference to the module and the slot ID.
    *
@@ -51,6 +53,7 @@ public class Slot {
   protected Slot(PKCS11Module module, long slotID) {
     this.module = Functions.requireNonNull("module", module);
     this.slotID = slotID;
+    this.token = new Token(this);
   }
 
   /**
@@ -109,13 +112,21 @@ public class Slot {
    * Get an object for handling the token that is currently present in this
    * slot, or null, if there is no token present.
    *
-   * @return The object for accessing the token. Or null, if none is present
-   *         in this slot.
+   * @return The object for accessing the token, non-null.
    * @exception PKCS11Exception
    *              If determining whether a token is present fails.
    */
+  public Token getNullableToken() throws PKCS11Exception {
+    return getSlotInfo().isTokenPresent() ? token: null;
+  }
+
+  /**
+   * Get an object for handling the token that is currently present in this slot.
+   *
+   * @return The object for accessing the token, non-null.
+   */
   public Token getToken() throws PKCS11Exception {
-    return getSlotInfo().isTokenPresent() ? new Token(this) : null;
+    return token;
   }
 
   /**

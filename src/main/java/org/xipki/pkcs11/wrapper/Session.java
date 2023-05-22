@@ -59,6 +59,22 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
  */
 public class Session {
 
+  private static final byte[] OID_curve25519 = Functions.encodeOid("1.3.101.110");
+
+  private static final byte[] OID_curve448 = Functions.encodeOid("1.3.101.111");
+
+  private static final byte[] OID_edwards25519 = Functions.encodeOid("1.3.101.112");
+
+  private static final byte[] OID_edwards448 = Functions.encodeOid("1.3.101.113");
+
+  private static final byte[] NAME_curve25519 = Functions.decodeHex("130a63757276653235353139");
+
+  private static final byte[] NAME_curve448 = Functions.decodeHex("13086375727665343438");
+
+  private static final byte[] NAME_edwards25519 = Functions.decodeHex("130c656477617264733235353139");
+
+  private static final byte[] NAME_edwards448 = Functions.decodeHex("130a65647761726473343438");
+
   private static final int SIGN_TYPE_ECDSA = 1;
 
   private static final int SIGN_TYPE_SM2 = 2;
@@ -2517,6 +2533,20 @@ public class Session {
         ckAttr.pValue = module.genericToVendorCode(Category.CKK, value);
       } else if (ckAttr.type == CKA_EC_POINT) {
         ckAttr.pValue = Functions.toOctetString((byte[]) ckAttr.pValue);
+      } else if (ckAttr.type == CKA_EC_PARAMS) {
+        byte[] pValue = (byte[]) ckAttr.pValue;
+        byte[] newPValue = null;
+        if (module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_EC_PARAMS_NAME_ONLY_EDWARDS)) {
+          newPValue = Arrays.equals(OID_edwards25519, pValue) ? NAME_edwards25519
+              : Arrays.equals(OID_edwards448, pValue) ? NAME_edwards448 : null;
+        } else if (module.hasVendorBehaviour(PKCS11Module.BEHAVIOUR_EC_PARAMS_NAME_ONLY_MONTGOMERY)) {
+          newPValue = Arrays.equals(OID_curve25519, pValue) ? NAME_curve25519
+              : Arrays.equals(OID_curve448, pValue) ? NAME_curve448 : null;
+        }
+
+        if (newPValue != null) {
+          ckAttr.pValue = Arrays.copyOf(newPValue, newPValue.length);
+        }
       }
     }
 
