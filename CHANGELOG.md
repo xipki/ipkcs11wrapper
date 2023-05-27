@@ -4,6 +4,10 @@ See also <https://github.com/xipki/ipkcs11wrapper/releases>
 
 ## 1.0.6
 - Release date: 2023/mm/dd
+- Feature: add vendor conf to ignore ulDeviceError
+- Feature: extend vendor conf of ncipher HSMs
+- Feature: add vendor conf to force use curve name instead curve OID.
+- Feature: add conf of timeout to borrow idle sessions.
 
 ## 1.0.5
 - Release date: 2023/04/29
