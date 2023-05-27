@@ -85,13 +85,19 @@ public class PKCS11Token {
     this.pins = pins;
 
     TokenInfo tokenInfo = token.getTokenInfo();
-    int tokenMaxSessionCount = (int) tokenInfo.getMaxSessionCount();
+    long lc = tokenInfo.getMaxSessionCount();
+    int tokenMaxSessionCount = lc > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) lc;
+
     this.isProtectedAuthenticationPath = tokenInfo.isProtectedAuthenticationPath();
 
     if (numSessions == null) {
-      this.maxSessionCount = (tokenMaxSessionCount < 1) ? 32 : Math.max(1, tokenMaxSessionCount - 2);
+      this.maxSessionCount = (tokenMaxSessionCount < 1) ? 32 : Math.min(32, tokenMaxSessionCount);
     } else {
-      this.maxSessionCount = numSessions;
+      if (tokenMaxSessionCount < 1) {
+        this.maxSessionCount = numSessions;
+      } else {
+        this.maxSessionCount = Math.min(numSessions, tokenMaxSessionCount);
+      }
     }
 
     StaticLogger.info("tokenMaxSessionCount={}, maxSessionCount={}", tokenMaxSessionCount, this.maxSessionCount);
@@ -121,6 +127,7 @@ public class PKCS11Token {
       throw new IllegalArgumentException("timeOutWaitNewSessionMs is not greater than 999");
     }
     this.timeOutWaitNewSessionMs = timeOutWaitNewSessionMs;
+    StaticLogger.info("timeOutWaitNewSession = {} milli-seconds", timeOutWaitNewSessionMs);
   }
 
   /**
@@ -1842,6 +1849,7 @@ public class PKCS11Token {
     return "User type: " + codeToName(Category.CKU, userType) +
         "\nUser name: " + (userName == null ? "null" : new String(userName)) +
         "\nMaximal session count: " + maxSessionCount +
+        "\nNew session timeout: " + timeOutWaitNewSessionMs + " ms" +
         "\nRead only: " + readOnly +
         "\nToken: " + token;
   }
