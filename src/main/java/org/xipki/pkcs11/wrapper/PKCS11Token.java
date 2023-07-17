@@ -45,7 +45,7 @@ public class PKCS11Token {
 
   private final boolean readOnly;
 
-  private final boolean isProtectedAuthenticationPath;
+  // private final boolean isProtectedAuthenticationPath;
 
   private long timeOutWaitNewSessionMs = 10000; // maximal wait for 10 second
 
@@ -88,7 +88,7 @@ public class PKCS11Token {
     long lc = tokenInfo.getMaxSessionCount();
     int tokenMaxSessionCount = lc > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) lc;
 
-    this.isProtectedAuthenticationPath = tokenInfo.isProtectedAuthenticationPath();
+    //this.isProtectedAuthenticationPath = tokenInfo.isProtectedAuthenticationPath();
 
     if (numSessions == null) {
       this.maxSessionCount = (tokenMaxSessionCount < 1) ? 32 : Math.min(32, tokenMaxSessionCount);
@@ -2030,9 +2030,19 @@ public class PKCS11Token {
     }
     userText += "of type " + codeToName(Category.CKU, userType);
 
+    boolean nullPins;
+    if (pins == null || pins.isEmpty()) {
+      nullPins = true;
+    } else if (pins.size() == 1) {
+      char[] pin = pins.get(0);
+      nullPins = pin == null || pin.length == 0;
+    } else {
+      nullPins = false;
+    }
+
     try {
       if (userName == null) {
-        if (isProtectedAuthenticationPath || (pins == null || pins.isEmpty())) {
+        if (nullPins) {
           session.login(userType, new char[0]);
           StaticLogger.info("login successful as " + userText + " with NULL PIN");
         } else {
@@ -2042,7 +2052,7 @@ public class PKCS11Token {
           StaticLogger.info("login successful as " + userText + " with PIN");
         }
       } else {
-        if (isProtectedAuthenticationPath || pins == null || pins.isEmpty()) {
+        if (nullPins) {
           session.loginUser(userType, userName, new char[0]);
           StaticLogger.info("loginUser successful as " + userText + " with NULL PIN");
         } else {
