@@ -685,7 +685,13 @@ public class Functions {
   // remove the outer ASN.1 tag and length
   static byte[] getCoreECPoint(byte[] ecPoint) {
     try {
-      return getOctetsFromASN1OctetString(ecPoint);
+      if (ecPoint[0] != 0x04) {
+        return getOctetsFromASN1OctetString(ecPoint);
+      } else if (ecPoint[0] == 0x03){
+        return getOctetsFromASN1BitString(ecPoint);
+      } else {
+        return ecPoint;
+      }
     } catch (TokenException e) {
       return ecPoint;
     }
@@ -755,6 +761,21 @@ public class Functions {
       throw new TokenException("encoded is not a valid ASN.1 octet string");
     }
     return Arrays.copyOfRange(encoded, 1 + numLenBytes.get(), encoded.length);
+  }
+
+  public static byte[] getOctetsFromASN1BitString(byte[] encoded) throws TokenException {
+    if (encoded[0] != 0x03) {
+      throw new TokenException("encoded is not a valid ASN.1 bit string");
+    }
+
+    AtomicInteger numLenBytes = new AtomicInteger();
+    int len = getDerLen(encoded, 1, numLenBytes);
+    if (1 + numLenBytes.get() + len != encoded.length) {
+      throw new TokenException("encoded is not a valid ASN.1 octet string");
+    }
+
+    // ignore the first byte after the length.s
+    return Arrays.copyOfRange(encoded, 1 + numLenBytes.get() + 1, encoded.length);
   }
 
   public static byte[] toOctetString(byte[] bytes) {
