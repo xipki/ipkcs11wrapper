@@ -685,7 +685,7 @@ public class Functions {
   // remove the outer ASN.1 tag and length
   static byte[] getCoreECPoint(byte[] ecPoint) {
     try {
-      if (ecPoint[0] != 0x04) {
+      if (ecPoint[0] == 0x04) {
         return getOctetsFromASN1OctetString(ecPoint);
       } else if (ecPoint[0] == 0x03){
         return getOctetsFromASN1BitString(ecPoint);
