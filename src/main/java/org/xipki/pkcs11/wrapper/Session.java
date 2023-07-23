@@ -2532,7 +2532,14 @@ public class Session {
         long value = (long) ckAttr.pValue;
         ckAttr.pValue = module.genericToVendorCode(Category.CKK, value);
       } else if (ckAttr.type == CKA_EC_POINT) {
-        ckAttr.pValue = Functions.toOctetString((byte[]) ckAttr.pValue);
+        boolean isBitString = false;
+        Attribute attr = template.getAttribute(CKA_KEY_TYPE);
+        if (attr != null) {
+          long keyType = (long) attr.getValue();
+          isBitString = (keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY);
+        }
+
+        ckAttr.pValue = Functions.toOctetOrBitString((byte[]) ckAttr.pValue, isBitString);
       } else if (ckAttr.type == CKA_EC_PARAMS) {
         byte[] pValue = (byte[]) ckAttr.pValue;
         byte[] newPValue = null;

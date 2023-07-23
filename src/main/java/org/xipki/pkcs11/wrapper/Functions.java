@@ -778,26 +778,36 @@ public class Functions {
     return Arrays.copyOfRange(encoded, 1 + numLenBytes.get() + 1, encoded.length);
   }
 
-  public static byte[] toOctetString(byte[] bytes) {
+  public static byte[] toOctetOrBitString(byte[] bytes, boolean isBitString) {
     int len = bytes.length;
 
     int numLenBytes = (len <= 0x7F) ? 1 : (len <= 0xFF) ? 2 : (len <= 0xFFFF) ? 3 : 4;
-
-    byte[] ret = new byte[1 + numLenBytes + len];
-    ret[0] = 0x04;
-    if (numLenBytes == 2) {
-      ret[1] = (byte) 0x81;
-    } else if (numLenBytes == 3) {
-      ret[1] = (byte) 0x82;
-      ret[2] = (byte) (len >> 8);
-    } else if (numLenBytes == 4) {
-      ret[1] = (byte) 0x83;
-      ret[2] = (byte) (len >> 16);
-      ret[3] = (byte) (len >> 8);
+    int size = 1 + numLenBytes + len;
+    if (isBitString) {
+      size++;
     }
-    ret[numLenBytes] = (byte) len;
 
-    System.arraycopy(bytes, 0, ret, 1 + numLenBytes, bytes.length);
+    byte[] ret = new byte[size];
+    int off = 0;
+    ret[off++] = isBitString ? (byte) 0x03 : (byte) 0x04;
+
+    if (numLenBytes == 2) {
+      ret[off++] = (byte) 0x81;
+    } else if (numLenBytes == 3) {
+      ret[off++] = (byte) 0x82;
+      ret[off++] = (byte) (len >> 8);
+    } else if (numLenBytes == 4) {
+      ret[off++] = (byte) 0x83;
+      ret[off++] = (byte) (len >> 16);
+      ret[off++] = (byte) (len >> 8);
+    }
+    ret[off++] = (byte) len;
+
+    if (isBitString) {
+      ret[off++] = 0;
+    }
+
+    System.arraycopy(bytes, 0, ret, off, bytes.length);
     return ret;
   }
 
