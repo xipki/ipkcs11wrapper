@@ -27,6 +27,20 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
  */
 public class PKCS11Token {
 
+  private enum OP {
+    DIGEST,
+    SIGN,
+    VERIFY,
+    ENCRYPT,
+    DECRYPT,
+    MESSAGE_ENCRYPT,
+    MESSAGE_DECRYPT,
+    MESSAGE_SIGN,
+    MESSAGE_VERIFY,
+    SIGN_RECOVER,
+    VERIFY_RECOVER
+  }
+
   private static final Clock clock = Clock.systemUTC();
 
   private int maxMessageSize = 2048;
@@ -52,6 +66,8 @@ public class PKCS11Token {
   private final AtomicLong countSessions = new AtomicLong(0);
 
   private final ConcurrentBag<ConcurrentBagEntry<Session>> sessions = new ConcurrentBag<>();
+
+  private final Object loginSync = new Object();
 
   /**
    * The simple constructor.
@@ -746,11 +762,11 @@ public class PKCS11Token {
     ConcurrentBagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
+      opInit(OP.ENCRYPT, session, mechanism, keyHandle);
       int len = plaintext.length;
       if (len <= maxMessageSize) {
-        return session.encryptSingle(mechanism, keyHandle, plaintext);
+        return session.encrypt(plaintext);
       } else {
-        session.encryptInit(mechanism, keyHandle);
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream(plaintext.length + 16);
         try {
@@ -792,7 +808,7 @@ public class PKCS11Token {
       int resSum = 0;
 
       // encryptInit
-      session.encryptInit(mechanism, keyHandle);
+      opInit(OP.ENCRYPT, session, mechanism, keyHandle);
 
       try {
         while ((read = plaintext.read(buffer)) != -1) {
@@ -832,12 +848,12 @@ public class PKCS11Token {
     Session session = session0.value();
 
     try {
+      opInit(OP.DECRYPT, session, mechanism, keyHandle);
+
       int len = ciphertext.length;
       if (len <= maxMessageSize) {
-        return session.decryptSingle(mechanism, keyHandle, ciphertext);
+        return session.decrypt(ciphertext);
       } else {
-        session.decryptInit(mechanism, keyHandle);
-
         ByteArrayOutputStream bout = new ByteArrayOutputStream(ciphertext.length);
         try {
           for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
@@ -878,7 +894,7 @@ public class PKCS11Token {
 
       int resSum = 0;
       // decryptInit
-      session.decryptInit(mechanism, keyHandle);
+      opInit(OP.DECRYPT, session, mechanism, keyHandle);
 
       try {
         while ((read = ciphertext.read(buffer)) != -1) {
@@ -917,10 +933,10 @@ public class PKCS11Token {
     Session session = session0.value();
     int len = data.length;
     try {
+      opInit(OP.DIGEST, session, mechanism, 0);
       if (len < maxMessageSize) {
-        return session.digestSingle(mechanism, data);
+        return session.digest(data);
       } else {
-        session.digestInit(mechanism);
         byte[] digest;
         try {
           for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
@@ -948,7 +964,7 @@ public class PKCS11Token {
     ConcurrentBagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
-      session.digestInit(mechanism);
+      opInit(OP.DIGEST, session, mechanism, 0);
       byte[] digest;
       try {
         session.digestKey(keyHandle);
@@ -977,7 +993,7 @@ public class PKCS11Token {
       byte[] buffer = new byte[maxMessageSize];
       int read;
 
-      session.digestInit(mechanism);
+      opInit(OP.DIGEST, session, mechanism, 0);
 
       byte[] digest;
       try {
@@ -1008,12 +1024,13 @@ public class PKCS11Token {
     ConcurrentBagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
+      opInit(OP.SIGN, session, mechanism, keyHandle);
+
       int len = data.length;
       if (len < maxMessageSize) {
-        return session.signSingle(mechanism, keyHandle, data);
+        return session.sign(data);
       } else {
         try {
-          session.signInit(mechanism, keyHandle);
           byte[] signature;
           try {
             for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
@@ -1054,13 +1071,13 @@ public class PKCS11Token {
       byte[] buffer = new byte[maxMessageSize];
       int firstBlockLen = readBytes(data, buffer, maxMessageSize);
       byte[] firstBlock = copyOfLen(buffer, firstBlockLen);
+
+      opInit(OP.SIGN, session, mechanism, keyHandle);
       if (firstBlockLen < maxMessageSize) {
-        return session.signSingle(mechanism, keyHandle, firstBlock);
+        return session.sign(firstBlock);
       } else {
         int read;
 
-        // signInit
-        session.signInit(mechanism, keyHandle);
         try {
           session.signUpdate(firstBlock);
         } catch (PKCS11Exception e) {
@@ -1071,7 +1088,9 @@ public class PKCS11Token {
             while ((read = data.read(buffer)) != -1) {
               bout.write(buffer, 0, read);
             }
-            return session.signSingle(mechanism, keyHandle, bout.toByteArray());
+
+            opInit(OP.SIGN, session, mechanism, keyHandle);
+            return session.sign(bout.toByteArray());
           }
         }
 
@@ -1105,7 +1124,9 @@ public class PKCS11Token {
   public byte[] signRecover(Mechanism mechanism, long keyHandle, byte[] data) throws TokenException {
     ConcurrentBagEntry<Session> session0 = borrowSession();
     try {
-      return session0.value().signRecoverSingle(mechanism, keyHandle, data);
+      Session session = session0.value();
+      opInit(OP.SIGN_RECOVER, session, mechanism, keyHandle);
+      return session.signRecover(data);
     } finally {
       sessions.requite(session0);
     }
@@ -1131,11 +1152,12 @@ public class PKCS11Token {
     try {
       if (supportsMechanism(code, CKF_VERIFY)) {
         try {
+          opInit(OP.VERIFY, session, mechanism, keyHandle);
+
           if (len <= maxMessageSize) {
-            session.verifySingle(mechanism, keyHandle, data, signature);
+            session.verify(data, signature);
           } else {
             try {
-              session.verifyInit(mechanism, keyHandle);
               try {
                 for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
                   session.verifyUpdate(copyOfLen(data, ofs, Math.min(maxMessageSize, len - ofs)));
@@ -1161,12 +1183,12 @@ public class PKCS11Token {
           }
         }
       } else if (supportsMechanism(code, CKF_SIGN) && isMacMechanism(code)) {
+        opInit(OP.VERIFY, session, mechanism, keyHandle);
         // CKF_VERIFY is not supported, use CKF_SIGN to verify the MAC tags.
         byte[] sig2;
         if (len <= maxMessageSize) {
-          sig2 = session.signSingle(mechanism, keyHandle, data);
+          sig2 = session.sign(data);
         } else {
-          session.signInit(mechanism, keyHandle);
           try {
             for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
               session.signUpdate(copyOfLen(data, ofs, Math.min(maxMessageSize, len - ofs)));
@@ -1205,12 +1227,12 @@ public class PKCS11Token {
       byte[] firstBlock = copyOfLen(buffer, firstBlockLen);
 
       long code = mechanism.getMechanismCode();
+      opInit(OP.VERIFY, session, mechanism, keyHandle);
+
       if (supportsMechanism(code, CKF_VERIFY)) {
         if (firstBlockLen < maxMessageSize) {
-          session.verifySingle(mechanism, keyHandle, firstBlock, signature);
+          session.verify(firstBlock, signature);
         } else {
-          // verifyInit
-          session.verifyInit(mechanism, keyHandle);
           try {
             session.verifyUpdate(firstBlock);
           } catch (PKCS11Exception e) {
@@ -1240,11 +1262,12 @@ public class PKCS11Token {
         }
         return true;
       } else if (supportsMechanism(code, CKF_SIGN) && isMacMechanism(code)) {
+        opInit(OP.SIGN, session, mechanism, keyHandle);
+
         byte[] sig2;
         if (firstBlockLen < maxMessageSize) {
-          sig2 = session.signSingle(mechanism, keyHandle, firstBlock);
+          sig2 = session.sign(firstBlock);
         } else {
-          session.signInit(mechanism, keyHandle);
           try {
             session.signUpdate(firstBlock);
             int read;
@@ -1285,7 +1308,9 @@ public class PKCS11Token {
   public byte[] verifyRecover(Mechanism mechanism, long keyHandle, byte[] data) throws TokenException {
     ConcurrentBagEntry<Session> session0 = borrowSession();
     try {
-      return session0.value().verifyRecoverSingle(mechanism, keyHandle, data);
+      Session session = session0.value();
+      opInit(OP.VERIFY_RECOVER, session, mechanism, keyHandle);
+      return session.verifyRecover(data);
     } finally {
       sessions.requite(session0);
     }
@@ -1442,7 +1467,7 @@ public class PKCS11Token {
     Session session = session0.value();
     try {
       // messageEncryptInit
-      session.messageEncryptInit(mechanism, keyHandle);
+      opInit(OP.MESSAGE_ENCRYPT, session, mechanism, keyHandle);
 
       try {
         for (int i = 0; i < entries.length; i++) {
@@ -1493,7 +1518,7 @@ public class PKCS11Token {
     Session session = session0.value();
     try {
       // messageEncryptInit
-      session.messageEncryptInit(mechanism, keyHandle);
+      opInit(OP.MESSAGE_ENCRYPT, session, mechanism, keyHandle);
 
       try {
         for (int i = 0; i < entries.length; i++) {
@@ -1552,7 +1577,7 @@ public class PKCS11Token {
     Session session = session0.value();
     try {
       // messageDecryptInit
-      session.messageDecryptInit(mechanism, keyHandle);
+      opInit(OP.MESSAGE_DECRYPT, session, mechanism, keyHandle);
 
       try {
         for (int i = 0; i < entries.length; i++) {
@@ -1603,7 +1628,7 @@ public class PKCS11Token {
     Session session = session0.value();
     try {
       // messageDecryptInit
-      session.messageDecryptInit(mechanism, keyHandle);
+      opInit(OP.MESSAGE_DECRYPT, session, mechanism, keyHandle);
 
       try {
         for (int i = 0; i < entries.length; i++) {
@@ -1661,7 +1686,7 @@ public class PKCS11Token {
     Session session = session0.value();
     try {
       // messageSignInit
-      session.messageSignInit(mechanism, keyHandle);
+      opInit(OP.MESSAGE_SIGN, session, mechanism, keyHandle);
 
       try {
         for (int i = 0; i < entries.length; i++) {
@@ -1707,7 +1732,7 @@ public class PKCS11Token {
     Session session = session0.value();
     try {
       // messageSignInit
-      session.messageSignInit(mechanism, keyHandle);
+      opInit(OP.MESSAGE_SIGN, session, mechanism, keyHandle);
 
       try {
         for (int i = 0; i < entries.length; i++) {
@@ -1750,7 +1775,7 @@ public class PKCS11Token {
     Session session = session0.value();
     try {
       // decryptInit
-      session.messageVerifyInit(mechanism, keyHandle);
+      opInit(OP.MESSAGE_VERIFY, session, mechanism, keyHandle);
 
       try {
         for (int i = 0; i < entries.length; i++) {
@@ -1803,7 +1828,7 @@ public class PKCS11Token {
     Session session = session0.value();
     try {
       // messageVerifyInit
-      session.messageVerifyInit(mechanism, keyHandle);
+      opInit(OP.MESSAGE_VERIFY, session, mechanism, keyHandle);
 
       try {
         for (int i = 0; i < entries.length; i++) {
@@ -1998,13 +2023,22 @@ public class PKCS11Token {
       if (login) {
         boolean loggedIn = false;
         if (sessionInfo != null) {
-          long state = sessionInfo.getState();
-          loggedIn = (state == CKS_RW_SO_FUNCTIONS)
-                      || (state == CKS_RW_USER_FUNCTIONS) || (state == CKS_RO_USER_FUNCTIONS);
+          loggedIn = isSessionLoggedIn(sessionInfo);
         }
 
         if (!loggedIn) {
-          login(session.value());
+          synchronized (loginSync) {
+            try {
+              sessionInfo = session.value().getSessionInfo();
+              loggedIn = isSessionLoggedIn(sessionInfo);
+            } catch (Exception e) {
+              StaticLogger.debug("Error while getSessionInfo()", e);
+            }
+
+            if (!loggedIn) {
+              login(session.value());
+            }
+          }
         }
       }
 
@@ -2017,59 +2051,118 @@ public class PKCS11Token {
     }
   } // method borrowSession
 
+  private static boolean isSessionLoggedIn(SessionInfo sessionInfo) {
+    long state = sessionInfo.getState();
+    return  (state == CKS_RW_SO_FUNCTIONS)
+        || (state == CKS_RW_USER_FUNCTIONS) || (state == CKS_RO_USER_FUNCTIONS);
+  }
+
   private void login(Session session) throws TokenException {
     login(session, userType, userName, pins);
   }
 
   private void login(Session session, long userType, char[] userName, List<char[]> pins) throws TokenException {
-    StaticLogger.info("verify on PKCS11Module with " + (pins == null || pins.isEmpty() ? "NULL pin" : "pin"));
+    synchronized (loginSync) {
+      StaticLogger.info("verify on PKCS11Module with " + (pins == null || pins.isEmpty() ? "NULL pin" : "pin"));
 
-    String userText = "user ";
-    if (userName != null) {
-      userText += new String(userName) + " ";
+      String userText = "user ";
+      if (userName != null) {
+        userText += new String(userName) + " ";
+      }
+      userText += "of type " + codeToName(Category.CKU, userType);
+
+      boolean nullPins;
+      if (pins == null || pins.isEmpty()) {
+        nullPins = true;
+      } else if (pins.size() == 1) {
+        char[] pin = pins.get(0);
+        nullPins = pin == null || pin.length == 0;
+      } else {
+        nullPins = false;
+      }
+
+      try {
+        if (userName == null) {
+          if (nullPins) {
+            session.login(userType, new char[0]);
+            StaticLogger.info("login successful as " + userText + " with NULL PIN");
+          } else {
+            for (char[] pin : pins) {
+              session.login(userType, pin == null ? new char[0] : pin);
+            }
+            StaticLogger.info("login successful as " + userText + " with PIN");
+          }
+        } else {
+          if (nullPins) {
+            session.loginUser(userType, userName, new char[0]);
+            StaticLogger.info("loginUser successful as " + userText + " with NULL PIN");
+          } else {
+            for (char[] pin : pins) {
+              session.loginUser(userType, userName, pin == null ? new char[0] : pin);
+            }
+            StaticLogger.info("loginUser successful as " + userText + " with PIN");
+          }
+        }
+      } catch (PKCS11Exception ex) {
+        long ckr = ex.getErrorCode();
+        if (ckr == CKR_USER_ALREADY_LOGGED_IN) {
+          StaticLogger.info("user already logged in");
+        } else {
+          StaticLogger.warn("login failed as {}: {}", userText, ckrCodeToName(ckr));
+          throw ex;
+        }
+      }
     }
-    userText += "of type " + codeToName(Category.CKU, userType);
+  }
 
-    boolean nullPins;
-    if (pins == null || pins.isEmpty()) {
-      nullPins = true;
-    } else if (pins.size() == 1) {
-      char[] pin = pins.get(0);
-      nullPins = pin == null || pin.length == 0;
-    } else {
-      nullPins = false;
-    }
-
+  private void opInit(OP op, Session session, Mechanism mechanism, long keyHandle) throws TokenException {
     try {
-      if (userName == null) {
-        if (nullPins) {
-          session.login(userType, new char[0]);
-          StaticLogger.info("login successful as " + userText + " with NULL PIN");
-        } else {
-          for (char[] pin : pins) {
-            session.login(userType, pin == null ? new char[0] : pin);
-          }
-          StaticLogger.info("login successful as " + userText + " with PIN");
-        }
-      } else {
-        if (nullPins) {
-          session.loginUser(userType, userName, new char[0]);
-          StaticLogger.info("loginUser successful as " + userText + " with NULL PIN");
-        } else {
-          for (char[] pin : pins) {
-            session.loginUser(userType, userName, pin == null ? new char[0] : pin);
-          }
-          StaticLogger.info("loginUser successful as " + userText + " with PIN");
-        }
-      }
+      opInit0(op, session, mechanism, keyHandle);
     } catch (PKCS11Exception ex) {
-      long ckr = ex.getErrorCode();
-      if (ckr == CKR_USER_ALREADY_LOGGED_IN) {
-        StaticLogger.info("user already logged in");
-      } else {
-        StaticLogger.warn("login failed as {}: {}", userText, ckrCodeToName(ckr));
-        throw ex;
+      if (ex.getErrorCode() == CKR_USER_NOT_LOGGED_IN) {
+        login(session);
+        opInit0(op, session, mechanism, keyHandle);
       }
+    }
+  }
+
+  private void opInit0(OP op, Session session, Mechanism mechanism, long keyHandle) throws TokenException {
+    switch (op) {
+      case SIGN:
+        session.signInit(mechanism, keyHandle);
+        break;
+      case VERIFY:
+        session.verifyInit(mechanism, keyHandle);
+        break;
+      case DECRYPT:
+        session.decryptInit(mechanism, keyHandle);
+        break;
+      case ENCRYPT:
+        session.encryptInit(mechanism, keyHandle);
+        break;
+      case MESSAGE_DECRYPT:
+        session.messageDecryptInit(mechanism, keyHandle);
+        break;
+      case MESSAGE_ENCRYPT:
+        session.messageEncryptInit(mechanism, keyHandle);
+        break;
+      case MESSAGE_SIGN:
+        session.messageSignInit(mechanism, keyHandle);
+        break;
+      case MESSAGE_VERIFY:
+        session.messageVerifyInit(mechanism, keyHandle);
+        break;
+      case DIGEST:
+        session.digestInit(mechanism);
+        break;
+      case SIGN_RECOVER:
+        session.signRecoverInit(mechanism, keyHandle);
+        break;
+      case VERIFY_RECOVER:
+        session.verifyRecoverInit(mechanism, keyHandle);
+        break;
+      default:
+        throw new IllegalStateException("unknown OP " + op);
     }
   }
 
