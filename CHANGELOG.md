@@ -2,12 +2,18 @@
 
 See also <https://github.com/xipki/ipkcs11wrapper/releases>
 
+## 1.0.7
+- Release date: xxxx/xx/xx
+
 ## 1.0.6
-- Release date: 2023/mm/dd
+- Release date: 2023/08/31
+- Bugfix: fixed encoding of CKA_EC_POINT of edwards and montgomery curves.
 - Feature: add vendor conf to ignore ulDeviceError
 - Feature: extend vendor conf of ncipher HSMs
 - Feature: add vendor conf to force use curve name instead curve OID.
 - Feature: add conf of timeout to borrow idle sessions.
+- Feature: allow the specification of PIN even if ProtectedAuthenticationPath is true.
+- Feature: more stable session login
 
 ## 1.0.5
 - Release date: 2023/04/29
