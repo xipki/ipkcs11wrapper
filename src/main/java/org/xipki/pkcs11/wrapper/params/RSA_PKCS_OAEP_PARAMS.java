@@ -40,7 +40,7 @@ public class RSA_PKCS_OAEP_PARAMS extends CkParams {
     params = new CK_RSA_PKCS_OAEP_PARAMS();
     params.hashAlg = hashAlg;
     params.mgf = mgf;
-    params.source = Functions.requireAmong("source", source, 0, CKZ_SALT_SPECIFIED);
+    params.source = source;
     params.pSourceData = sourceData;
   }
 

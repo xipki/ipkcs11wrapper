@@ -275,16 +275,6 @@ public class Functions {
     throw new IllegalArgumentException(name + " is not among " + Arrays.toString(candidates) + ": " + argument);
   }
 
-  public static long requireAmong(String name, long argument, long... candidates) {
-    for (long candidate : candidates) {
-      if (argument == candidate) {
-        return argument;
-      }
-    }
-
-    throw new IllegalArgumentException(name + " is not among " + Arrays.toString(candidates) + ": " + argument);
-  }
-
   public static String toStringFlags(Category category, String prefix, long flags, long... flagMasks) {
     // initialize the indent for non-first lines.
     char[] indentChars = new char[prefix.length() + 1];

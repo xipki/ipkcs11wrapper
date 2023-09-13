@@ -40,10 +40,10 @@ public class PKCS5_PBKD2_PARAMS extends CkParams {
   public PKCS5_PBKD2_PARAMS(long saltSource, byte[] saltSourceData, int iterations, long prf, byte[] prfData) {
     params = new CK_PKCS5_PBKD2_PARAMS();
 
-    params.saltSource = Functions.requireAmong("saltSource", saltSource, PKCS11Constants.CKZ_SALT_SPECIFIED);
+    params.saltSource = saltSource;
     params.pSaltSourceData = requireNonNull("saltSourceData", saltSourceData);
     params.iterations = iterations;
-    params.prf = Functions.requireAmong("prf", prf, PKCS11Constants.CKP_PKCS5_PBKD2_HMAC_SHA1);
+    params.prf = prf;
     params.pPrfData = requireNonNull("prfData", prfData);
   }
 

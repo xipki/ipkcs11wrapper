@@ -4,7 +4,6 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ECDH2_DERIVE_PARAMS;
-import org.xipki.pkcs11.wrapper.Functions;
 
 import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
 
@@ -40,9 +39,7 @@ public class ECDH2_DERIVE_PARAMS extends CkParams {
     params = new CK_ECDH2_DERIVE_PARAMS();
 
     params.pPublicData = requireNonNull("publicData", publicData);
-    params.kdf = Functions.requireAmong("kdf", kdf,
-        CKD_NULL, CKD_SHA1_KDF, CKD_SHA1_KDF_ASN1, CKD_SHA1_KDF_CONCATENATE);
-
+    params.kdf = kdf;
     params.pSharedData = sharedData;
     params.ulPrivateDataLen = privateDataLength;
     params.hPrivateData = privateDataHandle;
