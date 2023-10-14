@@ -6,6 +6,8 @@
 
 package org.xipki.pkcs11.wrapper;
 
+import java.util.*;
+
 /**
  * Objects of this class represent PKCS#11 tokens. The application can get
  * information on the token, manage sessions and initialize the token. Notice
@@ -54,11 +56,11 @@ public class Token {
    */
   private final Slot slot;
 
-  /**
-   * True, if UTF8 encoding is used as character encoding for character array
-   * attributes and PINs.
-   */
-  private final boolean useUtf8Encoding;
+  private final long[] mechCodes;
+
+  private final Map<Long, MechanismInfo> nativeMechCodeInfoMap = new HashMap<>();
+
+  private final Map<Long, MechanismInfo> mechCodeInfoMap = new HashMap<>();
 
   /**
    * The constructor that takes a reference to the module and the slot ID.
@@ -68,7 +70,38 @@ public class Token {
    */
   protected Token(Slot slot) {
     this.slot = Functions.requireNonNull("slot", slot);
-    this.useUtf8Encoding = slot.isUseUtf8Encoding();
+
+    PKCS11Module module = slot.getModule();
+    long[] mechanisms;
+    try {
+      mechanisms = module.getPKCS11Module().C_GetMechanismList(slot.getSlotID());
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception ex) {
+      StaticLogger.warn("error calling C_GetMechanismList: {}", ex.getMessage());
+      mechCodes = new long[0];
+      return;
+    }
+
+    long[] mechCodeArray = new long[mechanisms.length];
+    int index = 0;
+
+    for (long code : mechanisms) {
+      long code2 = module.vendorToGenericCode(PKCS11Constants.Category.CKM, code);
+
+      MechanismInfo mechInfo;
+      try {
+        mechInfo = new MechanismInfo(module.getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), code));
+      } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception ex) {
+        StaticLogger.warn("error calling C_GetMechanismInfo for mechanism {}: {}",
+            PKCS11Constants.ckmCodeToName(code), ex.getMessage());
+        continue;
+      }
+
+      nativeMechCodeInfoMap.put(code, mechInfo);
+      mechCodeArray[index++] = code2;
+      mechCodeInfoMap.put(code2, mechInfo);
+    }
+
+    mechCodes = (index == mechCodeArray.length) ? mechCodeArray : Arrays.copyOf(mechCodeArray, index);
   }
 
   /**
@@ -81,7 +114,7 @@ public class Token {
   }
 
   public boolean isUseUtf8Encoding() {
-    return useUtf8Encoding;
+    return slot.isUseUtf8Encoding();
   }
 
   /**
@@ -116,24 +149,9 @@ public class Token {
    *
    * @return An array of Mechanism objects. Each describes a mechanism that
    *         this token can perform. This array may be empty but not null.
-   * @exception PKCS11Exception
-   *              If reading the list of supported mechanisms fails.
    */
-  public long[] getMechanismList() throws PKCS11Exception {
-    PKCS11Module module = slot.getModule();
-    long[] mechanisms;
-    try {
-      mechanisms = module.getPKCS11Module().C_GetMechanismList(slot.getSlotID());
-    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
-      throw slot.getModule().convertException(e);
-    }
-
-    for (int i = 0; i < mechanisms.length; i++) {
-      long code = mechanisms[i];
-      mechanisms[i] = module.vendorToGenericCode(PKCS11Constants.Category.CKM, code);
-    }
-
-    return mechanisms;
+  public long[] getMechanismList() {
+    return mechCodes.clone();
   }
 
   /**
@@ -143,19 +161,13 @@ public class Token {
    * @param mechanism
    *          A mechanism that is supported by this token.
    * @return An information object about the concerned mechanism.
-   * @exception PKCS11Exception
-   *              If reading the information fails, or if the mechanism is not
-   *              supported by this token.
    */
-  public MechanismInfo getMechanismInfo(long mechanism) throws PKCS11Exception {
-    PKCS11Module module = slot.getModule();
-    mechanism = module.genericToVendorCode(PKCS11Constants.Category.CKM, mechanism);
-
-    try {
-      return new MechanismInfo(module.getPKCS11Module().C_GetMechanismInfo(slot.getSlotID(), mechanism));
-    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
-      throw module.convertException(e);
+  public MechanismInfo getMechanismInfo(long mechanism) {
+    MechanismInfo info = mechCodeInfoMap.get(mechanism);
+    if (info == null) {
+      info = nativeMechCodeInfoMap.get(mechanism);
     }
+    return info;
   }
 
   /**
