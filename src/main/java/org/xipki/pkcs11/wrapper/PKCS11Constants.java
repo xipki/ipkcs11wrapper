@@ -1262,14 +1262,14 @@ public final class PKCS11Constants {
   private static class CodeNameMap {
 
     private static final String pathPrefix = "org/xipki/pkcs11/wrapper/";
-    private final String description;
+    private final Category category;
 
     private final Map<Long, String> codeNameMap;
     private final Map<String, Long> nameCodeMap;
 
     CodeNameMap(Category category) {
       String resourcePath = pathPrefix + category.name() + ".properties";
-      this.description = category.description;
+      this.category = category;
 
       String prefix = category.prefix;
       codeNameMap = new HashMap<>();
@@ -1326,7 +1326,7 @@ public final class PKCS11Constants {
 
     String codeToString(long code) {
       String name = codeNameMap.get(code);
-      return name != null ? name : "Unknown " + description + " 0x" + Functions.toFullHex(code);
+      return name != null ? name : category.prefix + "_UNKNOWN_0X" + Functions.toFullHexUpper(code);
     }
 
     Long stringToCode(String name) {

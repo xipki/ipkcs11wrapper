@@ -186,7 +186,7 @@ public class Functions {
   }
 
   /**
-   * Converts a long value to a hexadecimal String of length 16. Includes
+   * Converts a long value to a lower-case hexadecimal String of length 16. Includes
    * leading zeros if necessary.
    *
    * @param value
@@ -194,12 +194,28 @@ public class Functions {
    * @return The hexadecimal string representation of the long value.
    */
   public static String toFullHex(long value) {
+    return toFullHex(value, false);
+  }
+
+  /**
+   * Converts a long value to an upper-case hexadecimal String of length 16. Includes
+   * leading zeros if necessary.
+   *
+   * @param value
+   *          The long value to be converted.
+   * @return The hexadecimal string representation of the long value.
+   */
+  public static String toFullHexUpper(long value) {
+    return toFullHex(value, true);
+  }
+
+  private static String toFullHex(long value, boolean upperCase) {
     long currentValue = value;
     StringBuilder stringBuffer = new StringBuilder(16);
     final int size = value > 0xFFFFFFFFL ? 16 : 8;
     for (int j = 0; j < size; j++) {
       int currentDigit = (int) currentValue & 0xf;
-      stringBuffer.append(Hex.DIGITS[currentDigit]);
+      stringBuffer.append((upperCase ? Hex.UPPER_DIGITS : Hex.DIGITS)[currentDigit]);
       currentValue >>>= 4;
     }
 

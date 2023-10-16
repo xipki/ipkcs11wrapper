@@ -56,7 +56,7 @@ public class Token {
    */
   private final Slot slot;
 
-  private final long[] mechCodes;
+  private long[] mechCodes;
 
   private final Map<Long, MechanismInfo> nativeMechCodeInfoMap = new HashMap<>();
 
@@ -70,6 +70,12 @@ public class Token {
    */
   protected Token(Slot slot) {
     this.slot = Functions.requireNonNull("slot", slot);
+  }
+
+  private synchronized void init() {
+    if (mechCodes != null) {
+      return;
+    }
 
     PKCS11Module module = slot.getModule();
     long[] mechanisms;
@@ -151,6 +157,7 @@ public class Token {
    *         this token can perform. This array may be empty but not null.
    */
   public long[] getMechanismList() {
+    init();
     return mechCodes.clone();
   }
 
@@ -163,6 +170,7 @@ public class Token {
    * @return An information object about the concerned mechanism.
    */
   public MechanismInfo getMechanismInfo(long mechanism) {
+    init();
     MechanismInfo info = mechCodeInfoMap.get(mechanism);
     if (info == null) {
       info = nativeMechCodeInfoMap.get(mechanism);

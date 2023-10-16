@@ -103,8 +103,8 @@ public class Slot {
   public SlotInfo getSlotInfo() throws PKCS11Exception {
     try {
       return new SlotInfo(module.getPKCS11Module().C_GetSlotInfo(slotID));
-    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
-      throw module.convertException(e);
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception ex) {
+      throw module.convertException(ex);
     }
   }
 
@@ -125,7 +125,7 @@ public class Slot {
    *
    * @return The object for accessing the token, non-null.
    */
-  public Token getToken() {
+  public synchronized Token getToken() {
     return token;
   }
 
