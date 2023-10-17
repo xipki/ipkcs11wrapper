@@ -19,13 +19,11 @@ import org.xipki.pkcs11.wrapper.StaticLogger;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
@@ -209,21 +207,6 @@ public class ConcurrentBag<T extends ConcurrentBagEntry> implements AutoCloseabl
   }
 
   /**
-   * This method provides a "snapshot" in time of the BagEntry
-   * items in the bag in the specified state.  It does not "lock"
-   * or reserve items in any way.  Call <code>reserve(T)</code>
-   * on items in list before performing any action on them.
-   *
-   * @param state one of the {@link ConcurrentBagEntry} states
-   * @return a possibly empty list of objects having the state specified
-   */
-  public List<T> values(final int state) {
-    final List<T> list = sharedList.stream().filter(e -> e.getState() == state).collect(Collectors.toList());
-    Collections.reverse(list);
-    return list;
-  }
-
-  /**
    * This method provides a "snapshot" in time of the bag items.  It
    * does not "lock" or reserve items in any way.  Call <code>reserve(T)</code>
    * on items in the list, or understand the concurrency implications of
@@ -237,87 +220,12 @@ public class ConcurrentBag<T extends ConcurrentBagEntry> implements AutoCloseabl
   }
 
   /**
-   * The method is used to make an item in the bag "unavailable" for
-   * borrowing.  It is primarily used when wanting to operate on items
-   * returned by the <code>values(int)</code> method.  Items that are
-   * reserved can be removed from the bag via <code>remove(T)</code>
-   * without the need to un-reserve them.  Items that are not removed
-   * from the bag can be make available for borrowing again by calling
-   * the <code>unreserve(T)</code> method.
-   *
-   * @param bagEntry the item to reserve
-   * @return true if the item was able to be reserved, false otherwise
-   */
-  public boolean reserve(final T bagEntry) {
-    return bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_RESERVED);
-  }
-
-  /**
-   * This method is used to make an item reserved via <code>reserve(T)</code>
-   * available again for borrowing.
-   *
-   * @param bagEntry the item to unreserve
-   */
-  @SuppressWarnings("SpellCheckingInspection")
-  public void unreserve(final T bagEntry) {
-    if (bagEntry.compareAndSet(STATE_RESERVED, STATE_NOT_IN_USE)) {
-      // spin until a thread takes it or none are waiting
-      while (waiters.get() > 0 && !handoffQueue.offer(bagEntry)) {
-        Thread.yield();
-      }
-    } else {
-      StaticLogger.warn("Attempt to relinquish an object to the bag that was not reserved: {}", bagEntry);
-    }
-  }
-
-  /**
-   * Get the number of threads pending (waiting) for an item from the
-   * bag to become available.
-   *
-   * @return the number of threads waiting for items from the bag
-   */
-  public int getWaitingThreadCount() {
-    return waiters.get();
-  }
-
-  /**
-   * Get a count of the number of items in the specified state at the time of this call.
-   *
-   * @param state the state of the items to count
-   * @return a count of how many items in the bag are in the specified state
-   */
-  public int getCount(final int state) {
-    int count = 0;
-    for (T e : sharedList) {
-      if (e.getState() == state) {
-        count++;
-      }
-    }
-    return count;
-  }
-
-  public int[] getStateCounts() {
-    final int[] states = new int[6];
-    for (T e : sharedList) {
-      ++states[e.getState()];
-    }
-    states[4] = sharedList.size();
-    states[5] = waiters.get();
-
-    return states;
-  }
-
-  /**
    * Get the total number of items in the bag.
    *
    * @return the number of items in the bag
    */
   public int size() {
     return sharedList.size();
-  }
-
-  public void dumpState() {
-    sharedList.forEach(entry -> StaticLogger.info(entry.toString()));
   }
 
   /**

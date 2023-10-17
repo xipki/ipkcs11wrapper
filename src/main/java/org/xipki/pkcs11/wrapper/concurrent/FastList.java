@@ -36,16 +36,6 @@ public final class FastList<T> implements List<T>, RandomAccess, Serializable {
   private int size;
 
   /**
-   * Construct a FastList with a default size of 32.
-   * @param clazz the Class stored in the collection
-   */
-  @SuppressWarnings("unchecked")
-  public FastList(Class<?> clazz) {
-    this.elementData = (T[]) Array.newInstance(clazz, 32);
-    this.clazz = clazz;
-  }
-
-  /**
    * Construct a FastList with a specified size.
    * @param clazz the Class stored in the collection
    * @param capacity the initial size of the FastList
@@ -88,19 +78,6 @@ public final class FastList<T> implements List<T>, RandomAccess, Serializable {
   @Override
   public T get(int index) {
     return elementData[index];
-  }
-
-  /**
-   * Remove the last element from the list.  No bound check is performed, so if this
-   * method is called on an empty list and ArrayIndexOutOfBounds exception will be
-   * thrown.
-   *
-   * @return the last element of the list
-   */
-  public T removeLast() {
-    T element = elementData[--size];
-    elementData[size] = null;
-    return element;
   }
 
   /**
