@@ -28,7 +28,7 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
  * <pre>
  * <code>
  *   TokenInfo tokenInfo = token.getTokenInfo();
- *   // check, if log-in of the user is required at all
+ *   // check, if login of the user is required at all
  *   if (tokenInfo.isLoginRequired()) {
  *     // check, if the token has own means to authenticate the user; e.g. a PIN-pad on the reader
  *     if (tokenInfo.isProtectedAuthenticationPath()) {

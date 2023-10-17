@@ -4,10 +4,7 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_ECDSA_ECIES_PARAMS;
-import org.xipki.pkcs11.wrapper.PKCS11Constants;
 import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
-
-import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_VENDOR_DEFINED;
 
 /**
  * Represents Utimaco's vendor CK_ECDSA_ECIES_PARAMS, which is used in
@@ -57,27 +54,26 @@ public class Utimaco_ECDSA_ECIES_PARAMS extends CkParams {
 
   @Override
   public CK_ECDSA_ECIES_PARAMS getParams() {
-    if (module == null || ((params.hashAlg & CKM_VENDOR_DEFINED) == 0)
-        && (params.cryptAlg & CKM_VENDOR_DEFINED) == 0 && (params.macAlg & CKM_VENDOR_DEFINED) == 0) {
+    if (module == null) {
       return params;
-    } else {
-      long newHashAlg = module.genericToVendorCode(Category.CKM, params.hashAlg);
-      long newCryptAlg = module.genericToVendorCode(Category.CKM, params.cryptAlg);
-      long newMacAlg = module.genericToVendorCode(Category.CKM, params.macAlg);
-      if (newHashAlg == params.hashAlg && newCryptAlg == params.cryptAlg && newMacAlg == params.macAlg) {
-        return params;
-      } else {
-        CK_ECDSA_ECIES_PARAMS params0 = new CK_ECDSA_ECIES_PARAMS();
-        params0.hashAlg = newHashAlg;
-        params0.cryptAlg = newCryptAlg;
-        params0.cryptOpt = params.cryptOpt;
-        params0.macAlg = newMacAlg;
-        params0.macOpt = params.macOpt;
-        params0.pSharedSecret1 = params.pSharedSecret1;
-        params0.pSharedSecret2 = params.pSharedSecret2;
-        return params0;
-      }
     }
+
+    long newHashAlg = module.genericToVendorCode(Category.CKM, params.hashAlg);
+    long newCryptAlg = module.genericToVendorCode(Category.CKM, params.cryptAlg);
+    long newMacAlg = module.genericToVendorCode(Category.CKM, params.macAlg);
+    if (newHashAlg == params.hashAlg && newCryptAlg == params.cryptAlg && newMacAlg == params.macAlg) {
+      return params;
+    }
+
+    CK_ECDSA_ECIES_PARAMS params0 = new CK_ECDSA_ECIES_PARAMS();
+    params0.hashAlg = newHashAlg;
+    params0.cryptAlg = newCryptAlg;
+    params0.cryptOpt = params.cryptOpt;
+    params0.macAlg = newMacAlg;
+    params0.macOpt = params.macOpt;
+    params0.pSharedSecret1 = params.pSharedSecret1;
+    params0.pSharedSecret2 = params.pSharedSecret2;
+    return params0;
   }
 
   @Override
@@ -88,10 +84,10 @@ public class Utimaco_ECDSA_ECIES_PARAMS extends CkParams {
   @Override
   public String toString(String indent) {
     return indent + "CK_ECDSA_ECIES_PARAMS:" +
-        val2Str(indent, "hashAlg", PKCS11Constants.ckmCodeToName(params.hashAlg)) +
-        val2Str(indent, "cryptAlg", PKCS11Constants.ckmCodeToName(params.cryptAlg)) +
+        val2Str(indent, "hashAlg", codeToName(Category.CKM, params.hashAlg)) +
+        val2Str(indent, "cryptAlg", codeToName(Category.CKM, params.cryptAlg)) +
         val2Str(indent, "cryptOpt", params.cryptOpt) +
-        val2Str(indent, "macAlg", PKCS11Constants.ckmCodeToName(params.macAlg)) +
+        val2Str(indent, "macAlg", codeToName(Category.CKM, params.macAlg)) +
         val2Str(indent, "mac options", params.macOpt) +
         ptr2str(indent, "sharedSecret1", params.pSharedSecret1) +
         ptr2str(indent, "sharedSecret2", params.pSharedSecret2);

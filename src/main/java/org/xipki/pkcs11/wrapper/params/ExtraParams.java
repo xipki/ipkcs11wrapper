@@ -4,7 +4,7 @@
 package org.xipki.pkcs11.wrapper.params;
 
 /**
- * Provides extra parameters. E.g. the order bit-size of an EC curve.
+ * Provides extra parameters, e.g. the order bit-size of an EC curve.
  *
  * @author Lijun Liao
  */

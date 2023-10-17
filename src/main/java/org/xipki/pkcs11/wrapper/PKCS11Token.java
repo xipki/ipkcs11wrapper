@@ -59,8 +59,6 @@ public class PKCS11Token {
 
   private final boolean readOnly;
 
-  // private final boolean isProtectedAuthenticationPath;
-
   private long timeOutWaitNewSessionMs = 10000; // maximal wait for 10 second
 
   private final AtomicLong countSessions = new AtomicLong(0);

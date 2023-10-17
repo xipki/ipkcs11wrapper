@@ -34,7 +34,21 @@ public class GCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
 
   @Override
   public CK_GCM_MESSAGE_PARAMS getParams() {
-    return params;
+    if (module == null) {
+      return params;
+    }
+
+    long newIvGenerator = module.genericToVendorCode(PKCS11Constants.Category.CKG_GENERATOR, params.ivGenerator);
+    if (newIvGenerator == params.ivGenerator) {
+      return params;
+    }
+
+    CK_GCM_MESSAGE_PARAMS params0 = new CK_GCM_MESSAGE_PARAMS();
+    params0.pIv = params.pIv;
+    params0.ulIvFixedBits = params.ulIvFixedBits;
+    params0.ivGenerator = newIvGenerator;
+    params0.pTag = params.pTag;
+    return params0;
   }
 
   @Override
@@ -52,8 +66,7 @@ public class GCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
     return indent + "CK_GCM_MESSAGE_PARAMS:" +
         ptr2str(indent, "IV", params.pIv) +
         ptr2str(indent, "pTag", params.pTag) +
-        val2Str(indent, "ivGenerator",
-            PKCS11Constants.codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.ivGenerator)) +
+        val2Str(indent, "ivGenerator", codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.ivGenerator)) +
         val2Str(indent, "ulIvFixedBits", params.ulIvFixedBits);
   }
 

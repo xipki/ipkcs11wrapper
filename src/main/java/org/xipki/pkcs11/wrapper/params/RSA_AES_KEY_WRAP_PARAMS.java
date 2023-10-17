@@ -4,6 +4,7 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_RSA_AES_KEY_WRAP_PARAMS;
+import iaik.pkcs.pkcs11.wrapper.CK_RSA_PKCS_OAEP_PARAMS;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
 
 /**
@@ -30,7 +31,28 @@ public class RSA_AES_KEY_WRAP_PARAMS extends CkParams {
 
   @Override
   public CK_RSA_AES_KEY_WRAP_PARAMS getParams() {
-    return params;
+    if (module == null) {
+      return params;
+    }
+
+    long newSource = module.genericToVendorCode(PKCS11Constants.Category.CKZ, params.pOAEPParams.source);
+    long newMgf = module.genericToVendorCode(PKCS11Constants.Category.CKG_MGF, params.pOAEPParams.mgf);
+    long newHashAlg = module.genericToVendorCode(PKCS11Constants.Category.CKM, params.pOAEPParams.hashAlg);
+
+    if (newSource == params.pOAEPParams.source && newMgf == params.pOAEPParams.mgf
+        && newHashAlg == params.pOAEPParams.hashAlg) {
+      return params;
+    }
+
+    CK_RSA_AES_KEY_WRAP_PARAMS params0 = new CK_RSA_AES_KEY_WRAP_PARAMS();
+    params0.ulAESKeyBits = params.ulAESKeyBits;
+    params0.pOAEPParams = new CK_RSA_PKCS_OAEP_PARAMS();
+    params0.pOAEPParams.source = newSource;
+    params0.pOAEPParams.hashAlg = newHashAlg;
+    params0.pOAEPParams.mgf = newMgf;
+    params0.pOAEPParams.pSourceData = params.pOAEPParams.pSourceData;
+
+    return params0;
   }
 
   @Override
@@ -44,7 +66,7 @@ public class RSA_AES_KEY_WRAP_PARAMS extends CkParams {
         val2Str(indent, "AESKeyBits", params.ulAESKeyBits) +
         "\n" + indent + "  pOAEPParams:" +
         val2Str(indent + "  ", "source",
-            PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, params.pOAEPParams.source)) +
+            codeToName(PKCS11Constants.Category.CKZ, params.pOAEPParams.source)) +
         ptr2str(indent, "pSourceData", params.pOAEPParams.pSourceData);
   }
 

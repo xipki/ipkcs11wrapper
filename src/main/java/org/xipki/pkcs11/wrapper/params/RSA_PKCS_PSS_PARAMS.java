@@ -4,10 +4,7 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_RSA_PKCS_PSS_PARAMS;
-import org.xipki.pkcs11.wrapper.PKCS11Constants;
 import org.xipki.pkcs11.wrapper.PKCS11Constants.Category;
-
-import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKM_VENDOR_DEFINED;
 
 /**
  * Represents the CK_RSA_PKCS_PSS_PARAMS.
@@ -38,21 +35,21 @@ public class RSA_PKCS_PSS_PARAMS extends CkParams {
 
   @Override
   public CK_RSA_PKCS_PSS_PARAMS getParams() {
-    if (module == null || ((params.hashAlg & CKM_VENDOR_DEFINED) == 0) && (params.mgf & CKM_VENDOR_DEFINED) == 0) {
+    if (module == null) {
       return params;
-    } else {
-      long newHashAlg = module.genericToVendorCode(Category.CKM, params.hashAlg);
-      long newMgf = module.genericToVendorCode(Category.CKG_MGF, params.mgf);
-      if (newHashAlg == params.hashAlg && newMgf == params.mgf) {
-        return params;
-      } else {
-        CK_RSA_PKCS_PSS_PARAMS params0 = new CK_RSA_PKCS_PSS_PARAMS();
-        params0.hashAlg = newHashAlg;
-        params0.mgf = newMgf;
-        params0.sLen = params.sLen;
-        return params0;
-      }
     }
+
+    long newHashAlg = module.genericToVendorCode(Category.CKM, params.hashAlg);
+    long newMgf = module.genericToVendorCode(Category.CKG_MGF, params.mgf);
+    if (newHashAlg == params.hashAlg && newMgf == params.mgf) {
+      return params;
+    }
+
+    CK_RSA_PKCS_PSS_PARAMS params0 = new CK_RSA_PKCS_PSS_PARAMS();
+    params0.hashAlg = newHashAlg;
+    params0.mgf = newMgf;
+    params0.sLen = params.sLen;
+    return params0;
   }
 
   @Override
@@ -63,12 +60,8 @@ public class RSA_PKCS_PSS_PARAMS extends CkParams {
   @Override
   public String toString(String indent) {
     return indent + "CK_RSA_PKCS_PSS_PARAMS:" +
-        val2Str(indent, "hashAlg", (module == null
-            ? PKCS11Constants.ckmCodeToName(params.hashAlg)
-            : module.codeToName(Category.CKM, params.hashAlg))) +
-        val2Str(indent, "mgf", (module == null
-            ? PKCS11Constants.codeToName(Category.CKG_MGF, params.mgf)
-            : module.codeToName(Category.CKG_MGF, params.mgf))) +
+        val2Str(indent, "hashAlg", codeToName(Category.CKM, params.hashAlg)) +
+        val2Str(indent, "mgf", codeToName(Category.CKG_MGF, params.mgf)) +
         val2Str(indent, "sLen", params.sLen);
   }
 

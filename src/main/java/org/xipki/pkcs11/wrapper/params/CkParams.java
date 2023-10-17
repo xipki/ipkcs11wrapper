@@ -4,6 +4,7 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import org.xipki.pkcs11.wrapper.Functions;
+import org.xipki.pkcs11.wrapper.PKCS11Constants;
 import org.xipki.pkcs11.wrapper.PKCS11Module;
 
 import java.util.Arrays;
@@ -74,6 +75,17 @@ public abstract class CkParams {
     char[] prefix = new char[maxFieldNameLen - name.length()];
     Arrays.fill(prefix, ' ');
     return new String(prefix) + name;
+  }
+
+  protected String codeToName(PKCS11Constants.Category category, long code) {
+    String name = PKCS11Constants.codeToName(category, code);
+    if (module != null) {
+      long code2 = module.genericToVendorCode(category, code);
+      if (code != code2) {
+        name += " (native: " + module.codeToName(category, code2) + ")";
+      }
+    }
+    return name;
   }
 
   protected static <T> T requireNonNull(String paramName, T param) {

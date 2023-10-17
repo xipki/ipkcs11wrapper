@@ -1326,7 +1326,7 @@ public final class PKCS11Constants {
 
     String codeToString(long code) {
       String name = codeNameMap.get(code);
-      return name != null ? name : category.prefix + "_UNKNOWN_0X" + Functions.toFullHexUpper(code);
+      return name != null ? name : category.prefix + "_0X" + Functions.toFullHexUpper(code);
     }
 
     Long stringToCode(String name) {
@@ -1440,35 +1440,57 @@ public final class PKCS11Constants {
   }
 
   public enum Category {
-    CKA("CKA", "attribute"),
-    CKC("CKC", "certificate type"),
-    CKD("CKD", "key derivation function"),
-    CKF_MECHANISM("CKF", "bit flag of mechanism info"),
-    CKF_OTP("CKF", "bit flag of OTP"),
-    CKF_SESSION("CKF", "bit flag of session info"),
-    CKF_SLOT("CKF", "bit flag of slot info"),
-    CKF_TOKEN("CKF", "bit flag of token info"),
-    CKG_GENERATOR("CKG", "generator"),
-    CKG_MGF("CKG", "mask generation function"),
-    CKH("CKH", "hardware feature"),
-    CKK("CKK", "key type"),
-    CKM("CKM", "mechanism type"),
-    CKO("CKO", "object class"),
-    CKP_PROFILE_ID("CKP", "profile ID"),
-    CKP_PRF("CKP", "pseudo-random function"),
-    CKR("CKR", "return value"),
-    CKS("CKS", "session state"),
-    CKU("CKU", "user"),
-    CKZ("CKZ", "salt/encoding parameter source");
+    /** attribute */
+    CKA("CKA"),
+    /** certificate type */
+    CKC("CKC"),
+    /** key derivation function */
+    CKD("CKD"),
+    /** bit flag of mechanism info */
+    CKF_MECHANISM("CKF"),
+    /** bit flag of OTP */
+    CKF_OTP("CKF"),
+    /** bit flag of session info */
+    CKF_SESSION("CKF"),
+    /** bit flag of slot info */
+    CKF_SLOT("CKF"),
+    /** bit flag of token info */
+    CKF_TOKEN("CKF"),
+    /** generator */
+    CKG_GENERATOR("CKG"),
+    /** mask generation function */
+    CKG_MGF("CKG"),
+    /** hardware feature */
+    CKH("CKH"),
+    /** key type */
+    CKK("CKK"),
+    /** mechanism type */
+    CKM("CKM"),
+    /** object class */
+    CKO("CKO"),
+    /** profile ID */
+    CKP_PROFILE_ID("CKP"),
+    /** pseudo-random function */
+    CKP_PRF("CKP"),
+    /** return value */
+    CKR("CKR"),
+    /** session state */
+    CKS("CKS"),
+    /** user */
+    CKU("CKU"),
+    /** salt/encoding parameter source */
+    CKZ("CKZ");
 
     private final String prefix;
 
-    private final String description;
-
-    Category(String prefix, String description) {
+    Category(String prefix) {
       this.prefix = prefix;
-      this.description = description;
+    }
+
+    public String getPrefix() {
+      return prefix;
     }
 
   }
+
 }

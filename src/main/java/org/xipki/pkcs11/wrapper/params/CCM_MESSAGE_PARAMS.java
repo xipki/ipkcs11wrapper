@@ -37,7 +37,21 @@ public class CCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
 
   @Override
   public CK_CCM_MESSAGE_PARAMS getParams() {
-    return params;
+    if (module == null) {
+      return params;
+    }
+    long newNOnceGenerator = module.genericToVendorCode(PKCS11Constants.Category.CKG_GENERATOR, params.nonceGenerator);
+    if (newNOnceGenerator == params.nonceGenerator) {
+      return params;
+    }
+
+    CK_CCM_MESSAGE_PARAMS params0 = new CK_CCM_MESSAGE_PARAMS();
+    params0.ulDataLen = params.ulDataLen;
+    params0.pNonce = params.pNonce;
+    params0.ulNonceFixedBits = params.ulNonceFixedBits;
+    params0.nonceGenerator = newNOnceGenerator;
+    params0.pMAC = params.pMAC;
+    return params0;
   }
 
   @Override
@@ -56,7 +70,7 @@ public class CCM_MESSAGE_PARAMS extends CkParams implements CkMessageParams {
         val2Str(indent, "ulDataLen", params.ulDataLen) +
         ptr2str(indent, "pNonce", params.pNonce) +
         val2Str(indent, "nonceGenerator",
-            PKCS11Constants.codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.nonceGenerator)) +
+            codeToName(PKCS11Constants.Category.CKG_GENERATOR, params.nonceGenerator)) +
         val2Str(indent, "ulNonceFixedBits", params.ulNonceFixedBits) +
         ptr2str(indent, "pMAC", params.pMAC);
   }

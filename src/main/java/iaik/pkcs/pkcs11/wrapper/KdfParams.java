@@ -3,6 +3,11 @@
 
 package iaik.pkcs.pkcs11.wrapper;
 
+
+/**
+ * KDF parametes
+ * @author SIC
+ */
 public abstract class KdfParams {
 
   /**

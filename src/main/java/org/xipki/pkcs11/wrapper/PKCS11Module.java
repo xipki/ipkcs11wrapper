@@ -124,7 +124,7 @@ public class PKCS11Module {
 
   private Boolean sm2SignatureFixNeeded;
 
-  private Map<Category, VendorMap> vendorMaps = new HashMap<>();
+  private final Map<Category, VendorMap> vendorMaps = new HashMap<>();
 
   private final Set<Integer> vendorBehaviours = new HashSet<>();
 

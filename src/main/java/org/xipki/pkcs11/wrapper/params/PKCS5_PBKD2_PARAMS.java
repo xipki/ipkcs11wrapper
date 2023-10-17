@@ -4,10 +4,7 @@
 package org.xipki.pkcs11.wrapper.params;
 
 import iaik.pkcs.pkcs11.wrapper.CK_PKCS5_PBKD2_PARAMS;
-import org.xipki.pkcs11.wrapper.Functions;
 import org.xipki.pkcs11.wrapper.PKCS11Constants;
-
-import static org.xipki.pkcs11.wrapper.PKCS11Constants.CKP_VENDOR_DEFINED;
 
 /**
  * Represents the CK_PKCS5_PBKD2_PARAMS.
@@ -49,22 +46,24 @@ public class PKCS5_PBKD2_PARAMS extends CkParams {
 
   @Override
   public CK_PKCS5_PBKD2_PARAMS getParams() {
-    if (module == null || (params.prf & CKP_VENDOR_DEFINED) == 0) {
+    if (module == null) {
       return params;
-    } else {
-      long newPrf = module.genericToVendorCode(PKCS11Constants.Category.CKP_PRF, params.prf);
-      if (newPrf == params.prf) {
-        return params;
-      } else {
-        CK_PKCS5_PBKD2_PARAMS params0 = new CK_PKCS5_PBKD2_PARAMS();
-        params0.saltSource = params.saltSource;
-        params0.pSaltSourceData = params.pSaltSourceData;
-        params0.iterations = params.iterations;
-        params0.prf = newPrf;
-        params0.pPrfData = params.pPrfData;
-        return params0;
-      }
     }
+
+    long newPrf = module.genericToVendorCode(PKCS11Constants.Category.CKP_PRF, params.prf);
+    long newSaltSource = module.genericToVendorCode(PKCS11Constants.Category.CKZ, params.saltSource);
+
+    if (newPrf == params.prf && newSaltSource == params.saltSource) {
+      return params;
+    }
+
+    CK_PKCS5_PBKD2_PARAMS params0 = new CK_PKCS5_PBKD2_PARAMS();
+    params0.saltSource = newSaltSource;
+    params0.pSaltSourceData = params.pSaltSourceData;
+    params0.iterations = params.iterations;
+    params0.prf = newPrf;
+    params0.pPrfData = params.pPrfData;
+    return params0;
   }
 
   @Override
@@ -75,11 +74,10 @@ public class PKCS5_PBKD2_PARAMS extends CkParams {
   @Override
   public String toString(String indent) {
     return indent + "CK_PKCS5_PBKD2_PARAMS:" +
-        val2Str(indent, "saltSource",
-            PKCS11Constants.codeToName(PKCS11Constants.Category.CKZ, params.saltSource)) +
+        val2Str(indent, "saltSource", codeToName(PKCS11Constants.Category.CKZ, params.saltSource)) +
         ptr2str(indent, "pSaltSourceData", params.pSaltSourceData) +
         val2Str(indent, "iterations", params.iterations) +
-        val2Str(indent, "prf", PKCS11Constants.codeToName(PKCS11Constants.Category.CKP_PRF, params.prf)) +
+        val2Str(indent, "prf", codeToName(PKCS11Constants.Category.CKP_PRF, params.prf)) +
         ptr2str(indent, "pPrfData", params.pPrfData);
   }
 
