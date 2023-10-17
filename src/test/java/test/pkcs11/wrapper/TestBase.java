@@ -297,7 +297,7 @@ public class TestBase {
     }
   } // method generatePublicKey
 
-  protected static List<Long> getMechanismList(Token token) throws PKCS11Exception {
+  protected static List<Long> getMechanismList(Token token) {
     long[] supportedMechanisms = token.getMechanismList();
     List<Long> list = new ArrayList<>(supportedMechanisms.length);
     for (long mech : supportedMechanisms) {

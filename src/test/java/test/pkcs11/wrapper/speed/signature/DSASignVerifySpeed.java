@@ -3,7 +3,7 @@
 
 package test.pkcs11.wrapper.speed.signature;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.Mechanism;
@@ -86,13 +86,13 @@ public class DSASignVerifySpeed extends TestBase {
     executor.setThreads(getSpeedTestThreads());
     executor.setDuration(getSpeedTestDuration());
     executor.execute();
-    Assert.assertEquals("Sign speed", 0, executor.getErrorAccout());
+    Assert.assertEquals("Sign speed", 0, executor.getErrorAccount());
 
     executor = new MyVerifyExecutor();
     executor.setThreads(getSpeedTestThreads());
     executor.setDuration(getSpeedTestDuration());
     executor.execute();
-    Assert.assertEquals("Verify speed", 0, executor.getErrorAccout());
+    Assert.assertEquals("Verify speed", 0, executor.getErrorAccount());
   }
 
 }

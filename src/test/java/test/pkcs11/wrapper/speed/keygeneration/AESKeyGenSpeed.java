@@ -3,7 +3,7 @@
 
 package test.pkcs11.wrapper.speed.keygeneration;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.AttributeVector;
 import org.xipki.pkcs11.wrapper.PKCS11Exception;
@@ -48,7 +48,7 @@ public abstract class AESKeyGenSpeed extends TestBase {
       executor.setThreads(getSpeedTestThreads());
       executor.setDuration(getSpeedTestDuration());
       executor.execute();
-      Assert.assertEquals("no error", 0, executor.getErrorAccout());
+      Assert.assertEquals("no error", 0, executor.getErrorAccount());
     }
   }
 

@@ -74,7 +74,7 @@ public abstract class VerifyExecutor extends Pkcs11Executor {
   protected abstract AttributeVector getMinimalPublicKeyTemplate();
 
   @Override
-  protected Runnable getTestor() {
+  protected Runnable getTester() {
     return new MyRunnable();
   }
 

@@ -3,7 +3,7 @@
 
 package test.pkcs11.wrapper.speed.encryption;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.*;
 import org.xipki.pkcs11.wrapper.params.GCM_PARAMS;
@@ -95,14 +95,14 @@ public class AESGCMPadEncryptDecryptSpeed extends TestBase {
     executor.setDuration(getSpeedTestDuration());
     executor.setUnit(inputUnit);
     executor.execute();
-    Assert.assertEquals("Encrypt speed", 0, executor.getErrorAccout());
+    Assert.assertEquals("Encrypt speed", 0, executor.getErrorAccount());
 
     executor = new MyDecryptExecutor();
     executor.setThreads(getSpeedTestThreads());
     executor.setDuration(getSpeedTestDuration());
     executor.setUnit(inputUnit);
     executor.execute();
-    Assert.assertEquals("Decrypt speed", 0, executor.getErrorAccout());
+    Assert.assertEquals("Decrypt speed", 0, executor.getErrorAccount());
   }
 
 }

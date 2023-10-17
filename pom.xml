@@ -43,27 +43,27 @@
   </scm>
   <dependencies>
     <dependency>
-      <groupId>org.xipki</groupId>
+      <groupId>org.xipki.commons</groupId>
       <artifactId>util</artifactId>
-      <version>5.3.1</version>
+      <version>6.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
-      <version>1.72</version>
+      <version>1.76</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.8.2</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
-      <version>2.11.2</version>
+      <version>2.20.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

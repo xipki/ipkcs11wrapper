@@ -14,7 +14,7 @@ import test.pkcs11.wrapper.TestBase;
  */
 public abstract class Pkcs11Executor extends BenchmarkExecutor {
 
-  protected Pkcs11Executor(String description) throws PKCS11Exception {
+  protected Pkcs11Executor(String description) {
     super(description);
   }
 

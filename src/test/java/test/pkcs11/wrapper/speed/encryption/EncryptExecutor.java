@@ -28,8 +28,6 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
     public MyRunnable() {
     }
 
-    private final byte[] out = new byte[inputLen + 64];
-
     @Override
     public void run() {
       while (!stop()) {
@@ -74,7 +72,7 @@ public abstract class EncryptExecutor extends Pkcs11Executor {
   }
 
   @Override
-  protected Runnable getTestor() {
+  protected Runnable getTester() {
     return new MyRunnable();
   }
 

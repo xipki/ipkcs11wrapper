@@ -3,7 +3,7 @@
 
 package test.pkcs11.wrapper;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.xipki.pkcs11.wrapper.Functions;
 
