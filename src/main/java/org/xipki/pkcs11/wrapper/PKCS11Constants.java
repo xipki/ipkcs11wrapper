@@ -11,9 +11,10 @@ import java.util.*;
 /**
  * This interface holds constants of the PKCS#11 v2.40 errata 1 standard.
  * Source:
- * http://docs.oasis-open.org/pkcs11/pkcs11-base/v2.40/errata01/csprd01/include/pkcs11-v2.40/.
+ * <a href="http://docs.oasis-open.org/pkcs11/pkcs11-base/v2.40/errata01/csprd01/include/pkcs11-v2.40/">
+ *   pkcs11-include v2.40</a>.
  * Latest version of the specification:
- * http://docs.oasis-open.org/pkcs11/pkcs11-base/v2.40/pkcs11-base-v2.40.html.
+ * <a href="http://docs.oasis-open.org/pkcs11/pkcs11-base/v2.40/pkcs11-base-v2.40.html">pkcss11-base v2.40</a>.
  * This is mainly the content of the 'pkcs11t.h' header file.
  *
  * <p>Mapping of primitive data types to Java types:

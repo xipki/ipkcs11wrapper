@@ -484,8 +484,7 @@ public class PKCS11Module {
         }
         tempWrapperFile.deleteOnExit();
 
-        StaticLogger.info("PKCS11oModule.loadWrapperFromJar: copy file {} to {}",
-            jarFilePath, tempWrapperFile.getAbsolutePath());
+        StaticLogger.info("PKCS11oModule.loadWrapperFromJar: copy file {} to a temporary file", jarFilePath);
         try {
           Files.copy(wrapperLibrary, tempWrapperFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } finally {
