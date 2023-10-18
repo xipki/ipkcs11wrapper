@@ -3,8 +3,7 @@
 
 package org.xipki.pkcs11.wrapper;
 
-import org.xipki.pkcs11.wrapper.concurrent.ConcurrentBag;
-import org.xipki.pkcs11.wrapper.concurrent.ConcurrentBagEntry;
+import org.xipki.pkcs11.wrapper.ConcurrentBag.BagEntry;
 import org.xipki.pkcs11.wrapper.multipart.*;
 import org.xipki.pkcs11.wrapper.params.CkParams;
 
@@ -63,7 +62,7 @@ public class PKCS11Token {
 
   private final AtomicLong countSessions = new AtomicLong(0);
 
-  private final ConcurrentBag<ConcurrentBagEntry<Session>> sessions = new ConcurrentBag<>();
+  private final ConcurrentBag<Session> sessions = new ConcurrentBag<>();
 
   private final Object loginSync = new Object();
 
@@ -129,7 +128,7 @@ public class PKCS11Token {
     // login
     Session session = openSession();
     login(session);
-    sessions.add(new ConcurrentBagEntry<>(session));
+    sessions.add(new BagEntry<>(session));
   }
 
   public PKCS11Module getModule() {
@@ -195,7 +194,7 @@ public class PKCS11Token {
    * @throws TokenException If setting the new PIN fails.
    */
   public void setPIN(char[] oldPin, char[] newPin) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       long sessionState = session.getSessionInfo().getState();
@@ -223,7 +222,7 @@ public class PKCS11Token {
    *                         other reason.
    */
   public void initPIN(char[] pin) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       long sessionState = session.getSessionInfo().getState();
@@ -249,7 +248,7 @@ public class PKCS11Token {
       try {
         StaticLogger.info("close all sessions on token: {}", token.getTokenInfo());
 
-        for (ConcurrentBagEntry<Session> session : sessions.values()) {
+        for (BagEntry<Session> session : sessions.values()) {
           session.value().closeSession();
         }
       } catch (Throwable th) {
@@ -300,7 +299,7 @@ public class PKCS11Token {
    * @throws TokenException If logging in the session fails.
    */
   public void logInSecurityOfficer(char[] userName, char[] pin) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowNoLoginSession();
+    BagEntry<Session> session0 = borrowNoLoginSession();
     Session session = session0.value();
     try {
       login(session, CKU_SO, userName, (pin == null) ? null : Collections.singletonList(pin));
@@ -316,7 +315,7 @@ public class PKCS11Token {
    * @throws TokenException If logging out the session fails.
    */
   public void logout() throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       session.logout();
@@ -354,7 +353,7 @@ public class PKCS11Token {
    *                        created on the token.
    */
   public long createObject(AttributeVector template) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().createObject(template);
     } finally {
@@ -363,7 +362,7 @@ public class PKCS11Token {
   }
 
   public long createPrivateKeyObject(AttributeVector template, PublicKey publicKey) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().createPrivateKeyObject(template, publicKey);
     } finally {
@@ -379,7 +378,7 @@ public class PKCS11Token {
    * @throws TokenException if creating new object failed.
    */
   public long createECPrivateKeyObject(AttributeVector template, byte[] ecPoint) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().createECPrivateKeyObject(template, ecPoint);
     } finally {
@@ -401,7 +400,7 @@ public class PKCS11Token {
    * @throws TokenException If copying the object fails for some reason.
    */
   public long copyObject(long sourceObjectHandle, AttributeVector template) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().copyObject(sourceObjectHandle, template);
     } finally {
@@ -424,7 +423,7 @@ public class PKCS11Token {
    * @throws TokenException If updating the attributes fails. All or no attributes are updated.
    */
   public void setAttributeValues(long objectToUpdateHandle, AttributeVector template) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       session0.value().setAttributeValues(objectToUpdateHandle, template);
     } finally {
@@ -441,7 +440,7 @@ public class PKCS11Token {
    * @throws TokenException If the object could not be destroyed.
    */
   public void destroyObject(long objectHandle) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       session0.value().destroyObject(objectHandle);
     } finally {
@@ -473,7 +472,7 @@ public class PKCS11Token {
   }
 
   public List<Long> destroyObjects(List<Long> objectHandles) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       List<Long> destroyedHandles = new ArrayList<>(objectHandles.size());
@@ -501,7 +500,7 @@ public class PKCS11Token {
    * @throws TokenException If determining the size fails.
    */
   public long getObjectSize(long objectHandle) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().getObjectSize(objectHandle);
     } finally {
@@ -529,7 +528,7 @@ public class PKCS11Token {
     byte[] keyId = new byte[idLength];
     template.id(keyId);
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       while (true) {
@@ -554,7 +553,7 @@ public class PKCS11Token {
       return null;
     }
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       return getKey(session, keyId);
@@ -570,7 +569,7 @@ public class PKCS11Token {
    * @throws TokenException If executing operation fails.
    */
   public PKCS11Key getKey(AttributeVector criteria) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       PKCS11KeyId keyId = getKeyId(session, criteria);
@@ -631,7 +630,7 @@ public class PKCS11Token {
    * @throws TokenException If executing operation fails.
    */
   public PKCS11KeyId getKeyId(AttributeVector criteria) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       return getKeyId(session, criteria);
@@ -719,7 +718,7 @@ public class PKCS11Token {
    * @throws TokenException if finding objects failed.
    */
   public long[] findAllObjects(AttributeVector template) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().findAllObjectsSingle(template);
     } finally {
@@ -739,7 +738,7 @@ public class PKCS11Token {
    * @throws TokenException if finding objects failed.
    */
   public long[] findObjects(AttributeVector template, int maxObjectCount) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().findObjectsSingle(template, maxObjectCount);
     } finally {
@@ -757,7 +756,7 @@ public class PKCS11Token {
    * @throws TokenException If encrypting failed.
    */
   public byte[] encrypt(Mechanism mechanism, long keyHandle, byte[] plaintext) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       opInit(OP.ENCRYPT, session, mechanism, keyHandle);
@@ -798,7 +797,7 @@ public class PKCS11Token {
    */
   public int encrypt(OutputStream out, Mechanism mechanism, long keyHandle, InputStream plaintext)
       throws TokenException, IOException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       byte[] buffer = new byte[maxMessageSize];
@@ -842,7 +841,7 @@ public class PKCS11Token {
    * @throws TokenException If encrypting failed.
    */
   public byte[] decrypt(Mechanism mechanism, long keyHandle, byte[] ciphertext) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
 
     try {
@@ -884,7 +883,7 @@ public class PKCS11Token {
    */
   public int decrypt(OutputStream out, Mechanism mechanism, long keyHandle, InputStream ciphertext)
       throws TokenException, IOException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       byte[] buffer = new byte[maxMessageSize];
@@ -927,7 +926,7 @@ public class PKCS11Token {
    * @throws TokenException If digesting the data failed.
    */
   public byte[] digest(Mechanism mechanism, byte[] data) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     int len = data.length;
     try {
@@ -959,7 +958,7 @@ public class PKCS11Token {
    * @throws TokenException If digesting the data failed.
    */
   public byte[] digestKey(Mechanism mechanism, long keyHandle) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       opInit(OP.DIGEST, session, mechanism, 0);
@@ -985,7 +984,7 @@ public class PKCS11Token {
    * @throws IOException if reading data from stream failed.
    */
   public byte[] digest(Mechanism mechanism, InputStream data) throws TokenException, IOException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       byte[] buffer = new byte[maxMessageSize];
@@ -1019,7 +1018,7 @@ public class PKCS11Token {
    * @throws TokenException If signing the data failed.
    */
   public byte[] sign(Mechanism mechanism, long keyHandle, byte[] data) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       opInit(OP.SIGN, session, mechanism, keyHandle);
@@ -1063,7 +1062,7 @@ public class PKCS11Token {
    */
   public byte[] sign(Mechanism mechanism, long keyHandle, InputStream data)
       throws TokenException, IOException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       byte[] buffer = new byte[maxMessageSize];
@@ -1120,7 +1119,7 @@ public class PKCS11Token {
    * @throws TokenException If signing the data failed.
    */
   public byte[] signRecover(Mechanism mechanism, long keyHandle, byte[] data) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       Session session = session0.value();
       opInit(OP.SIGN_RECOVER, session, mechanism, keyHandle);
@@ -1142,7 +1141,7 @@ public class PKCS11Token {
    * @throws TokenException If verifying the signature fails.
    */
   public boolean verify(Mechanism mechanism, long keyHandle, byte[] data, byte[] signature) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     int len = data.length;
 
@@ -1217,7 +1216,7 @@ public class PKCS11Token {
    */
   public boolean verify(Mechanism mechanism, long keyHandle, InputStream data, byte[] signature)
       throws TokenException, IOException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       byte[] buffer = new byte[maxMessageSize];
@@ -1304,7 +1303,7 @@ public class PKCS11Token {
    * @throws TokenException If signing the data failed.
    */
   public byte[] verifyRecover(Mechanism mechanism, long keyHandle, byte[] data) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       Session session = session0.value();
       opInit(OP.VERIFY_RECOVER, session, mechanism, keyHandle);
@@ -1326,7 +1325,7 @@ public class PKCS11Token {
    * @throws TokenException If generating a new secret key or domain parameters failed.
    */
   public long generateKey(Mechanism mechanism, AttributeVector template) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().generateKey(mechanism, template);
     } finally {
@@ -1346,7 +1345,7 @@ public class PKCS11Token {
    * @throws TokenException If generating a new key-pair failed.
    */
   public PKCS11KeyPair generateKeyPair(Mechanism mechanism, KeyPairTemplate template) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().generateKeyPair(mechanism, template);
     } finally {
@@ -1364,7 +1363,7 @@ public class PKCS11Token {
    * @throws TokenException If wrapping the key failed.
    */
   public byte[] wrapKey(Mechanism mechanism, long wrappingKeyHandle, long keyHandle) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().wrapKey(mechanism, wrappingKeyHandle, keyHandle);
     } finally {
@@ -1386,7 +1385,7 @@ public class PKCS11Token {
    */
   public long unwrapKey(Mechanism mechanism, long unwrappingKeyHandle, byte[] wrappedKey,
                         AttributeVector keyTemplate) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().unwrapKey(mechanism, unwrappingKeyHandle, wrappedKey, keyTemplate);
     } finally {
@@ -1408,7 +1407,7 @@ public class PKCS11Token {
    * @throws TokenException If deriving the key or creating a new key object failed.
    */
   public long deriveKey(Mechanism mechanism, long baseKeyHandle, AttributeVector template) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().deriveKey(mechanism, baseKeyHandle, template);
     } finally {
@@ -1436,7 +1435,7 @@ public class PKCS11Token {
    * @throws TokenException If generating random bytes failed.
    */
   public byte[] generateRandom(int numberOfBytesToGenerate, byte[] extraSeed) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       if (extraSeed != null && extraSeed.length > 0) {
@@ -1461,7 +1460,7 @@ public class PKCS11Token {
       throws TokenException {
     byte[][] ciphertexts = new byte[entries.length][];
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       // messageEncryptInit
@@ -1512,7 +1511,7 @@ public class PKCS11Token {
       throws TokenException, IOException {
     int[] ciphertextLens = new int[entries.length];
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       // messageEncryptInit
@@ -1571,7 +1570,7 @@ public class PKCS11Token {
       throws TokenException {
     byte[][] plaintexts = new byte[entries.length][];
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       // messageDecryptInit
@@ -1622,7 +1621,7 @@ public class PKCS11Token {
       throws TokenException, IOException {
     int[] plaintextLens = new int[entries.length];
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       // messageDecryptInit
@@ -1680,7 +1679,7 @@ public class PKCS11Token {
       throws TokenException {
     byte[][] signatures = new byte[entries.length][];
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       // messageSignInit
@@ -1726,7 +1725,7 @@ public class PKCS11Token {
       throws TokenException, IOException {
     byte[][] signatures = new byte[entries.length][];
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       // messageSignInit
@@ -1769,7 +1768,7 @@ public class PKCS11Token {
       throws TokenException {
     boolean[] verifyResults = new boolean[entries.length];
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       // decryptInit
@@ -1822,7 +1821,7 @@ public class PKCS11Token {
       throws TokenException, IOException {
     boolean[] verifyResults = new boolean[entries.length];
 
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     Session session = session0.value();
     try {
       // messageVerifyInit
@@ -1900,7 +1899,7 @@ public class PKCS11Token {
    * @throws TokenException if getting attributes failed.
    */
   public AttributeVector getAttrValues(long objectHandle, List<Long> attributeTypes) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().getAttrValues(objectHandle, attributeTypes);
     } finally {
@@ -1915,7 +1914,7 @@ public class PKCS11Token {
    * @throws TokenException if getting attributes failed.
    */
   public AttributeVector getDefaultAttrValues(long objectHandle) throws TokenException {
-    ConcurrentBagEntry<Session> session0 = borrowSession();
+    BagEntry<Session> session0 = borrowSession();
     try {
       return session0.value().getDefaultAttrValues(objectHandle);
     } finally {
@@ -1929,19 +1928,19 @@ public class PKCS11Token {
     return session;
   }
 
-  private ConcurrentBagEntry<Session> borrowSession() throws TokenException {
+  private BagEntry<Session> borrowSession() throws TokenException {
     return borrowSession(true);
   }
 
-  private ConcurrentBagEntry<Session> borrowNoLoginSession() throws TokenException {
+  private BagEntry<Session> borrowNoLoginSession() throws TokenException {
     return borrowSession(false);
   }
 
-  private ConcurrentBagEntry<Session> borrowSession(boolean login) throws TokenException {
+  private BagEntry<Session> borrowSession(boolean login) throws TokenException {
     long maxTimeMs = clock.millis() + timeOutWaitNewSessionMs;
     int maxTries = maxSessionCount + 1;
     for (int retries = 0; retries < maxTries; retries++) {
-      ConcurrentBagEntry<Session> sessionBagEntry = borrowSession(login, maxTimeMs);
+      BagEntry<Session> sessionBagEntry = borrowSession(login, maxTimeMs);
       if (sessionBagEntry != null) {
         if (retries != 0) {
           StaticLogger.info("Borrowed session after " + (retries + 1) + " tries.");
@@ -1953,11 +1952,11 @@ public class PKCS11Token {
     throw new TokenException("could not borrow session after " + maxTries + " tries.");
   }
 
-  private ConcurrentBagEntry<Session> borrowSession(boolean login, long maxTimeMs) throws TokenException {
+  private BagEntry<Session> borrowSession(boolean login, long maxTimeMs) throws TokenException {
     if (maxTimeMs == 0) {
       maxTimeMs = clock.millis() + timeOutWaitNewSessionMs;
     }
-    ConcurrentBagEntry<Session> session = null;
+    BagEntry<Session> session = null;
     synchronized (sessions) {
       if (countSessions.get() < maxSessionCount) {
         try {
@@ -1967,7 +1966,7 @@ public class PKCS11Token {
 
         if (session == null) {
           // create new session
-          sessions.add(new ConcurrentBagEntry<>(openSession()));
+          sessions.add(new BagEntry<>(openSession()));
         }
       }
     }
