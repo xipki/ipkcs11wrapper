@@ -55,7 +55,7 @@ import static java.util.concurrent.locks.LockSupport.parkNanos;
  */
 public class ConcurrentBag<T> implements AutoCloseable {
 
-  private static ClockSource CLOCK =  "Mac OS X".equalsIgnoreCase(System.getProperty("os.name"))
+  private static final ClockSource CLOCK =  "Mac OS X".equalsIgnoreCase(System.getProperty("os.name"))
       ? new MillisecondClockSource() : new NanosecondClockSource();
 
   private final CopyOnWriteArrayList<BagEntry<T>> sharedList;
