@@ -29,6 +29,17 @@ public class PKCS11Exception extends TokenException {
    *
    * @param errorCode
    *          The PKCS#11 error code (return value).
+   */
+  public PKCS11Exception(long errorCode) {
+    this(errorCode, PKCS11Constants.ckrCodeToName(errorCode));
+  }
+
+  /**
+   * Constructor taking the error code as defined for the CKR_* constants
+   * in PKCS#11.
+   *
+   * @param errorCode
+   *          The PKCS#11 error code (return value).
    * @param name
    *          The error name.
    */

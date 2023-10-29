@@ -4,7 +4,9 @@ See also <https://github.com/xipki/ipkcs11wrapper/releases>
 
 ## 1.0.8
 - Release date: yyyy/mm/dd
-- xx
+- Feature: log the library version.
+- Feature: simplify the concurrent bag.
+- Feature: log th mechanism code and parameter more accurately
 
 ## 1.0.7
 - Release date: 2023/10/15

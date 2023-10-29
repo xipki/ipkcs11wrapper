@@ -1207,7 +1207,7 @@ public class Session {
   public int digestFinal(byte[] out, int outOfs, int outLen) throws PKCS11Exception {
     byte[] digest = digestFinal();
     if (digest.length > outLen) {
-      throw new PKCS11Exception(CKR_BUFFER_TOO_SMALL, "CKR_BUFFER_TOO_SMALL");
+      throw new PKCS11Exception(CKR_BUFFER_TOO_SMALL);
     }
     System.arraycopy(digest, 0, out, outOfs, digest.length);
     return digest.length;

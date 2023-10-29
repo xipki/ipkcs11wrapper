@@ -3,7 +3,6 @@
 
 package iaik.pkcs.pkcs11.wrapper;
 
-
 /**
  * KDF parametes
  * @author SIC

@@ -77,6 +77,10 @@ public class MechanismInfo {
     return maxKeySize;
   }
 
+  public long getFlags() {
+    return flags;
+  }
+
   public boolean hasFlagBit(long flagMask) {
     return (flags & flagMask) != 0L;
   }

@@ -26,7 +26,7 @@ import java.util.*;
  *   if (!contains(supportedMechanisms, CKM_RSA_PKCS)) {
  *     System.out.print("This token does not support the RSA PKCS mechanism!");
  *     System.out.flush();
- *     throw new PKCS11Exception("RSA not supported!");
+ *     throw new TokenException("RSA not supported!");
  *   } else {
  *     MechanismInfo rsaMechanismInfo = token.getMechanismInfo(CKM_RSA_PKCS);
  *     // check, if the mechanism supports the required operation
@@ -34,7 +34,7 @@ import java.util.*;
  *        System.out.print(
  *            "This token does not support RSA decryption according to PKCS!");
  *        System.out.flush();
- *        throw new PKCS11Exception("RSA signing not supported!");
+ *        throw new TokenException("RSA signing not supported!");
  *     }
  *   }
  * </code></pre>
