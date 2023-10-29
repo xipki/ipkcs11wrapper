@@ -1,3 +1,5 @@
+// #THIRDPARTY# HikariCP
+
 /*
  * Copyright (C) 2013, 2014 Brett Wooldridge
  *
@@ -14,8 +16,6 @@
  * limitations under the License.
  */
 package org.xipki.pkcs11.wrapper;
-
-import org.xipki.pkcs11.wrapper.StaticLogger;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
@@ -55,9 +55,6 @@ import static java.util.concurrent.locks.LockSupport.parkNanos;
  */
 public class ConcurrentBag<T> implements AutoCloseable {
 
-  private static final ClockSource CLOCK =  "Mac OS X".equalsIgnoreCase(System.getProperty("os.name"))
-      ? new MillisecondClockSource() : new NanosecondClockSource();
-
   private final CopyOnWriteArrayList<BagEntry<T>> sharedList;
   private final boolean weakThreadLocals;
 
@@ -67,10 +64,10 @@ public class ConcurrentBag<T> implements AutoCloseable {
 
   private final SynchronousQueue<BagEntry<T>> handoffQueue;
 
-  static final int STATE_NOT_IN_USE = 0;
-  static final int STATE_IN_USE = 1;
-  static final int STATE_REMOVED = -1;
-  static final int STATE_RESERVED = -2;
+  private static final int STATE_NOT_IN_USE = 0;
+  private static final int STATE_IN_USE = 1;
+  private static final int STATE_REMOVED = -1;
+  private static final int STATE_RESERVED = -2;
 
   /**
    * Construct a ConcurrentBag with the specified listener.
@@ -118,13 +115,13 @@ public class ConcurrentBag<T> implements AutoCloseable {
 
       timeout = timeUnit.toNanos(timeout);
       do {
-        final long start = CLOCK.currentTime();
+        final long start = System.nanoTime();
         final BagEntry<T> bagEntry = handoffQueue.poll(timeout, NANOSECONDS);
         if (bagEntry == null || bagEntry.compareAndSet(STATE_NOT_IN_USE, STATE_IN_USE)) {
           return bagEntry;
         }
 
-        timeout -= CLOCK.elapsedNanos(start);
+        timeout -= System.nanoTime() - start;
       } while (timeout > 10_000);
 
       return null;
@@ -251,7 +248,6 @@ public class ConcurrentBag<T> implements AutoCloseable {
     }
   }
 
-
   public static class BagEntry<T> {
 
     @SuppressWarnings({ "unused" })
@@ -283,58 +279,6 @@ public class ConcurrentBag<T> implements AutoCloseable {
 
     public void setState(int update) {
       stateUpdater.set(this, update);
-    }
-
-  }
-
-  /**
-   * A resolution-independent provider of current time-stamps and elapsed time
-   * calculations.
-   *
-   * @author Brett Wooldridge
-   */
-  private interface ClockSource {
-
-    /**
-     * Get the current time-stamp (resolution is opaque).
-     *
-     * @return the current time-stamp
-     */
-    long currentTime();
-
-    /**
-     * Convert an opaque time-stamp returned by currentTime() into an
-     * elapsed time in milliseconds, based on the current instant in time.
-     *
-     * @param startTime an opaque time-stamp returned by an instance of this class
-     * @return the elapsed time between startTime and now in milliseconds
-     */
-    long elapsedNanos(long startTime);
-
-  }
-
-  private static final class MillisecondClockSource implements ClockSource {
-    @Override
-    public long currentTime() {
-      return System.currentTimeMillis();
-    }
-
-    @Override
-    public long elapsedNanos(final long startTime) {
-      return MILLISECONDS.toNanos(System.currentTimeMillis() - startTime);
-    }
-
-  }
-
-  private static class NanosecondClockSource implements ClockSource {
-    @Override
-    public long currentTime() {
-      return System.nanoTime();
-    }
-
-    @Override
-    public long elapsedNanos(final long startTime) {
-      return System.nanoTime() - startTime;
     }
 
   }
