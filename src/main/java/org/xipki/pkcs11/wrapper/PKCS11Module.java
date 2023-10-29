@@ -118,6 +118,8 @@ public class PKCS11Module {
    */
   private static boolean linkedAndInitialized;
 
+  private ModuleInfo moduleInfo;
+
   private Boolean ecPointFixNeeded;
 
   private Boolean ecdsaSignatureFixNeeded;
@@ -129,6 +131,23 @@ public class PKCS11Module {
   private final Set<Integer> vendorBehaviours = new HashSet<>();
 
   private static final AtomicBoolean licensePrinted = new AtomicBoolean(false);
+
+  static {
+    String version = null;
+    try (BufferedReader reader = new BufferedReader(
+        new InputStreamReader(Objects.requireNonNull(PKCS11Module.class.getResourceAsStream("version"))))) {
+      version = reader.readLine();
+    } catch (Exception ex) {
+    }
+
+    if (version == null) {
+      version = "UNKNOWN";
+    } else {
+      version = version.trim();
+    }
+
+    StaticLogger.info("ipkcs11wrapper " + version);
+  }
 
   /**
    * Create a new module that uses the given PKCS11 interface to interact with
@@ -219,15 +238,12 @@ public class PKCS11Module {
    * Gets information about the module; i.e. the PKCS#11 module behind.
    *
    * @return An object holding information about the module.
-   * @exception PKCS11Exception
-   *              If getting the information fails.
    */
-  public ModuleInfo getInfo() throws PKCS11Exception {
-    try {
-      return new ModuleInfo(pkcs11.C_GetInfo());
-    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
-      throw convertException(e);
+  public ModuleInfo getInfo() throws TokenException {
+    if (moduleInfo == null) {
+      throw new TokenException("moduleInfo not available");
     }
+    return moduleInfo;
   }
 
   /**
@@ -247,6 +263,12 @@ public class PKCS11Module {
       pkcs11.C_Initialize(wrapperInitArgs, true);
     } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
       throw convertException(e);
+    }
+
+    try {
+      moduleInfo = new ModuleInfo(pkcs11.C_GetInfo());
+    } catch (iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
+      StaticLogger.error("error calling C_GetInfo {}", e.getMessage());
     }
 
     // Vendor code
@@ -373,8 +395,7 @@ public class PKCS11Module {
   }
 
   public PKCS11Exception convertException(iaik.pkcs.pkcs11.wrapper.PKCS11Exception e) {
-    String name = codeToName(Category.CKR, e.getErrorCode());
-    return new PKCS11Exception(e.getErrorCode(), name);
+    return new PKCS11Exception(e.getErrorCode());
   }
 
   /**
