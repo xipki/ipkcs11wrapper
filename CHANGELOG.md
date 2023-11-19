@@ -2,6 +2,10 @@
 
 See also <https://github.com/xipki/ipkcs11wrapper/releases>
 
+## 1.0.9
+- Release date: xxxx
+- N/A
+
 ## 1.0.8
 - Release date: 2023/11/19
 - Feature: log the library version.
