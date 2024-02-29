@@ -151,25 +151,21 @@ public class Functions {
     String[] nodes = oid.split("\\.");
     out.write(0x06);
     out.write(0); // place holder for length
+
     // first two nodes
-    out.write(Integer.parseInt(nodes[0]) * 40 + Integer.parseInt(nodes[1]));
+    int node0 = Integer.parseInt(nodes[0]);
+    int node1 = Integer.parseInt(nodes[1]);
+    boolean valid = ((node0 == 0 || node0 == 1) && (node1 < 40)) || node0 == 2;
+    if (!valid) {
+      throw new IllegalArgumentException("invalid oid " + oid);
+    }
+
+    int nodeValue = node0 * 40 + node1;
+    encodeOidNode(out, nodeValue);
+
     for (int i = 2; i < nodes.length; i++) {
       int v = Integer.parseInt(nodes[i]);
-      if (v < 128) {
-        out.write(v);
-      } else {
-        int bitLen = BigInteger.valueOf(v).bitLength();
-        // bitLen=8, numBytes=2, shiftBits = 1
-        int numBytes = (bitLen + 6) / 7;
-        int shiftBits = bitLen - (numBytes - 1) * 7;
-        for (int j = 0; j < numBytes; j++) {
-          int k = 0x7F & (v >> (bitLen - shiftBits - 7 * j));
-          if (j != numBytes - 1) {
-            k |= 0x80;
-          }
-          out.write(k);
-        }
-      }
+      encodeOidNode(out, v);
     }
 
     byte[] is = out.toByteArray();
@@ -178,6 +174,24 @@ public class Functions {
     }
     is[1] = (byte) (is.length - 2);
     return is;
+  }
+
+  private static void encodeOidNode(ByteArrayOutputStream out, int nodeValue) {
+    if (nodeValue < 128) {
+      out.write(nodeValue);
+    } else {
+      int bitLen = BigInteger.valueOf(nodeValue).bitLength();
+      // bitLen=8, numBytes=2, shiftBits = 1
+      int numBytes = (bitLen + 6) / 7;
+      int shiftBits = bitLen - (numBytes - 1) * 7;
+      for (int j = 0; j < numBytes; j++) {
+        int k = 0x7F & (nodeValue >> (bitLen - shiftBits - 7 * j));
+        if (j != numBytes - 1) {
+          k |= 0x80;
+        }
+        out.write(k);
+      }
+    }
   }
 
   public static byte[] asUnsignedByteArray(java.math.BigInteger bn) {
@@ -370,37 +384,58 @@ public class Functions {
 
   public static String decodeOid(byte[] encoded) {
     final int len = encoded.length;
-    if (encoded[0] != 0x06 || (0xFF & encoded[1]) != len - 2 || (encoded[len - 1] & 0x80) != 0) {
+    if (len < 3 || encoded[0] != 0x06 ||
+        (0xFF & encoded[1]) != len - 2 || (encoded[len - 1] & 0x80) != 0) {
       throw new IllegalArgumentException("invalid ecParams");
     }
 
     StringBuilder sb = new StringBuilder(len + 5);
 
-    int ofs = 2;
-    int b = encoded[ofs++] & 0xFF;
-    sb.append(b / 40).append('.');
-    sb.append(b % 40).append('.');
+    int offset = 2;
+    boolean start = true;
+    while (offset < len) {
+      if (!start) {
+        sb.append(".");
+      }
+      offset = readNode(sb, encoded, offset, start);
+      start = false;
+    }
 
-    while (ofs < len) {
-      b = encoded[ofs++] & 0xFF;
-      if (b < 128) {
-        sb.append(b).append('.');
-      } else {
-        int ni = b & 0x7F;
-        while (true) {
-          b = encoded[ofs++] & 0xFF;
-          int bi = b & 0x7F;
-          ni <<= 7;
-          ni += bi;
-          if (b == bi) {
-            break;
-          }
-        }
-        sb.append(ni).append('.');
+    if (offset != len) {
+      throw new IllegalArgumentException("encoded too long");
+    }
+
+    return sb.toString();
+  }
+
+  /*
+   * returns the new offset.
+   */
+  private static int readNode(StringBuilder sb, byte[] values, int off, boolean start) {
+    int nodeValue = 0;
+    while (true) {
+      int v = 0xff & values[off++];
+      boolean hasFurther = (v & 0x80) != 0;
+      nodeValue <<= 7;
+      nodeValue += (v & 0x7F);
+      if (!hasFurther) {
+        break;
       }
     }
-    sb.deleteCharAt(sb.length() - 1);
-    return sb.toString();
+
+    if (start) {
+      if (nodeValue < 40) {
+        sb.append("0.").append(nodeValue);
+      } else if (nodeValue < 80) {
+        sb.append("1.").append(nodeValue - 40);
+      } else {
+        sb.append("2.").append(nodeValue - 80);
+      }
+    } else {
+      sb.append(nodeValue);
+    }
+
+    return off;
   }
 
   static Integer getECFieldSize(byte[] ecParams) {
