@@ -79,14 +79,18 @@ public class TestBase {
       Integer slotIndex = (str == null) ? null : Integer.parseInt(str);
       module = PKCS11Module.getInstance(modulePath);
 
-      speedThreads = Integer.getInteger("speed.threads", 2);
-      speedDuration = System.getProperty("speed.duration", "3s");
+      String propValue = props.getProperty("module.numSessions");
+      Integer numSessions = propValue == null ? null : Integer.parseInt(propValue);
+
+      speedThreads = Integer.parseInt(props.getProperty("speed.threads", "2"));
+      speedDuration = props.getProperty("speed.duration", "3s");
+
       module.initialize();
 
       boolean readOnly = false;
 
       token = new PKCS11Token(selectToken(module, slotIndex),
-                  readOnly, (modulePin == null ? null : modulePin.toCharArray()));
+                  readOnly, (modulePin == null ? null : modulePin.toCharArray()), numSessions);
 
       Runtime.getRuntime().addShutdownHook(new Thread() {
         public void run() {
