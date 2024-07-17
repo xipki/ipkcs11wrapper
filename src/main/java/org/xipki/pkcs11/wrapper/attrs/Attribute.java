@@ -36,7 +36,7 @@ import static org.xipki.pkcs11.wrapper.PKCS11Constants.*;
  */
 public abstract class Attribute {
 
-  private enum AttrType {
+  public enum AttrType {
     ATTRIBUTEARRAY,
     BOOLEAN,
     BYTEARRAY,
@@ -93,6 +93,22 @@ public abstract class Attribute {
 
     if (attributeTypes.isEmpty()) {
       throw new IllegalStateException("no code to name map is defined properties file " + propFile);
+    }
+  }
+
+  /**
+   * Set the data type {@link AttrType} for the given attribute type.
+   * @param type the attribute type
+   * @param attrType the data type.
+   * @return true if set, false otherwise.
+   */
+  public static boolean putAttributeValueType(long type, AttrType attrType) {
+    AttrType attrType0 = attributeTypes.get(type);
+    if (attrType0 == null) {
+      attributeTypes.put(type, attrType);
+      return true;
+    } else {
+      return attrType0 == attrType;
     }
   }
 
