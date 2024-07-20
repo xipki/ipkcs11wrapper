@@ -2,9 +2,13 @@
 
 See also <https://github.com/xipki/ipkcs11wrapper/releases>
 
-## 1.0.9
+## 1.0.10
 - Release date: xxxx
-- N/A
+
+## 1.0.9
+- Release date: 2024/07/20
+- Feature: more stable session management
+- Feature: add method the specify the data-type of attribute value.
 
 ## 1.0.8
 - Release date: 2023/11/19
