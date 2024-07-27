@@ -1141,7 +1141,25 @@ public class PKCS11Token {
 
     long code = mechanism.getMechanismCode();
     try {
-      if (supportsMechanism(code, CKF_VERIFY)) {
+      boolean supportVerify = supportsMechanism(code, CKF_VERIFY);
+      boolean supportSignAndIsMac = supportsMechanism(code, CKF_SIGN) && isMacMechanism(code);
+      if ((!supportVerify) && supportSignAndIsMac) {
+        opInit(OP.VERIFY, session, mechanism, keyHandle);
+        // CKF_VERIFY is not supported, use CKF_SIGN to verify the MAC tags.
+        byte[] sig2;
+        if (len <= maxMessageSize) {
+          sig2 = session.sign(data);
+        } else {
+          try {
+            for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
+              session.signUpdate(copyOfLen(data, ofs, Math.min(maxMessageSize, len - ofs)));
+            }
+          } finally {
+            sig2 = session.signFinal();
+          }
+        }
+        return Arrays.equals(signature, sig2);
+      } else {
         try {
           opInit(OP.VERIFY, session, mechanism, keyHandle);
 
@@ -1173,24 +1191,6 @@ public class PKCS11Token {
             throw e;
           }
         }
-      } else if (supportsMechanism(code, CKF_SIGN) && isMacMechanism(code)) {
-        opInit(OP.VERIFY, session, mechanism, keyHandle);
-        // CKF_VERIFY is not supported, use CKF_SIGN to verify the MAC tags.
-        byte[] sig2;
-        if (len <= maxMessageSize) {
-          sig2 = session.sign(data);
-        } else {
-          try {
-            for (int ofs = 0; ofs < len; ofs += maxMessageSize) {
-              session.signUpdate(copyOfLen(data, ofs, Math.min(maxMessageSize, len - ofs)));
-            }
-          } finally {
-            sig2 = session.signFinal();
-          }
-        }
-        return Arrays.equals(signature, sig2);
-      } else {
-        throw new PKCS11Exception(CKR_MECHANISM_INVALID);
       }
     } finally {
       sessions.add(session);
