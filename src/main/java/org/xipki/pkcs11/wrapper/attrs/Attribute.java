@@ -146,7 +146,7 @@ public abstract class Attribute {
         : (attrType == AttrType.MECHANISM) ? new MechanismAttribute(type)
         : (attrType == AttrType.MECHANISMARRAY) ? new MechanismArrayAttribute(type)
         : (attrType == AttrType.ATTRIBUTEARRAY) ? new AttributeArrayAttribute(type)
-        : null;
+        : new ByteArrayAttribute(type); // by default as ByteArray
   }
 
   public static Attribute getInstance(long type, Object value) {
@@ -154,7 +154,7 @@ public abstract class Attribute {
 
     if (attrType == AttrType.BOOLEAN) {
       return new BooleanAttribute(type).booleanValue((Boolean) value);
-    } else if (attrType == AttrType.BYTEARRAY) {
+    } else if (attrType == null || attrType == AttrType.BYTEARRAY) {
       return (value == null || value instanceof byte[])
           ? new ByteArrayAttribute(type).byteArrayValue((byte[]) value)
           : new ByteArrayAttribute(type).bigIntValue((BigInteger) value);
