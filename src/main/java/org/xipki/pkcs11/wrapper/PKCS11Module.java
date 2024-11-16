@@ -111,7 +111,9 @@ public class PKCS11Module {
   /**
    * Interface to the underlying PKCS#11 module.
    */
-  private final PKCS11Implementation pkcs11;
+  private final PKCS11 pkcs11;
+
+  private final String modulePath;
 
   /**
    * Indicates, if the static linking and initialization of the library is already done.
@@ -155,9 +157,12 @@ public class PKCS11Module {
    *
    * @param pkcs11
    *          The PKCS#11 module to interact with the token.
+   * @param modulePath
+   *          The PKCS#11 module path.
    */
-  protected PKCS11Module(PKCS11Implementation pkcs11) {
+  protected PKCS11Module(PKCS11 pkcs11, String modulePath) {
     this.pkcs11 = Functions.requireNonNull("pkcs11", pkcs11);
+    this.modulePath = Functions.requireNonNull("modulePath", modulePath);
   }
 
   /**
@@ -172,6 +177,7 @@ public class PKCS11Module {
    *
    */
   public static PKCS11Module getInstance(String pkcs11ModulePath) throws IOException {
+    Functions.requireNonNull("pkcs11ModulePath", pkcs11ModulePath);
     synchronized (licensePrinted) {
       if (!licensePrinted.get()) {
         StaticLogger.info(
@@ -184,9 +190,25 @@ public class PKCS11Module {
       }
     }
 
-    ensureLinkedAndInitialized();
+    PKCS11 pkcs11;
+
+    if (pkcs11ModulePath.startsWith("java:")) {
+      final int prefixLen = 5; // "java:".length
+      int sepClassEndIndex = pkcs11ModulePath.indexOf(":", prefixLen);
+      String className = pkcs11ModulePath.substring(prefixLen, sepClassEndIndex);
+      String path = pkcs11ModulePath.substring(sepClassEndIndex + 1);
+      try {
+        pkcs11 = (PKCS11) PKCS11Module.class.getClassLoader().loadClass(className).getConstructor(String.class).newInstance(path);
+      } catch (Exception e) {
+        throw new IOException("error initializing PKCS#11 module " + pkcs11ModulePath, e);
+      }
+    } else {
+      ensureLinkedAndInitialized();
+      pkcs11 = new PKCS11Implementation(Functions.requireNonNull("pkcs11ModulePath", pkcs11ModulePath));
+    }
+
     StaticLogger.info("PKCS11Module.getInstance: pkcs11ModulePath={}", pkcs11ModulePath);
-    return new PKCS11Module(new PKCS11Implementation(Functions.requireNonNull("pkcs11ModulePath", pkcs11ModulePath)));
+    return new PKCS11Module(pkcs11, pkcs11ModulePath);
   }
 
   /**
@@ -605,7 +627,6 @@ public class PKCS11Module {
 
   private void initVendor() {
     try {
-      String modulePath = pkcs11.getPkcs11ModulePath();
       ModuleInfo moduleInfo = getInfo();
       String manufacturerID = moduleInfo.getManufacturerID();
       String libraryDescription = moduleInfo.getLibraryDescription();
