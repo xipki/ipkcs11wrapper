@@ -608,7 +608,7 @@ public class PKCS11Token {
           addCkaTypes(ckaTypes, CKA_MODULUS, CKA_PUBLIC_EXPONENT);
         } else if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY
             || keyType == CKK_VENDOR_SM2) {
-          ckaTypes.add(CKA_EC_PARAMS);
+          addCkaTypes(ckaTypes, CKA_EC_PARAMS, CKA_EC_POINT);
         } else if (keyType == CKK_DSA) {
           addCkaTypes(ckaTypes, CKA_PRIME, CKA_SUBPRIME, CKA_BASE);
         }
@@ -626,6 +626,20 @@ public class PKCS11Token {
     }
 
     AttributeVector attrs = session.getAttrValues(keyId.getHandle(), ckaTypes);
+    // read EC_POINT from the public key
+    if (objClass == CKO_PRIVATE_KEY && keyId.getPublicKeyHandle() != null) {
+      if (keyType == CKK_EC || keyType == CKK_EC_EDWARDS || keyType == CKK_EC_MONTGOMERY
+          || keyType == CKK_VENDOR_SM2) {
+        if (attrs.ecPoint() == null) {
+          AttributeVector pubAttrs = session.getAttrValues(keyId.getPublicKeyHandle(), CKA_EC_POINT);
+          byte[] ecPoint = pubAttrs.ecPoint();
+          if (ecPoint != null) {
+            attrs.ecPoint(pubAttrs.ecPoint());
+          }
+        }
+      }
+    }
+
     return new PKCS11Key(keyId, attrs);
   }
 
@@ -2098,6 +2112,8 @@ public class PKCS11Token {
       if (ex.getErrorCode() == CKR_USER_NOT_LOGGED_IN) {
         login(session);
         opInit0(op, session, mechanism, keyHandle);
+      } else {
+        throw ex;
       }
     }
   }
